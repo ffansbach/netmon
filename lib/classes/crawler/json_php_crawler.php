@@ -40,7 +40,7 @@
   header("Content-Type: text/html; charset=UTF-8");
 
   //Pfad vom Root zu Netmon mit Slash am Ende
-  $path_to_netmon = "/home/mynetmon/";
+  $path_to_netmon = "/home/floh1111/mynetmon/";
 
   //Lokale Konfiguration einbinden
   require_once($path_to_netmon.'config/config.local.inc.php');
@@ -60,7 +60,22 @@ class JsonDataCollector {
 
   public $crawl_id;
 
+  public function checkCrawlIntervall() {
+    $db = new mysqlClass;
+    $result = $db->mysqlQuery("SELECT UNIX_TIMESTAMP(crawl_time_end) as last_crawl
+			       FROM crawls
+			       ORDER BY id DESC
+			       LIMIT 1");
+    $row = mysql_fetch_assoc($result);
+	//Wenn im vorgegebenen Zeitintervall schon ein Crawl stattgefunden hat, beende.
+    if (($row['last_crawl']+$GLOBALS['timeBetweenCrawls']*60)>time()) {
+	    die();
+    }
+    unset($db);
+  }
+
   function initialiseCrawl() {
+  	$this->checkCrawlIntervall();
     $db = new mysqlClass;
     $db->mysqlQuery("INSERT INTO crawls (crawl_time_start) VALUES (NOW())");
     $crawl_id = $db->getInsertID();
