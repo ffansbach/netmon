@@ -56,7 +56,7 @@ class menus extends usermanagement {
       $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'./index.php?get=status');
       $menu[] = array('name'=>'Nodelist', 'href'=>'./index.php?get=nodelist');
       $menu[] = array('name'=>'Subnetliste', 'href'=>'./index.php?get=subnetlist');
-      $menu[] = array('name'=>'Impressum', 'href'=>'./index.php?get=impressum');
+      $menu[] = array('name'=>'Impressum', 'href'=>'http://wiki.freifunk-ol.de/index.php/Freifunk_OL_Wiki:Impressum');
     }
     return $menu;
   }

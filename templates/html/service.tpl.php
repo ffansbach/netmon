@@ -135,10 +135,7 @@ processes: {$current_crawl.processes}<br>
 <h2>Aktionen</h2>
 
 <p>
-  <a href="./index.php?get=vpn&section=new&service_id={$service_data.service_id}">Neue VPN-Zertifikate generieren</a><br>
-  <a href="./index.php?get=vpn&section=info&service_id={$service_data.service_id}">VPN-Zertifikat Info ansehen</a><br>
-  <a href="./index.php?get=vpn&section=insert_regenerate_ccd&service_id={$service_data.service_id}">CCD neu anlegen</a><br>
-  <a href="./index.php?get=vpn&section=download&service_id={$service_data.service_id}">VPN-Zertifikate downloaden</a><br>
+  <a href="./index.php?get=serviceeditor&section=edit&service_id={$service_data.service_id}">Service editieren</a><br>
 </p>
 
     </div>

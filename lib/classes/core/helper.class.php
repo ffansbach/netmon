@@ -29,12 +29,30 @@
  */
 
 class Helper {
-  function getNodeInfo($id) {
+  public function getNodeInfo($id) {
     $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
+    $result = $db->mysqlQuery("SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
 				      users.nickname,
 				      subnets.title, subnets.subnet_ip
 				  FROM nodes
+				   LEFT JOIN users ON (users.id=nodes.user_id)
+				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
+				   WHERE nodes.id=$id;");
+    
+    while($row = mysql_fetch_assoc($result)) {
+      $node = $row;
+    }
+
+    $node['is_node_owner'] = usermanagement::isThisUserOwner($node['user_id']);
+    return $node;
+  }
+  
+  public function getNodeDataByNodeId($id) {
+    $db = new mysqlClass;
+    $result = $db->mysqlQuery("SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
+				      users.nickname, users.email,
+				      subnets.title, subnets.subnet_ip, subnets.vpn_server_ca
+				   FROM nodes
 				   LEFT JOIN users ON (users.id=nodes.user_id)
 				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
 				   WHERE nodes.id=$id;");
@@ -196,7 +214,7 @@ WHERE nodes.subnet_id='$subnet_id'");
 
   public function getServiceDataByServiceId($service_id) {
     $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT services.id as service_id, services.node_id, services.title, services.description, services.typ, services.crawler, services.vpn_client_cert, services.vpn_client_key, services.create_date,
+    $result = $db->mysqlQuery("SELECT services.id as service_id, services.node_id, services.title, services.description, services.typ, services.crawler, services.create_date,
 			       nodes.node_ip,
 			       subnets.subnet_ip, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email
