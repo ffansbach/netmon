@@ -1,6 +1,5 @@
 <h1>Service vom Node {$net_prefix}.{$servicedata.subnet_ip}.{$servicedata.node_ip} editieren</h1>
 
-<form action="./index.php?get=serviceeditor&section=insert_edit&service_id={$servicedata.service_id}" method="POST">
   <p>
     <p>Typ: <input name="typ" type="text" size="5" maxlength="10" value="{$servicedata.typ}"><br>
      Hier wird angegeben was sich hinter der IP verbirgt. (node, , vpn, client, service)</p>

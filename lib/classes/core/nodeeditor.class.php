@@ -76,7 +76,7 @@ class nodeeditor {
 	$id = $db->getInsertID();
 	unset($db);
 
-	editingHelper::addNodeTyp($id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $range['start'], $range['end']);
+	editingHelper::addNodeTyp($id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible']);
 
 	$subnet = Helper::getSubnetById($subnet_id);
 	if ($ips > 0) {
