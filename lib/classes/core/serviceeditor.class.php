@@ -43,7 +43,7 @@ class serviceeditor {
 	$range['start'] = "NULL";
 	$range['end'] = "NULL";
       }
-	editingHelper::addNodeTyp($_GET['node_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $range['start'], $range['end']);
+	editingHelper::addNodeTyp($_GET['node_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible']);
 	$smarty->assign('message', message::getMessage());
 	$smarty->assign('get_content', "desktop");
     }
@@ -54,7 +54,7 @@ class serviceeditor {
 	$smarty->assign('get_content', "service_edit");
     }
     if ($_GET['section'] == "insert_edit") {
-	$smarty->assign('servicedata', $this->insertEditService($_GET['service_id'], $_POST['typ'], $_POST['crawler'], $_POST['title'], $_POST['description']));
+	$smarty->assign('servicedata', $this->insertEditService($_GET['service_id'], $_POST['typ'], $_POST['crawler'], $_POST['title'], $_POST['description'], $_POST['radius'], $_POST['visible']));
 	$smarty->assign('message', message::getMessage());
 	$smarty->assign('get_content', "desktop");
     }
@@ -65,14 +65,16 @@ class serviceeditor {
     }
   }
 
-  public function insertEditService($service_id, $typ, $crawler, $title, $description) {
+  public function insertEditService($service_id, $typ, $crawler, $title, $description, $radius, $visible) {
     //Mach DB Eintrag
     $db = new mysqlClass;
     $db->mysqlQuery("UPDATE services SET
 title = '$title',
 description = '$description',
 typ = '$typ',
-crawler = '$crawler'
+crawler = '$crawler',
+radius = $radius,
+visible = '$visible'
 WHERE id = '$service_id'
 ");
     $ergebniss = $db->mysqlAffectedRows();

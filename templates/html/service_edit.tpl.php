@@ -20,7 +20,22 @@
     <p>(Optional) Beschreibung: <br><textarea name="description" cols="50" rows="10">{$servicedata.description}</textarea><br>
     Sinnvoll wenn Typ "service" sowie Port "80" ist und sich hinter der IP eine Website verbirgt. Oder ein VPN-Server, oder ein NFS-Downloadserver usw.</p>
   </p>
-
+  
+  <p>
+    <p>(Optional) Radius: <input name="radius" type="text" size="5" maxlength="10" value="{$servicedata.radius}"><br>
+    Sinnvoll wenn Typ "node" ist und man die ungefähre Reichweite seines W-Lan-Netzes in metern weiß.</p>
+  </p>
+  
+  <p>
+    <p>Sichbar: 
+    <select name="visible" size="1">
+      <option value="1" {if $servicedata.visible==1}selected{/if}>Ja</option>
+      <option value="0" {if $servicedata.visible==0}selected{/if}>Nein</option>
+    </select>
+    <br>
+    Alle Services sollten Sichbar sein. Wenn du aber einen Service anbietest bei dem es unter Umständen kritisch sein kann ihn öffentlich anzuzeigen, kannst du hier einstellen, dass nur angemeldete Personen den Service sehen können.</p>
+  </p>
+  
   <p><input type="submit" value="Absenden"></p>
 </form>
 

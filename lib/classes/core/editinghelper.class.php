@@ -194,9 +194,9 @@ class editingHelper {
     }
  }
 
-  public function addNodeTyp($node_id, $title, $description, $typ, $crawler, $zone_start, $zone_end, $radius=80) {
+  public function addNodeTyp($node_id, $title, $description, $typ, $crawler, $zone_start, $zone_end, $radius=80, $visible) {
     $db = new mysqlClass;
-    $db->mysqlQuery("INSERT INTO services (node_id, title, description, typ, crawler, zone_start, zone_end, radius, create_date) VALUES ('$node_id', '$title', '$description', '$typ', '$crawler', '$zone_start', '$zone_end', '$radius', NOW());");
+    $db->mysqlQuery("INSERT INTO services (node_id, title, description, typ, crawler, zone_start, zone_end, radius, visible, create_date) VALUES ('$node_id', '$title', '$description', '$typ', '$crawler', '$zone_start', '$zone_end', '$radius', '$visible', NOW());");
     unset($db);
 
     $db = new mysqlClass;

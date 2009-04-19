@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 10, 2009 at 11:31 AM
+-- Generation Time: Apr 19, 2009 at 12:31 PM
 -- Server version: 5.0.51
--- PHP Version: 5.2.6-0.1~lenny1
+-- PHP Version: 5.2.6-1+lenny2
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -89,6 +89,8 @@ CREATE TABLE IF NOT EXISTS `nodes` (
   `user_id` int(11) NOT NULL,
   `subnet_id` int(3) NOT NULL,
   `node_ip` int(3) NOT NULL,
+  `vpn_client_cert` text NOT NULL,
+  `vpn_client_key` text NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
@@ -122,8 +124,7 @@ CREATE TABLE IF NOT EXISTS `services` (
   `zone_start` int(11) NOT NULL,
   `zone_end` int(11) NOT NULL,
   `radius` int(11) NOT NULL,
-  `vpn_client_cert` text NOT NULL,
-  `vpn_client_key` text NOT NULL,
+  `visible` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;

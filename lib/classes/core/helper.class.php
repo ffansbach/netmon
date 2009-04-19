@@ -214,7 +214,7 @@ WHERE nodes.subnet_id='$subnet_id'");
 
   public function getServiceDataByServiceId($service_id) {
     $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT services.id as service_id, services.node_id, services.title, services.description, services.typ, services.crawler, services.create_date,
+    $result = $db->mysqlQuery("SELECT services.id as service_id, services.node_id, services.title, services.description, services.typ, services.radius, services.crawler, services.visible, services.create_date,
 			       nodes.node_ip,
 			       subnets.subnet_ip, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email

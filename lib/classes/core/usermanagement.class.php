@@ -69,23 +69,7 @@ class usermanagement {
   }
 
   public function checkPermission($sitepermission) {
-    $user_id = $_SESSION['user_id'];
-    //Prüfen ob Benutzer eingeloggt ist
-    if (!isset($user_id)) {
-      //Jeder Benutzer bekommt das recht 0
-      $userpermission = pow(2,0);
-      //Jder nicht eingeloggte Benutzer bekommt das recht 1
-      $userpermission = $userpermission + pow(2,1);
-    } else {
-      //Jeder Benutzer bekommt das recht 0
-      $userpermission = pow(2,0);
-      //Jeder eingeloggte Benutzer bekommt das recht "eingeloggt"
-      $userpermission = $userpermission + pow(2,2);
-
-      //Jeder Benutzer bekommt das recht aus der Datenbank
-      $userpermission = $userpermission + usermanagement::getUserPermission($user_id);
-    }
-
+    $userpermission = usermanagement::getUserPermission();
     //Rechte ins Binärsystem wandeln
     $sitepermission = decbin($sitepermission);
     $userpermission = decbin($userpermission);
@@ -107,12 +91,27 @@ class usermanagement {
     return $return;
   }
 
-  public function getUserPermission($user_id) {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("select permission from users WHERE id=$user_id");
-    $user_data = mysql_fetch_assoc($result);
-    unset($db);
-    return $user_data['permission'];
+  public function getUserPermission() {
+  	if (!isset($_SESSION['user_id'])) {
+      //Jeder Benutzer bekommt das recht 0
+      $userpermission = pow(2,0);
+      //Jder nicht eingeloggte Benutzer bekommt das recht 1
+      $userpermission = $userpermission + pow(2,1);
+    } else {
+      //Jeder Benutzer bekommt das recht 0
+      $userpermission = pow(2,0);
+      //Jeder eingeloggte Benutzer bekommt das recht "eingeloggt"
+      $userpermission = $userpermission + pow(2,2);
+
+	  $db = new mysqlClass;
+      $result = $db->mysqlQuery("select permission from users WHERE id=$_SESSION[user_id]");
+      $user_data = mysql_fetch_assoc($result);
+      unset($db);
+      
+      //Jeder Benutzer bekommt das recht aus der Datenbank
+      $userpermission = $userpermission + $user_data['permission'];
+    }
+    return $userpermission;
   }
 
   public function getAllPermissions() {
