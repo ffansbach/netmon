@@ -2,15 +2,41 @@
 
 <form action="./index.php?get=serviceeditor&section=insert_service&node_id={$node_data.node_id}" method="POST">
 
-  <p>
-    <p>Typ: <input name="typ" type="text" size="5" maxlength="10" value="node"><br>
-     Hier wird angegeben was sich hinter der IP verbirgt. (node, , vpn, client, service)</p>
-  </p>
+<script type="text/javascript" src="./templates/js/servicesAuswahl.js"></script>
+<script type="text/javascript" src="./templates/js/LinkedSelection.js"></script>
+<script type="text/javascript">
 
-  <p>
-    <p>Check: <input name="crawler" type="text" size="5" maxlength="10" value="json"><br>
-    Hier wird angegeben wie die IP auf verfügbarkeit geprüft werden soll. Für node "json" eintragen, für vpn idR. auch json, für client "ping" und für service einen Port (bspw.: 21 oder 80), wenn nicht geprüft werden soll "no" eintragen!</p>
-  </p>
+{literal}
+
+window.onload = function()
+{
+  var vk = new LinkedSelection( [ 'typ', 'crawl'], serviceAuswahl );
+}
+
+{/literal}
+
+</script>
+
+<p>
+<label id="typLabel" for="typ">Service:</label>
+<select id="typ" name="typ">
+  <option value="--">Bitte wählen:</option>
+  <option value="node">node</option>
+  <option value="vpn">vpn</option>
+  <option value="client">client</option>
+  <option value="service">service</option>
+</select>
+
+<label id="crawlLabel" for="crawl">Crawlart:</label>
+
+<select id="crawl" name="crawler">
+  <option value="--">------</option>
+</select>
+
+<span id="portInput" style="visibility:hidden; margin-left: 5px;">
+  Portnummer: <input name="port" type="text" size="5" maxlength="10" value="">
+</span> 
+</p>
 
   <p>
     <p>(Optional) Titel: <input name="title" type="text" size="40" maxlength="40" value=""><br>
