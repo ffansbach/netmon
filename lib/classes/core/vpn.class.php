@@ -31,38 +31,39 @@
 class vpn {
   function __construct(&$smarty) {
     if ($_GET['section'] == "new") {
-      $node = Helper::getServiceDataByServiceId($_GET['service_id']);
+      $node = Helper::getNodeDataByNodeId($_GET['node_id']);
       usermanagement::isOwner($smarty, $node['user_id']);
       $smarty->assign('message', message::getMessage());
       $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-      $smarty->assign('data', Helper::getServiceDataByServiceId($_GET['service_id']));
+      $smarty->assign('data', Helper::getNodeDataByNodeId($_GET['node_id']));
       $smarty->assign('expiration', $GLOBALS['expiration']);
       $smarty->assign('get_content', "sslcertificate_new");
     }
     if ($_GET['section'] == "generate") {
-      $node = Helper::getServiceDataByServiceId($_GET['service_id']);
+      $node = Helper::getNodeDataByNodeId($_GET['node_id']);
       usermanagement::isOwner($smarty, $node['user_id']);
-      $keys = $this->generateKeys($_GET['service_id'], $_POST['organizationalunitname'], $_POST['commonname'], $_POST['emailaddress'], $_POST['privkeypass'], $_POST['numberofdays']);
+      $keys = $this->generateKeys($_GET['node_id'], $_POST['organizationalunitname'], $_POST['commonname'], $_POST['emailaddress'], $_POST['privkeypass'], $_POST['privkeypass_chk'], $_POST['numberofdays']);
       if ($keys['return']) {
-	$this->saveKeysToDB($_GET['service_id'], $keys['vpn_client_cert'], $keys['vpn_client_key']);
-	$this->writeCCD($_GET['service_id']);
-	$this->downloadKeyBundle($_GET['service_id']);
-	$smarty->assign('message', message::getMessage());
+		$this->saveKeysToDB($_GET['node_id'], $keys['vpn_client_cert'], $keys['vpn_client_key']);
+		$this->writeCCD($_GET['node_id']);
+		$this->downloadKeyBundle($_GET['node_id']);
+		$smarty->assign('message', message::getMessage());
       } else {
-	$smarty->assign('message', message::getMessage());
+		$smarty->assign('message', message::getMessage());
+        $smarty->assign('get_content', "sslcertificate_new");
       }
     }
     if ($_GET['section'] == "download") {
-      $node = Helper::getServiceDataByServiceId($_GET['service_id']);
+      $node = Helper::getNodeDataByNodeId($_GET['node_id']);
       usermanagement::isOwner($smarty, $node['user_id']);
-      $this->downloadKeyBundle($_GET['service_id']);
+      $this->downloadKeyBundle($_GET['node_id']);
       $smarty->assign('message', message::getMessage());
     }
     if ($_GET['section'] == "info") {
-      $node = Helper::getServiceDataByServiceId($_GET['service_id']);
+      $node = Helper::getNodeDataByNodeId($_GET['node_id']);
       usermanagement::isOwner($smarty, $node['user_id']);
       $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-      $smarty->assign('certificate_data', $this->getCertificateInfo($_GET['service_id']));
+      $smarty->assign('certificate_data', $this->getCertificateInfo($_GET['node_id']));
       $smarty->assign('get_content', "sslcertificate_info");
     }
 
@@ -78,7 +79,7 @@ class vpn {
     }
 
     if ($_GET['section'] == "insert_regenerate_ccd") {
-      $this->writeCCD($_GET['service_id']);
+      $this->writeCCD($_GET['node_id']);
       $smarty->assign('message', message::getMessage());
       $smarty->assign('get_content', "desktop");
     }
@@ -86,13 +87,12 @@ class vpn {
 
   }
 
-  public function generateKeys($service_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $expiration) {
+public function generateKeys($node_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $privkeypass_chk, $expiration) {
     $db = new mysqlClass;
     $result = $db->mysqlQuery("SELECT subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass
-			       FROM services
-			       LEFT JOIN nodes on (nodes.id=services.node_id)
+			       FROM nodes
 			       LEFT JOIN subnets on (subnets.id=nodes.subnet_id)
-			       WHERE services.id='$service_id'");
+			       WHERE nodes.id='$node_id'");
     while($row = mysql_fetch_assoc($result)) {
       $vpn = $row;
     }
@@ -103,39 +103,47 @@ class vpn {
       $message[] = array("Der Subnetverwalter muss erst ein Masterzertifikat für das Subnetz erstellen.", 2);
       message::setMessage($message);
       return false;
-    } else {
-      //SSL-Errors lehren
-      while ($err = openssl_error_string());
-      //Keydaten
-      $dn = array("countryName" => $GLOBALS['countryName'], "stateOrProvinceName" => $GLOBALS['stateOrProvinceName'], "localityName" => $GLOBALS['localityName'], "organizationName" => $GLOBALS['organizationName'], "organizationalUnitName" => $organizationalunitname, "commonName" => $commonname, "emailAddress" => $emailaddress);
+    } elseif (!empty($organizationalunitname) AND !empty($commonname) AND !empty($emailaddress)) {
+		//SSL-Errors lehren
+		while ($err = openssl_error_string());
+		//Keydaten
+		$dn = array("countryName" => $GLOBALS['countryName'], "stateOrProvinceName" => $GLOBALS['stateOrProvinceName'], "localityName" => $GLOBALS['localityName'], "organizationName" => $GLOBALS['organizationName'], "organizationalUnitName" => $organizationalunitname, "commonName" => $commonname, "emailAddress" => $emailaddress);
+		
+		//Passphrase auf null setzen wenn kein Paswort übergeben wird.
+		if (empty($privkeypass)) {
+			$privkeypass == null;
+		} elseif ($privkeypass != $privkeypass_chk) {
+			$message[] = array("Die beiden Passwörter stimmen nicht überein.", 2);
+   			message::setMessage($message);
+			return false;
+		}
+		
+	    $req_key = openssl_pkey_new();
+    	if(openssl_pkey_export ($req_key, $out_key)) {
+			$req_csr  = openssl_csr_new ($dn, $req_key);
+			$req_cert = openssl_csr_sign($req_csr, $vpn['vpn_server_cert'], $vpn['vpn_server_key'], $expiration);
+			if(openssl_x509_export ($req_cert, $out_cert)) {
+	  			//  echo "$out_key\n";
+	  			// echo "$out_cert\n";
+			} else echo "Failed Cert\n";
+		} else echo "FailedKey\n";
+		
+    	return array("return" => true, "vpn_client_cert" => $out_cert, "vpn_client_key" => $out_key);
+	} else {
+		$message[] = array("Die Daten von Ihnen einzugebenen Daten sind unvollständig", 2);
+   		message::setMessage($message);
+		return false;
+	}
+}
 
-      //Passphrase auf null setzen wenn kein Paswort übergeben wird.
-      if (empty($privkeypass) OR $privkeypass=="" OR !isset($privkeypass)) {
-	$privkeypass == null;
-      }
-
-      $req_key = openssl_pkey_new();
-      if(openssl_pkey_export ($req_key, $out_key)) {
-	$req_csr  = openssl_csr_new ($dn, $req_key);
-	$req_cert = openssl_csr_sign($req_csr, $vpn['vpn_server_cert'], $vpn['vpn_server_key'], $expiration);
-	if(openssl_x509_export ($req_cert, $out_cert)) {
-	  //  echo "$out_key\n";
-	  // echo "$out_cert\n";
-	} else    echo "Failed Cert\n";
-      } else echo "FailedKey\n";
-
-      return array("return" => true, "vpn_client_cert" => $out_cert, "vpn_client_key" => $out_key);
-    }
-  }
-
-  public function saveKeysToDB($service_id, $vpn_client_cert, $vpn_client_key) {
+  public function saveKeysToDB($node_id, $vpn_client_cert, $vpn_client_key) {
 
     //Mach DB Eintrag
     $db = new mysqlClass;
-    $db->mysqlQuery("UPDATE services SET
+    $db->mysqlQuery("UPDATE nodes SET
 vpn_client_cert = '$vpn_client_cert',
 vpn_client_key = '$vpn_client_key'
-WHERE id = '$service_id'
+WHERE id = '$node_id'
 ");
     $ergebniss = $db->mysqlAffectedRows();
     unset($db);
@@ -150,8 +158,8 @@ WHERE id = '$service_id'
     }
   }
 
-  public function downloadKeyBundle($service_id) {
-    $keys = Helper::getServiceDataByServiceId($service_id);
+  public function downloadKeyBundle($node_id) {
+    $keys = Helper::getNodeDataByNodeId($node_id);
     if (!empty($keys['vpn_server_ca']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
       $tmpdir = "./tmp/";
       
@@ -201,9 +209,9 @@ WHERE id = '$service_id'
     }
   }
 
-  public function getCertificateInfo($service_id) {
+  public function getCertificateInfo($node_id) {
     $db = new mysqlClass;
-    $keys = Helper::getServiceDataByServiceId($service_id);
+    $keys = Helper::getNodeDataByNodeId($node_id);
     if (!empty($keys['vpn_server_ca']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
       $node_info = openssl_x509_parse($keys['vpn_client_cert']);
       $subnet_info = openssl_x509_parse($keys['vpn_server_ca']);
@@ -220,20 +228,20 @@ WHERE id = '$service_id'
     } else return false;
   }
 
-  public function writeCCD($service_id) {
-    $service_data = Helper::getServiceDataByServiceId($service_id);
+  public function writeCCD($node_id) {
+    $node_data = Helper::getNodeDataByNodeId($node_id);
     
-    $cert_info = $this->getCertificateInfo($service_id);
+    $cert_info = $this->getCertificateInfo($node_id);
     $CN = $cert_info['node']['subject']['CN'];
     if (!empty($CN)) {
       $ccd = "./ccd/";
       $handle = fopen($ccd."$CN", "w+");
-      fwrite($handle, "ifconfig-push $GLOBALS[net_prefix].$service_data[subnet_ip].$service_data[node_ip] 255.255.255.0");
+      fwrite($handle, "ifconfig-push $GLOBALS[net_prefix].$node_data[subnet_ip].$node_data[node_ip] 255.255.255.0");
       fclose($handle);
 
-      $message[] = array("CCD wurde für den Service mit der ID $service_id erstellt.", 1);
+      $message[] = array("CCD wurde für den Node mit der ID $node_id erstellt.", 1);
     } else {
-      $message[] = array("CCD konnte für den Service mit der ID $service_id  nicht erstellt, da der CN leer ist.", 2);
+      $message[] = array("CCD konnte für den Node mit der ID $node_id  nicht erstellt, da der CN leer ist.", 2);
       $message[] = array("Sie müssen erst ein VPN-Zertifikat anlegen!", 2);
     }
     message::setMessage($message);
@@ -253,16 +261,16 @@ WHERE id = '$service_id'
     foreach ($node_ids as $node_id) {
       $db = new mysqlClass;
       $result = $db->mysqlQuery("SELECT id
-				 FROM services
-			         WHERE node_id='$node_id' AND vpn_client_cert !='' AND vpn_client_key!='';");
+				 FROM nodes
+			         WHERE id='$node_id' AND vpn_client_cert !='' AND vpn_client_key!='';");
       while($row = mysql_fetch_assoc($result)) {
-	$service_ids[] = $row['id'];
+	$node_ids[] = $row['id'];
       }
       unset($db);
     }
 
-    foreach ($service_ids as $service_id) {
-      vpn::writeCCD($service_id);
+    foreach ($node_ids as $node_id) {
+      vpn::writeCCD($node_id);
     }
     
     return true;
