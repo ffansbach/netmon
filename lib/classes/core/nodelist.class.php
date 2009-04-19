@@ -107,8 +107,14 @@ WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
 	}
 	
 	function getServiceList() {
+		if (!usermanagement::checkPermission(4)) {
+			$visible = "AND visible = 1";
+		} else {
+			$visible = "";
+		}
+
 	$db = new mysqlClass;
-    	$result = $db->mysqlQuery("SELECT id FROM services WHERE typ='service' ORDER BY id");
+    	$result = $db->mysqlQuery("SELECT id FROM services WHERE typ='service' $visible ORDER BY id");
       	while($row = mysql_fetch_assoc($result)) {
 	  $serviceses[] = $row['id'];
     	}
