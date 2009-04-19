@@ -43,7 +43,7 @@ class serviceeditor {
 	$range['start'] = "NULL";
 	$range['end'] = "NULL";
       }
-	editingHelper::addNodeTyp($_GET['node_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible']);
+	editingHelper::addNodeTyp($_GET['node_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible']);
 	$smarty->assign('message', message::getMessage());
 	$smarty->assign('get_content', "desktop");
     }
