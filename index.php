@@ -245,6 +245,13 @@
     $getinfo = new serviceeditor($smarty);
     $gotten = true;
   }
+
+  if ($_GET['get'] == "map") {
+    $usermanagement->act($smarty, 1);
+    require_once('./lib/classes/core/map.class.php');
+    $getinfo = new map($smarty);
+    $gotten = true;
+  }
        
   //---------------
 
