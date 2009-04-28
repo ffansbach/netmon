@@ -101,9 +101,9 @@ processes: {$current_crawl.processes}<br>
 {if !empty($last_online_crawl.longitude) AND !empty($last_online_crawl.latitude)}
 	<!--<small style="font-size: 9pt;">Map Data from <a href="http://openstreetmap.org">OpenStreetMap</a></small>-->
 
-	<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
-	<script type="text/javascript" src="http://openstreetmap.org/openlayers/OpenStreetMap.js"></script>
-	<script type="text/javascript" src="http://map.freifunk-ol.de/pymap/Freifunk.js"></script>
+	<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
+	<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
+	<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 	<div id="map" style="height:300px; width:300px; border:solid 1px black;font-size:9pt;">
 		<script type="text/javascript">
 			var lon = {$last_online_crawl.longitude};

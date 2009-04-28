@@ -32,17 +32,22 @@ require_once('./lib/classes/core/rssparser.class.php');
 
 class portal {
   function __construct(&$smarty) {
-	  $ch = curl_init("http://blog.freifunk-ol.de/feed/");
-	  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	  curl_setopt($ch, CURLOPT_HEADER, 0);
-	  $data = curl_exec($ch);
-	  curl_close($ch);
+      $curl_handle=curl_init();
+      curl_setopt($curl_handle,CURLOPT_URL, "http://blog.freifunk-ol.de/feed/");
+      curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,5);
+      curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,1);
+      $data = curl_exec($curl_handle);
+      curl_close($curl_handle);
+      
+      echo $data;
+  	
 	  $doc = new SimpleXmlElement($data, LIBXML_NOCDATA);
 
       $rssParser = new rssParser;
       $smarty->assign('rssdata', $rssParser->parseRSS($doc));
 
       $smarty->assign('get_content', "portal");
+      return true;
   }
 }
 
