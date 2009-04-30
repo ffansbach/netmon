@@ -68,44 +68,7 @@ WHERE services.id='$service_id'");
     }
     unset($db);
     $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT
-id, 
-crawl_id,
-service_id,
-crawl_time,
-status,
-nickname,
-hostname,
-email,
-location,
-prefix,
-ssid,
-longitude,
-latitude,
-luciname,
-luciversion,
-distname,
-distversion,
-chipset,
-cpu,
-network,
-wireless_interfaces,
-uptime,
-idletime,
-memory_total,
-memory_caching,
-memory_buffering,
-memory_free,
-loadavg,
-processes,
-olsrd_hna,
-olsrd_neighbors,
-olsrd_links,
-olsrd_mid,
-olsrd_routes,
-olsrd_topology
-FROM crawl_data
-
+    $result = $db->mysqlQuery("SELECT * FROM crawl_data
 WHERE service_id='$service_id' AND status='online' ORDER BY id DESC LIMIT 1");
     while($row = mysql_fetch_assoc($result)) {
       $row['olsrd_neighbors'] = unserialize($row['olsrd_neighbors']);
@@ -123,56 +86,69 @@ WHERE service_id='$service_id' AND status='online' ORDER BY id DESC LIMIT 1");
     }
     unset($db);
     $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT
-id, 
-crawl_id,
-service_id,
-crawl_time,
-status,
-nickname,
-hostname,
-email,
-location,
-prefix,
-ssid,
-longitude,
-latitude,
-luciname,
-luciversion,
-distname,
-distversion,
-chipset,
-cpu,
-network,
-wireless_interfaces,
-uptime,
-idletime,
-memory_total,
-memory_caching,
-memory_buffering,
-memory_free,
-loadavg,
-processes,
-olsrd_hna,
-olsrd_neighbors,
-olsrd_links,
-olsrd_mid,
-olsrd_routes,
-olsrd_topology
-FROM crawl_data
+    $result = $db->mysqlQuery("SELECT * FROM crawl_data
 
 WHERE service_id='$service_id' ORDER BY id DESC LIMIT 1");
     while($row = mysql_fetch_assoc($result)) {
 
-      $row['olsrd_neighbors'] = unserialize($row['olsrd_neighbors']);
-      $row['olsrd_routes'] = unserialize($row['olsrd_routes']);
-      $row['olsrd_topology'] = unserialize($row['olsrd_topology']);
+	//In der Datenbank als String gespeicherte Objekte unserialisieren und in Arrays verwandeln.
+      $row['olsrd_neighbors'] = Helper::object2array(unserialize($row['olsrd_neighbors']));
+      $row['olsrd_routes'] = Helper::object2array(unserialize($row['olsrd_routes']));
+      $row['olsrd_topology'] = Helper::object2array(unserialize($row['olsrd_topology']));
+
+	//Leerzeichen und Punkte aus Arraynamen entfernen!
+	$temp = $row['olsrd_neighbors'];
+	unset($row['olsrd_neighbors']);
+	if (is_array($temp)) {
+		foreach ($temp as $neighbours) {
+		$keys = array_keys($neighbours);
+		$values = array_values($neighbours);
+		
+		array_walk($keys, array(&$this, 'rename_keys'));
+		$array = array_combine($keys, $values);
+	
+		$row['olsrd_neighbors'][] = $array;
+		}
+	}
+
+	$temp = $row['olsrd_routes'];
+	unset($row['olsrd_routes']);
+	if (is_array($temp)) {
+		foreach ($temp as $neighbours) {
+		$keys = array_keys($neighbours);
+		$values = array_values($neighbours);
+	
+		array_walk($keys, array(&$this, 'rename_keys'));
+		$array = array_combine($keys, $values);
+
+		$row['olsrd_routes'][] = $array;
+		}
+	}
+
+	$temp = $row['olsrd_topology'];
+	unset($row['olsrd_topology']);
+	if (is_array($temp)) {
+		foreach ($temp as $neighbours) {
+		$keys = array_keys($neighbours);
+		$values = array_values($neighbours);
+	
+		array_walk($keys, array(&$this, 'rename_keys'));
+		$array = array_combine($keys, $values);
+	
+		$row['olsrd_topology'][] = $array;
+		}
+	}
 
       $last_crawl = $row;
     }
     unset($db);
     return $last_crawl;
   }
+  
+function rename_keys(&$value, $key) {
+    $value = str_replace(' ', '', $value);
+    $value = str_replace('.', '', $value);
+}
 
   public function getCrawlHistory($service_id) {
     $db = new mysqlClass;
@@ -182,45 +158,7 @@ WHERE service_id='$service_id' ORDER BY id DESC LIMIT 1");
     }
     unset($db);
     $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT
-id, 
-crawl_id,
-service_id,
-crawl_time,
-status,
-nickname,
-hostname,
-email,
-location,
-prefix,
-ssid,
-longitude,
-latitude,
-luciname,
-luciversion,
-distname,
-distversion,
-chipset,
-cpu,
-network,
-wireless_interfaces,
-uptime,
-idletime,
-memory_total,
-memory_caching,
-memory_buffering,
-memory_free,
-loadavg,
-processes,
-olsrd_hna,
-olsrd_neighbors,
-olsrd_links,
-olsrd_mid,
-olsrd_routes,
-olsrd_topology
-
-FROM crawl_data
-
+    $result = $db->mysqlQuery("SELECT * FROM crawl_data
 WHERE service_id='$service_id' ORDER BY id DESC LIMIT 10");
     while($row = mysql_fetch_assoc($result)) {
       $last_crawl[] = $row;
