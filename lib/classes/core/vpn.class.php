@@ -62,9 +62,17 @@ class vpn {
     if ($_GET['section'] == "info") {
       $node = Helper::getNodeDataByNodeId($_GET['node_id']);
       usermanagement::isOwner($smarty, $node['user_id']);
-      $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-      $smarty->assign('certificate_data', $this->getCertificateInfo($_GET['node_id']));
-      $smarty->assign('get_content', "sslcertificate_info");
+    	if (!empty($node['vpn_server_ca']) AND !empty($node['vpn_client_cert']) AND !empty($node['vpn_client_key'])) {
+			$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+    	  	$smarty->assign('vpn_config', $this->getVpnConfig($_GET['node_id']));
+      		$smarty->assign('certificate_data', $this->getCertificateInfo($_GET['node_id']));
+       		$smarty->assign('get_content', "sslcertificate_info");
+	    } else {
+	        $message[] = array("Es sind nicht genügen Informationen vorhanden um die Keys bereit zu stellen.", 2);
+    	  	$message[] = array("Warscheinlich müssen haben sie die Keys noch nicht erstellt.", 2);
+      		message::setMessage($message);
+			$smarty->assign('message', message::getMessage());
+    	}
     }
 
     if ($_GET['section'] == "regenerate_ccd_subnet") {
@@ -160,7 +168,11 @@ WHERE id = '$node_id'
 
   public function downloadKeyBundle($node_id) {
     $keys = Helper::getNodeDataByNodeId($node_id);
+    
     if (!empty($keys['vpn_server_ca']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
+		//Get Config Datei
+		$config = $this->getVpnConfig($node_id);
+
       $tmpdir = "./tmp/";
       
       $handle = fopen($tmpdir."ca.crt", "w+");
@@ -174,6 +186,10 @@ WHERE id = '$node_id'
       $handle = fopen($tmpdir."client.crt", "w+");
       fwrite($handle, $keys['vpn_client_cert']);
       fclose($handle);
+      
+      $handle = fopen($tmpdir."openvpn", "w+");
+      fwrite($handle, $config);
+      fclose($handle);      
 
       // Objekt erzeugen. Das Argument bezeichnet den Dateinamen
       $zipfile= new zip_file("VpnKeys_".$GLOBALS['net_prefix'].".".$keys['subnet_ip'].".".$keys['node_ip'].".zip");
@@ -201,6 +217,7 @@ WHERE id = '$node_id'
       unlink($tmpdir."ca.crt");
       unlink($tmpdir."client.key");
       unlink($tmpdir."client.crt");
+      unlink($tmpdir."openvpn");
  } else {
       $message[] = array("Es sind nicht genügen Informationen vorhanden um die Keys bereit zu stellen.", 2);
       $message[] = array("Warscheinlich müssen haben sie die Keys noch nicht erstellt.", 2);
@@ -274,6 +291,34 @@ WHERE id = '$node_id'
     }
     
     return true;
+  }
+  
+  public function getVpnConfig($node_id) {
+  	$data = Helper::getNodeDataByNodeId($node_id);
+  	
+  	$config = "package openvpn
+
+config openvpn client
+option enable 1
+option client 1
+
+option dev $data[vpn_server_device]
+option proto $data[vpn_server_proto]
+list remote \"$data[vpn_server] $data[vpn_server_port]\"
+
+option resolv_retry infinite
+option nobind 1
+option persist_key 1
+option persist_tun 1
+
+option ca /etc/config/ca.crt
+option cert /etc/client/client.crt
+option key /etc/client/client.key
+
+option comp_lzo 1
+option verb 3";
+  	
+  	return $config;
   }
 
 }

@@ -51,7 +51,7 @@ class Helper {
     $db = new mysqlClass;
     $result = $db->mysqlQuery("SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
 				      users.nickname, users.email,
-				      subnets.title, subnets.subnet_ip, subnets.vpn_server_ca
+				      subnets.title, subnets.subnet_ip, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
 				   FROM nodes
 				   LEFT JOIN users ON (users.id=nodes.user_id)
 				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
