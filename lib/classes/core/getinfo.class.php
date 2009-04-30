@@ -379,9 +379,6 @@ WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
 
 $xw->endDocument();
 
-
-
-
     print $xw->outputMemory(true); 
   }
 }

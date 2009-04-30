@@ -45,9 +45,9 @@
 
 <p>
   <a href="./index.php?get=vpn&section=new&node_id={$node.id}">Neue VPN-Zertifikate generieren</a><br>
-  <a href="./index.php?get=vpn&section=info&node_id={$node.id}">VPN-Zertifikat Info ansehen</a><br>
+  <a href="./index.php?get=vpn&section=info&node_id={$node.id}">VPN-Zertifikat Info und Config-Datei ansehen</a><br>
   <a href="./index.php?get=vpn&section=insert_regenerate_ccd&node_id={$node.id}">CCD neu anlegen</a><br>
-  <a href="./index.php?get=vpn&section=download&node_id={$node.id}">VPN-Zertifikate downloaden</a><br>
+  <a href="./index.php?get=vpn&section=download&node_id={$node.id}">VPN-Zertifikate und Config-Datei downloaden</a><br>
 </p>
 
 {/if}
