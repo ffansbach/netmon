@@ -1,9 +1,16 @@
-<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
-<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
-<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+<p>
+<!--Nur ein beispiel was vielleicht möglich währe für Ideen siehe http://karte.freifunk-halle.net/-->
+<a href="./">Online Nodes</a>&nbsp|&nbsp<a href="./">Alle Nodes</a>&nbsp|&nbsp<a href="./">Offline Nodes</a>&nbsp|&nbsp<a href="./">Viel besuchte Nodes</a>
 
-<div id="map" style="height:600px; width: 800px; margin: 20px; border: solid 1px black;">
-	<script type="text/javascript">
-		fullmap();
-	</script>
-</div>
+	<div style="margin-right: 10px;">
+		<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
+		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
+		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+		
+		<div id="map" style="height:500px; width:100%x; border:solid 1px black;font-size:9pt;">
+			<script type="text/javascript">
+				fullmap();
+			</script>
+		</div>
+	</div>
+<p>

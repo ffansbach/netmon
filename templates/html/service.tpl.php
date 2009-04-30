@@ -38,8 +38,9 @@ processes: {$current_crawl.processes}<br>
 </p>
 
 <h2>Nachbarn</h2>
+
 {foreach key=count item=olsrd_neighbors from=$current_crawl.olsrd_neighbors}
-  {$olsrd_neighbors->IP_address}<br>
+  {$olsrd_neighbors.IPaddress}<br>
 {/foreach}
 
 
