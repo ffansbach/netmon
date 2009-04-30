@@ -254,17 +254,21 @@ WHERE nodes.subnet_id='$subnet_id'");
     return $zones;
   }
 
-function object2array($object) {
-if (is_object($object) || is_array($object)) {
-foreach ($object as $key => $value) {
-//print "$key\r\n";
-$array[$key] = Helper::object2array($value);
-}
-}else {
-$array = $object;
-}
-return $array;
-}
+	function object2array($object) {
+		if (is_object($object) || is_array($object)) {
+			foreach ($object as $key => $value) {
+				$array[$key] = Helper::object2array($value);
+			}
+		}else {
+			$array = $object;
+		}
+		return $array;
+	}
+	
+	public function linkIp2NodeIdAndGetTyp($ip2check, $parentNodeID=false) {
+		
+		
+	}
 
 }
 
