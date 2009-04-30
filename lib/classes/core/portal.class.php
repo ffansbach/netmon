@@ -39,7 +39,7 @@ class portal {
       $data = curl_exec($curl_handle);
       curl_close($curl_handle);
       
-      echo $data;
+      // $data;
   	
 	  $doc = new SimpleXmlElement($data, LIBXML_NOCDATA);
 

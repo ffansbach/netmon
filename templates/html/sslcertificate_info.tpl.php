@@ -21,3 +21,8 @@ emailAddress: {$certificate_data.subnet.subject.emailAddress}<br>
 
 Erstellt am: {$certificate_data.subnet.validFrom_time_t}<br>
 Gültig bis: {$certificate_data.subnet.validTo_time_t}<br></p>
+
+<h2>Client Config (/etc/config/openvpn)</h2>
+<pre>
+{$vpn_config}
+</pre>
