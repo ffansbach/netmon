@@ -1,6 +1,7 @@
 <p>
-<!--Nur ein beispiel was vielleicht möglich währe für Ideen siehe http://karte.freifunk-halle.net/-->
-<a href="./">Online Nodes</a>&nbsp|&nbsp<a href="./">Alle Nodes</a>&nbsp|&nbsp<a href="./">Offline Nodes</a>&nbsp|&nbsp<a href="./">Viel besuchte Nodes</a>
+<!-- Nur ein Beispiel was vielleicht möglich währe für Ideen: http://karte.freifunk-halle.net/ -->
+
+<a href="#">Online Nodes</a>&nbsp|&nbsp<a href="#">Alle Nodes</a>&nbsp|&nbsp<a href="#">Offline Nodes</a>&nbsp|&nbsp<a href="#">Viel besuchte Nodes</a>
 
 	<div style="margin-right: 10px;">
 		<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
