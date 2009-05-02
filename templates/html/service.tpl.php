@@ -40,7 +40,7 @@ processes: {$current_crawl.processes}<br>
 <h2>Nachbarn</h2>
 
 {foreach key=count item=olsrd_neighbors from=$current_crawl.olsrd_neighbors}
-  {$olsrd_neighbors.IPaddress}<br>
+  {$olsrd_neighbors.IPaddress} {if $olsrd_neighbors.2HopNeighbors eq '0'}(Direkter Client){/if}<br>
 {/foreach}
 
 
