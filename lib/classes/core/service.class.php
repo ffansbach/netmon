@@ -104,7 +104,7 @@ WHERE service_id='$service_id' ORDER BY id DESC LIMIT 1");
 		$keys = array_keys($neighbours);
 		$values = array_values($neighbours);
 		
-		array_walk($keys, array(&$this, 'rename_keys'));
+		array_walk($keys, array('service', 'rename_keys'));
 		$array = array_combine($keys, $values);
 	
 		$row['olsrd_neighbors'][] = $array;
@@ -118,7 +118,7 @@ WHERE service_id='$service_id' ORDER BY id DESC LIMIT 1");
 		$keys = array_keys($neighbours);
 		$values = array_values($neighbours);
 	
-		array_walk($keys, array(&$this, 'rename_keys'));
+		array_walk($keys, array('service', 'rename_keys'));
 		$array = array_combine($keys, $values);
 
 		$row['olsrd_routes'][] = $array;
@@ -132,7 +132,7 @@ WHERE service_id='$service_id' ORDER BY id DESC LIMIT 1");
 		$keys = array_keys($neighbours);
 		$values = array_values($neighbours);
 	
-		array_walk($keys, array(&$this, 'rename_keys'));
+		array_walk($keys, array('service', 'rename_keys'));
 		$array = array_combine($keys, $values);
 	
 		$row['olsrd_topology'][] = $array;

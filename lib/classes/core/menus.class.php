@@ -53,6 +53,7 @@ class menus extends usermanagement {
   function normalMenu() {
     if (usermanagement::checkPermission(1)) {
       $menu[] = array('name'=>'Portal', 'href'=>'./index.php?get=portal');
+      $menu[] = array('name'=>'Map', 'href'=>'./index.php?get=map');
       $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'./index.php?get=status');
       $menu[] = array('name'=>'Nodelist', 'href'=>'./index.php?get=nodelist');
       $menu[] = array('name'=>'Subnetliste', 'href'=>'./index.php?get=subnetlist');

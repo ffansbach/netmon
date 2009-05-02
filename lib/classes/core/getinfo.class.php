@@ -20,6 +20,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
+require_once('./lib/classes/core/service.class.php');
+
 /**
  * This file contains the class for exporting informations.
  *
@@ -41,7 +43,7 @@ class getinfo {
    /**
     * print a xml file to use with GoogleEarth
     */
-/*   public function getgoogleearthkmlfile( ) {
+   public function getgoogleearthkmlfile_online( ) {
    	header('Content-type: text/xml');
 		$xw = new xmlWriter();
     $xw->openMemory();
@@ -146,46 +148,47 @@ class getinfo {
     $xw->endElement();
 
 
-
 	$db = new mysqlClass;
     	$result = $db->mysqlQuery("SELECT id FROM services WHERE typ='node' ORDER BY id");
       	while($row = mysql_fetch_assoc($result)) {
-	  $serviceses[] = $row['id'];
+	  $services[] = $row['id'];
     	}
 	unset($db);
+	
+	foreach ($services as $service) {
+		$data = service::getCurrentCrawlData($service);
+		if ($data['status']=='online') {
+			$crawl = $data;
+			if(!is_array($crawl)) {
+				$crawl = array();
+			}
+			$data = Helper::getServiceDataByServiceId($service);
+			$clients=0;
+			if (is_array($crawl['neightbors'])) {
+				foreach ($crawl['neightbors'] as $neightbor) {
+					if ($neightbor['2HopNeightbors']) {
+						$clients++;					
+					}
+				}				
+			}
 
-	foreach ($serviceses as $services) {
-	  $db = new mysqlClass;
-	  $result = $db->mysqlQuery("SELECT 
-crawl_data.crawl_time, crawl_data.uptime, crawl_data.status, crawl_data.longitude, crawl_data.latitude,
-services.id as service_id, services.title as services_title, services.typ, services.crawler,
-nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
-subnets.subnet_ip, subnets.title,
-users.nickname
-
-FROM crawl_data
-
-LEFT JOIN services ON (services.id = crawl_data.service_id)
-LEFT JOIN nodes ON (nodes.id = services.node_id)
-LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
-LEFT JOIN users ON (users.id = nodes.user_id)
-
-WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $nodelist[] = $row;
-    	}
-	unset($db);
-}
-    
+			$nodelist[] = array_merge($crawl, $data, array('clients'=>$clients));
+		}
+	}
+	
     foreach($nodelist as $entry) {
+   	if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
     $xw->startElement('Placemark');
       $xw->startElement('name');
-	$xw->writeRaw("<![CDATA[Node <a href='http://freifunk-ol.de/netmon/index.php?get=node&id=$entry[id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a>]]>");
+	$xw->writeRaw("<![CDATA[Node <a href='http://freifunk-ol.de/netmon/index.php?get=service&service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a> ($entry[title])]]>");
       $xw->endElement();
       $xw->startElement('description');
+      $entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
 	$box_inhalt = "Benutzer: <a href='http://www.freifunk-ol.de/netmon/index.php?get=user&id=$entry[user_id]'>$entry[nickname]</a><br>
-			DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
-			Letzter Crawl: $entry[crawl_time]<br><br><br>";
+			DHCP-Range: $entry[zone_start]-$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
+			SSID: $entry[ssid]<br>
+			Beschreibung: $entry[description]<br>
+			Letzter Crawl: $entry[crawl_time]<br>";
 
 	$xw->writeRaw("<![CDATA[$box_inhalt]]>");
       $xw->endElement();
@@ -198,23 +201,23 @@ WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
 	$xw->endElement();
       $xw->endElement();
     $xw->endElement();
+    	}
 }
 
   $xw->endElement();
 
 $xw->endDocument();
 
-
-
-
-    print $xw->outputMemory(true);   
-
-
-
-
-
-  }*/
-   public function getgoogleearthkmlfile( ) {
+    print $xw->outputMemory(true);
+    return true;
+  }
+  
+   //Funktion modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
+   //Prints a KML file that can be used with OpenStreetmap and the Modified freifunkmap.php
+   /**
+    * print a xml file to use with GoogleEarth
+    */
+   public function getgoogleearthkmlfile_offline( ) {
    	header('Content-type: text/xml');
 		$xw = new xmlWriter();
     $xw->openMemory();
@@ -323,34 +326,24 @@ $xw->endDocument();
 	$db = new mysqlClass;
     	$result = $db->mysqlQuery("SELECT id FROM services WHERE typ='node' ORDER BY id");
       	while($row = mysql_fetch_assoc($result)) {
-	  $serviceses[] = $row['id'];
+	  $services[] = $row['id'];
     	}
 	unset($db);
-
-	foreach ($serviceses as $services) {
-	  $db = new mysqlClass;
-	  $result = $db->mysqlQuery("SELECT 
-crawl_data.crawl_time, crawl_data.uptime, crawl_data.status, crawl_data.longitude, crawl_data.latitude, crawl_data.ssid,
-services.id as service_id, services.node_id, services.title as service_title, services.description as service_description, services.typ, services.crawler, services.zone_start, services.zone_end, services.create_date as service_create_date,
-nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
-subnets.subnet_ip, subnets.title,
-users.nickname
-
-FROM crawl_data
-
-LEFT JOIN services ON (services.id = crawl_data.service_id)
-LEFT JOIN nodes ON (nodes.id = services.node_id)
-LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
-LEFT JOIN users ON (users.id = nodes.user_id)
-
-WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $nodelist[] = $row;
-    	}
-	unset($db);
-}
-    
+	
+	foreach ($services as $service) {
+		$data = service::getCurrentCrawlData($service);
+		if ($data['status']=='offline') {
+			$crawl = service::getLastOnlineCrawlData($service);
+			if (!is_array($crawl)) {
+				$crawl = array();
+			} 
+			$data = Helper::getServiceDataByServiceId($service);
+			$nodelist[] = array_merge($crawl, $data);
+		}
+	}
+	
     foreach($nodelist as $entry) {
+   	if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
     $xw->startElement('Placemark');
       $xw->startElement('name');
 	$xw->writeRaw("<![CDATA[Node <a href='http://freifunk-ol.de/netmon/index.php?get=service&service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a>]]>");
@@ -358,9 +351,9 @@ WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
       $xw->startElement('description');
       $entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
 	$box_inhalt = "Benutzer: <a href='http://www.freifunk-ol.de/netmon/index.php?get=user&id=$entry[user_id]'>$entry[nickname]</a><br>
-			DHCP-Range: $entry[zone_start]-$entry[zone_end] ($entry[ips] IP's, X davon belegt)<br>
-			SSID: $entry[ssid]<br>
-			Letzter Crawl: $entry[crawl_time]<br><br><br>";
+			DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
+			<br><b>Dieser Node ist offline</b><br>
+			Letztes mal online: $entry[crawl_time]<br>";
 
 	$xw->writeRaw("<![CDATA[$box_inhalt]]>");
       $xw->endElement();
@@ -373,13 +366,15 @@ WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
 	$xw->endElement();
       $xw->endElement();
     $xw->endElement();
+    	}
 }
 
   $xw->endElement();
 
 $xw->endDocument();
 
-    print $xw->outputMemory(true); 
+    print $xw->outputMemory(true);
+    return true;
   }
 }
 ?>
