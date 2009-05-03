@@ -90,13 +90,19 @@ WHERE id = '$service_id'
     }
   }
 
-  public function deleteService($service_id) {
-	  $db = new mysqlClass;
-	  $db->mysqlQuery("DELETE FROM services WHERE id='$service_id';");
-	  unset($db);
-	  $message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
-	  message::setMessage($message);
-  }
+	public function deleteService($service_id) {
+		$db = new mysqlClass;
+		$db->mysqlQuery("DELETE FROM services WHERE id='$service_id';");
+		unset($db);
+		$message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
+
+		$db = new mysqlClass;
+		$db->mysqlQuery("DELETE FROM crawl_data WHERE service_id='$service_id';");
+		unset($db);
+		$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurde gelöscht.",1);
+
+		message::setMessage($message);
+	}
   
 }
 

@@ -264,6 +264,15 @@ WHERE id = '$node_id'
     message::setMessage($message);
     return true;
   }
+  
+	public function deleteCCD($node_id) {
+		$ccd = "./ccd/";
+		if (@unlink($ccd."$node_id")) {
+			$message[] = array("CCD des Nodes $node_id wurde gelöscht.", 1);
+	    	message::setMessage($message);
+		}
+    	return true;
+	}
 
   public function regenerateCCD($subnet_id) {
     $db = new mysqlClass;
