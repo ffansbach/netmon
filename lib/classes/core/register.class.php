@@ -29,27 +29,51 @@
  */
 
 class register {
-  function __construct(&$smarty) {
-    if (!isset($_GET['section'])) {
-      $smarty->assign('get_content', "register");
-    } elseif ($_GET['section'] == "user") {
-      if (!$this->insertNewUser($_POST['nickname'], $_POST['password'], $_POST['passwordchk'], $_POST['email'], $_POST['agb'])) {
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "register");
-      } else {
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "login");
-      }
-    } elseif ($_GET['section'] == "activate") {
-      if ($this->userActivate($_GET['activation'])) {
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "login");
-      } else {
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "portal");
-      }
-    }
-  }
+	function __construct(&$smarty) {
+		if (!isset($_GET['section'])) {
+			$smarty->assign('get_content', "register");
+		} elseif ($_GET['section'] == "user") {
+			if (!$this->insertNewUser($_POST['nickname'], $_POST['password'], $_POST['passwordchk'], $_POST['email'], $_POST['agb'])) {
+				$smarty->assign('message', message::getMessage());
+				$smarty->assign('get_content', "register");
+			} else {
+				$smarty->assign('message', message::getMessage());
+				$smarty->assign('get_content', "login");
+			}
+		} elseif ($_GET['section'] == "activate") {
+			if ($this->userActivate($_GET['activation'])) {
+				$smarty->assign('message', message::getMessage());
+				$smarty->assign('get_content', "login");
+			} else {
+				$smarty->assign('message', message::getMessage());
+				$smarty->assign('get_content', "portal");
+      		}
+		} elseif ($_GET['section'] == "resend_activation_mail") {
+			if (empty($_POST['email'])) {
+				$smarty->assign('message', message::getMessage());
+				$smarty->assign('get_content', "resend_activation_mail");
+			} else {
+				$user = Helper::getUserByEmail($_POST['email']);
+				$new_password = helper::randomPassword(8);
+				$this->setNewPassword($new_password, $user['id']);
+				$this->sendRegistrationEmail($user['email'], $user['nickname'], $new_password, $user['activated'], strtotime($user['create_date']));
+				$smarty->assign('message', message::getMessage());
+				$smarty->assign('get_content', "login");
+			}
+		} elseif ($_GET['section'] == "resend_password") {
+			if (empty($_POST['email'])) {
+				$smarty->assign('message', message::getMessage());
+				$smarty->assign('get_content', "resend_password");
+			} else {
+				$user = Helper::getUserByEmail($_POST['email']);
+				$new_password = helper::randomPassword(8);
+				$this->setNewPassword($new_password, $user['id']);
+				$this->sendPassword($user['email'], $user['nickname'], $new_password);
+				$smarty->assign('message', message::getMessage());
+				$smarty->assign('get_content', "login");
+			}
+		}
+	}
 
   public function insertNewUser($nickname, $password, $passwordchk, $email, $agb) {
     if ($this->checkUserData($nickname, $password, $passwordchk, $email, $agb)) {
@@ -75,7 +99,7 @@ class register {
       $id = $db->getInsertID();
       unset($db);
       if ($ergebniss>0) {
-        if($this->sendRegistrationEmail($email, $nickname, $passwordchk, $activation)) {
+        if($this->sendRegistrationEmail($email, $nickname, $passwordchk, $activation, time())) {
           $message[] = array("Der Benutzer ".$nickname." wurde erfolgreich angelegt.", 1);
           $message[] = array("Eine Email mit einem Link zum aktivieren des Nutzerkontos wurde an ".$email." verschickt.", 1);
 	  message::setMessage($message);
@@ -190,11 +214,11 @@ class register {
     return true;
   }
 
-  public function sendRegistrationEmail($email, $nickname, $password, $activation) {
+  public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum) {
         
     $text = "Hallo $nickname,
 
-Du hast dich am ".date("d.m.Y H:i:s", time())." beim Oldenburger Freifunkprojekt angemeldet.
+Du hast dich am ".date("d.m.Y H:i:s", $datum)." beim Oldenburger Freifunkprojekt angemeldet.
 
 Deine Logindaten Sind:
 Nickname: $nickname
@@ -205,6 +229,38 @@ http://$GLOBALS[domain]/$GLOBALS[subfolder]/index.php?get=register&section=activ
 
 Das Oldenburger Freifunkteam";
     $ergebniss = mail($email, "Anmeldung Freifunk Oldenburg", $text, "From: Freifunk Oldenburg Portal <portal@freifunk-ol.de>");
+    return true;
+  }
+  
+	public function setNewPassword($password, $user_id) {
+		$password_hash = md5($password);
+	    $db = new mysqlClass;
+    	$db->mysqlQuery("UPDATE users SET password = '$password_hash' WHERE id = '$user_id'");
+	    $ergebniss = $db->mysqlAffectedRows();
+    	unset($db);
+    	if ($ergebniss>0) {
+      		$message[] = array("Dem Benutzer mit der ID $user_id wurde ein neues Passwort gesetzt", 1);
+      		message::setMessage($message);
+      		return true;
+    	} else {
+      		$message[] = array("Dem Benutzer mit der ID ".$user_id." konnte keine neues Passwort gesetzt werden.", 2);
+      		message::setMessage($message);
+      	return false;
+    	}
+	}
+	
+  public function sendPassword($email, $nickname, $password) {
+        
+    $text = "Hallo $nickname,
+
+Deine Logindaten Sind:
+Nickname: $nickname
+Passwort: $password
+
+Das Oldenburger Freifunkteam";
+    $ergebniss = mail($email, "Neues Password (Freifunk Oldenburg)", $text, "From: Freifunk Oldenburg Portal <portal@freifunk-ol.de>");
+	$message[] = array("Dir wurde ein neues Passwort zugesendet.", 1);
+	message::setMessage($message);
     return true;
   }
 
