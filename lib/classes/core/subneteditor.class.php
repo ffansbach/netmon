@@ -20,6 +20,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
+require_once("./lib/classes/core/nodeeditor.class.php");
+
 /**
  * This file contains the class for editing a subnet.
  *
@@ -65,6 +67,18 @@ class subneteditor {
 	$smarty->assign('message', message::getMessage());
 	$smarty->assign('get_content', "subnet_new");
       }
+    }
+    if ($_GET['section'] == "delete") {
+		if ($_POST['delete'] == "true") {
+			$this->deleteSubnet($_GET['subnet_id']);
+			$smarty->assign('message', message::getMessage());
+			$smarty->assign('get_content', "desktop");
+    	} else {
+	    	$message[] = array("Sie müssen \"Ja\" anklicken um das Subnets zu löschen.", 2);
+    		message::setMessage($message);
+			$smarty->assign('message', message::getMessage());
+			$smarty->assign('get_content', "desktop");
+    	}
     }
   }
 
@@ -247,6 +261,19 @@ WHERE id = '$_GET[id]'
     unset($db);
     return $subnet;
   }
+	
+	public function deleteSubnet($subnet_id) {
+		foreach (Helper::getNodesBySubnetId($subnet_id) as $node) {
+			nodeeditor::deleteNode($node);
+		}
+		
+		$db = new mysqlClass;
+		$db->mysqlQuery("DELETE FROM subnets WHERE id='$subnet_id';");
+		unset($db);
+		$message[] = array("Das Subnet  mit der ID ".$subnet_id." wurde gelöscht.",1);
+		message::setMessage($message);
+		return true;
+	}
 
 
 
