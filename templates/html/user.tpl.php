@@ -55,7 +55,7 @@ Oder ein neu angelegter Node wurde noch icht gecrawlt (Lösung: {$timeBetweenCra
 {foreach key=count item=subnetlist from=$subnetlist}
 	<tr>
 		<td>{$count+1}</td>
-		<td><a href="./index.php?get=subnet&id={$subnetlist.id}">{$net_prefix}.{$subnetlist.subnet}.0/24</a></td>
+		<td><a href="./index.php?get=subnet&id={$subnetlist.id}">{$net_prefix}.{$subnetlist.subnet_ip}.0/24</a></td>
 		<td>{$subnetlist.title}</td>
 		<td>{$subnetlist.nodes_in_net}</td>
 		<td><a href="./index.php?get=subneteditor&section=edit&id={$subnetlist.id}">Editieren</a></td>

@@ -20,6 +20,9 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
+require_once("./lib/classes/core/nodeeditor.class.php");
+require_once("./lib/classes/core/subneteditor.class.php");
+
 /**
  * This file contains the class to get the for the user site.
  *
@@ -66,7 +69,7 @@ class user {
 
   function userInsertEdit() {
     if ($this->checkUserEditData($_GET['id'], $_POST['changepassword'], $_POST['oldpassword'], $_POST['newpassword'], $_POST['newpasswordchk'], $_POST['email'])) {
-      $password = usermanagement::encryptPassword($_POST['password']);
+      $password = usermanagement::encryptPassword($_POST['newpassword']);
 	  if ($_POST['changepassword']) {
 	  $sqlinsert = "UPDATE users SET
 password = '$password',
@@ -213,62 +216,36 @@ WHERE id = $_GET[id]
     }
   }
 
-  /**
-  * Löscht einen Benutzer vollständig!
-  */
-  public function userDelete($id) {
-    if ($_POST['delete'] == "true") {
-      //Mach DB Eintrag
-      $db = new mysqlClass;
+	/**
+	* Löscht einen Benutzer vollständig!
+	*/
+	public function userDelete($id) {
+		if ($_POST['delete'] == "true") {
+			//Nodes mit Services löschen
+			foreach(Helper::getNodesByUserId($id) as $node) {
+				nodeeditor::deleteNode($node['id']);
+			}
+			
+			//Subnets, Nodes und Services löschen
+			foreach(Helper::getSubnetsByUserId($_SESSION['user_id']) as $subnet) {
+				subneteditor::deleteSubnet($subnet['id']);
+			}
 
-      //Nodes mit Services löschen
-      foreach(Helper::getNodesByUserId($id) as $node_id) {
-	foreach (Helper::getServicesByNodeId($node_id['id']) as $service_id) {
-	  $db = new mysqlClass;
-	  $db->mysqlQuery("DELETE FROM services WHERE id='$service_id';");
-	  unset($db);
-	  $message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
+	    	//Ausloggen vorm löschen des Benutzers
+    		login::logout();
+
+			$db = new mysqlClass;
+      		$db->mysqlQuery("DELETE FROM users WHERE id='$id';");
+      		unset($db);
+      		$message[] = array("Der Benutzer mit der ID ".$id." wurde gelöscht.",1);
+      		message::setMessage($message);
+      		return true;
+		} else {
+			$message[] = "Sie müssen das Häckchen bei \"Ja\" setzen um den Benutzer zu löschen!";
+			message::setMessage($message);
+			return false;
+		}
 	}
-        $db = new mysqlClass;
-	$db->mysqlQuery("DELETE FROM nodes WHERE id='$node_id[id]';");
-	unset($db);
-	$message[] = array("Der Node  mit der ID ".$node_id['id']." wurde gelöscht.",1);
-      }
-
-      //Subnets, Nodes und Services löschen
-      foreach(Helper::getSubnetsByUserId($_SESSION['user_id']) as $subnet_id) {
-	foreach(Helper::getNodesBySubnetId($subnet_id) as $node_id) {
-	  foreach (Helper::getServicesByNodeId($node_id) as $service_id) {
-	    $db = new mysqlClass;
-	    $db->mysqlQuery("DELETE FROM services WHERE id='$service_id';");
-	    unset($db);
-	    $message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
-	  }
-	  $db = new mysqlClass;
-	  $db->mysqlQuery("DELETE FROM nodes WHERE id='$node_id';");
-	  unset($db);
-	  $message[] = array("Der Node  mit der ID ".$node_id." wurde gelöscht.",1);
-	}
-	$db = new mysqlClass;
-	$db->mysqlQuery("DELETE FROM subnets WHERE id='$subnet_id';");
-	unset($db);
-	$message[] = array("Das Subnet  mit der ID ".$subnet_id." wurde gelöscht.",1);
-      }
-      //Ausloggen vorm löschen des Benutzers
-      login::logout();
-
-$db = new mysqlClass;
-      $db->mysqlQuery("DELETE FROM users WHERE id='$id';");
-      unset($db);
-      $message[] = array("Der Benutzer mit der ID ".$id." wurde gelöscht.",1);
-      message::setMessage($message);
-      return true;
-    } else {
-      $message[] = "Sie müssen das Häckchen bei \"Ja\" setzen um den Benutzer zu löschen!";
-      message::setMessage($message);
-      return false;
-    }
-  }
 
 }
 

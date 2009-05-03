@@ -20,6 +20,9 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
+require_once("./lib/classes/core/serviceeditor.class.php");
+require_once("./lib/classes/core/vpn.class.php");
+
 /**
  * This file contains the class for editing a node (IP). 
  *
@@ -37,25 +40,25 @@ class nodeeditor {
 	$smarty->assign('get_content', "node_new");
     }
     if ($_GET['section'] == "insert") {
-	if ($this->insertNewNode($_POST['subnet_id'], $_POST['ips'])) {
-	  $smarty->assign('message', message::getMessage());
-	  $smarty->assign('get_content', "desktop");
-	} else {
-	  $smarty->assign('message', message::getMessage());
-	  $smarty->assign('get_content', "nodeeditor");
-	}
+		if ($this->insertNewNode($_POST['subnet_id'], $_POST['ips'])) {
+			$smarty->assign('message', message::getMessage());
+			$smarty->assign('get_content', "desktop");
+		} else {
+			$smarty->assign('message', message::getMessage());
+			$smarty->assign('get_content', "nodeeditor");
+		}
     }
     if ($_GET['section'] == "edit") {
-	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	$node_data = $this->getNodeData($_GET['id']);
-	$smarty->assign('node_data', $node_data);
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "node_edit");
+		$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+		$node_data = $this->getNodeData($_GET['id']);
+		$smarty->assign('node_data', $node_data);
+		$smarty->assign('message', message::getMessage());
+		$smarty->assign('get_content', "node_edit");
     }
     if ($_GET['section'] == "delete") {
-	$this->deleteNode($_GET['id']);
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "desktop");
+		$this->deleteNode($_GET['id']);
+		$smarty->assign('message', message::getMessage());
+		$smarty->assign('get_content', "desktop");
     }
   }
 
@@ -114,18 +117,18 @@ class nodeeditor {
 		return $node;
   }
 
-  public function deleteNode($id) {
-	foreach (Helper::getServicesByNodeId($id) as $service_id) {
-	  $db = new mysqlClass;
-	  $db->mysqlQuery("DELETE FROM services WHERE id='$service_id';");
-	  unset($db);
-	  $message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
+  public function deleteNode($node_id) {
+	foreach (Helper::getServicesByNodeId($node_id) as $service_id) {
+		serviceeditor::deleteService($service_id);
 	}
-	  $db = new mysqlClass;
-	  $db->mysqlQuery("DELETE FROM nodes WHERE id='$id';");
-	  unset($db);
-	  $message[] = array("Der Node mit der ID ".$id." wurde gelöscht.",1);
-	  message::setMessage($message);
+
+	vpn::deleteCCD($node_id);
+	
+	$db = new mysqlClass;
+	$db->mysqlQuery("DELETE FROM nodes WHERE id='$node_id';");
+	unset($db);
+	$message[] = array("Der Node mit der ID ".$node_id." wurde gelöscht.",1);
+	message::setMessage($message);
   }
   
 }
