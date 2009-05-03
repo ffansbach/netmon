@@ -269,6 +269,33 @@ WHERE nodes.subnet_id='$subnet_id'");
 		
 		
 	}
+	
+	public function getUserByEmail($email) {
+		$db = new mysqlClass;
+		$result = $db->mysqlQuery("SELECT * FROM  users WHERE email='$email'");
+		while($row = mysql_fetch_assoc($result)) {
+			$user = $row;
+		}
+		unset($db);
+		return $user;
+	}
+	
+  function randomPassword($size) 
+  { 
+    $result = ""; 
+
+    srand((double)microtime()*1000000); 
+
+    for($i=0; $i < $size; $i++) 
+    { 
+      $num = rand(48,120); 
+      while (($num >= 58 && $num <= 64) || ($num >= 91 && $num <= 96)) 
+         $num = rand(48,120); 
+           
+      $result .= chr($num); 
+    } 
+    return $result; 
+  } 
 
 }
 
