@@ -321,8 +321,8 @@ option persist_key 1
 option persist_tun 1
 
 option ca /etc/config/ca.crt
-option cert /etc/client/client.crt
-option key /etc/client/client.key
+option cert /etc/config/client.crt
+option key /etc/config/client.key
 
 option comp_lzo 1
 option verb 3";
