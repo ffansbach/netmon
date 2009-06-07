@@ -27,6 +27,8 @@
       <div style="float:left; width: 80px; background-color: red;">{$nodelist.status}</div>
     {elseif $nodelist.status=="ping"}
       <div style="float:left; width: 80px; background-color: #00c5cc;">{$nodelist.status}</div>
+    {elseif $nodelist.status=="unbekannt"}
+      <div style="float:left; width: 80px; background-color: #fff3c3;">{$nodelist.status}</div>
     {/if}
     <div style="float:left; width: 80px;">{$nodelist.uptime}</div>
     <div style="float:left; width: 100px;">{$nodelist.crawl_time} Uhr</div>
@@ -61,6 +63,8 @@
       <div style="float:left; width: 80px; background-color: red;">{$nodelist.status}</div>
     {elseif $nodelist.status=="ping"}
       <div style="float:left; width: 80px; background-color: #00c5cc;">{$nodelist.status}</div>
+    {elseif $nodelist.status=="unbekannt"}
+      <div style="float:left; width: 80px; background-color: #fff3c3;">{$nodelist.status}</div>
     {/if}
     <div style="float:left; width: 80px;">{$nodelist.uptime}</div>
     <div style="float:left; width: 100px;">{$nodelist.crawl_time} Uhr</div>
@@ -95,6 +99,8 @@
       <div style="float:left; width: 80px; background-color: red;">{$nodelist.status}</div>
     {elseif $nodelist.status=="ping"}
       <div style="float:left; width: 80px; background-color: #00c5cc;">{$nodelist.status}</div>
+    {elseif $nodelist.status=="unbekannt"}
+      <div style="float:left; width: 80px; background-color: #fff3c3;">{$nodelist.status}</div>
     {/if}
     <div style="float:left; width: 80px;">{$nodelist.uptime}</div>
     <div style="float:left; width: 100px;">{$nodelist.crawl_time} Uhr</div>

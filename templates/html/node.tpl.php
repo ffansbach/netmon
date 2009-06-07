@@ -25,6 +25,8 @@
       <div style="float:left; width: 80px; background-color: red;">{$service.status}</div>
     {elseif $service.status=="ping"}
       <div style="float:left; width: 80px; background-color: #00c5cc;">{$service.status}</div>
+    {elseif $service.status=="unbekannt"}
+      <div style="float:left; width: 80px; background-color: #fff3c3;">{$service.status}</div>
     {/if}
   <div style="float:left; width: 100px;"><a href="./index.php?get=serviceeditor&section=edit&service_id={$service.service_id}">Editieren</div>
 </div>

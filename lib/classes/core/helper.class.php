@@ -97,15 +97,52 @@ class Helper {
     return $nodes;
   }
 
-  public function getServicesByNodeId($node_id) {
-    $serviceses = array();
+  public function getServicesByType($type) {
+    //Nur Services zurückgeben die der Benutzer sehen darf
+    if (!usermanagement::checkPermission(4))
+      $visible = "AND visible = 1";
+    else
+      $visible = "";
+
     $db = new mysqlClass;
-    $result = $db->mysqlQuery("select id FROM services WHERE node_id='$node_id';");
+    $result = $db->mysqlQuery("SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
+				      nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
+				      subnets.subnet_ip, subnets.title,
+				      users.nickname
+			       FROM services
+			       LEFT JOIN nodes ON (nodes.id = services.node_id)
+			       LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
+			       LEFT JOIN users ON (users.id = nodes.user_id)
+			       WHERE services.typ='$type' $visible ORDER BY services.id");
     while($row = mysql_fetch_assoc($result)) {
-      $serviceses[] = $row['id'];
+      $services[] = $row;
     }
     unset($db);
-    return $serviceses;
+    return $services;
+  }
+
+  public function getServicesByNodeId($node_id) {
+    //Nur Services zurückgeben die der Benutzer sehen darf
+    if (!usermanagement::checkPermission(4))
+      $visible = "AND visible = 1";
+    else
+      $visible = "";
+
+    $db = new mysqlClass;
+    $result = $db->mysqlQuery("SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
+				      nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
+				      subnets.subnet_ip, subnets.title,
+				      users.nickname
+			       FROM services
+			       LEFT JOIN nodes ON (nodes.id = services.node_id)
+			       LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
+			       LEFT JOIN users ON (users.id = nodes.user_id)
+			       WHERE services.node_id='$node_id' $visible ORDER BY services.id");
+    while($row = mysql_fetch_assoc($result)) {
+      $services[] = $row;
+    }
+    unset($db);
+    return $services;
   }
 
   public function getSubnetsByUserId($user_id) {
@@ -254,6 +291,49 @@ WHERE nodes.subnet_id='$subnet_id'");
     return $zones;
   }
 
+  public function getLastOnlineCrawlDataByServiceId($service_id) {
+    $db = new mysqlClass;
+    $result = $db->mysqlQuery("SELECT id FROM services WHERE node_id='$id' ORDER BY id DESC LIMIT 1");
+    while($row = mysql_fetch_assoc($result)) {
+      $services = $row['id'];
+    }
+    unset($db);
+    $db = new mysqlClass;
+    $result = $db->mysqlQuery("SELECT * FROM crawl_data
+WHERE service_id='$service_id' AND status='online' ORDER BY id DESC LIMIT 1");
+    while($row = mysql_fetch_assoc($result)) {
+      $row['olsrd_neighbors'] = unserialize($row['olsrd_neighbors']);
+      $last_online_crawl = $row;
+    }
+    unset($db);
+    return $last_online_crawl;
+  }
+
+  public function getCurrentCrawlDataByServiceId($service_id) {
+    //Belege vor, falls noch nich gecrawlt wurde
+    $last_crawl['status'] = "unbekannt";
+
+    //Hole letzten Crawl
+    $db = new mysqlClass;
+    $result = $db->mysqlQuery("SELECT id, crawl_id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, olsrd_hna, olsrd_neighbors, olsrd_links, olsrd_mid, olsrd_routes, olsrd_topology FROM crawl_data
+			       WHERE service_id='$service_id' ORDER BY id DESC LIMIT 1");
+    while($row = mysql_fetch_assoc($result)) {
+      //In der Datenbank als String gespeicherte Objekte unserialisieren und in Arrays verwandeln.
+      $row['olsrd_neighbors'] = Helper::object2array(unserialize($row['olsrd_neighbors']));
+      $row['olsrd_routes'] = Helper::object2array(unserialize($row['olsrd_routes']));
+      $row['olsrd_topology'] = Helper::object2array(unserialize($row['olsrd_topology']));
+
+      //Leerzeichen und Punkte aus Arrayindizies entfernen!
+      $row['olsrd_neighbors'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_neighbors']);
+      $row['olsrd_routes'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_routes']);
+      $row['olsrd_topology'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_topology']);
+
+      $last_crawl = $row;
+    }
+    unset($db);
+    return $last_crawl;
+  }
+
 	function object2array($object) {
 		if (is_object($object) || is_array($object)) {
 			foreach ($object as $key => $value) {
@@ -295,7 +375,27 @@ WHERE nodes.subnet_id='$subnet_id'");
       $result .= chr($num); 
     } 
     return $result; 
-  } 
+  }
+
+function rename_keys(&$value, $key) {
+    $value = str_replace(' ', '', $value);
+    $value = str_replace('.', '', $value);
+}
+
+  public function removeDotsAndWhitspacesFromArrayInizies($array) {
+    if (is_array($array)) {
+      foreach ($array as $neighbours) {
+	$keys = array_keys($neighbours);
+	$values = array_values($neighbours);
+	
+	array_walk($keys, array('Helper', 'rename_keys'));
+	$return[] = array_combine($keys, $values);
+      }
+      return $return;
+    } else {
+      return $array;
+    }
+  }
 
 }
 
