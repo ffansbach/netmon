@@ -78,7 +78,6 @@ class vpn {
     if ($_GET['section'] == "regenerate_ccd_subnet") {
       $smarty->assign('subnets', Helper::getSubnetsByUserId($_SESSION['user_id']));
       $smarty->assign('get_content', "regenerate_ccd_subnet");
-
     } 
     if ($_GET['section'] == "insert_regenerate_ccd_subnet") {
       vpn::regenerateCCD($_POST['subnet_id']);
@@ -88,6 +87,11 @@ class vpn {
 
     if ($_GET['section'] == "insert_regenerate_ccd") {
       $this->writeCCD($_GET['node_id']);
+      $smarty->assign('message', message::getMessage());
+      $smarty->assign('get_content', "desktop");
+    }
+    if ($_GET['section'] == "insert_delete_ccd") {
+      $this->deleteCCD($_GET['node_id']);
       $smarty->assign('message', message::getMessage());
       $smarty->assign('get_content', "desktop");
     }
