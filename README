@@ -1,29 +1,17 @@
-READEME Stand: 31. März 2009
-
-Dies ist die Readme zu Netmon, einem Verwaltungsportal für das Freifunknetzwerk Oldenburg (hhtp://freifunk-ol.de/).
+Dies ist die Readme zur ersten Netmon Version, Version 0.1
+Netmon wird als Verwaltungsportal für das Freifunknetzwerk Oldenburg (http://freifunk-ol.de/) enwickelt.
 Mit Netmon lässt sich die Benutzer, Netwerk und Monitoringstruktur eines Freifunknetzes verwalten.
+Netmon steht unter der GPLv3.
 
-Die Netzwerkstruktur sieht folgendermaßen aus:
-Die ersten beiden blöcke der IP-Adresse sind fest vorgegeben (Config) und werden hier registriert: http://wiki.freifunk.net/IP-Netze
-Der dritte Block stellt das Subnetz dar, das in Netmon von einem Administrtor angelegt wird.
-Der vierte Block ist die Benutzer-IP, die ein Benutzer für sich reservieren kann. Auf dieser IP kann er dann Dienste (Services) eintragen.
-Das kann ein Node, ein VPN-Knoten, ein Server, eine Website oder alles zusammen sein, denn einer Benutzer-IP können mehrere Services zugewiesen werden.
+Generell über Netmon: http://wiki.freifunk-ol.de/index.php/Netmon
+Systemanforderungen: http://wiki.freifunk-ol.de/index.php/Netmon#Systemanforderungen
+Installationsanleitung: http://wiki.freifunk-ol.de/index.php/Netmon#Installation
 
-Der erste Benutzer der sich registriert, bekommt volle Root-Rechte im Portal, kann also alles machen was zum einrichten des Netzes nötig ist.
+Für Fragen stehe ich unter clemens@freifunk-ol.de zur Verfügung.
+Bugs und Verbesserungsvorschläge bitte unter http://trac.freifunk-ol.de melden.
 
-Ein Datenbankschema welches noch in die Datenbank eingefügt werden muss liegt als netmon.sql bei.
-Die Ordner smarty, log, tmp, ccd müssen vom Webserver schreibbar sein.
-
-Das Crawl-Script zum Crawlen der Nodes liegt unter /lib/classes/crawler/json_php_crawler.php und sollte per Cronjob auf einem Php und Curl fähigen system eingetragen sein.
-Dabei ist zu beachten das der komplette Pfad vom Rootverzeichniss des Systems zu Netmon in der Variable $path_to_netmon angegeben werden muss
-und das Script im Cronjob vom Rootverzeichniss aus aufgerufen wird.
-Beispiel Cronjob (alle 10 Minuten): */10 * * * * php /home/mynetmon/lib/classes/crawler/json_php_crawler.php
-
-Für Fragen stehe ich unter clemens[at]freifunk[minus]ol[dot]de zur bereit.
-
-Das verbessern der Readme und das Aufbauen einer Doku sind erwünscht.
-Bugs und Verbesserungsvorschläge bitte unter https://vnode.dyndns.org/trac/freifunk/ melden (Login erforderlich?)
-
-== Systemvorrausetzungen ==
-* Webserver mit Php 5, Curl, Phyton
-* Mysql-DB
+--
+Erstellt am 29.03.2009 von Floh1111 <clemens@freifunk-ol.de>
+--
+Letztes Update am 07.06.2009 von Floh1111 <clemens@freifunk-ol.de>
+--
