@@ -26,9 +26,9 @@ function onFeatureUnselect(feature) {
 	feature.popup = null;
 }
 
-function NodeLayer() {
+function AddKmlLayer(name, url) {
 	// Add KML layer containing the nodes
-	layerNodes = new OpenLayers.Layer.GML("Nodes", "./templates/py/nodes.py",
+	layerNodes = new OpenLayers.Layer.GML(name, url,
 		{format: OpenLayers.Format.KML, formatOptions: { extractStyles: true, extractAttributes: true } });
 	map.addLayer(layerNodes);
 
@@ -88,5 +88,9 @@ function MapControls() {
 function fullmap() {
 	init();
 	MapControls();
-	NodeLayer();
+	AddKmlLayer("online Nodes", "./index.php?get=getinfo&section=getgoogleearthkmlfile_online");
+	// Please do *not* uncomment the following line
+	// currently there is a problem with SelectFeature for multiple layers
+	// if the following line is uncommented online nodes can't be selected any longer
+	//AddKmlLayer("offline Nodes", "./index.php?get=getinfo&section=getgoogleearthkmlfile_offline");
 }

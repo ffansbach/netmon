@@ -41,109 +41,33 @@ class nodelist {
 	}
 
 	function getNodeList() {
-	$db = new mysqlClass;
-    	$result = $db->mysqlQuery("SELECT id FROM services WHERE typ='node' ORDER BY id");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $serviceses[] = $row['id'];
-    	}
-	unset($db);
-
-	foreach ($serviceses as $services) {
-	  $db = new mysqlClass;
-	  $result = $db->mysqlQuery("SELECT 
-crawl_data.crawl_time, crawl_data.uptime, crawl_data.status,
-services.id as service_id, services.title as services_title, services.typ, services.crawler,
-nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
-subnets.subnet_ip, subnets.title,
-users.nickname
-
-FROM crawl_data
-
-LEFT JOIN services ON (services.id = crawl_data.service_id)
-LEFT JOIN nodes ON (nodes.id = services.node_id)
-LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
-LEFT JOIN users ON (users.id = nodes.user_id)
-
-WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $nodelist[] = $row;
-    	}
-	unset($db);
-}
-    	return $nodelist;
+	  $services = Helper::getServicesByType('node');
+	  foreach ($services as $service) {
+	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+	    $nodelist[] = array_merge($service, $crawl_data);
+	    unset($db);
+	  }
+	  return $nodelist;
 	}
 
 	function getVpnList() {
-	$db = new mysqlClass;
-    	$result = $db->mysqlQuery("SELECT id FROM services WHERE typ='vpn' ORDER BY id");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $serviceses[] = $row['id'];
-    	}
-	unset($db);
-
-	foreach ($serviceses as $services) {
-	  $db = new mysqlClass;
-	  $result = $db->mysqlQuery("SELECT 
-crawl_data.crawl_time, crawl_data.uptime, crawl_data.status,
-services.id as service_id, services.title as services_title, services.typ, services.crawler,
-nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id,
-subnets.subnet_ip, subnets.title,
-users.nickname
-
-FROM crawl_data
-
-LEFT JOIN services ON (services.id = crawl_data.service_id)
-LEFT JOIN nodes ON (nodes.id = services.node_id)
-LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
-LEFT JOIN users ON (users.id = nodes.user_id)
-
-WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $nodelist[] = $row;
-    	}
-	unset($db);
-}
-    	return $nodelist;
+	  $services = Helper::getServicesByType('vpn');
+	  foreach ($services as $service) {
+	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+	    $nodelist[] = array_merge($service, $crawl_data);
+	    unset($db);
+	  }
+	  return $nodelist;
 	}
 	
 	function getServiceList() {
-		if (!usermanagement::checkPermission(4)) {
-			$visible = "AND visible = 1";
-		} else {
-			$visible = "";
-		}
-
-	$db = new mysqlClass;
-    	$result = $db->mysqlQuery("SELECT id FROM services WHERE typ='service' $visible ORDER BY id");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $serviceses[] = $row['id'];
-    	}
-	unset($db);
-
-	foreach ($serviceses as $services) {
-	  $db = new mysqlClass;
-	  $result = $db->mysqlQuery("SELECT 
-crawl_data.crawl_time, crawl_data.uptime, crawl_data.status,
-services.id as service_id, services.title as services_title, services.typ, services.crawler,
-nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id,
-subnets.subnet_ip, subnets.title,
-users.nickname
-
-FROM crawl_data
-
-LEFT JOIN services ON (services.id = crawl_data.service_id)
-LEFT JOIN nodes ON (nodes.id = services.node_id)
-LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
-LEFT JOIN users ON (users.id = nodes.user_id)
-
-WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
-
-      	while($row = mysql_fetch_assoc($result)) {
-	  $nodelist[] = $row;
-    	}
-	unset($db);
-}
-    	return $nodelist;
+	  $services = Helper::getServicesByType('service');
+	  foreach ($services as $service) {
+	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+	    $nodelist[] = array_merge($service, $crawl_data);
+	    unset($db);
+	  }
+	  return $nodelist;
 	}
   
 

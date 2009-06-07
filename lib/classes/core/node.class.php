@@ -45,9 +45,9 @@ class node {
 				      users.nickname,
 					  subnets.title, subnets.subnet_ip
 				  FROM nodes
-				   LEFT JOIN users ON (users.id=nodes.user_id)
-				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-				   WHERE nodes.id=$id;");
+				  LEFT JOIN users ON (users.id=nodes.user_id)
+				  LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
+				  WHERE nodes.id=$id;");
     
     while($row = mysql_fetch_assoc($result)) {
       $node = $row;
@@ -58,29 +58,12 @@ class node {
   }
 
   public function getServiceList($node_id) {
-	$db = new mysqlClass;
-    	$result = $db->mysqlQuery("SELECT id FROM services WHERE node_id='$node_id' ORDER BY id");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $serviceses[] = $row['id'];
-    	}
-	unset($db);
-
-	foreach ($serviceses as $services) {
-	  $db = new mysqlClass;
-	  $result = $db->mysqlQuery("SELECT 
-crawl_data.crawl_time, crawl_data.uptime, crawl_data.status,
-services.id as service_id, services.title as services_title, services.typ, services.crawler
-
-FROM crawl_data
-
-LEFT JOIN services ON (services.id = crawl_data.service_id)
-
-WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $servicelist[] = $row;
-    	}
-	unset($db);
-    }
+	$services = Helper::getServicesByNodeId($node_id);
+	if (is_array($service))
+	  foreach ($services as $service) {
+	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+	    $servicelist[] = array_merge($service, $crawl_data);
+	  }
     return $servicelist;
   }
 
