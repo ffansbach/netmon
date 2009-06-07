@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 19, 2009 at 12:31 PM
+-- Generation Time: Jun 07, 2009 at 04:14 PM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.6-1+lenny2
 
@@ -16,7 +16,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `freifunksql5`
+-- Database: `netmon`
 --
 
 -- --------------------------------------------------------
@@ -25,6 +25,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `crawls`
 --
 
+DROP TABLE IF EXISTS `crawls`;
 CREATE TABLE IF NOT EXISTS `crawls` (
   `id` int(11) NOT NULL auto_increment,
   `crawl_time_start` datetime NOT NULL,
@@ -39,6 +40,7 @@ CREATE TABLE IF NOT EXISTS `crawls` (
 -- Table structure for table `crawl_data`
 --
 
+DROP TABLE IF EXISTS `crawl_data`;
 CREATE TABLE IF NOT EXISTS `crawl_data` (
   `id` int(11) NOT NULL auto_increment,
   `crawl_id` int(11) NOT NULL,
@@ -84,6 +86,7 @@ CREATE TABLE IF NOT EXISTS `crawl_data` (
 -- Table structure for table `nodes`
 --
 
+DROP TABLE IF EXISTS `nodes`;
 CREATE TABLE IF NOT EXISTS `nodes` (
   `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL,
@@ -101,6 +104,7 @@ CREATE TABLE IF NOT EXISTS `nodes` (
 -- Table structure for table `nodes_connect`
 --
 
+DROP TABLE IF EXISTS `nodes_connect`;
 CREATE TABLE IF NOT EXISTS `nodes_connect` (
   `id` int(11) NOT NULL auto_increment,
   `node` int(11) NOT NULL,
@@ -114,6 +118,7 @@ CREATE TABLE IF NOT EXISTS `nodes_connect` (
 -- Table structure for table `services`
 --
 
+DROP TABLE IF EXISTS `services`;
 CREATE TABLE IF NOT EXISTS `services` (
   `id` int(11) NOT NULL auto_increment,
   `node_id` int(11) NOT NULL,
@@ -135,6 +140,7 @@ CREATE TABLE IF NOT EXISTS `services` (
 -- Table structure for table `subnets`
 --
 
+DROP TABLE IF EXISTS `subnets`;
 CREATE TABLE IF NOT EXISTS `subnets` (
   `id` int(11) NOT NULL auto_increment,
   `subnet_ip` int(11) NOT NULL,
@@ -162,6 +168,7 @@ CREATE TABLE IF NOT EXISTS `subnets` (
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL auto_increment,
   `nickname` varchar(30) NOT NULL,
