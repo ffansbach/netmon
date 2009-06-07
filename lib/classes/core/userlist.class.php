@@ -38,19 +38,26 @@ class userlist {
 	}
 	
 	function getList() {
-		
 	  $db = new mysqlClass;
-    	$result = $db->mysqlQuery("SELECT users.id, users.nickname, DATE_FORMAT(users.create_date, '%D.%m.%Y %H:%i:%s') as create_date
-FROM users
-ORDER BY users.create_date DESC
-    ");
-    
-    	while($row = mysql_fetch_assoc($result)) {
-      		$userlist[] = $row;
-    	}
-    	return $userlist;
+	  $result = $db->mysqlQuery("SELECT u.id, u.nickname, DATE_FORMAT(u.create_date, '%D.%m.%Y %H:%i:%s') as create_date
+				     FROM users u
+				     ORDER BY u.create_date DESC");
+	  while($row = mysql_fetch_assoc($result)) {
+	    $userlist[] = $row;
+	  }
+	  unset($db);
+	  foreach ($userlist as $key=>$user){
+	    $db = new mysqlClass;
+	    $result = $db->mysqlQuery("SELECT count(*) as nodecount
+				       FROM nodes
+				       WHERE user_id='$user[id]'");
+	    while($row = mysql_fetch_assoc($result)) {
+	      $userlist[$key]['nodecount'] = $row['nodecount'];
+	    }
+	    unset($db);
+	  }
+	  return $userlist;
 	}
-	
 }
 
 ?>
