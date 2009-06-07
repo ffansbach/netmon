@@ -73,6 +73,14 @@ class JsonDataCollector {
     $db = new mysqlClass;
     $db->mysqlQuery("UPDATE crawls SET crawl_time_end = NOW() where id=".$this->crawl_id);
     unset($db);
+
+    //Löscht Crawl-Daten die älter als 31 Tage sind.
+    $db = new mysqlClass;
+    $db->mysqlQuery("DELETE FROM crawl_data WHERE TO_DAYS(crawl_time)+31 < TO_DAYS(NOW())");
+    unset($db);
+    $db = new mysqlClass;
+    $db->mysqlQuery("DELETE FROM crawls WHERE TO_DAYS(crawl_time_end)+31 < TO_DAYS(NOW())");
+    unset($db);
   }
 
   function file_get_contents_curl($url) {
