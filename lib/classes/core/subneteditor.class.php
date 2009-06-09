@@ -189,6 +189,15 @@ WHERE id = '$_GET[id]'
 	    $message[] = array("Die Daten zum VPN-Server sind unvollständig!",2);
 	  } elseif (empty($_POST['vpn_server_ca']) OR empty($_POST['vpn_server_cert']) OR empty($_POST['vpn_server_key'])) {
 	    $message[] = array("Die Daten zu den Zertifikaten sind unvollständig!",2);
+	  } else {
+	    $vpn_server = $_POST['vpn_server'];
+	    $vpn_server_port = $_POST['vpn_server_port'];
+	    $vpn_server_device = $_POST['vpn_server_device'];
+	    $vpn_server_proto = $_POST['vpn_server_proto'];
+	    $vpn_server_ca = $_POST['vpn_server_ca'];
+	    $vpn_server_key = $_POST['vpn_server_key'];
+	    $vpn_server_cert = $_POST['vpn_server_cert'];
+	    $vpn_server_pass = $_POST['vpn_server_pass'];
 	  }
 	}
       } elseif (isset($_POST['vpnserver_from_project_check']) AND empty($_POST['vpnserver_from_project'])) {
@@ -247,7 +256,7 @@ WHERE id = '$_GET[id]'
       message::setMessage($message);
       return false;
     } else {
-      return array('subnet_ip'=>$subnet_ip, 'title'=>$title, 'desciption'=>$desciption, 'longitude'=>$longitude, 'latitude'=>$latitude, 'radius'=>$radius, 'vpn_server'=>$vpn_server, 'vpn_server_port'=> $vpn_server_port, 'vpn_server_device'=> $vpn_server_device, 'vpn_server_proto'=> $vpn_server_proto, 'vpn_server_ca'=> $vpn_server_ca, 'vpn_server_cert'=> $vpn_server_cert, 'vpn_server_key'=> $vpn_server_key, 'vpn_server_pass'=>$vpn_server_pass);
+      return array('subnet_ip'=>$subnet_ip, 'title'=>$title, 'description'=>$description, 'longitude'=>$longitude, 'latitude'=>$latitude, 'radius'=>$radius, 'vpn_server'=>$vpn_server, 'vpn_server_port'=> $vpn_server_port, 'vpn_server_device'=> $vpn_server_device, 'vpn_server_proto'=> $vpn_server_proto, 'vpn_server_ca'=> $vpn_server_ca, 'vpn_server_cert'=> $vpn_server_cert, 'vpn_server_key'=> $vpn_server_key, 'vpn_server_pass'=>$vpn_server_pass);
     }
   }
 
