@@ -64,6 +64,7 @@ class nodeeditor {
 
   public function insertNewNode($subnet_id, $ips) {
     $node = editingHelper::getAFreeIP($subnet_id);
+
     if ($ips > 0) {
       $range = editingHelper::getFreeIpZone($subnet_id, $ips, $node);
     } else {

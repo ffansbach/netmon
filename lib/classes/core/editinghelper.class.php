@@ -149,7 +149,7 @@ class editingHelper {
     
     //Array aller nicht mit Zonen oder Nodes belegter IPs erstellen
     for ($i=1; $i<=255; $i++) {
-    	if (!in_array($i, $existing_ips)) {
+    	if (!in_array($i, $existing_ips) AND $i!=$node) {
 			$zonestrahl[] = $i;	
     	}
     }

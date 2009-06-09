@@ -34,6 +34,7 @@ class nodelist {
 		  $smarty->assign('nodelist', $this->getNodeList());
 		  $smarty->assign('vpnlist', $this->getVpnList());
 		  $smarty->assign('servicelist', $this->getServiceList());
+		  $smarty->assign('clientlist', $this->getClientList());
 		  $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
 	      $smarty->assign('get_content', "nodelist");
 		}
@@ -62,6 +63,16 @@ class nodelist {
 	
 	function getServiceList() {
 	  $services = Helper::getServicesByType('service');
+	  foreach ($services as $service) {
+	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+	    $nodelist[] = array_merge($service, $crawl_data);
+	    unset($db);
+	  }
+	  return $nodelist;
+	}
+
+	function getClientList() {
+	  $services = Helper::getServicesByType('client');
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
 	    $nodelist[] = array_merge($service, $crawl_data);
