@@ -59,7 +59,7 @@ class node {
 
   public function getServiceList($node_id) {
 	$services = Helper::getServicesByNodeId($node_id);
-	if (is_array($service))
+	if (is_array($services))
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
 	    $servicelist[] = array_merge($service, $crawl_data);

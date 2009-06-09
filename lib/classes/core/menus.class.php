@@ -32,12 +32,13 @@ class menus extends usermanagement {
 
   function topMenu() {
     if (usermanagement::checkPermission(1)) {
+      //Links nach belieben anpassen.
       $menu[] = array('name'=>'Nodelist', 'href'=>'./index.php?get=nodelist');
-      $menu[] = array('name'=>'Freifunkmap', 'href'=>'http://map.freifunk-ol.de/');
-      $menu[] = array('name'=>'Wiki', 'href'=>'http://wiki.freifunk-ol.de');
-      $menu[] = array('name'=>'Mailingliste', 'href'=>'http://lists.nord-west.net/mailman/listinfo/freifunk-ol');
-      $menu[] = array('name'=>'Blog', 'href'=>'http://blog.freifunk-ol.de'); 
-      $menu[] = array('name'=>'OLSR', 'href'=>'http://olsr.freifunk-ol.de:8888'); 
+      $menu[] = array('name'=>'Freifunkmap', 'href'=>'./index.php?get=map');
+      $menu[] = array('name'=>'Wiki', 'href'=>'http://deinwiki.de');
+      $menu[] = array('name'=>'Mailingliste', 'href'=>'http://deineliste.de');
+      $menu[] = array('name'=>'Blog', 'href'=>'http://deinblog.de'); 
+      $menu[] = array('name'=>'OLSR', 'href'=>'http://deinolsr.de:8888'); 
     }
     if (usermanagement::checkPermission(2)) {
       $menu[] = array('name'=>'Login', 'href'=>'./index.php?get=login');

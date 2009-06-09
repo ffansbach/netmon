@@ -42,11 +42,11 @@ class user {
 		  $smarty->assign('get_content', "user");
 		}
 		if ($_GET['section'] == "edit") {
-		  usermanagement::isOwner(&$smarty, $_SESSION['user_id']);
+		  usermanagement::isOwner($smarty, $_SESSION['user_id']);
 		  $smarty->assign('user', Helper::getUserByID($_GET['id']));
 		  $smarty->assign('get_content', "user_edit");
 		} elseif ($_GET['section'] == "insert_edit") {
-		  usermanagement::isOwner(&$smarty, $_SESSION['user_id']);
+		  usermanagement::isOwner($smarty, $_SESSION['user_id']);
 		  $smarty->assign('user', Helper::getUserByID($_GET['id']));
 		  if ($this->userInsertEdit()) {
 		    $smarty->assign('message', message::getMessage());
@@ -56,7 +56,7 @@ class user {
 		    $smarty->assign('get_content', "user_edit");
 		  }
 		} elseif ($_GET['section'] == "delete") {
-		  usermanagement::isOwner(&$smarty, $_SESSION['user_id']);
+		  usermanagement::isOwner($smarty, $_SESSION['user_id']);
 		  if ($this->userDelete($_SESSION['user_id'])) {
 		    $smarty->assign('message', message::getMessage());
 		    $smarty->assign('get_content', "portal");

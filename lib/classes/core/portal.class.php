@@ -32,7 +32,9 @@ require_once('./lib/classes/core/rssparser.class.php');
 
 class portal {
   function __construct(&$smarty) {
-      $curl_handle=curl_init();
+
+//Bindet einen RSS-Feed auf dem Portal ein.
+/*      $curl_handle=curl_init();
       curl_setopt($curl_handle,CURLOPT_URL, "http://blog.freifunk-ol.de/feed/");
       curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,5);
       curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,1);
@@ -45,7 +47,7 @@ class portal {
 
       $rssParser = new rssParser;
       $smarty->assign('rssdata', $rssParser->parseRSS($doc));
-
+*/
       $smarty->assign('get_content', "portal");
       return true;
   }
