@@ -1,5 +1,6 @@
 <h1>Subetlist</h1>
 
+{if !empty($subnetlist)}
 <table>
 	<tr>
 		<th>#</th>
@@ -11,6 +12,7 @@
 		<th>Gesamt</th>
 		<th>problem</th>
 	</tr>
+
 {foreach key=count item=subnetlist from=$subnetlist}
 	<tr>
 		<td>{$count+1}</td>
@@ -24,3 +26,6 @@
 	</tr>
 {/foreach}
 </table>
+{else}
+<p>Keine Subnetze vorhanden</p>
+{/if}

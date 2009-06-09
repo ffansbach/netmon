@@ -39,8 +39,8 @@
   //Typ und Encoding Festlegen
   header("Content-Type: text/html; charset=UTF-8");
 
-  //Pfad vom Root zu Netmon
-  $path_to_netmon = "/var/kunden/webs/freifunk/netmon/";
+  //Pfad vom Root zu Netmon mit slash am Anfang und Ende
+  $path_to_netmon = "/home/httpd/html/netmon/";
 
   //Lokale Konfiguration einbinden
   require_once($path_to_netmon.'config/config.local.inc.php');
@@ -110,6 +110,7 @@ class JsonDataCollector {
   }
   
   function getServices($service_typ) {
+    $nodes = array();
     $db = new mysqlClass;
     $result = $db->mysqlQuery("SELECT services.id as service_id, services.crawler, services.typ,
 				      nodes.node_ip,
