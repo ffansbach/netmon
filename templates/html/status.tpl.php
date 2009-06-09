@@ -53,9 +53,3 @@
     </div>-->
   </div>
 </div>
-
-<h2>Status der letzten 48 Stunden</h2>
-
-<img alt="Netzwerkstatus in den letzten 12 Stunden" src="./index.php?get=graphmonitor&section=getStatus">
-
-<p>Messpunkt alle 2 Stunden!</h2>

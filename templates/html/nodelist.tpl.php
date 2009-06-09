@@ -14,6 +14,7 @@
   </div>
 </div>
 
+{if !empty($nodelist)}
 {foreach key=count item=nodelist from=$nodelist}
 <div id="nodeitem" style="width: 800px; overflow: hidden;">
   <div style="white-space: nowrap;">
@@ -35,6 +36,9 @@
   </div>
 </div>
 {/foreach}
+{else}
+<p>Keine Nodes vorhanden</p>
+{/if}
 
 <h2>VPN (Verbindungs-Netze)</h2>
 
@@ -71,6 +75,9 @@
   </div>
 </div>
 {/foreach}
+{else}
+<p>Keine Nodes vorhanden</p>
+{/if}
 
 <h2>Services (Server, Webseiten etc.)</h2>
 
@@ -86,6 +93,7 @@
   </div>
 </div>
 
+{if !empty($servicelist)}
 {foreach key=count item=nodelist from=$servicelist}
 <div id="nodeitem" style="width: 895px; overflow: hidden;">
   <div style="white-space: nowrap;">
@@ -107,9 +115,6 @@
   </div>
 </div>
 {/foreach}
-
-<h2>Legende</h2>
-
-<p>ping: IP ist Pingbar, also im prinzip online. Json-Daten lassen sich aber nicht abrufen was darauf hindeuted das sich hiter der IP kein OpenWrt router sondern ein Client verbirgt.<br>
-online: OpenWrt Router ist erreichbar und Jason-Daten sind abrufbar.<br>
-offline: Json-Daten lassen sich nicht abrufen, IP lässt sich nicht pingen.</p>
+{else}
+<p>Keine Nodes vorhanden</p>
+{/if}
