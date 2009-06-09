@@ -218,13 +218,6 @@
     $gotten = true;
   }
 
-  if ($_GET['get'] == "graphmonitor") {
-    $usermanagement->act($smarty, 1);
-    require_once('./lib/classes/core/graphmonitor.class.php');
-    $getinfo = new graphmonitor($smarty);
-    $gotten = true;
-  }
-
   if ($_GET['get'] == "status") {
     $usermanagement->act($smarty, 1);
     require_once('./lib/classes/core/status.class.php');
