@@ -54,6 +54,7 @@
   </div>
 </div>
 
+{if !empty($vpnlist)}
 {foreach key=count item=nodelist from=$vpnlist}
 <div id="nodeitem" style="width: 800px; overflow: hidden;">
   <div style="white-space: nowrap;">

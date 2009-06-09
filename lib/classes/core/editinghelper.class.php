@@ -55,6 +55,7 @@ class editingHelper {
   }
 
   public function getExistingSubnets() {
+    $subnets = array();
     $db = new mysqlClass;
     $result = $db->mysqlQuery("select subnet_ip FROM subnets ORDER BY subnet_ip ASC");
     while($row = mysql_fetch_assoc($result)) {

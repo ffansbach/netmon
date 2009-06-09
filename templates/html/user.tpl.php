@@ -17,8 +17,7 @@ Ich bin seit dem {$user.create_date} dabei.<br>
 
 <h2>Nodes von {$user.nickname}</h2>
 {if empty($nodelist)}
-<p>Dieser Benutzer besitzt keine Nodes.<br>
-Oder ein neu angelegter Node wurde noch icht gecrawlt (Lösung: {$timeBetweenCrawls} Minuten warten!)</p>
+<p>Dieser Benutzer besitzt keine Nodes.</p>
 {else}
 <table border="1">
 	<tr>
