@@ -104,6 +104,7 @@ class Helper {
     else
       $visible = "";
 
+    $services = array();
     $db = new mysqlClass;
     $result = $db->mysqlQuery("SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
 				      nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
