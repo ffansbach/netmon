@@ -29,15 +29,6 @@
  */
 
 class subnet {
-  function __construct(&$smarty) {
-    if (!isset($_GET['section'])) {
-      $smarty->assign('subnet', $this->getSubnet($_GET['id']));
-      $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-      $smarty->assign('ipstatus', $this->getIPStatus($_GET['id']));
-      $smarty->assign('get_content', "subnet");
-    }
-  }
-
   function getSubnet($subnet_id) {
     $db = new mysqlClass;
     $result = $db->mysqlQuery("SELECT subnets.id, subnets.subnet_ip, subnets.user_id, DATE_FORMAT(subnets.create_date, '%D %M %Y') as create_date, subnets.title, subnets.description, subnets.longitude, subnets.latitude, subnets.radius, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device,	subnets.vpn_server_proto,

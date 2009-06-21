@@ -29,15 +29,6 @@
  */
 
 class subnetlist {
-	function __construct(&$smarty) {
-		if (!isset($_GET['section'])) {
-		  $smarty->assign('subnetlist', $this->getList());
-		  $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	      $smarty->assign('get_content', "subnetlist");
-		}
-		
-	}
-	
 	function getList() {
 		
 		$db = new mysqlClass;

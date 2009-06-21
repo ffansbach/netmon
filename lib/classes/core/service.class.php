@@ -29,18 +29,6 @@
  */
 
 class service {
-  function __construct(&$smarty) {
-    if (!isset($_GET['section'])) {
-      $smarty->assign('service_data', $this->getServiceData($_GET['service_id']));
-      $smarty->assign('current_crawl', $this->getCurrentCrawlData($_GET['service_id']));
-      $smarty->assign('last_online_crawl', $this->getLastOnlineCrawlData($_GET['service_id']));
-      $smarty->assign('crawl_history', $this->getCrawlHistory($_GET['service_id']));
-      $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-      $smarty->assign('is_node_owner', $this->is_node_owner);
-      $smarty->assign('get_content', "service");
-    }
-  }
-
   public function getServiceData($service_id) {
     $db = new mysqlClass;
     $result = $db->mysqlQuery("SELECT

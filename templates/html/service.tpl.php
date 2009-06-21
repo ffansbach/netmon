@@ -1,4 +1,4 @@
-<h1>Service vom Typ <i>{$service_data.typ}</i> auf der IP <a href="./index.php?get=node&id={$service_data.node_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.node_ip}</a></h1>
+<h1>Service vom Typ <i>{$service_data.typ}</i> auf der IP <a href="./node.php?id={$service_data.node_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.node_ip}</a></h1>
 
 <div style="width: 100%; overflow: hidden;">
   <div nstyle="white-space: nowrap;">
@@ -10,7 +10,7 @@
 <b>Service Typ:</b> {$service_data.typ}<br>
 <b>DHCP-bereich:</b> {$service_data.zone_start} bis {$service_data.zone_end}<br>
 <b>Crawl-Art:</b> {$service_data.crawler}<br>
-<b>Benutzer:</b> <a href="./index.php?get=user&id={$service_data.user_id}">{$service_data.nickname}</a><br>
+<b>Benutzer:</b> <a href="./user.php?id={$service_data.user_id}">{$service_data.nickname}</a><br>
 <b>Eingetragen am:</b> {$service_data.service_create_date}<br>
 
 {if !empty($service_data.service_description)}
@@ -136,7 +136,7 @@ processes: {$current_crawl.processes}<br>
 <h2>Aktionen</h2>
 
 <p>
-  <a href="./index.php?get=serviceeditor&section=edit&service_id={$service_data.service_id}">Service editieren</a><br>
+  <a href="./serviceeditor.php?section=edit&service_id={$service_data.service_id}">Service editieren</a><br>
 </p>
 
     </div>

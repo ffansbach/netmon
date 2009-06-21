@@ -33,52 +33,52 @@ class menus extends usermanagement {
   function topMenu() {
     if (usermanagement::checkPermission(1)) {
       //Links nach belieben anpassen.
-      $menu[] = array('name'=>'Nodelist', 'href'=>'./index.php?get=nodelist');
-      $menu[] = array('name'=>'Freifunkmap', 'href'=>'./index.php?get=map');
+      $menu[] = array('name'=>'Nodelist', 'href'=>'./nodelist.php');
+      $menu[] = array('name'=>'Freifunkmap', 'href'=>'./map.php');
       $menu[] = array('name'=>'Wiki', 'href'=>'http://deinwiki.de');
       $menu[] = array('name'=>'Mailingliste', 'href'=>'http://deineliste.de');
       $menu[] = array('name'=>'Blog', 'href'=>'http://deinblog.de'); 
       $menu[] = array('name'=>'OLSR', 'href'=>'http://deinolsr.de:8888'); 
     }
     if (usermanagement::checkPermission(2)) {
-      $menu[] = array('name'=>'Login', 'href'=>'./index.php?get=login');
-      $menu[] = array('name'=>'Registrieren', 'href'=>'./index.php?get=register');
+      $menu[] = array('name'=>'Login', 'href'=>'./login.php?section=login');
+      $menu[] = array('name'=>'Registrieren', 'href'=>'./register.php');
     }
     
     if (usermanagement::checkPermission(4)) {
-      $menu[] = array('name'=>'Logout', 'href'=>'./index.php?get=logout');
+      $menu[] = array('name'=>'Logout', 'href'=>'./login.php?section=logout');
     }
     return $menu;
   }
 
   function normalMenu() {
     if (usermanagement::checkPermission(1)) {
-      $menu[] = array('name'=>'Portal', 'href'=>'./index.php?get=portal');
-      $menu[] = array('name'=>'Map', 'href'=>'./index.php?get=map');
-      $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'./index.php?get=status');
-      $menu[] = array('name'=>'Nodelist', 'href'=>'./index.php?get=nodelist');
-      $menu[] = array('name'=>'Subnetliste', 'href'=>'./index.php?get=subnetlist');
-      $menu[] = array('name'=>'Impressum', 'href'=>'./index.php?get=impressum');
+      $menu[] = array('name'=>'Portal', 'href'=>'./portal.php');
+      $menu[] = array('name'=>'Map', 'href'=>'./map.php');
+      $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'./status.php');
+      $menu[] = array('name'=>'Nodelist', 'href'=>'./nodelist.php');
+      $menu[] = array('name'=>'Subnetliste', 'href'=>'./subnetlist.php');
+      $menu[] = array('name'=>'Impressum', 'href'=>'./impressum.php');
     }
     return $menu;
   }
 
   function userMenu() {
     if (usermanagement::checkPermission(8)) {
-      $menu[] = array('name'=>'Desktop', 'href'=>'./index.php?get=desktop');
-      $menu[] = array('name'=>'Neuer Node', 'href'=>'./index.php?get=nodeeditor&section=new');
+      $menu[] = array('name'=>'Desktop', 'href'=>'./desktop.php');
+      $menu[] = array('name'=>'Neuer Node', 'href'=>'./nodeeditor.php?section=new');
 //      $menu[] = array('name'=>'Service hinzufügen', 'href'=>'./index.php?get=nodeeditor&section=add_service');
-      $menu[] = array('name'=>'Mein Benutzer', 'href'=>'./index.php?get=user&id='.$_SESSION['user_id']);
-      $menu[] = array('name'=>'Benutzer ändern', 'href'=>'./index.php?get=user&section=edit&id='.$_SESSION['user_id']);
-      $menu[] = array('name'=>'Benutzerliste', 'href'=>'./index.php?get=userlist');
+      $menu[] = array('name'=>'Mein Benutzer', 'href'=>'./user.php?id='.$_SESSION['user_id']);
+      $menu[] = array('name'=>'Benutzer ändern', 'href'=>'./user_edit.php?section=edit&id='.$_SESSION['user_id']);
+      $menu[] = array('name'=>'Benutzerliste', 'href'=>'./userlist.php');
     }
     return $menu;
   }
 
   function adminMenu() {
     if (usermanagement::checkPermission(32)) {
-      $menu[] = array('name'=>'Neues Subnetz', 'href'=>'./index.php?get=subneteditor&section=new');
-      $menu[] = array('name'=>'CCD regenerieren', 'href'=>'./index.php?get=vpn&section=regenerate_ccd_subnet');
+      $menu[] = array('name'=>'Neues Subnetz', 'href'=>'./subneteditor.php?section=new');
+      $menu[] = array('name'=>'CCD regenerieren', 'href'=>'./vpn.php?section=regenerate_ccd_subnet');
 
     }
     return $menu;

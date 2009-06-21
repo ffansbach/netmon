@@ -32,41 +32,6 @@ require_once("./lib/classes/core/subneteditor.class.php");
  */
 
 class user {
-	function __construct(&$smarty) {
-		if (!isset($_GET['section'])) {
-		  $smarty->assign('user', Helper::getUserByID($_GET['id']));
-		  $smarty->assign('nodelist', Helper::getNodelistByUserID($_GET['id']));
-		  $smarty->assign('subnetlist', Helper::getSubnetlistByUserID($_GET['id']));
-		  $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-		  $smarty->assign('timeBetweenCrawls', $GLOBALS['timeBetweenCrawls']);
-		  $smarty->assign('get_content', "user");
-		}
-		if ($_GET['section'] == "edit") {
-		  usermanagement::isOwner($smarty, $_SESSION['user_id']);
-		  $smarty->assign('user', Helper::getUserByID($_GET['id']));
-		  $smarty->assign('get_content', "user_edit");
-		} elseif ($_GET['section'] == "insert_edit") {
-		  usermanagement::isOwner($smarty, $_SESSION['user_id']);
-		  $smarty->assign('user', Helper::getUserByID($_GET['id']));
-		  if ($this->userInsertEdit()) {
-		    $smarty->assign('message', message::getMessage());
-		    $smarty->assign('get_content', "user");
-		  } else {
-		    $smarty->assign('message', message::getMessage());
-		    $smarty->assign('get_content', "user_edit");
-		  }
-		} elseif ($_GET['section'] == "delete") {
-		  usermanagement::isOwner($smarty, $_SESSION['user_id']);
-		  if ($this->userDelete($_SESSION['user_id'])) {
-		    $smarty->assign('message', message::getMessage());
-		    $smarty->assign('get_content', "portal");
-		  } else {
-		    $smarty->assign('message', message::getMessage());
-		    $smarty->assign('get_content', "user_edit");
-		  }
-		}
-	}
-
   function userInsertEdit() {
     if ($this->checkUserEditData($_GET['id'], $_POST['changepassword'], $_POST['oldpassword'], $_POST['newpassword'], $_POST['newpasswordchk'], $_POST['email'])) {
       $password = usermanagement::encryptPassword($_POST['newpassword']);
@@ -77,7 +42,7 @@ vorname = '$_POST[vorname]',
 nachname = '$_POST[nachname]',
 strasse = '$_POST[strasse]',
 plz = '$_POST[plz]',
-ort = '$_POST[plz]',
+ort = '$_POST[ort]',
 telefon = '$_POST[telefon]',
 email = '$_POST[email]',
 jabber = '$_POST[jabber]',
@@ -92,7 +57,7 @@ vorname = '$_POST[vorname]',
 nachname = '$_POST[nachname]',
 strasse = '$_POST[strasse]',
 plz = '$_POST[plz]',
-ort = '$_POST[plz]',
+ort = '$_POST[ort]',
 telefon = '$_POST[telefon]',
 email = '$_POST[email]',
 jabber = '$_POST[jabber]',
@@ -115,7 +80,7 @@ WHERE id = $_GET[id]
     ");
   $user = mysql_fetch_assoc($result);
     unset($db);
-    $message[] = array("Die Daten von $user[nickname] wuden geändert", 1);
+    $message[] = array("Die Daten von $user[nickname] wurden geändert", 1);
     message::setMessage($message);
     return true;
    } else {
@@ -137,14 +102,14 @@ WHERE id = $_GET[id]
    				$message[] = array("Es wurde kein Passwort angegeben.",2);
    			} elseif (empty($newpasswordchk)) {
    				$message[] = array("Das Passwort wurde kein zweites mal eingegeben.",2);
-   			} elseif ($newpassword != $newpasswordchk) {
+   			} elseif ($newpassword !== $newpasswordchk) {
    				$message[] = array("Die neuen Passwörter stimmen nicht überein.", 2);
    			}
    		} else {
    			$message[] = array("Das alte Passwort ist Falsch.", 2);
    		}
 	}
-    
+
     //Prüfen ob Email gesetzt ist
     if (!isset($email) OR $email == "") {
       $message[] = array("Es wurde keine Emailadresse angegeben.",2);
@@ -164,8 +129,6 @@ WHERE id = $_GET[id]
 	}
       }
     }
-
-
 
     //Rückgabe
     if (isset($message) AND count($message)>0) {
@@ -196,15 +159,6 @@ WHERE id = $_GET[id]
           $message[] = array("Die Emailadresse ".$email." ist syntaktisch falsch.",2);
 	}
       }
-    }
-
-    //Prüfen ob Passwort gesetzt ist
-    if (!isset($password) OR $password == "") {
-      $message[] = array("Es wurde kein Passwort angegeben.",2);
-    } elseif (!isset($passwordchk) OR $passwordchk == "") {
-      $message[] = array("Das Passwort wurde kein zweites mal eingegeben.",2);
-    } elseif ($password != $passwordchk) {
-      $message[] = "Die Passwörter stimmen nicht überein.";
     }
 
     //Rückgabe
@@ -241,7 +195,7 @@ WHERE id = $_GET[id]
       		message::setMessage($message);
       		return true;
 		} else {
-			$message[] = "Sie müssen das Häckchen bei \"Ja\" setzen um den Benutzer zu löschen!";
+			$message[] = array("Sie müssen das Häckchen bei <i>Ja</i> setzen um den Benutzer zu löschen.", 2);
 			message::setMessage($message);
 			return false;
 		}

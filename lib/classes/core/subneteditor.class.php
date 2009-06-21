@@ -31,68 +31,18 @@ require_once("./lib/classes/core/nodeeditor.class.php");
  */
 
 class subneteditor {
-  function __construct(&$smarty) {
-    if ($_GET['section'] == "new") {
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	$smarty->assign('avalailable_subnets', editingHelper::getFreeSubnets());
-	$smarty->assign('subnets_with_defined_vpnserver', $this->getSubnetsWithDefinedVpnserver());
-	$smarty->assign('get_content', "subnet_new");
-    }
-    if ($_GET['section'] == "insert") {
-      $checkdata = $this->checkSubnetData();
-      if ($checkdata) {
-		$this->createNewSubnet($checkdata);
-		$smarty->assign('message', message::getMessage());
-		$smarty->assign('get_content', "subnet_new");
-      } else {
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "subnet_new");
-      }
-    }
-    if ($_GET['section'] == "edit") {
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	$smarty->assign('avalailable_subnets', editingHelper::getFreeSubnets());
-	$smarty->assign('subnets_with_defined_vpnserver', $this->getSubnetsWithDefinedVpnserver());
-	$smarty->assign('subnet_data', $this->getSubnetDataById($_GET['id']));
-	$smarty->assign('get_content', "subnet_edit");
-    }
-    if ($_GET['section'] == "update") {
-      if ($this->checkSubnetData($_POST['subnet'], $_POST['vpnserver'], $_POST['vpnserver_from_project'], $_POST['vpnserver_from_project_check'], $_POST['no_vpnserver_check'], $_POST['vpn_cacrt'])) {
-		$this->updateSubnet($_POST['subnet'],  $_POST['vpnserver'], $_POST['vpnserver_from_project'], $_POST['vpnserver_from_project_check'], $_POST['no_vpnserver_check'], $_POST['title'], $_POST['description'], $_POST['longitude'], $_POST['latitude'], $_POST['radius'], $POST['vpn_cacrt']);
-		$smarty->assign('message', message::getMessage());
-		$smarty->assign('get_content', "portal");
-      } else {
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "subnet_new");
-      }
-    }
-    if ($_GET['section'] == "delete") {
-		if ($_POST['delete'] == "true") {
-			$this->deleteSubnet($_GET['subnet_id']);
-			$smarty->assign('message', message::getMessage());
-			$smarty->assign('get_content', "desktop");
-    	} else {
-	    	$message[] = array("Sie müssen \"Ja\" anklicken um das Subnets zu löschen.", 2);
-    		message::setMessage($message);
-			$smarty->assign('message', message::getMessage());
-			$smarty->assign('get_content', "desktop");
-    	}
-    }
-  }
-
   public function createNewSubnet($data) {
     //Mach DB Eintrag
     $db = new mysqlClass;
     $db->mysqlQuery("INSERT INTO subnets (subnet_ip, user_id, title, description, longitude, latitude, radius, vpn_server, vpn_server_port, vpn_server_device, vpn_server_proto, vpn_server_ca, vpn_server_cert, vpn_server_key, vpn_server_pass, create_date)
 				  VALUES ('$data[subnet_ip]', '$_SESSION[user_id]', '$data[title]', '$data[description]', '$data[longitude]', '$data[latitude]', '$data[radius]', '$data[vpn_server]','$data[vpn_server_port]', '$data[vpn_server_device]', '$data[vpn_server_proto]', '$data[vpn_server_ca]', '$data[vpn_server_cert]', '$data[vpn_server_key]', '$data[vpn_server_pass]', NOW());");
     $ergebniss = $db->mysqlAffectedRows();
+    $subnet_id = $db->getInsertID();
     unset($db);
     if ($ergebniss>0) {
       $message[] = array("Das Subnetz ".$subnet." wurde in die Datenbank eingetragen.", 1);
       message::setMessage($message);
-      return true;
+      return array("result"=>true, "subnet_id"=>$subnet_id);
     } else {
       $message[] = array("Das Subnetz ".$subnet." konnte nicht in die Datenbank eingetragen werden.", 2);
       message::setMessage($message);
@@ -124,15 +74,15 @@ class subneteditor {
   public function createUpdateSubnet($subnet, $vpnserver, $title, $description, $longitude, $latitude, $radius, $vpn_cacrt) {
     //Mach DB Eintrag
     $db = new mysqlClass;
-    $db->mysqlQuery("UPDATE subnet SET
-subnet= '$subnet',
+    $db->mysqlQuery("UPDATE subnets SET
+subnet_ip= '$subnet',
 title = '$title',
 description = '$description',
 longitude = '$longitude',
 latitude = '$latitude',
 radius = '$radius',
 vpn_server ='$vpnserver',
-vpn_cacrt = '$vpn_cacrt'
+vpn_server_ca = '$vpn_cacrt'
 WHERE id = '$_GET[id]'
 ");
     $ergebniss = $db->mysqlAffectedRows();
@@ -173,7 +123,7 @@ WHERE id = '$_GET[id]'
 
   public function checkSubnetData() {
     //Prüfen ob Subnet gesetzt ist
-    if (!isset($_POST['subnet_ip'])) {
+    if (empty($_POST['subnet_ip'])) {
       $message[] = array("Sie müssen ein freies Subnetz auswählen.",2);
     } else {
       $subnet_ip = $_POST['subnet_ip'];

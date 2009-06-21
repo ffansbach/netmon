@@ -29,14 +29,6 @@
  */
 
 class userlist {
-	function __construct(&$smarty) {
-		if (!isset($_GET['section'])) {
-		  $smarty->assign('userlist', $this->getList());
-	      $smarty->assign('get_content', "userlist");
-		}
-		
-	}
-	
 	function getList() {
 	  $db = new mysqlClass;
 	  $result = $db->mysqlQuery("SELECT u.id, u.nickname, DATE_FORMAT(u.create_date, '%D.%m.%Y %H:%i:%s') as create_date

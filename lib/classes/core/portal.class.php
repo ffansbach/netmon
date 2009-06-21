@@ -27,30 +27,9 @@
  * @version	0.1
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
- 
-require_once('./lib/classes/core/rssparser.class.php');
 
-class portal {
-  function __construct(&$smarty) {
+class portal extends netmonLib{
 
-//Bindet einen RSS-Feed auf dem Portal ein.
-/*      $curl_handle=curl_init();
-      curl_setopt($curl_handle,CURLOPT_URL, "http://blog.freifunk-ol.de/feed/");
-      curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,5);
-      curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,1);
-      $data = curl_exec($curl_handle);
-      curl_close($curl_handle);
-      
-      // $data;
-  	
-	  $doc = new SimpleXmlElement($data, LIBXML_NOCDATA);
-
-      $rssParser = new rssParser;
-      $smarty->assign('rssdata', $rssParser->parseRSS($doc));
-*/
-      $smarty->assign('get_content', "portal");
-      return true;
-  }
 }
 
 ?>

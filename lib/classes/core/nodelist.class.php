@@ -29,18 +29,6 @@
  */
 
 class nodelist {
-	function __construct(&$smarty) {
-		if (!isset($_GET['section'])) {
-		  $smarty->assign('nodelist', $this->getNodeList());
-		  $smarty->assign('vpnlist', $this->getVpnList());
-		  $smarty->assign('servicelist', $this->getServiceList());
-		  $smarty->assign('clientlist', $this->getClientList());
-		  $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	      $smarty->assign('get_content', "nodelist");
-		}
-		
-	}
-
 	function getNodeList() {
 	  $services = Helper::getServicesByType('node');
 	  foreach ($services as $service) {

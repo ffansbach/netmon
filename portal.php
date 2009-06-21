@@ -20,43 +20,11 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
-/**
- * This file contains the class for the node site.
- *
- * @author	Clemens John <clemens-john@gmx.de>
- * @version	0.1
- * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
- */
+require_once('./config/runtime.inc.php');
 
-class node {
-  function getNodeInfo($id) {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT nodes.id, nodes.user_id, nodes.node_ip, nodes.subnet_id, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
-				      users.nickname,
-					  subnets.title, subnets.subnet_ip
-				  FROM nodes
-				  LEFT JOIN users ON (users.id=nodes.user_id)
-				  LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-				  WHERE nodes.id=$id;");
-    
-    while($row = mysql_fetch_assoc($result)) {
-      $node = $row;
-    }
-
-    $node['is_node_owner'] = usermanagement::isThisUserOwner($node['user_id']);
-    return $node;
-  }
-
-  public function getServiceList($node_id) {
-	$services = Helper::getServicesByNodeId($node_id);
-	if (is_array($services))
-	  foreach ($services as $service) {
-	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-	    $servicelist[] = array_merge($service, $crawl_data);
-	  }
-    return $servicelist;
-  }
-
-}
+$smarty->assign('message', message::getMessage());
+$smarty->display("header.tpl.php");
+$smarty->display("portal.tpl.php");
+$smarty->display("footer.tpl.php");
 
 ?>

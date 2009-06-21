@@ -85,6 +85,16 @@ class Helper {
     return $node;
   }
 
+  public function getNodeIdByServiceId($service_id) {
+    $db = new mysqlClass;
+    $result = $db->mysqlQuery("select nodes.id FROM nodes, services WHERE services.id='$service_id' AND nodes.id=services.node_id;");
+    while($row = mysql_fetch_assoc($result)) {
+      $node = $row;
+    }
+    unset($db);
+    return $node;
+  }
+
 
   public function getNodesByUserId($user_id) {
     $nodes = array();

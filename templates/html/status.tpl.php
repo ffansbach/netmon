@@ -6,17 +6,17 @@
 
     <div style="float:left; width: 140px; margin-right: 20px;  border: solid 1px; black;">
       <div style="width: 140px;">Neuester Nutzer: </div>
-      <div style="width: 140px;"><a href="./index.php?get=user&id={$newest_user.id}">{$newest_user.nickname}</a></div>
+      <div style="width: 140px;"><a href="./user.php?id={$newest_user.id}">{$newest_user.nickname}</a></div>
     </div>
 
     <div style="float:left; width: 240px; border: solid 1px; black; margin-right: 20px;">
       <div style="width: 140px;">Neuester Node: </div>
-      <div style="width: 240px;"><a href="./index.php?get=node&id={$newest_node.id}">{$net_prefix}.{$newest_node.subnet_ip}.{$newest_node.node_ip}</a>, Benutzer <a href="./index.php?get=user&id={$newest_node.user_id}">{$newest_node.nickname}</a></div>
+      <div style="width: 240px;"><a href="./node.php?id={$newest_node.id}">{$net_prefix}.{$newest_node.subnet_ip}.{$newest_node.node_ip}</a>, Benutzer <a href="./index.php?get=user&id={$newest_node.user_id}">{$newest_node.nickname}</a></div>
     </div>
 
     <div style="float:left; border: solid 1px; black;">
       <div style="">Neuester Service: </div>
-      <div style="">{$newest_service.title} auf <a href="./index.php?get=node&id={$newest_service.node_id}">{$net_prefix}.{$newest_service.subnet_ip}.{$newest_service.node_ip}</a></div>
+      <div style="">{$newest_service.title} auf <a href="./node.php?id={$newest_service.node_id}">{$net_prefix}.{$newest_service.subnet_ip}.{$newest_service.node_ip}</a></div>
     </div>
   </div>
 </div>

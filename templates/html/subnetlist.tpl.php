@@ -13,9 +13,9 @@
 {foreach key=count item=subnetlist from=$subnetlist}
 	<tr>
 		<td>{$count+1}</td>
-		<td><a href="./index.php?get=subnet&id={$subnetlist.id}">{$net_prefix}.{$subnetlist.subnet_ip}</a></td>
+		<td><a href="./subnet.php?id={$subnetlist.id}">{$net_prefix}.{$subnetlist.subnet_ip}</a></td>
 		<td>{$subnetlist.title}</td>
-		<td><a href="./index.php?get=user&id={$subnetlist.user_id}">{$subnetlist.nickname}</a></td>
+		<td><a href="./user.php?id={$subnetlist.user_id}">{$subnetlist.nickname}</a></td>
 		<td>{$subnetlist.nodes_in_net}</td>
 	</tr>
 {/foreach}

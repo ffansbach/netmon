@@ -6,7 +6,8 @@ Netmon 0.1 stellt das erste offizielle Release dar und kann noch Fehler enthalte
 <p>Informationen und eine Installationsanleitung zu Netmon gibt es in unserem <a href="http://wiki.freifunk-ol.de/index.php/Netmon">Wiki</a><br>
 Möchtest du mithelfen Netmon weiter zu entwickeln oder hast Fragen zu Netmon, dann wende dich bitte an unsere <a href="http://wiki.freifunk-ol.de/index.php/Mailingliste">Mailingliste</a></p>
 
-<p>Diese Seite kann in templates/html/portal.tpl.php geändert werden um Informationen über euer eigenes Projekt anzuzeigen.</p>
+<p>Diese Seite kann in templates/html/portal.tpl.php geändert werden um Informationen über euer eigenes Projekt anzuzeigen.<br>
+Die Menüs können in lib/classes/core/menus.class.php angepasst werden.</p>
 
 <p>Funk frei!<br>
 Floh1111</p>
