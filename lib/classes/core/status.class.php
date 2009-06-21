@@ -29,19 +29,6 @@
  */
 
 class status {
-  function __construct(&$smarty) {
-    if (!isset($_GET['section'])) {
-      $smarty->assign('status', $this->getCrawlerStatus());
-      $smarty->assign('newest_user', $this->getNewestUser());
-      $smarty->assign('newest_node', $this->getNewestNode());
-      $smarty->assign('newest_service', $this->getNewestService());
-
-      $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-      $smarty->assign('zeit', date("H:i:s", time()));
-      $smarty->assign('get_content', "status");
-    }
-  }
-
   public function getCrawlerStatus() {
     $db = new mysqlClass;
     $result = $db->mysqlQuery("SELECT id, UNIX_TIMESTAMP(crawl_time_end) as last_crawl

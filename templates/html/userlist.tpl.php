@@ -10,7 +10,7 @@
 {foreach key=count item=userlist from=$userlist}
 	<tr>
 		<td>{$count+1}</td>
-		<td><a href="./index.php?get=user&id={$userlist.id}">{$userlist.nickname}</a></td>
+		<td><a href="./user.php?id={$userlist.id}">{$userlist.nickname}</a></td>
 		<td>{$userlist.nodecount}</td>
 		<td>{$userlist.create_date}</td>
 	</tr>

@@ -17,6 +17,8 @@
     <meta name="robots" content="index,follow">
     <meta http-equiv="content-language" content="{$globals_homepage_language}">
 -->
+
+    {$html_head}
   </head>
   
   <body>

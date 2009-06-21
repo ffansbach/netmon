@@ -1,4 +1,4 @@
-<form action="./index.php?get=subneteditor&section=insert" method="POST">
+<form action="./subneteditor.php?section=insert" method="POST">
 
   <h1>Ein neues Subnetz im Netz {$net_prefix} erstellen:</h1>
   

@@ -202,6 +202,7 @@ class editingHelper {
 
     $db = new mysqlClass;
     $db->mysqlQuery("INSERT INTO services (node_id, title, description, typ, crawler, zone_start, zone_end, radius, visible, create_date) VALUES ('$node_id', '$title', '$description', '$typ', '$crawler', '$zone_start', '$zone_end', '$radius', '$visible', NOW());");
+    $service_id = $db->getInsertID();
     unset($db);
 
     $db = new mysqlClass;
@@ -212,7 +213,8 @@ class editingHelper {
     unset($db);
     $message[] = array("Ein Nodetyp  vom Typ ".$typ." wurde dem Node mit der IP $GLOBALS[net_prefix].$node_data[subnet_ip].$node_data[node_ip] hinzugefügt.",1);
     message::setMessage($message);
-    return true;
+
+    return array("result"=>true, "service_id"=>$service_id);
   }
 
   public function removeNodeTyp($id) {

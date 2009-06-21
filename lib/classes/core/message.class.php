@@ -29,15 +29,20 @@
  */
 
 class message {
-  private $message;
-
-  //Normale Nachrichten
   public function getMessage() {
-    return $this->message;
+    $messages = $_SESSION['system_messages'];
+    unset($_SESSION['system_messages']);
+    return $messages;
   }
+
+  public function getMessageWithoutDelete() {
+    $messages = $_SESSION['system_messages'];
+    return $messages;
+  }
+
   public function setMessage($message) {
     foreach ($message as $value) {
-      $this->message[] = $value;
+      $_SESSION['system_messages'][] = $value;
     }
   }
 }

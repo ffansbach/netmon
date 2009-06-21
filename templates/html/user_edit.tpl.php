@@ -1,4 +1,4 @@
-<form action="./index.php?get=user&section=insert_edit&id={$user.id}" method="POST">
+<form action="./user_edit.php?section=insert_edit&id={$user.id}" method="POST">
 
   <h1>Daten von {$user.nickname} ändern</h1>
   
@@ -35,7 +35,7 @@
 
   <hr>
 
-<form action="./index.php?get=user&section=delete&id={$user.id}" method="POST">
+<form action="./user_edit.php?section=delete&id={$user.id}" method="POST">
   <h2>Benutzer Löschen?</h2>
   Ja <input type="checkbox" name="delete" value="true">
   <p><input type="submit" value="Löschen!"></p>
