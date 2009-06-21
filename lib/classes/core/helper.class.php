@@ -30,17 +30,24 @@
 
 class Helper {
   public function getNodeInfo($id) {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
+    try {
+      /*** query the database ***/
+      $sql = "SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
 				      users.nickname,
 				      subnets.title, subnets.subnet_ip
 				  FROM nodes
 				   LEFT JOIN users ON (users.id=nodes.user_id)
 				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-				   WHERE nodes.id=$id;");
-    
-    while($row = mysql_fetch_assoc($result)) {
-      $node = $row;
+				   WHERE nodes.id=$id";
+
+      $result = DB::getInstance()->query($sql);
+
+      foreach($result as $row) {
+        $node[] = $row;
+      }
+    }
+    catch(PDOException $e) {
+      echo $e->getMessage();
     }
 
     $node['is_node_owner'] = usermanagement::isThisUserOwner($node['user_id']);
@@ -48,17 +55,24 @@ class Helper {
   }
   
   public function getNodeDataByNodeId($id) {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
+    try {
+      /*** query the database ***/
+      $sql = "SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
 				      users.nickname, users.email,
 				      subnets.title, subnets.subnet_ip, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
 				   FROM nodes
 				   LEFT JOIN users ON (users.id=nodes.user_id)
 				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-				   WHERE nodes.id=$id;");
-    
-    while($row = mysql_fetch_assoc($result)) {
-      $node = $row;
+				   WHERE nodes.id=$id";
+
+      $result = DB::getInstance()->query($sql);
+
+      foreach($result as $row) {
+        $node[] = $row;
+      }
+    }
+    catch(PDOException $e) {
+      echo $e->getMessage();
     }
 
     $node['is_node_owner'] = usermanagement::isThisUserOwner($node['user_id']);
@@ -66,12 +80,20 @@ class Helper {
   }
 
   public function getSubnetById($subnet_id) {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("select subnet_ip FROM subnets WHERE id='$subnet_id';");
-    while($row = mysql_fetch_assoc($result)) {
-      $subnet = $row['subnet_ip'];
+    try {
+      /*** query the database ***/
+      $sql = "select subnet_ip FROM subnets WHERE id='$subnet_id'";
+
+      $result = DB::getInstance()->query($sql);
+
+      foreach($result as $row) {
+	$subnet = $row['subnet_ip'];
+      }
     }
-    unset($db);
+    catch(PDOException $e) {
+      echo $e->getMessage();
+    }
+
     return $subnet;
   }
 
@@ -139,8 +161,9 @@ class Helper {
     else
       $visible = "";
 
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
+    try {
+      /*** query the database ***/
+      $sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
 				      nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
 				      subnets.subnet_ip, subnets.title,
 				      users.nickname
@@ -148,11 +171,18 @@ class Helper {
 			       LEFT JOIN nodes ON (nodes.id = services.node_id)
 			       LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
 			       LEFT JOIN users ON (users.id = nodes.user_id)
-			       WHERE services.node_id='$node_id' $visible ORDER BY services.id");
-    while($row = mysql_fetch_assoc($result)) {
-      $services[] = $row;
+			       WHERE services.node_id='$node_id' $visible ORDER BY services.id";
+
+      $result = DB::getInstance()->query($sql);
+
+      foreach($result as $row) {
+        $services[] = $row;
+      }
     }
-    unset($db);
+    catch(PDOException $e) {
+      echo $e->getMessage();
+    }
+
     return $services;
   }
 
@@ -236,16 +266,6 @@ ORDER BY subnets.subnet_ip, nodes.node_ip
     return $subnetlist;	
   }
 
-  public function getServiceseByNodeId($node_id) {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT id, node_id, title, description, typ, crawler, create_date FROM  services WHERE services.node_id=$node_id ORDER BY id");
-    while($row = mysql_fetch_assoc($result)) {
-      $servicelist[] = $row;
-    }
-    unset($db);
-    return $servicelist;
-  }
-
   public function getServiceseBySubnetId($subnet_id) {
     $servicelist = array();
     $db = new mysqlClass;
@@ -325,27 +345,33 @@ WHERE service_id='$service_id' AND status='online' ORDER BY id DESC LIMIT 1");
     $last_crawl['status'] = "unbekannt";
 
     //Hole letzten Crawl
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT id, crawl_id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, olsrd_hna, olsrd_neighbors, olsrd_links, olsrd_mid, olsrd_routes, olsrd_topology FROM crawl_data
-			       WHERE service_id='$service_id' ORDER BY id DESC LIMIT 1");
-    while($row = mysql_fetch_assoc($result)) {
-      //In der Datenbank als String gespeicherte Objekte unserialisieren und in Arrays verwandeln.
-      $row['olsrd_neighbors'] = Helper::object2array(unserialize($row['olsrd_neighbors']));
-      $row['olsrd_routes'] = Helper::object2array(unserialize($row['olsrd_routes']));
-      $row['olsrd_topology'] = Helper::object2array(unserialize($row['olsrd_topology']));
+    try {
+      $sql = "SELECT id, crawl_id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, olsrd_hna, olsrd_neighbors, olsrd_links, olsrd_mid, olsrd_routes, olsrd_topology FROM crawl_data
+			       WHERE service_id='$service_id' ORDER BY id DESC LIMIT 1";
+      $result = DB::getInstance()->query($sql);
 
-      //Leerzeichen und Punkte aus Arrayindizies entfernen!
-      $row['olsrd_neighbors'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_neighbors']);
-      $row['olsrd_routes'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_routes']);
-      $row['olsrd_topology'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_topology']);
+      foreach($result as $row) {
+	//In der Datenbank als String gespeicherte Objekte unserialisieren und in Arrays verwandeln.
+	$row['olsrd_neighbors'] = Helper::object2array(unserialize($row['olsrd_neighbors']));
+	$row['olsrd_routes'] = Helper::object2array(unserialize($row['olsrd_routes']));
+	$row['olsrd_topology'] = Helper::object2array(unserialize($row['olsrd_topology']));
 
-      $last_crawl = $row;
+	//Leerzeichen und Punkte aus Arrayindizies entfernen!
+	$row['olsrd_neighbors'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_neighbors']);
+	$row['olsrd_routes'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_routes']);
+	$row['olsrd_topology'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_topology']);
+
+	$last_crawl = $row;
+      }
     }
-    unset($db);
+    catch(PDOException $e) {
+      echo $e->getMessage();
+    }
+
     return $last_crawl;
   }
 
-	function object2array($object) {
+      function object2array($object) {
 		if (is_object($object) || is_array($object)) {
 			foreach ($object as $key => $value) {
 				$array[$key] = Helper::object2array($value);
