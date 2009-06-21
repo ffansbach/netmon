@@ -29,14 +29,7 @@
  */
 
 class map {
-  function __construct(&$smarty) {
-    if ($_GET['get']=="map" AND empty($_GET['section'])) {
-      //$smarty->assign('kmlData', $this->getgoogleearthkmlfile());
-      $smarty->assign('get_content', "map");
-    }
-  }
-  
-     //Funktion modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
+   //Funktion modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
    //Prints a KML file that can be used with OpenStreetmap and the Modified freifunkmap.php
    /**
     * print a xml file to use with GoogleEarth
@@ -180,10 +173,10 @@ WHERE service_id='$services' ORDER BY crawl_data.id DESC LIMIT 1");
     foreach($nodelist as $entry) {
     $xw->startElement('Placemark');
       $xw->startElement('name');
-	$xw->writeRaw("<![CDATA[Node <a href='http://freifunk-ol.de/netmon/index.php?get=node&id=$entry[id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a>]]>");
+	$xw->writeRaw("<![CDATA[Node <a href='./node.php?id=$entry[id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a>]]>");
       $xw->endElement();
       $xw->startElement('description');
-	$box_inhalt = "Benutzer: <a href='http://www.freifunk-ol.de/netmon/index.php?get=user&id=$entry[user_id]'>$entry[nickname]</a><br>
+	$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 			DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
 			Letzter Crawl: $entry[crawl_time]<br><br><br>";
 

@@ -29,26 +29,10 @@
  */
 
 class login {
-  function __construct(&$smarty) {
-    if ($_GET['get']=="login" AND empty($_POST)) {
-      $smarty->assign('get_content', "login");
-    } elseif ($_GET['get']=="login" AND $this->login($_POST['nickname'], $_POST['password'])) {
-      $smarty->assign('message', message::getMessage());
-      $smarty->assign('get_content', "desktop");
-    } elseif($_GET['get']=="logout") {
-      $this->logout();
-      $smarty->assign('message', message::getMessage());
-      $smarty->assign('get_content', "portal");
-    }else {
-      $smarty->assign('message', message::getMessage());
-      $smarty->assign('get_content', "login");
-    }
-  }
-
-  public function login ($nickname, $password) {
+  public function user_login ($nickname, $password, &$message) {
       if (empty($nickname) or empty($password)) {
-        $message[] = array("Sie müssen einen Nickname und ein Passwort angeben um sich einzuloggen", 2);
-	message::setMessage($message);
+        $messages[] = array("Sie müssen einen Nickname und ein Passwort angeben um sich einzuloggen", 2);
+	message::setMessage($messages);
 	return false;
       } else {
         $password = usermanagement::encryptPassword($password);
@@ -59,12 +43,12 @@ class login {
 	$user_data = mysql_fetch_assoc($result);
 	unset($db);
 	if ($login<1) {
-	  $message[] = array("Der Benutzername existiert nicht oder das Passwort ist falsch!", 2);
-	  message::setMessage($message);
+	  $messages[] = array("Der Benutzername existiert nicht oder das Passwort ist falsch!", 2);
+	  message::setMessage($messages);
 	  return false;
 	} elseif ($user_data['activated'] != '0') {
-	  $message[] = array("Der Benutzername wurde noch nicht aktiviert!", 2);
-	  message::setMessage($message);
+	  $messages[] = array("Der Benutzername wurde noch nicht aktiviert!", 2);
+	  message::setMessage($messages);
 	  return false;
 	} else {
 	  $db = new mysqlClass;
@@ -76,23 +60,23 @@ class login {
 	  if (isset($user_data['last_login'])) {
 	    $last_login = " Ihr letzter Login war am ".$user_data['last_login'];
 	  }
-	  $message[] = array("Herzlich willkommen zurück ".$user_data['nickname'].$last_login, 1);
-	  message::setMessage($message);
+	  $messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'].$last_login, 1);
+	  message::setMessage($messages);
 	  return true;
 	}
       }
   }
 
-  public function logout() {
+  public function user_logout(&$message) {
       if (!isset($_SESSION['user_id'])) {
-        $message[] = array("Sie können sich nicht ausloggen, wenn Sie nicht eingeloggt sind", 2);
-	message::setMessage($message);
+        $messages[] = array("Sie können sich nicht ausloggen, wenn Sie nicht eingeloggt sind", 2);
+	message::setMessage($messages);
 	return false;
       } else {
-	  $_SESSION = array();;
-	  $message[] = array("Sie wurden ausgeloggt und ihre Benutzersession wurde gelöscht!", 1);
-	  message::setMessage($message);
-	  return true;
+	$_SESSION = array();;
+	$messages[] = array("Sie wurden ausgeloggt und ihre Benutzersession wurde gelöscht!", 1);
+	message::setMessage($messages);
+	return true;
       }
   }
 

@@ -1,6 +1,6 @@
 <h1>Service zum Node {$net_prefix}.{$node_data.subnet_ip}.{$node_data.node_ip} hinzufügen</h1>
 
-<form action="./index.php?get=serviceeditor&section=insert_service&node_id={$node_data.node_id}" method="POST">
+<form action="./serviceeditor.php?section=insert_service&node_id={$node_data.node_id}" method="POST">
 
 <script type="text/javascript" src="./templates/js/servicesAuswahl.js"></script>
 <script type="text/javascript" src="./templates/js/LinkedSelection.js"></script>

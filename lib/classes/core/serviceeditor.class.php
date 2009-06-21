@@ -29,42 +29,6 @@
  */
 
 class serviceeditor {
-  function __construct(&$smarty) {
-    if ($_GET['section'] == "new") {
-	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	$smarty->assign('node_data', Helper::getNodeInfo($_GET['node_id']));	
-	$smarty->assign('get_content', "add_service");
-    } 
-    if ($_GET['section'] == "insert_service") {
-      if ($_POST['ips'] > 0) {
-	$node_info = Helper::getNodeInfo($_GET['node_id']);
-	$range = editingHelper::getFreeIpZone($node_info['subnet_id'], $_POST['ips'], 0);
-      } else {
-	$range['start'] = "NULL";
-	$range['end'] = "NULL";
-      }
-	editingHelper::addNodeTyp($_GET['node_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible']);
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "desktop");
-    }
-    if ($_GET['section'] == "edit") {
-	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	$smarty->assign('servicedata', Helper::getServiceDataByServiceId($_GET['service_id']));
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "service_edit");
-    }
-    if ($_GET['section'] == "insert_edit") {
-	$smarty->assign('servicedata', $this->insertEditService($_GET['service_id'], $_POST['typ'], $_POST['crawler'], $_POST['title'], $_POST['description'], $_POST['radius'], $_POST['visible']));
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "desktop");
-    }
-    if ($_GET['section'] == "delete") {
-	$this->deleteService($_GET['service_id']);
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "desktop");
-    }
-  }
-
   public function insertEditService($service_id, $typ, $crawler, $title, $description, $radius, $visible) {
     //Mach DB Eintrag
     $db = new mysqlClass;
@@ -82,7 +46,7 @@ WHERE id = '$service_id'
     if ($ergebniss>0) {
       $message[] = array("Der Service mit der ID ".$service_id." wurde geändert.", 1);
       message::setMessage($message);
-      return true;
+      return array("result"=>true, "service_id"=>$service_id);
     } else {
       $message[] = array("Der Service mit der ID ".$service_id." wurde nicht geändert, da keine Änderungen vorgenommen wurde.", 2);
       message::setMessage($message);

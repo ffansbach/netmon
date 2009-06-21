@@ -3,7 +3,7 @@
 {if !empty($user.vorname)}Vorname: {$user.vorname}, {/if}{if !empty($user.nachname)}nachname: {$user.nachname}<br>{/if}
 
 {if !empty($user.strasse)}Strasse: {$user.strasse}<br>{/if}
-{if !empty($user.plz)}Plz:  {$user.plz}, {/if}{if !empty($user.ort)}ort: {$user.ort}</br>{/if}
+{if !empty($user.plz)}Plz:  {$user.plz}, {/if}{if !empty($user.ort)}Ort: {$user.ort}<br>{/if}
 {if !empty($user.telefon)}Telefon: {$user.telefon}<br>{/if}
 Email: <a href="mailto:{$user.email}">{$user.email}</a><br>
 
@@ -28,10 +28,10 @@ Ich bin seit dem {$user.create_date} dabei.<br>
 {foreach key=count item=nodelist from=$nodelist}
 	<tr>
 		<td>{$count+1}</td>
-		<td><a href="./index.php?get=node&id={$nodelist.id}">{$net_prefix}.{$nodelist.subnet_ip}.{$nodelist.node_ip}</a></td>
+		<td><a href="./node.php?id={$nodelist.id}">{$net_prefix}.{$nodelist.subnet_ip}.{$nodelist.node_ip}</a></td>
 		<td>
 		  {if $nodelist.is_node_owner}
-		    <a href="./index.php?get=nodeeditor&section=edit&id={$nodelist.id}">Editieren</a>
+		    <a href="./nodeeditor.php?section=edit&id={$nodelist.id}">Editieren</a>
 		  {/if}
 		</td>
 	</tr>
@@ -54,10 +54,10 @@ Ich bin seit dem {$user.create_date} dabei.<br>
 {foreach key=count item=subnetlist from=$subnetlist}
 	<tr>
 		<td>{$count+1}</td>
-		<td><a href="./index.php?get=subnet&id={$subnetlist.id}">{$net_prefix}.{$subnetlist.subnet_ip}.0/24</a></td>
+		<td><a href="./subnet.php?id={$subnetlist.id}">{$net_prefix}.{$subnetlist.subnet_ip}.0/24</a></td>
 		<td>{$subnetlist.title}</td>
 		<td>{$subnetlist.nodes_in_net}</td>
-		<td><a href="./index.php?get=subneteditor&section=edit&id={$subnetlist.id}">Editieren</a></td>
+		<td><a href="./subneteditor.php?section=edit&id={$subnetlist.id}">Editieren</a></td>
 	</tr>
 {/foreach}
 </table>

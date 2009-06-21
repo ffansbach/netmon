@@ -1,11 +1,11 @@
-<form action="./index.php?get=subneteditor&section=update&id={$subnet_data.id}" method="POST">
+<form action="./subneteditor.php?section=update&id={$subnet_data.id}" method="POST">
 
   <h1>Subnetz {$net_prefix}.{$subnet_data.subnet_ip}.0/24 editieren:</h1>
   
   <h2>Daten zum Netz</h2>
 
   <p>subnetz:
-  <select name="subnet">
+  <select name="subnet_ip">
     <option selected value="{$subnet_data.subnet}">{$subnet_data.subnet}</option>
   {foreach item=subnet from=$avalailable_subnets}
     <option value="{$subnet}">{$subnet}</option>
@@ -43,7 +43,7 @@
   <p><input type="submit" value="Absenden"></p>
 </form>
 
-<form action="./index.php?get=subneteditor&section=delete&subnet_id={$subnet_data.id}" method="POST">
+<form action="./subneteditor.php?section=delete&subnet_id={$subnet_data.id}" method="POST">
   <h2>Subnet Löschen?</h2>
   Ja <input type="checkbox" name="delete" value="true">
   <p><input type="submit" value="Löschen!"></p>

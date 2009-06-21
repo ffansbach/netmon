@@ -1,6 +1,6 @@
 <h1>Einen neuen Knoten im Netz {$net_prefix} eintragen:</h1>
 
-<form action="./index.php?get=nodeeditor&section=insert" method="POST">
+<form action="./nodeeditor.php?section=insert" method="POST">
 
   <p>Subnetz wählen:
   <select name="subnet_id">

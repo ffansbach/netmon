@@ -19,9 +19,9 @@
 <div id="nodeitem" style="width: 800px; overflow: hidden;">
   <div style="white-space: nowrap;">
     <div style="float:left; width: 20px;"><b>{$count+1}</b></div>
-    <div style="float:left; width: 95px;"><a href="./index.php?get=service&service_id={$nodelist.service_id}">{$net_prefix}.{$nodelist.subnet_ip}.{$nodelist.node_ip}</a></div>
-    <div style="float:left; width: 250px;"><a href="./index.php?get=subnet&id={$nodelist.subnet_id}">{$nodelist.title}</a></div>
-    <div style="float:left; width: 110px;"><a href="./index.php?get=user&id={$nodelist.user_id}">{$nodelist.nickname}</a></div>
+    <div style="float:left; width: 95px;"><a href="./service.php?service_id={$nodelist.service_id}">{$net_prefix}.{$nodelist.subnet_ip}.{$nodelist.node_ip}</a></div>
+    <div style="float:left; width: 250px;"><a href="./subnet.php?id={$nodelist.subnet_id}">{$nodelist.title}</a></div>
+    <div style="float:left; width: 110px;"><a href="./user.php?id={$nodelist.user_id}">{$nodelist.nickname}</a></div>
     {if $nodelist.status=="online"}
       <div style="float:left; width: 80px; background-color: green;">{$nodelist.status}</div>
     {elseif $nodelist.status=="offline"}
@@ -59,9 +59,9 @@
 <div id="nodeitem" style="width: 800px; overflow: hidden;">
   <div style="white-space: nowrap;">
     <div style="float:left; width: 20px;"><b>{$count+1}</b></div>
-    <div style="float:left; width: 95px;"><a href="./index.php?get=service&service_id={$nodelist.service_id}">{$net_prefix}.{$nodelist.subnet_ip}.{$nodelist.node_ip}</a></div>
-    <div style="float:left; width: 250px;"><a href="./index.php?get=subnet&id={$nodelist.subnet_id}">{$nodelist.title}</a></div>
-    <div style="float:left; width: 110px;"><a href="./index.php?get=user&id={$nodelist.user_id}">{$nodelist.nickname}</a></div>
+    <div style="float:left; width: 95px;"><a href="./service.php?service_id={$nodelist.service_id}">{$net_prefix}.{$nodelist.subnet_ip}.{$nodelist.node_ip}</a></div>
+    <div style="float:left; width: 250px;"><a href="./subnet.php?id={$nodelist.subnet_id}">{$nodelist.title}</a></div>
+    <div style="float:left; width: 110px;"><a href="./user.php?id={$nodelist.user_id}">{$nodelist.nickname}</a></div>
     {if $nodelist.status=="online"}
       <div style="float:left; width: 80px; background-color: green;">{$nodelist.status}</div>
     {elseif $nodelist.status=="offline"}
@@ -99,9 +99,9 @@
 <div id="nodeitem" style="width: 895px; overflow: hidden;">
   <div style="white-space: nowrap;">
     <div style="float:left; width: 20px;"><b>{$count+1}</b></div>
-    <div style="float:left; width: 270px;"><a href="./index.php?get=service&service_id={$nodelist.service_id}">{$nodelist.services_title}</a></div>
-    <div style="float:left; width: 140px;"><a href="./index.php?get=service&service_id={$nodelist.service_id}">{$net_prefix}.{$nodelist.subnet_ip}.{$nodelist.node_ip} : {$nodelist.crawler}</a></div>
-    <div style="float:left; width: 110px;"><a href="./index.php?get=user&id={$nodelist.user_id}">{$nodelist.nickname}</a></div>
+    <div style="float:left; width: 270px;"><a href="./service.php?service_id={$nodelist.service_id}">{$nodelist.services_title}</a></div>
+    <div style="float:left; width: 140px;"><a href="./service.php?service_id={$nodelist.service_id}">{$net_prefix}.{$nodelist.subnet_ip}.{$nodelist.node_ip} : {$nodelist.crawler}</a></div>
+    <div style="float:left; width: 110px;"><a href="./user.php?id={$nodelist.user_id}">{$nodelist.nickname}</a></div>
     {if $nodelist.status=="online"}
       <div style="float:left; width: 80px; background-color: green;">{$nodelist.status}</div>
     {elseif $nodelist.status=="offline"}
@@ -139,9 +139,9 @@
 <div id="nodeitem" style="width: 800px; overflow: hidden;">
   <div style="white-space: nowrap;">
     <div style="float:left; width: 20px;"><b>{$count+1}</b></div>
-    <div style="float:left; width: 95px;"><a href="./index.php?get=service&service_id={$nodelist.service_id}">{$net_prefix}.{$nodelist.subnet_ip}.{$nodelist.node_ip}</a></div>
-    <div style="float:left; width: 250px;"><a href="./index.php?get=subnet&id={$nodelist.subnet_id}">{$nodelist.title}</a></div>
-    <div style="float:left; width: 110px;"><a href="./index.php?get=user&id={$nodelist.user_id}">{$nodelist.nickname}</a></div>
+    <div style="float:left; width: 95px;"><a href="./service.php?service_id={$nodelist.service_id}">{$net_prefix}.{$nodelist.subnet_ip}.{$nodelist.node_ip}</a></div>
+    <div style="float:left; width: 250px;"><a href="./subnet.php?id={$nodelist.subnet_id}">{$nodelist.title}</a></div>
+    <div style="float:left; width: 110px;"><a href="./user.php?id={$nodelist.user_id}">{$nodelist.nickname}</a></div>
     {if $nodelist.status=="online"}
       <div style="float:left; width: 80px; background-color: green;">{$nodelist.status}</div>
     {elseif $nodelist.status=="offline"}

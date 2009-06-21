@@ -1,6 +1,6 @@
 <h1>Service vom Node {$net_prefix}.{$servicedata.subnet_ip}.{$servicedata.node_ip} editieren</h1>
 
-<form action="./index.php?get=serviceeditor&section=insert_edit&service_id={$servicedata.service_id}" method="POST">
+<form action="./serviceeditor.php?section=insert_edit&service_id={$servicedata.service_id}" method="POST">
   <p>
     <p>Typ: <input name="typ" type="text" size="5" maxlength="10" value="{$servicedata.typ}"><br>
      Hier wird angegeben was sich hinter der IP verbirgt. (node, , vpn, client, service)</p>
@@ -40,7 +40,7 @@
 </form>
 
 
-<form action="./index.php?get=serviceeditor&section=delete&service_id={$servicedata.service_id}" method="POST">
+<form action="./serviceeditor.php?section=delete&service_id={$servicedata.service_id}" method="POST">
   <h2>Service Löschen?</h2>
   Ja <input type="checkbox" name="delete" value="true">
   <p><input type="submit" value="Löschen!"></p>

@@ -32,36 +32,6 @@ require_once("./lib/classes/core/vpn.class.php");
  */
 
 class nodeeditor {
-  function __construct(&$smarty) {
-    if ($_GET['section'] == "new") {
-	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	$smarty->assign('existing_subnets', editingHelper::getExistingSubnetsWithID());
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('get_content', "node_new");
-    }
-    if ($_GET['section'] == "insert") {
-		if ($this->insertNewNode($_POST['subnet_id'], $_POST['ips'])) {
-			$smarty->assign('message', message::getMessage());
-			$smarty->assign('get_content', "desktop");
-		} else {
-			$smarty->assign('message', message::getMessage());
-			$smarty->assign('get_content', "nodeeditor");
-		}
-    }
-    if ($_GET['section'] == "edit") {
-		$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-		$node_data = $this->getNodeData($_GET['id']);
-		$smarty->assign('node_data', $node_data);
-		$smarty->assign('message', message::getMessage());
-		$smarty->assign('get_content', "node_edit");
-    }
-    if ($_GET['section'] == "delete") {
-		$this->deleteNode($_GET['id']);
-		$smarty->assign('message', message::getMessage());
-		$smarty->assign('get_content', "desktop");
-    }
-  }
-
   public function insertNewNode($subnet_id, $ips) {
     $node = editingHelper::getAFreeIP($subnet_id);
 
@@ -77,10 +47,10 @@ class nodeeditor {
 	//Mach DB Eintrag
 	$db = new mysqlClass;
 	$db->mysqlQuery("INSERT INTO nodes (user_id, subnet_id, node_ip, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$node', NOW());");
-	$id = $db->getInsertID();
+	$node_id = $db->getInsertID();
 	unset($db);
 
-	editingHelper::addNodeTyp($id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible']);
+	$service = editingHelper::addNodeTyp($node_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible']);
 
 	$subnet = Helper::getSubnetById($subnet_id);
 	if ($ips > 0) {
@@ -89,7 +59,7 @@ class nodeeditor {
 	  $message[] = array("Der Node ".$GLOBALS['net_prefix'].".".$subnet.".".$node." wurde erfolgreich im Subnetz $subnet angelegt. Es wurde KEIN IP-Bereich reserviert", 1);
 	}
 	message::setMessage($message);
-	return true;
+	return array("result"=>true, "node_id"=>$node_id, "service_id"=>$service['service_id']);
       } else {
 	$message[] = array("Der Node konnte nicht im Subnetz $subnet angelegt werden. Das Netz ist voll!", 2);
 	message::setMessage($message);
