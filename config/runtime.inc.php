@@ -47,6 +47,8 @@
 
   //Klasse für Mysql-Verbindungen einbinden
   require_once('lib/classes/core/mysql.class.php');
+  //New PDO Class
+  require_once('lib/classes/core/db.class.php');
   //Klasse für Nachrichten einbinden
   require_once('lib/classes/core/message.class.php');
   //Allgemeine Helper-Klasse
