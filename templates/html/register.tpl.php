@@ -1,4 +1,4 @@
-<form action="./index.php?get=register&section=user" method="POST">
+<form action="./register.php" method="POST">
   <p>Benutzername:<br><input name="nickname" type="text" size="30" maxlength="30" value="{$smarty.post.nickname}"></p>
   <p>Passwort:<br><input name="password" type="password" size="30" value="{$smarty.post.password}"></p>
   <p>Passwort wiederholen:<br><input name="passwordchk" type="password" size="30" value="{$smarty.post.passwordchk}"></p>
