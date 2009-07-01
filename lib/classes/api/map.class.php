@@ -23,21 +23,14 @@
 require_once('./lib/classes/core/service.class.php');
 
 /**
- * This file contains the class for exporting informations.
+ * This file contains the class for the Map part of the Netmon API.
  *
  * @author	Clemens John <clemens-john@gmx.de>
  * @version	0.1
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class getinfo {
-
-  function __construct() {
-    eval("getinfo::".$_GET['section']."();");
-    die();
-  }
-  
-
+class apiMap {
    //Funktion modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
    //Prints a KML file that can be used with OpenStreetmap and the Modified freifunkmap.php
    /**
@@ -95,12 +88,7 @@ class getinfo {
       $xw->startElement('Icon');
 	$xw->writeRaw('<href>http://freifunk-ol.de/netmon/templates/img/ffmap/node.png</href>');
       $xw->endElement();
-      $xw->startElement('hotSpot');
-	$xw->writeAttribute( 'x', '20');
-	$xw->writeAttribute( 'y', '2');
-	$xw->writeAttribute( 'xunits', 'pixels');
-	$xw->writeAttribute( 'yunits', 'pixels');
-      $xw->endElement();
+
     $xw->endElement();
   $xw->endElement();
 
@@ -147,22 +135,15 @@ class getinfo {
       $xw->writeRaw('create');
     $xw->endElement();
 
-
-	$db = new mysqlClass;
-    	$result = $db->mysqlQuery("SELECT id FROM services WHERE typ='node' ORDER BY id");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $services[] = $row['id'];
-    	}
-	unset($db);
-	
+	$services = Helper::getServicesByType("node");
 	foreach ($services as $service) {
-		$data = service::getCurrentCrawlData($service);
+		$data = service::getCurrentCrawlData($service['service_id']);
 		if ($data['status']=='online') {
 			$crawl = $data;
 			if(!is_array($crawl)) {
 				$crawl = array();
 			}
-			$data = Helper::getServiceDataByServiceId($service);
+			$data = Helper::getServiceDataByServiceId($service['service_id']);
 			$clients=0;
 			if (is_array($crawl['neightbors'])) {
 				foreach ($crawl['neightbors'] as $neightbor) {
@@ -180,11 +161,11 @@ class getinfo {
    	if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
     $xw->startElement('Placemark');
       $xw->startElement('name');
-	$xw->writeRaw("<![CDATA[Node <a href='http://freifunk-ol.de/netmon/index.php?get=service&service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a> ($entry[title])]]>");
+	$xw->writeRaw("<![CDATA[Node <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a> ($entry[title])]]>");
       $xw->endElement();
       $xw->startElement('description');
       $entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
-	$box_inhalt = "Benutzer: <a href='http://www.freifunk-ol.de/netmon/index.php?get=user&id=$entry[user_id]'>$entry[nickname]</a><br>
+	$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 			DHCP-Range: $entry[zone_start]-$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
 			SSID: $entry[ssid]<br>
 			Beschreibung: $entry[description]<br>
@@ -192,6 +173,7 @@ class getinfo {
 
 	$xw->writeRaw("<![CDATA[$box_inhalt]]>");
       $xw->endElement();
+//Green Point-Image, not centralized.
       $xw->startElement('styleUrl');
 	$xw->writeRaw('#sh_ylw-pushpin');
       $xw->endElement();
@@ -203,6 +185,8 @@ class getinfo {
     $xw->endElement();
     	}
 }
+
+    $xw->endElement();
 
   $xw->endElement();
 
@@ -267,7 +251,7 @@ $xw->endDocument();
     $xw->startElement('IconStyle');
       $xw->writeRaw('<scale>0.5</scale>');
       $xw->startElement('Icon');
-	$xw->writeRaw('<href>http://freifunk-ol.de/netmon/templates/img/ffmap/node.png</href>');
+	$xw->writeRaw('<href>http://freifunk-ol.de/netmon/templates/img/ffmap/node_offline.png</href>');
       $xw->endElement();
       $xw->startElement('hotSpot');
 	$xw->writeAttribute( 'x', '20');
@@ -376,5 +360,136 @@ $xw->endDocument();
     print $xw->outputMemory(true);
     return true;
   }
+
+  public function conn() {/*
+   	header('Content-type: text/xml');
+		$xw = new xmlWriter();
+    $xw->openMemory();
+   
+    $xw->startDocument('1.0','UTF-8');
+    $xw->startElement ('gpx'); 
+      $xw->writeAttribute('version' , '1.0');
+
+      $xw->startElement('trk');  
+	$xw->startElement('name');
+	  $xw->writeRaw('Number');
+	$xw->endElement();
+       
+
+
+	//Hole Alle Services vom Typ node die Online sind
+	$services = Helper::getServicesByType("node");
+	foreach ($services as $key1=>$service) {
+		$data = service::getCurrentCrawlData($service['service_id']);
+		if ($data['status']=='online') {
+			foreach($data['olsrd_neighbors'] as $key2=>$neighbours) {
+			  //Hole die Service-ID der Nachbarnodes
+			  $neighbourServiceIds = Helper::getServicesByTypeAndNodeId('node', Helper::getNodeIdByIp($neighbours['IPaddress']));
+			  foreach($neighbourServiceIds as $key=>$neighbourServiceId) {
+			    $neighbourServiceCrawlData = service::getCurrentCrawlData($neighbourServiceId['service_id']);
+			    if(!empty($neighbourServiceCrawlData['longitude']) AND !empty($neighbourServiceCrawlData['latitude'])) {
+			    $linedata[$key1.$key2.$key]['my_service_id'] = $service['service_id'];
+			    $linedata[$key1.$key2.$key]['my_lon'] = $data['longitude'];
+			    $linedata[$key1.$key2.$key]['my_lat'] = $data['latitude'];
+
+			    $linedata[$key1.$key2.$key]['neighbour_service_id'] = $neighbourServiceId['service_id'];
+			    $linedata[$key1.$key2.$key]['neighbour_lon'] = $neighbourServiceCrawlData['longitude'];
+			    $linedata[$key1.$key2.$key]['neighbour_lat'] = $neighbourServiceCrawlData['latitude'];
+			    }
+			  }
+
+
+
+			}
+		}
+	}
+
+foreach($linedata as $line) {
+	$xw->startElement('trkseg');
+	  $xw->startElement('trkpt');
+	    $xw->writeAttribute( 'lat', $line['my_lat']);
+	    $xw->writeAttribute( 'lon', $line['my_lon']);
+	  $xw->endElement();
+	  $xw->startElement('trkpt');
+	    $xw->writeAttribute( 'lat', $line['neighbour_lat']);
+	    $xw->writeAttribute( 'lon', $line['neighbour_lon']);
+	  $xw->endElement();
+	$xw->endElement();
 }
-?>
+
+
+      $xw->endElement();
+    $xw->endElement();
+
+$xw->endDocument();
+
+    print $xw->outputMemory(true);
+    return true;*/
+
+    header('Content-type: text/xml');
+    $xw = new xmlWriter();
+    $xw->openMemory();
+   
+    $xw->startDocument('1.0','UTF-8');
+    $xw->startElement ('kml'); 
+      $xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+  
+      $xw->startElement('Document');   
+	$xw->writeElement ('name', '200903170407-200903170408');
+	
+	$xw->startElement('Folder');
+	  $xw->startElement('name');
+	    $xw->writeRaw('create');
+	  $xw->endElement();
+
+	  //Hole Alle Services vom Typ node die Online sind
+	  $services = Helper::getServicesByType("node");
+	  foreach ($services as $key1=>$service) {
+	    $data = service::getCurrentCrawlData($service['service_id']);
+	    if ($data['status']=='online') {
+	      foreach($data['olsrd_neighbors'] as $key2=>$neighbours) {
+		//Hole die Service-ID der Nachbarnodes
+		$neighbourServiceIds = Helper::getServicesByTypeAndNodeId('node', Helper::getNodeIdByIp($neighbours['IPaddress']));
+		foreach($neighbourServiceIds as $key=>$neighbourServiceId) {
+		  $neighbourServiceCrawlData = service::getCurrentCrawlData($neighbourServiceId['service_id']);
+		  if(!empty($neighbourServiceCrawlData['longitude']) AND !empty($neighbourServiceCrawlData['latitude'])) {
+		    $linedata[$key1.$key2.$key]['my_service_id'] = $service['service_id'];
+		    $linedata[$key1.$key2.$key]['my_lon'] = $data['longitude'];
+		    $linedata[$key1.$key2.$key]['my_lat'] = $data['latitude'];
+		    
+		    $linedata[$key1.$key2.$key]['neighbour_service_id'] = $neighbourServiceId['service_id'];
+		    $linedata[$key1.$key2.$key]['neighbour_lon'] = $neighbourServiceCrawlData['longitude'];
+		    $linedata[$key1.$key2.$key]['neighbour_lat'] = $neighbourServiceCrawlData['latitude'];
+		  }
+		}
+	      }
+	    }
+	  }
+	  
+	  foreach($linedata as $line) {
+	    $xw->startElement('Placemark');
+	      $xw->startElement('name');
+		$xw->writeRaw("myname");
+	      $xw->endElement();
+	      
+	      $xw->startElement('Polygon');
+		$xw->startElement('outerBoundaryIs');
+		  $xw->startElement('LinearRing');
+		    $xw->startElement('coordinates');
+		      $xw->writeRaw("$line[my_lon],$line[my_lat],0
+				     $line[neighbour_lon],$line[neighbour_lat],0");
+		    $xw->endElement();
+		  $xw->endElement();
+		$xw->endElement();
+	      $xw->endElement();
+	    $xw->endElement();
+	  }
+	$xw->endElement();
+      $xw->endElement();
+    $xw->endDocument();
+
+    print $xw->outputMemory(true);
+    return true;
+}
+}
+?> 

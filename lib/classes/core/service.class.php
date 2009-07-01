@@ -73,6 +73,7 @@ WHERE service_id='$service_id' AND status='online' ORDER BY id DESC LIMIT 1");
       $services = $row['id'];
     }
     unset($db);
+
     $db = new mysqlClass;
     $result = $db->mysqlQuery("SELECT * FROM crawl_data
 
