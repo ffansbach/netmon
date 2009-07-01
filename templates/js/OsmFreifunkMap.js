@@ -58,22 +58,65 @@ function init() {
 	// Initialize the map
 	map = new OpenLayers.Map ("map", {
 		controls:[new OpenLayers.Control.ScaleLine(), new OpenLayers.Control.Navigation()],
+
 		displayProjection: new OpenLayers.Projection("EPSG:4326"),
-		units: "m"
+		units: "m",
+
+                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                                 20037508.34, 20037508.34)
+
 	} );
+
+/*        map = new OpenLayers.Map('map', {
+		controls:[new OpenLayers.Control.ScaleLine(), new OpenLayers.Control.Navigation()],
+                projection: new OpenLayers.Projection("EPSG:900913"),
+                displayProjection: new OpenLayers.Projection("EPSG:4326"),
+                units: "m",
+                maxResolution: 156543.0339,
+                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                                 20037508.34, 20037508.34)
+	} );*/
+
 
 	// Add the map layer(s)
 	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-	layerOsmarender = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
-	map.addLayers([layerMapnik, layerOsmarender]);
+//	layerOsmarender = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
+	layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
+//	layerMaplint = new OpenLayers.Layer.OSM.Maplint("Maplint");
+//	layerYahooSat = new OpenLayers.Layer.cdauth.Yahoo.Satellite("Yahoo Luftbilder");
+/*
+            var gphy = new OpenLayers.Layer.Google(
+                "Google Physical",
+                {type: G_PHYSICAL_MAP}
+            );
+
+            var gmap = new OpenLayers.Layer.Google(
+                "Google Streets", // the default
+                {sphericalMercator:true}
+            );
+
+            var ghyb = new OpenLayers.Layer.Google(
+                "Google Hybrid",
+                {type: G_HYBRID_MAP, numZoomLevels: 20}
+            );
+  */          var gsat = new OpenLayers.Layer.Google(
+                "Google Satellite",
+                {sphericalMercator:true, type: G_SATELLITE_MAP, numZoomLevels: 20}
+            );
+
+  	map.addLayers([layerMapnik, layerCycleMap, gsat]);
+
 
 	// Set map center
 	point = new OpenLayers.LonLat(lon, lat);
 	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
 	map.setCenter(point, zoom);
+
+
 }
 
 function MiniMapControls() {
+	map.addControl(new OpenLayers.Control.LayerSwitcher());
 	map.addControl(new OpenLayers.Control.Attribution({position: new OpenLayers.Pixel(170,288)}));
 }
 
@@ -88,7 +131,9 @@ function MapControls() {
 function fullmap() {
 	init();
 	MapControls();
-	AddKmlLayer("online Nodes", "./index.php?get=getinfo&section=getgoogleearthkmlfile_online");
+	//Adding a second layer makes google Satelite weird!
+	AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
+	AddKmlLayer("online Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online");
 	// Please do *not* uncomment the following line
 	// currently there is a problem with SelectFeature for multiple layers
 	// if the following line is uncommented online nodes can't be selected any longer
