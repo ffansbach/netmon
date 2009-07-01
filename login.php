@@ -5,9 +5,8 @@
   $login = new login;
   $message = new message;
 
-  $smarty->assign('message', message::getMessage());
-
   if ($_GET['section']=="login") {
+    $smarty->assign('message', message::getMessage());
     $smarty->display("header.tpl.php");
     $smarty->display("login.tpl.php");
     $smarty->display("footer.tpl.php");
