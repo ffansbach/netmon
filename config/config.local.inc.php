@@ -9,7 +9,7 @@ $GLOBALS['domain'] = "freifunk-ol.de";
 $GLOBALS['mysql_host'] = "10.18.0.1";
 $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
-$GLOBALS['mysql_password'] = "e715b0904af";
+$GLOBALS['mysql_password'] = "5fac80ba3895";
 $GLOBALS['mysql_enc'] = "utf8";
 
 //FREIFUNKNETZ

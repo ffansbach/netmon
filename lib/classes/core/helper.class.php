@@ -154,6 +154,31 @@ class Helper {
     return $services;
   }
 
+  public function getServicesByTypeAndNodeId($type, $nodeId) {
+    //Nur Services zurückgeben die der Benutzer sehen darf
+    if (!usermanagement::checkPermission(4))
+      $visible = "AND visible = 1";
+    else
+      $visible = "";
+
+    $services = array();
+    $db = new mysqlClass;
+    $result = $db->mysqlQuery("SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
+				      nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
+				      subnets.subnet_ip, subnets.title,
+				      users.nickname
+			       FROM services
+			       LEFT JOIN nodes ON (nodes.id = services.node_id)
+			       LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
+			       LEFT JOIN users ON (users.id = nodes.user_id)
+			       WHERE services.typ='$type' AND nodes.id='$nodeId' $visible ORDER BY services.id");
+    while($row = mysql_fetch_assoc($result)) {
+      $services[] = $row;
+    }
+    unset($db);
+    return $services;
+  }
+
   public function getServicesByNodeId($node_id) {
     //Nur Services zurückgeben die der Benutzer sehen darf
     if (!usermanagement::checkPermission(4))
@@ -432,6 +457,32 @@ function rename_keys(&$value, $key) {
     } else {
       return $array;
     }
+  }
+
+  public function getNodeIdByIp($ip) {
+    $ipParts = explode(".", $ip);
+    try {
+      /*** query the database ***/
+      $sql = "SELECT nodes.id
+	      FROM nodes, subnets
+	      WHERE subnets.subnet_ip=$ipParts[2] AND nodes.subnet_id=subnets.id AND nodes.node_ip=$ipParts[3]";
+
+      $result = DB::getInstance()->query($sql);
+
+      foreach($result as $row) {
+        $id = $row['id'];
+      }
+    }
+    catch(PDOException $e) {
+      echo $e->getMessage();
+    }
+
+    return $id;
+  }
+
+  public function getServicesByIp($ip) {
+    $nodeId = Helper::getNodeIdByIp($ip);
+    return Helper::getServicesByNodeId($nodeId);
   }
 
 }
