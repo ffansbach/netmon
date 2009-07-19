@@ -29,58 +29,57 @@
  */
 
 class login {
-  public function user_login ($nickname, $password, &$message) {
-      if (empty($nickname) or empty($password)) {
-        $messages[] = array("Sie müssen einen Nickname und ein Passwort angeben um sich einzuloggen", 2);
-	message::setMessage($messages);
-	return false;
-      } else {
-        $password = usermanagement::encryptPassword($password);
-	//Prüfen ob Emailadresse existiert
-	$db = new mysqlClass;
-	$result = $db->mysqlQuery("select id , nickname, activated, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE nickname='$nickname' and password='$password'");
-	$login = $db->mysqlAffectedRows();
-	$user_data = mysql_fetch_assoc($result);
-	unset($db);
-	if ($login<1) {
-	  $messages[] = array("Der Benutzername existiert nicht oder das Passwort ist falsch!", 2);
-	  message::setMessage($messages);
-	  return false;
-	} elseif ($user_data['activated'] != '0') {
-	  $messages[] = array("Der Benutzername wurde noch nicht aktiviert!", 2);
-	  message::setMessage($messages);
-	  return false;
-	} else {
-	  $db = new mysqlClass;
-	  $db->mysqlQuery("UPDATE users SET last_login = NOW() where id=".$user_data['id']);
-	  unset($db);
-
-
-	  $_SESSION['user_id'] = $user_data['id'];
-	  if (isset($user_data['last_login'])) {
-	    $last_login = " Ihr letzter Login war am ".$user_data['last_login'];
-	  }
-	  $messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'].$last_login, 1);
-	  message::setMessage($messages);
-	  return true;
+	public function user_login ($nickname, $password, &$message) {
+		if (empty($nickname) or empty($password)) {
+			$messages[] = array("Sie müssen einen Nickname und ein Passwort angeben um sich einzuloggen", 2);
+			message::setMessage($messages);
+			return false;
+		} else {
+			$password = usermanagement::encryptPassword($password);
+			//Check if mailadres exists
+			try {
+				$sql = "select id , nickname, activated, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE nickname='$nickname' and password='$password'";
+				$result = DB::getInstance()->query($sql);
+				$user_data = $result->fetch(PDO::FETCH_ASSOC);
+				$login = $result->rowCount();
+				if ($login<1) {
+					$messages[] = array("Der Benutzername existiert nicht oder das Passwort ist falsch!", 2);
+					message::setMessage($messages);
+					return false;
+				} elseif ($user_data['activated'] != '0') {
+					$messages[] = array("Der Benutzername wurde noch nicht aktiviert!", 2);
+					message::setMessage($messages);
+					return false;
+				} else {
+					DB::getInstance()->query("UPDATE users SET last_login = NOW() where id=".$user_data['id']);
+					$_SESSION['user_id'] = $user_data['id'];
+					if (isset($user_data['last_login'])) {
+						$last_login = " Ihr letzter Login war am ".$user_data['last_login'];
+					}
+					
+					$messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'].$last_login, 1);
+					message::setMessage($messages);
+					return true;
+				}
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+		}
 	}
-      }
-  }
-
-  public function user_logout(&$message) {
-      if (!isset($_SESSION['user_id'])) {
-        $messages[] = array("Sie können sich nicht ausloggen, wenn Sie nicht eingeloggt sind", 2);
-	message::setMessage($messages);
-	return false;
-      } else {
-	$_SESSION = array();;
-	$messages[] = array("Sie wurden ausgeloggt und ihre Benutzersession wurde gelöscht!", 1);
-	message::setMessage($messages);
-	return true;
-      }
-  }
-
-
+	
+	public function user_logout(&$message) {
+		if (!isset($_SESSION['user_id'])) {
+			$messages[] = array("Sie können sich nicht ausloggen, wenn Sie nicht eingeloggt sind", 2);
+			message::setMessage($messages);
+			return false;
+		} else {
+			$_SESSION = array();;
+			$messages[] = array("Sie wurden ausgeloggt und ihre Benutzersession wurde gelöscht!", 1);
+			message::setMessage($messages);
+			return true;
+		}
+	}
 }
 
 ?>
