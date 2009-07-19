@@ -178,7 +178,7 @@ Nickname: $nickname
 Passwort: $password
 
 Bitte klicke auf den nachfolgenden link um deinen Account freizuschalten.
-http://$GLOBALS[domain]/$GLOBALS[subfolder]/index.php?get=register&section=activate&activation=$activation
+http://$GLOBALS[domain]/$GLOBALS[subfolder]/account_activate.php?activation_hash=$activation
 
 Das Oldenburger Freifunkteam";
     $ergebniss = mail($email, "Anmeldung Freifunk Oldenburg", $text, "From: Freifunk Oldenburg Portal <portal@freifunk-ol.de>");
