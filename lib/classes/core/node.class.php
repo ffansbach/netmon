@@ -29,23 +29,27 @@
  */
 
 class node {
-  function getNodeInfo($id) {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT nodes.id, nodes.user_id, nodes.node_ip, nodes.subnet_id, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
-				      users.nickname,
-					  subnets.title, subnets.subnet_ip
-				  FROM nodes
-				  LEFT JOIN users ON (users.id=nodes.user_id)
-				  LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-				  WHERE nodes.id=$id;");
-    
-    while($row = mysql_fetch_assoc($result)) {
-      $node = $row;
-    }
-
-    $node['is_node_owner'] = usermanagement::isThisUserOwner($node['user_id']);
-    return $node;
-  }
+	function getNodeInfo($id) {
+		try {
+			$sql = "SELECT nodes.id, nodes.user_id, nodes.node_ip, nodes.subnet_id, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
+						   users.nickname,
+						   subnets.title, subnets.subnet_ip
+					FROM nodes
+					LEFT JOIN users ON (users.id=nodes.user_id)
+					LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
+					WHERE nodes.id=$id;";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$node = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		
+		$node['is_node_owner'] = usermanagement::isThisUserOwner($node['user_id']);
+		return $node;
+	}
 
   public function getServiceList($node_id) {
 	$services = Helper::getServicesByNodeId($node_id);
