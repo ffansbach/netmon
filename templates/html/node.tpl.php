@@ -1,6 +1,6 @@
 <h1>IP <a href="http://{$net_prefix}.{$node.subnet_ip}.{$node.node_ip}">{$net_prefix}.{$node.subnet_ip}.{$node.node_ip}</h1>
 
-<b>Inhaber:</b> <a href="./index.php?get=user&id={$node.user_id}">{$node.nickname}</a><br>
+<b>Inhaber:</b> <a href="./user.php?id={$node.user_id}">{$node.nickname}</a><br>
 <b>Eingetragen seit:</b> {$node.create_date}<br>
 <b>Subnetz:</b>  <a href="./subnet.php?id={$node.subnet_id}">{$node.title}</a><br>
 
