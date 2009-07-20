@@ -29,23 +29,20 @@
  */
 
 class service {
-  public function getCrawlHistory($service_id) {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT id FROM services WHERE node_id='$id' ORDER BY id DESC LIMIT 10");
-    while($row = mysql_fetch_assoc($result)) {
-      $services = $row['id'];
-    }
-    unset($db);
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT * FROM crawl_data
-WHERE service_id='$service_id' ORDER BY id DESC LIMIT 10");
-    while($row = mysql_fetch_assoc($result)) {
-      $last_crawl[] = $row;
-    }
-    unset($db);
-    return $last_crawl;
-  }
-	
-}
+	public function getCrawlHistory($service_id) {
+		try {
+			$sql = "SELECT * FROM crawl_data
+					WHERE service_id='$service_id' ORDER BY id DESC LIMIT 10";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$last_crawl[] = $row;
+			}
+		 }
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
 
+		return $last_crawl;
+	}
+}
 ?>
