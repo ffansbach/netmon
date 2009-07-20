@@ -17,7 +17,7 @@
 <b>DHCP-bereich:</b> {$service_data.zone_start} bis {$service_data.zone_end}<br>
 <b>Crawl-Art:</b> {$service_data.crawler}<br>
 <b>Benutzer:</b> <a href="./user.php?id={$service_data.user_id}">{$service_data.nickname}</a><br>
-<b>Eingetragen am:</b> {$service_data.service_create_date}<br>
+<b>Eingetragen am:</b> {$service_data.create_date}<br>
 
 {if !empty($service_data.service_description)}
   <h2>Beschreibung</h2>

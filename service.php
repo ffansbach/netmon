@@ -6,9 +6,9 @@
 
   $smarty->assign('message', message::getMessage());
   
-  $smarty->assign('service_data', $service->getServiceData($_GET['service_id']));
-  $smarty->assign('current_crawl', $service->getCurrentCrawlData($_GET['service_id']));
-  $smarty->assign('last_online_crawl', $service->getLastOnlineCrawlData($_GET['service_id']));
+  $smarty->assign('service_data', Helper::getServiceDataByServiceId($_GET['service_id']));
+  $smarty->assign('current_crawl', Helper::getCurrentCrawlDataByServiceId($_GET['service_id']));
+  $smarty->assign('last_online_crawl', Helper::getLastOnlineCrawlDataByServiceId($_GET['service_id']));
   $smarty->assign('crawl_history', $service->getCrawlHistory($_GET['service_id']));
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
   $smarty->assign('is_node_owner', $service->is_node_owner);
