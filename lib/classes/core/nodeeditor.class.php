@@ -45,10 +45,8 @@ class nodeeditor {
     if ($range) {
       if ($node != false) {
 	//Mach DB Eintrag
-	$db = new mysqlClass;
-	$db->mysqlQuery("INSERT INTO nodes (user_id, subnet_id, node_ip, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$node', NOW());");
-	$node_id = $db->getInsertID();
-	unset($db);
+	DB::getInstance()->exec("INSERT INTO nodes (user_id, subnet_id, node_ip, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$node', NOW());");
+	$node_id = DB::getInstance()->lastInsertId();
 
 	$service = editingHelper::addNodeTyp($node_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible']);
 
@@ -72,22 +70,6 @@ class nodeeditor {
     }
   }
 
-  public function getNodeData($id) {
-		$db = new mysqlClass;
-		$result = $db->mysqlQuery("SELECT nodes.id, nodes.user_id, nodes.node_ip, nodes.subnet_id, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
-					  users.nickname,
-					  subnets.title, subnets.subnet_ip
-				  FROM nodes
-				   LEFT JOIN users ON (users.id=nodes.user_id)
-				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-				   WHERE nodes.id='$id';");
-    
-		while($row = mysql_fetch_assoc($result)) {
-		      $node = $row;
-		}
-		return $node;
-  }
-
   public function deleteNode($node_id) {
 	foreach (Helper::getServicesByNodeId($node_id) as $services) {
 		serviceeditor::deleteService($services['service_id']);
@@ -95,9 +77,7 @@ class nodeeditor {
 
 	vpn::deleteCCD($node_id);
 	
-	$db = new mysqlClass;
-	$db->mysqlQuery("DELETE FROM nodes WHERE id='$node_id';");
-	unset($db);
+	DB::getInstance()->exec("DELETE FROM nodes WHERE id='$node_id';");
 	$message[] = array("Der Node mit der ID ".$node_id." wurde gelöscht.",1);
 	message::setMessage($message);
   }
