@@ -70,4 +70,4 @@ WHERE id = '$service_id'
   
 }
 
-?> 
+?>

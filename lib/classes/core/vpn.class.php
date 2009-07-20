@@ -28,6 +28,8 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+  require_once('./lib/classes/extern/archive.class.php');
+
 class vpn {
 public function generateKeys($node_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $privkeypass_chk, $expiration) {
     $db = new mysqlClass;
