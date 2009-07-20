@@ -1,4 +1,4 @@
-<h1>Netmon 0.1, Codename "first"</h1>
+<h1>Netmon 0.2 TESTING, Codename "shake-up"</h1>
 
 <p>Netmon ist ein Projekt des <a href="http://freifunk-ol.de">Oldenburger Freifunknetzwerkes</a>.<br>
 Netmon 0.1 stellt das erste offizielle Release dar und kann noch Fehler enthalten.</p>

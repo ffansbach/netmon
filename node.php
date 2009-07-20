@@ -6,7 +6,7 @@
 
   $smarty->assign('message', message::getMessage());
   
-  $smarty->assign('node', $node->getNodeInfo($_GET['id']));
+  $smarty->assign('node', Helper::getNodeInfo($_GET['id']));
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
   $smarty->assign('is_node_owner', $node->is_node_owner);
   $smarty->assign('servicelist', $node->getServiceList($_GET['id']));

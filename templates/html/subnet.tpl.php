@@ -18,9 +18,11 @@ Eingetragen seit: {$subnet.create_date}<br>
 	<h2>Radius des Netzes<h2>
 	<!--<small style="font-size: 9pt;">Map Data from <a href="http://openstreetmap.org">OpenStreetMap</a></small>-->
 
-	<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
-	<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
-	<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+		<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
+		<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
+		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
+		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>
 	<div id="map" style="height:300px; width:300px; border:solid 1px black;font-size:9pt;">
 		<script type="text/javascript">
 			var lon = {$subnet.longitude};

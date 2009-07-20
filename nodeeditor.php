@@ -24,7 +24,7 @@
     }
     if ($_GET['section'] == "edit") {
 		$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-		$node_data = $nodeeditor->getNodeData($_GET['id']);
+		$node_data = Helper::getNodeDataByNodeId($_GET['id']);
 		$smarty->assign('node_data', $node_data);
 
 		$smarty->display("header.tpl.php");
@@ -35,5 +35,4 @@
 		$nodeeditor->deleteNode($_GET['id']);
 		header('Location: ./user.php?id='.$_SESSION['user_id']);
     }
-
 ?>
