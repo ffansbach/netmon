@@ -29,203 +29,192 @@
  */
 
 class editingHelper {
-  public function getAFreeIP($subnet_id, $zone_start=false, $zone_end=false) {
-    //Alle irgendwie im Subnet existierende IP's holen
-    $existingips = editingHelper::getExistingIps($subnet_id);
-
-    //Für den Node bestimmte Range den Existierenden IP's hinzufügen
-    if ($zone_start AND $zone_end) {
-      for ($i=$zone_start; $i<=$zone_end; $i++) {
-	array_push($existingips, $i);
-      }
-    }
-
-    //Erste freie IP nehmen
-    for ($i=1; ($i<=245 AND !isset($available_node)); $i++) {
-      if(!in_array($i, $existingips)) {
-		$available_node = $i;
-      }
-    }
-
-    if (isset($available_node)) {
-      return $available_node;
-    } else {
-      return false;
-    }
-  }
-
-  public function getExistingSubnets() {
-    $subnets = array();
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("select subnet_ip FROM subnets ORDER BY subnet_ip ASC");
-    while($row = mysql_fetch_assoc($result)) {
-      $subnets[] = $row['subnet_ip'];
-    }
-    return $subnets;
-  }
-
-  public function getExistingSubnetsWithID() {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("select id, subnet_ip FROM subnets ORDER BY subnet_ip ASC");
-    while($row = mysql_fetch_assoc($result)) {
-      $subnets[] = array('id'=>$row['id'],
-			 'subnet_ip'=>$row['subnet_ip']);
-    }
-    return $subnets;
-  }
-
-  public function getFreeSubnets() {
-    $subnets = editingHelper::getExistingSubnets();
-    for ($i=0; $i<=255; $i++) {
-      if(!in_array($i, $subnets)) {
-	$available_subnets[] = $i;
-      }
-    }
-    return $available_subnets;
-  }
-  
-  
-
-  public function getExistingNodes($subnet_id) {
-    $nodes = array();
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT node_ip FROM nodes  WHERE subnet_id='$subnet_id' ORDER BY node_ip ASC");
-    while($row = mysql_fetch_assoc($result)) {
-      $nodes[$row['node_ip']] = $row['node_ip'];
-    }
-    unset($db);
-    return $nodes;
-  }
-
-  public function getExistingNodesWithID($subnet_id) {
-    $nodes = array();
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT id, node_ip FROM nodes WHERE subnet_id='$subnet_id' ORDER BY node_ip ASC");
-    while($row = mysql_fetch_assoc($result)) {
-      $nodes[$row['node_ip']] = array('node_ip'=>$row['node_ip'], 'id'=>$row['id']);
-    }
-    unset($db);
-    return $nodes;
-  }
-
-  public function getExistingRanges($subnet_id) {
-    $services = Helper::getServiceseBySubnetId($subnet_id);
-    $zones = array();
-    foreach ($services as $service) {
-      for ($i=$service['zone_start']; $i<=$service['zone_end']; $i++) {
-	$zones[$i] = $i;
-      }
+	public function getAFreeIP($subnet_id, $zone_start=false, $zone_end=false) {
+		//Alle irgendwie im Subnet existierende IP's holen
+		$existingips = editingHelper::getExistingIps($subnet_id);
+		
+		//Für den Node bestimmte Range den Existierenden IP's hinzufügen
+		if ($zone_start AND $zone_end) {
+			for ($i=$zone_start; $i<=$zone_end; $i++) {
+				array_push($existingips, $i);
+			}
+		}
+		
+		//Erste freie IP nehmen
+		for ($i=1; ($i<=245 AND !isset($available_node)); $i++) {
+			if(!in_array($i, $existingips)) {
+				$available_node = $i;
+			}
+		}
+		
+		if (isset($available_node)) {
+			return $available_node;
+		} else {
+			return false;
+		}
+	}
 	
-    }
-    return $zones;
-  }
-  //DEPRECATED
-  public function getExistingRangesWithNode($subnet_id) {
-    $zones = array();
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT id, zone_start, zone_end FROM nodes WHERE subnet_id='$subnet_id' AND zone_start IS NOT NULL AND zone_end IS NOT NULL ORDER BY zone_start ASC");
-    while($row = mysql_fetch_assoc($result)) {
-      for ($i=$row['zone_start']; $i<=$row['zone_end']; $i++) {
-	$zones[$i] = array('range'=>$i, 'node_id'=>$row['id']);
-      }
-	
-    }
-    unset($db);
-    return $zones;
-  }
-
-  //ready
-  public function getExistingIps($subnet_id) {
-    return array_merge(editingHelper::getExistingNodes($subnet_id), editingHelper::getExistingRanges($subnet_id));
-  }
-
-  public function getFreeIpZone($subnet_id, $range, $node) {
-    //Anzahl der zu reservierenden IP's
-    $range = $range-1;
-    $used_zones = array();
-    $zones = array();
-
-    $existing_ips = editingHelper::getExistingIps($subnet_id);
-    
-    //Array aller nicht mit Zonen oder Nodes belegter IPs erstellen
-    for ($i=1; $i<=255; $i++) {
-    	if (!in_array($i, $existing_ips) AND $i!=$node) {
-			$zonestrahl[] = $i;	
-    	}
-    }
-    
-    //Nach freier Zone suchen
-   	$stop = false;
-    for ($i=0; ($i<(count($zonestrahl)-$range) AND !$stop); $i++ ) {
-    	//Hol den ersten freien Raum der irgendwie erreichbar ist
-    	if ($range==($zonestrahl[$i+$range]-$zonestrahl[$i])) {
-    		$zone_start_first = $zonestrahl[$i];
-    		$zone_end_first = $zonestrahl[$i+$range];
-    		$stop = true;
-    	}
-    }
-    	
-    $stop = false;
-    for ($i=0; ($i<(count($zonestrahl)-$range) AND !$stop); $i++ ) {
-    	//Hol einen freien Raum der genau zwischen zwei andere belegte Räume passt
-    	if (($range==($zonestrahl[$i+$range]-$zonestrahl[$i])) AND ($zonestrahl[$i-1]!=($zonestrahl[$i]-1)) AND (($zonestrahl[$i+$range+1])!=$zonestrahl[$i]+$range+1)) {
-    		$zone_start_between = $zonestrahl[$i];
-    		$zone_end_between = $zonestrahl[$i+$range];
-    		$stop = true;
-    	}
-    }
-    
-    if (isset($zone_start_between) AND isset($zone_end_between)) {
-    	$zone_start = $zone_start_between;
-    	$zone_end = $zone_end_between;
-	$return = true;
-    } elseif (isset($zone_start_first) AND isset($zone_end_first)) {
-    	$zone_start = $zone_start_first;
-    	$zone_end = $zone_end_first;
-    	$return = true;
-    } else {
-      $return = false;
-    }
-
-    if ($range > 0) {
-     return array('return'=>$return, 'start'=>$zone_start, 'end'=>$zone_end);
-    } else {
-      //NULL Gibt Probleme beim ändern wenn Range vorher auch NULL ist! (Clemens)
-     return array('return'=>$return, 'start'=>"NULL", 'end'=>"NULL");
-    }
- }
-
-  public function addNodeTyp($node_id, $title, $description, $typ, $crawler, $port, $zone_start, $zone_end, $radius=80, $visible) {
-	if (!empty($port)) {
-		$crawler = $port;
+	public function getExistingSubnets() {
+		$subnets = array();
+		try {
+			$sql = "select subnet_ip FROM subnets ORDER BY subnet_ip ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$subnets[] = $row['subnet_ip'];
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $subnets;
 	}
 
-    $db = new mysqlClass;
-    $db->mysqlQuery("INSERT INTO services (node_id, title, description, typ, crawler, zone_start, zone_end, radius, visible, create_date) VALUES ('$node_id', '$title', '$description', '$typ', '$crawler', '$zone_start', '$zone_end', '$radius', '$visible', NOW());");
-    $service_id = $db->getInsertID();
-    unset($db);
+	public function getExistingSubnetsWithID() {
+		try {
+			$sql = "select id, subnet_ip FROM subnets ORDER BY subnet_ip ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$subnets[] = array('id'=>$row['id'], 'subnet_ip'=>$row['subnet_ip']);
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $subnets;
+	}
+	
+	public function getFreeSubnets() {
+		$subnets = editingHelper::getExistingSubnets();
+		for ($i=0; $i<=255; $i++) {
+			if(!in_array($i, $subnets)) {
+				$available_subnets[] = $i;
+			}
+		}
+		return $available_subnets;
+	}
+	
+	public function getExistingNodes($subnet_id) {
+		$nodes = array();
+		try {
+			$sql = "SELECT node_ip FROM nodes  WHERE subnet_id='$subnet_id' ORDER BY node_ip ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$nodes[$row['node_ip']] = $row['node_ip'];
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $nodes;
+	}
 
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("select nodes.node_ip, subnets.subnet_ip FROM nodes LEFT JOIN subnets ON (subnets.id=nodes.subnet_id) WHERE nodes.id='$node_id'");
-    while($row = mysql_fetch_assoc($result)) {
-      $node_data = $row;
-    }
-    unset($db);
-    $message[] = array("Ein Nodetyp  vom Typ ".$typ." wurde dem Node mit der IP $GLOBALS[net_prefix].$node_data[subnet_ip].$node_data[node_ip] hinzugefügt.",1);
-    message::setMessage($message);
+	public function getExistingNodesWithID($subnet_id) {
+		$nodes = array();
+		try {
+			$sql = "SELECT id, node_ip FROM nodes WHERE subnet_id='$subnet_id' ORDER BY node_ip ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$nodes[$row['node_ip']] = array('node_ip'=>$row['node_ip'], 'id'=>$row['id']);
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $nodes;
+	}
+	
+	public function getExistingRanges($subnet_id) {
+		$services = Helper::getServiceseBySubnetId($subnet_id);
+		$zones = array();
+		foreach ($services as $service) {
+			for ($i=$service['zone_start']; $i<=$service['zone_end']; $i++) {
+				$zones[$i] = $i;
+			}
+		}
+		return $zones;
+	}
 
-    return array("result"=>true, "service_id"=>$service_id);
-  }
-
-  public function removeNodeTyp($id) {
-    $db = new mysqlClass;
-    $db->mysqlQuery("DELETE FROM services WHERE id='$id';");
-    unset($db);
-    $message[] = array("Der Nodetyp  mit der ID ".$id." wurde gelöscht.", 1);
-    message::setMessage($message);
-    return true;
-  }
-
+	public function getExistingIps($subnet_id) {
+		return array_merge(editingHelper::getExistingNodes($subnet_id), editingHelper::getExistingRanges($subnet_id));
+	}
+	
+	public function getFreeIpZone($subnet_id, $range, $node) {
+		//Anzahl der zu reservierenden IP's
+		$range = $range-1;
+		$used_zones = array();
+		$zones = array();
+		
+		$existing_ips = editingHelper::getExistingIps($subnet_id);
+		
+		//Array aller nicht mit Zonen oder Nodes belegter IPs erstellen
+		for ($i=1; $i<=255; $i++) {
+			if (!in_array($i, $existing_ips) AND $i!=$node) {
+				$zonestrahl[] = $i;	
+			}
+		}
+		
+		//Nach freier Zone suchen
+		$stop = false;
+		for ($i=0; ($i<(count($zonestrahl)-$range) AND !$stop); $i++ ) {
+			//Hol den ersten freien Raum der irgendwie erreichbar ist
+			if ($range==($zonestrahl[$i+$range]-$zonestrahl[$i])) {
+				$zone_start_first = $zonestrahl[$i];
+				$zone_end_first = $zonestrahl[$i+$range];
+				$stop = true;
+			}
+		}
+		
+		$stop = false;
+		for ($i=0; ($i<(count($zonestrahl)-$range) AND !$stop); $i++ ) {
+			//Hol einen freien Raum der genau zwischen zwei andere belegte Räume passt
+			if (($range==($zonestrahl[$i+$range]-$zonestrahl[$i])) AND ($zonestrahl[$i-1]!=($zonestrahl[$i]-1)) AND (($zonestrahl[$i+$range+1])!=$zonestrahl[$i]+$range+1)) {
+				$zone_start_between = $zonestrahl[$i];
+				$zone_end_between = $zonestrahl[$i+$range];
+				$stop = true;
+			}
+		}
+		
+		if (isset($zone_start_between) AND isset($zone_end_between)) {
+			$zone_start = $zone_start_between;
+			$zone_end = $zone_end_between;
+			$return = true;
+		} elseif (isset($zone_start_first) AND isset($zone_end_first)) {
+			$zone_start = $zone_start_first;
+			$zone_end = $zone_end_first;
+			$return = true;
+		} else {
+			$return = false;
+		}
+		
+		if ($range > 0) {
+			return array('return'=>$return, 'start'=>$zone_start, 'end'=>$zone_end);
+		} else {
+			//NULL Gibt Probleme beim ändern wenn Range vorher auch NULL ist! (Clemens)
+			return array('return'=>$return, 'start'=>"NULL", 'end'=>"NULL");
+		}
+	}
+	
+	public function addNodeTyp($node_id, $title, $description, $typ, $crawler, $port, $zone_start, $zone_end, $radius=80, $visible) {
+		if (!empty($port)) {
+			$crawler = $port;
+		}
+		
+		DB::getInstance()->exec("INSERT INTO services (node_id, title, description, typ, crawler, zone_start, zone_end, radius, visible, create_date) VALUES ('$node_id', '$title', '$description', '$typ', '$crawler', '$zone_start', '$zone_end', '$radius', '$visible', NOW());");
+		$service_id = DB::getInstance()->lastInsertId();
+		
+		try {
+			$sql = "select nodes.node_ip, subnets.subnet_ip FROM nodes LEFT JOIN subnets ON (subnets.id=nodes.subnet_id) WHERE nodes.id='$node_id'";
+			$result = DB::getInstance()->query($sql);
+			$node_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		$message[] = array("Ein Nodetyp  vom Typ ".$typ." wurde dem Node mit der IP $GLOBALS[net_prefix].$node_data[subnet_ip].$node_data[node_ip] hinzugefügt.",1);
+		message::setMessage($message);
+		
+		return array("result"=>true, "service_id"=>$service_id);
+	}
 }
 
 ?>

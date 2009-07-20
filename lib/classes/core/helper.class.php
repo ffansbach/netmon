@@ -29,29 +29,24 @@
  */
 
 class Helper {
-  public function getNodeInfo($id) {
-    try {
-      $sql = "SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
-				      users.nickname,
-				      subnets.title, subnets.subnet_ip
-				  FROM nodes
-				   LEFT JOIN users ON (users.id=nodes.user_id)
-				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-				   WHERE nodes.id=$id";
-
-      $result = DB::getInstance()->query($sql);
-
-      foreach($result as $row) {
-        $node[] = $row;
-      }
-    }
-    catch(PDOException $e) {
-      echo $e->getMessage();
-    }
-
-    $node['is_node_owner'] = usermanagement::isThisUserOwner($node['user_id']);
-    return $node;
-  }
+	public function getNodeInfo($id) {
+		try {
+			$sql = "SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
+						   users.nickname,
+						   subnets.title, subnets.subnet_ip
+					FROM nodes
+					LEFT JOIN users ON (users.id=nodes.user_id)
+					LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
+					WHERE nodes.id=$id";
+			$result = DB::getInstance()->query($sql);
+			$node = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		$node['is_node_owner'] = usermanagement::isThisUserOwner($node['user_id']);
+		return $node;
+	}
   
   public function getNodeDataByNodeId($id) {
     try {
@@ -62,12 +57,8 @@ class Helper {
 				   LEFT JOIN users ON (users.id=nodes.user_id)
 				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
 				   WHERE nodes.id=$id";
-
       $result = DB::getInstance()->query($sql);
-
-      foreach($result as $row) {
-        $node[] = $row;
-      }
+	  $node = $result->fetch(PDO::FETCH_ASSOC);
     }
     catch(PDOException $e) {
       echo $e->getMessage();
@@ -77,39 +68,32 @@ class Helper {
     return $node;
   }
 
-  public function getSubnetById($subnet_id) {
-    try {
-      $sql = "select subnet_ip FROM subnets WHERE id='$subnet_id'";
+	public function getSubnetById($subnet_id) {
+		try {
+			$sql = "select subnet_ip FROM subnets WHERE id='$subnet_id'";
+			$result = DB::getInstance()->query($sql);
+			$subnet = $result->fetch(PDO::FETCH_ASSOC);
+			$subnet = $subnet['subnet_ip'];
 
-      $result = DB::getInstance()->query($sql);
-
-      foreach($result as $row) {
-	$subnet = $row['subnet_ip'];
-      }
-    }
-    catch(PDOException $e) {
-      echo $e->getMessage();
-    }
-
-    return $subnet;
-  }
-
-  public function getIpOfNodeById($node_id) {
-	try {
-		$sql = "select node_ip FROM nodes WHERE id='$node_id';";
-		$result = DB::getInstance()->query($sql);
-		
-		foreach($result as $row) {
-			$node = $row['node_ip'];
 		}
-	}
-	
-	catch(PDOException $e) {
-		echo $e->getMessage();
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $subnet;
 	}
 
-    return $node;
-  }
+	public function getIpOfNodeById($node_id) {
+		try {
+			$sql = "select node_ip FROM nodes WHERE id='$node_id';";
+			$result = DB::getInstance()->query($sql);
+			$node = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		
+		return $node['node_ip'];
+	}
 
   public function getNodeIdByServiceId($service_id) {
 	try {
