@@ -2,11 +2,12 @@
 
 //WEBSERVER
 $GLOBALS['subfolder'] = "netmon";
-$GLOBALS['monitor_root'] = $_SERVER["DOCUMENT_ROOT"].$GLOBALS['subfolder'];
 $GLOBALS['domain'] = "freifunk-ol.de";
+$GLOBALS['monitor_root'] = $_SERVER["DOCUMENT_ROOT"].$GLOBALS['subfolder'];
+$GLOBALS['url_to_netmon'] = $GLOBALS['domain']."/".$GLOBALS['subfolder'];
 
 //MYSQL
-$GLOBALS['mysql_host'] = "10.18.0.1";
+$GLOBALS['mysql_host'] = "localhost";
 $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
 $GLOBALS['mysql_password'] = "5fac80ba3895";

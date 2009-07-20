@@ -19,9 +19,6 @@
 // along with this program; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
-
-require_once('./lib/classes/core/service.class.php');
-
 /**
  * This file contains the class for the Map part of the Netmon API.
  *
@@ -31,465 +28,365 @@ require_once('./lib/classes/core/service.class.php');
  */
 
 class apiMap {
-   //Funktion modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
-   //Prints a KML file that can be used with OpenStreetmap and the Modified freifunkmap.php
-   /**
-    * print a xml file to use with GoogleEarth
-    */
-   public function getgoogleearthkmlfile_online( ) {
-   	header('Content-type: text/xml');
+	//Funktion modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
+	//Prints a KML file that can be used with OpenStreetmap and the Modified freifunkmap.php
+	/**
+	* print a xml file to use with GoogleEarth
+	*/
+	public function getgoogleearthkmlfile_online( ) {
+		header('Content-type: text/xml');
 		$xw = new xmlWriter();
-    $xw->openMemory();
-   
-    $xw->startDocument('1.0','UTF-8');
-    $xw->startElement ('kml'); 
-    $xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
-  
-    $xw->startElement('Document');   
-    $xw->writeElement ('name', '200903170407-200903170408');
-   
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'lineStyleCreated');
-    $xw->startElement('PolyStyle');
-      $xw->writeRaw('<color>0000ffff</color>');
-    $xw->endElement();
-    $xw->startElement('LineStyle');
-      $xw->writeRaw('<color>cc00ffff</color>');
-      $xw->writeRaw('<width>2</width>');
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'lineStyleModified');
-    $xw->startElement('PolyStyle');
-      $xw->writeRaw('<color>00ff0000</color>');
-    $xw->endElement();
-    $xw->startElement('LineStyle');
-      $xw->writeRaw('<color>ccff0000</color>');
-      $xw->writeRaw('<width>3</width>');
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'lineStyleDeleted');
-    $xw->startElement('PolyStyle');
-      $xw->writeRaw('<color>000000ff</color>');
-    $xw->endElement();
-    $xw->startElement('LineStyle');
-      $xw->writeRaw('<color>cc0000ff</color>');
-      $xw->writeRaw('<width>4</width>');
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'sh_ylw-pushpin');
-    $xw->startElement('IconStyle');
-      $xw->writeRaw('<scale>0.5</scale>');
-      $xw->startElement('Icon');
-	$xw->writeRaw('<href>http://freifunk-ol.de/netmon/templates/img/ffmap/node.png</href>');
-      $xw->endElement();
-
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'sh_blue-pushpin');
-    $xw->startElement('IconStyle');
-      $xw->writeRaw('<scale>1.3</scale>');
-      $xw->startElement('Icon');
-	$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>');
-      $xw->endElement();
-      $xw->startElement('hotSpot');
-	$xw->writeAttribute( 'x', '20');
-	$xw->writeAttribute( 'y', '2');
-	$xw->writeAttribute( 'xunits', 'pixels');
-	$xw->writeAttribute( 'yunits', 'pixels');
-      $xw->endElement();
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('ListStyle');
-  $xw->endElement();
-
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'sh_red-pushpin');
-    $xw->startElement('IconStyle');
-      $xw->writeRaw('<scale>1.3</scale>');
-      $xw->startElement('Icon');
-	$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href>');
-      $xw->endElement();
-      $xw->startElement('hotSpot');
-	$xw->writeAttribute( 'x', '20');
-	$xw->writeAttribute( 'y', '2');
-	$xw->writeAttribute( 'xunits', 'pixels');
-	$xw->writeAttribute( 'yunits', 'pixels');
-      $xw->endElement();
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('ListStyle');
-  $xw->endElement();
-
-  $xw->startElement('Folder');
-    $xw->startElement('name');
-      $xw->writeRaw('create');
-    $xw->endElement();
-
-	$services = Helper::getServicesByType("node");
-	foreach ($services as $service) {
-		$data = service::getCurrentCrawlData($service['service_id']);
-		if ($data['status']=='online') {
-			$crawl = $data;
-			if(!is_array($crawl)) {
-				$crawl = array();
-			}
-			$data = Helper::getServiceDataByServiceId($service['service_id']);
-			$clients=0;
-			if (is_array($crawl['neightbors'])) {
-				foreach ($crawl['neightbors'] as $neightbor) {
-					if ($neightbor['2HopNeightbors']) {
-						$clients++;					
+		$xw->openMemory();
+		$xw->startDocument('1.0','UTF-8');
+			$xw->startElement ('kml'); 
+				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+				$xw->startElement('Document');   
+					$xw->writeElement ('name', '200903170407-200903170408');
+					$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'lineStyleCreated');
+					$xw->startElement('PolyStyle');
+						$xw->writeRaw('<color>0000ffff</color>');
+					$xw->endElement();
+					$xw->startElement('LineStyle');
+						$xw->writeRaw('<color>cc00ffff</color>');
+						$xw->writeRaw('<width>2</width>');
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'lineStyleModified');
+					$xw->startElement('PolyStyle');
+						$xw->writeRaw('<color>00ff0000</color>');
+					$xw->endElement();
+					$xw->startElement('LineStyle');
+						$xw->writeRaw('<color>ccff0000</color>');
+						$xw->writeRaw('<width>3</width>');
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'lineStyleDeleted');
+					$xw->startElement('PolyStyle');
+						$xw->writeRaw('<color>000000ff</color>');
+					$xw->endElement();
+					$xw->startElement('LineStyle');
+						$xw->writeRaw('<color>cc0000ff</color>');
+						$xw->writeRaw('<width>4</width>');
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_ylw-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/node.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_blue-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>1.3</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>');
+						$xw->endElement();
+						$xw->startElement('hotSpot');
+							$xw->writeAttribute( 'x', '20');
+							$xw->writeAttribute( 'y', '2');
+							$xw->writeAttribute( 'xunits', 'pixels');
+							$xw->writeAttribute( 'yunits', 'pixels');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_red-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>1.3</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href>');
+						$xw->endElement();
+						$xw->startElement('hotSpot');
+							$xw->writeAttribute( 'x', '20');
+							$xw->writeAttribute( 'y', '2');
+							$xw->writeAttribute( 'xunits', 'pixels');
+							$xw->writeAttribute( 'yunits', 'pixels');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Folder');
+					$xw->startElement('name');
+						$xw->writeRaw('create');
+					$xw->endElement();
+						
+					$services = Helper::getServicesByType("node");
+					foreach ($services as $service) {
+						$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+						if ($data['status']=='online') {
+							$crawl = $data;
+							if(!is_array($crawl)) {
+								$crawl = array();
+							}
+							$data = Helper::getServiceDataByServiceId($service['service_id']);
+							$clients=0;
+							if (is_array($crawl['neightbors'])) {
+								foreach ($crawl['neightbors'] as $neightbor) {
+									if ($neightbor['2HopNeightbors']) {
+										$clients++;
+									}
+								}
+							}
+							$nodelist[] = array_merge($crawl, $data, array('clients'=>$clients));
+						}
 					}
-				}				
-			}
-
-			$nodelist[] = array_merge($crawl, $data, array('clients'=>$clients));
-		}
+					foreach($nodelist as $entry) {
+						if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
+							$xw->startElement('Placemark');
+								$xw->startElement('name');
+									$xw->writeRaw("<![CDATA[Node <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a> ($entry[title])]]>");
+								$xw->endElement();
+								$xw->startElement('description');
+									$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
+									$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+												   DHCP-Range: $entry[zone_start]-$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
+												   SSID: $entry[ssid]<br>
+												   Beschreibung: $entry[description]<br>
+												   Letzter Crawl: $entry[crawl_time]<br>";
+									$xw->writeRaw("<![CDATA[$box_inhalt]]>");
+								$xw->endElement();
+								$xw->startElement('styleUrl');
+									$xw->writeRaw('#sh_ylw-pushpin');
+								$xw->endElement();
+								$xw->startElement('Point');
+									$xw->startElement('coordinates');
+										$xw->writeRaw("$entry[longitude],$entry[latitude],0");
+									$xw->endElement();
+								$xw->endElement();
+							$xw->endElement();
+						}
+					}
+				$xw->endElement();
+			$xw->endElement();
+		$xw->endDocument();
+		
+		print $xw->outputMemory(true);
+		return true;
 	}
 	
-    foreach($nodelist as $entry) {
-   	if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
-    $xw->startElement('Placemark');
-      $xw->startElement('name');
-	$xw->writeRaw("<![CDATA[Node <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a> ($entry[title])]]>");
-      $xw->endElement();
-      $xw->startElement('description');
-      $entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
-	$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
-			DHCP-Range: $entry[zone_start]-$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
-			SSID: $entry[ssid]<br>
-			Beschreibung: $entry[description]<br>
-			Letzter Crawl: $entry[crawl_time]<br>";
-
-	$xw->writeRaw("<![CDATA[$box_inhalt]]>");
-      $xw->endElement();
-//Green Point-Image, not centralized.
-      $xw->startElement('styleUrl');
-	$xw->writeRaw('#sh_ylw-pushpin');
-      $xw->endElement();
-      $xw->startElement('Point');
-	$xw->startElement('coordinates');
-	  $xw->writeRaw("$entry[longitude],$entry[latitude],0");
-	$xw->endElement();
-      $xw->endElement();
-    $xw->endElement();
-    	}
-}
-
-    $xw->endElement();
-
-  $xw->endElement();
-
-$xw->endDocument();
-
-    print $xw->outputMemory(true);
-    return true;
-  }
-  
-   //Funktion modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
-   //Prints a KML file that can be used with OpenStreetmap and the Modified freifunkmap.php
-   /**
-    * print a xml file to use with GoogleEarth
-    */
-   public function getgoogleearthkmlfile_offline( ) {
-   	header('Content-type: text/xml');
+	/**
+	 * print a xml file to use with GoogleEarth
+	 */
+	public function getgoogleearthkmlfile_offline( ) {
+		header('Content-type: text/xml');
 		$xw = new xmlWriter();
-    $xw->openMemory();
-   
-    $xw->startDocument('1.0','UTF-8');
-    $xw->startElement ('kml'); 
-    $xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
-  
-    $xw->startElement('Document');   
-    $xw->writeElement ('name', '200903170407-200903170408');
-   
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'lineStyleCreated');
-    $xw->startElement('PolyStyle');
-      $xw->writeRaw('<color>0000ffff</color>');
-    $xw->endElement();
-    $xw->startElement('LineStyle');
-      $xw->writeRaw('<color>cc00ffff</color>');
-      $xw->writeRaw('<width>2</width>');
-    $xw->endElement();
-  $xw->endElement();
+		$xw->openMemory();
+		$xw->startDocument('1.0','UTF-8');
+			$xw->startElement ('kml'); 
+				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+				$xw->startElement('Document');   
+					$xw->writeElement ('name', '200903170407-200903170408');
+					$xw->startElement('Style');
+						$xw->writeAttribute( 'id', 'lineStyleCreated');
+						$xw->startElement('PolyStyle');
+							$xw->writeRaw('<color>0000ffff</color>');
+						$xw->endElement();
+						$xw->startElement('LineStyle');
+							$xw->writeRaw('<color>cc00ffff</color>');
+							$xw->writeRaw('<width>2</width>');
+						$xw->endElement();
+					$xw->endElement();
+					$xw->startElement('Style');
+						$xw->writeAttribute( 'id', 'lineStyleModified');
+						$xw->startElement('PolyStyle');
+							$xw->writeRaw('<color>00ff0000</color>');
+						$xw->endElement();
+						$xw->startElement('LineStyle');
+							$xw->writeRaw('<color>ccff0000</color>');
+							$xw->writeRaw('<width>3</width>');
+						$xw->endElement();
+					$xw->endElement();
+					$xw->startElement('Style');
+						$xw->writeAttribute( 'id', 'lineStyleDeleted');
+						$xw->startElement('PolyStyle');
+							$xw->writeRaw('<color>000000ff</color>');
+						$xw->endElement();
+						$xw->startElement('LineStyle');
+							$xw->writeRaw('<color>cc0000ff</color>');
+							$xw->writeRaw('<width>4</width>');
+						$xw->endElement();
+					$xw->endElement();
+					$xw->startElement('Style');
+						$xw->writeAttribute( 'id', 'sh_ylw-pushpin');
+						$xw->startElement('IconStyle');
+							$xw->writeRaw('<scale>0.5</scale>');
+							$xw->startElement('Icon');
+								$xw->writeRaw('<href>http://freifunk-ol.de/netmon/templates/img/ffmap/node_offline.png</href>');
+						$xw->endElement();
+						$xw->startElement('hotSpot');
+							$xw->writeAttribute( 'x', '20');
+							$xw->writeAttribute( 'y', '2');
+							$xw->writeAttribute( 'xunits', 'pixels');
+							$xw->writeAttribute( 'yunits', 'pixels');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_blue-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>1.3</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>');
+						$xw->endElement();
+						$xw->startElement('hotSpot');
+							$xw->writeAttribute( 'x', '20');
+							$xw->writeAttribute( 'y', '2');
+							$xw->writeAttribute( 'xunits', 'pixels');
+							$xw->writeAttribute( 'yunits', 'pixels');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_red-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>1.3</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href>');
+						$xw->endElement();
+						$xw->startElement('hotSpot');
+							$xw->writeAttribute( 'x', '20');
+							$xw->writeAttribute( 'y', '2');
+							$xw->writeAttribute( 'xunits', 'pixels');
+							$xw->writeAttribute( 'yunits', 'pixels');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+					$xw->endElement();
+					$xw->startElement('Folder');
+						$xw->startElement('name');
+							$xw->writeRaw('create');
+						$xw->endElement();
+						try {
+							$sql = "SELECT id FROM services WHERE typ='node' ORDER BY id";
+							$result = DB::getInstance()->query($sql);
+							foreach($result as $row) {
+								$services[] = $row['id'];
+							}
+						}
+						catch(PDOException $e) {
+							echo $e->getMessage();
+						}
+						foreach ($services as $service) {
+							$data = Helper::getCurrentCrawlDataByServiceId($service);
+							if ($data['status']=='offline') {
+								$crawl = Helper::getLastOnlineCrawlDataByServiceId($service);
+								if (!is_array($crawl)) {
+									$crawl = array();
+								} 
+								$data = Helper::getServiceDataByServiceId($service);
+								$nodelist[] = array_merge($crawl, $data);
+							}
+						}
+						
+						foreach($nodelist as $entry) {
+							if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
+								$xw->startElement('Placemark');
+									$xw->startElement('name');
+										$xw->writeRaw("<![CDATA[Node <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a>]]>");
+									$xw->endElement();
+									$xw->startElement('description');
+										$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
+										$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+													   DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
+													   <br><b>Dieser Node ist offline</b><br>
+													   Letztes mal online: $entry[crawl_time]<br>";
+										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
+									$xw->endElement();
+									$xw->startElement('styleUrl');
+										$xw->writeRaw('#sh_ylw-pushpin');
+									$xw->endElement();
+									$xw->startElement('Point');
+										$xw->startElement('coordinates');
+											$xw->writeRaw("$entry[longitude],$entry[latitude],0");
+										$xw->endElement();
+									$xw->endElement();
+								$xw->endElement();
+							}
+						}
+					$xw->endElement();
+				$xw->endElement();
+			$xw->endElement();
+		$xw->endDocument();
 
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'lineStyleModified');
-    $xw->startElement('PolyStyle');
-      $xw->writeRaw('<color>00ff0000</color>');
-    $xw->endElement();
-    $xw->startElement('LineStyle');
-      $xw->writeRaw('<color>ccff0000</color>');
-      $xw->writeRaw('<width>3</width>');
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'lineStyleDeleted');
-    $xw->startElement('PolyStyle');
-      $xw->writeRaw('<color>000000ff</color>');
-    $xw->endElement();
-    $xw->startElement('LineStyle');
-      $xw->writeRaw('<color>cc0000ff</color>');
-      $xw->writeRaw('<width>4</width>');
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'sh_ylw-pushpin');
-    $xw->startElement('IconStyle');
-      $xw->writeRaw('<scale>0.5</scale>');
-      $xw->startElement('Icon');
-	$xw->writeRaw('<href>http://freifunk-ol.de/netmon/templates/img/ffmap/node_offline.png</href>');
-      $xw->endElement();
-      $xw->startElement('hotSpot');
-	$xw->writeAttribute( 'x', '20');
-	$xw->writeAttribute( 'y', '2');
-	$xw->writeAttribute( 'xunits', 'pixels');
-	$xw->writeAttribute( 'yunits', 'pixels');
-      $xw->endElement();
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'sh_blue-pushpin');
-    $xw->startElement('IconStyle');
-      $xw->writeRaw('<scale>1.3</scale>');
-      $xw->startElement('Icon');
-	$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>');
-      $xw->endElement();
-      $xw->startElement('hotSpot');
-	$xw->writeAttribute( 'x', '20');
-	$xw->writeAttribute( 'y', '2');
-	$xw->writeAttribute( 'xunits', 'pixels');
-	$xw->writeAttribute( 'yunits', 'pixels');
-      $xw->endElement();
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('ListStyle');
-  $xw->endElement();
-
-  $xw->startElement('Style');
-  $xw->writeAttribute( 'id', 'sh_red-pushpin');
-    $xw->startElement('IconStyle');
-      $xw->writeRaw('<scale>1.3</scale>');
-      $xw->startElement('Icon');
-	$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href>');
-      $xw->endElement();
-      $xw->startElement('hotSpot');
-	$xw->writeAttribute( 'x', '20');
-	$xw->writeAttribute( 'y', '2');
-	$xw->writeAttribute( 'xunits', 'pixels');
-	$xw->writeAttribute( 'yunits', 'pixels');
-      $xw->endElement();
-    $xw->endElement();
-  $xw->endElement();
-
-  $xw->startElement('ListStyle');
-  $xw->endElement();
-
-  $xw->startElement('Folder');
-    $xw->startElement('name');
-      $xw->writeRaw('create');
-    $xw->endElement();
-
-
-
-	$db = new mysqlClass;
-    	$result = $db->mysqlQuery("SELECT id FROM services WHERE typ='node' ORDER BY id");
-      	while($row = mysql_fetch_assoc($result)) {
-	  $services[] = $row['id'];
-    	}
-	unset($db);
-	
-	foreach ($services as $service) {
-		$data = service::getCurrentCrawlData($service);
-		if ($data['status']=='offline') {
-			$crawl = service::getLastOnlineCrawlData($service);
-			if (!is_array($crawl)) {
-				$crawl = array();
-			} 
-			$data = Helper::getServiceDataByServiceId($service);
-			$nodelist[] = array_merge($crawl, $data);
-		}
+		print $xw->outputMemory(true);
+		return true;
 	}
-	
-    foreach($nodelist as $entry) {
-   	if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
-    $xw->startElement('Placemark');
-      $xw->startElement('name');
-	$xw->writeRaw("<![CDATA[Node <a href='http://freifunk-ol.de/netmon/index.php?get=service&service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a>]]>");
-      $xw->endElement();
-      $xw->startElement('description');
-      $entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
-	$box_inhalt = "Benutzer: <a href='http://www.freifunk-ol.de/netmon/index.php?get=user&id=$entry[user_id]'>$entry[nickname]</a><br>
-			DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
-			<br><b>Dieser Node ist offline</b><br>
-			Letztes mal online: $entry[crawl_time]<br>";
 
-	$xw->writeRaw("<![CDATA[$box_inhalt]]>");
-      $xw->endElement();
-      $xw->startElement('styleUrl');
-	$xw->writeRaw('#sh_ylw-pushpin');
-      $xw->endElement();
-      $xw->startElement('Point');
-	$xw->startElement('coordinates');
-	  $xw->writeRaw("$entry[longitude],$entry[latitude],0");
-	$xw->endElement();
-      $xw->endElement();
-    $xw->endElement();
-    	}
-}
-
-  $xw->endElement();
-
-$xw->endDocument();
-
-    print $xw->outputMemory(true);
-    return true;
-  }
-
-  public function conn() {/*
-   	header('Content-type: text/xml');
+	public function conn() {
+		header('Content-type: text/xml');
 		$xw = new xmlWriter();
-    $xw->openMemory();
-   
-    $xw->startDocument('1.0','UTF-8');
-    $xw->startElement ('gpx'); 
-      $xw->writeAttribute('version' , '1.0');
+		$xw->openMemory();
+		$xw->startDocument('1.0','UTF-8');
+			$xw->startElement ('kml'); 
+				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+				$xw->startElement('Document');   
+					$xw->writeElement ('name', '200903170407-200903170408');
+					$xw->startElement('Folder');
+						$xw->startElement('name');
+							$xw->writeRaw('create');
+						$xw->endElement();
 
-      $xw->startElement('trk');  
-	$xw->startElement('name');
-	  $xw->writeRaw('Number');
-	$xw->endElement();
-       
+						//Hole Alle Services vom Typ node die Online sind
+						$services = Helper::getServicesByType("node");
+						foreach ($services as $key1=>$service) {
+							$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+							if ($data['status']=='online') {
+								foreach($data['olsrd_neighbors'] as $key2=>$neighbours) {
+									//Hole die Service-ID der Nachbarnodes
+									$neighbourServiceIds = Helper::getServicesByTypeAndNodeId('node', Helper::getNodeIdByIp($neighbours['IPaddress']));
+									foreach($neighbourServiceIds as $key=>$neighbourServiceId) {
+										$neighbourServiceCrawlData = Helper::getCurrentCrawlDataByServiceId($neighbourServiceId['service_id']);
+										if(!empty($neighbourServiceCrawlData['longitude']) AND !empty($neighbourServiceCrawlData['latitude'])) {
+											$linedata[$key1.$key2.$key]['my_service_id'] = $service['service_id'];
+											$linedata[$key1.$key2.$key]['my_lon'] = $data['longitude'];
+											$linedata[$key1.$key2.$key]['my_lat'] = $data['latitude'];
+											
+											$linedata[$key1.$key2.$key]['neighbour_service_id'] = $neighbourServiceId['service_id'];
+											$linedata[$key1.$key2.$key]['neighbour_lon'] = $neighbourServiceCrawlData['longitude'];
+											$linedata[$key1.$key2.$key]['neighbour_lat'] = $neighbourServiceCrawlData['latitude'];
+										}
+									}
+								}
+							}
+						}
+						
+						foreach($linedata as $line) {
+							$xw->startElement('Placemark');
+								$xw->startElement('name');
+									$xw->writeRaw("myname");
+								$xw->endElement();
+								$xw->startElement('Polygon');
+									$xw->startElement('outerBoundaryIs');
+										$xw->startElement('LinearRing');
+											$xw->startElement('coordinates');
+												$xw->writeRaw("$line[my_lon],$line[my_lat],0
+															    $line[neighbour_lon],$line[neighbour_lat],0");
+											$xw->endElement();
+										$xw->endElement();
+									$xw->endElement();
+								$xw->endElement();
+							$xw->endElement();
+						}
+					$xw->endElement();
+				$xw->endElement();
+			$xw->endElement();
+		$xw->endDocument();
 
-
-	//Hole Alle Services vom Typ node die Online sind
-	$services = Helper::getServicesByType("node");
-	foreach ($services as $key1=>$service) {
-		$data = service::getCurrentCrawlData($service['service_id']);
-		if ($data['status']=='online') {
-			foreach($data['olsrd_neighbors'] as $key2=>$neighbours) {
-			  //Hole die Service-ID der Nachbarnodes
-			  $neighbourServiceIds = Helper::getServicesByTypeAndNodeId('node', Helper::getNodeIdByIp($neighbours['IPaddress']));
-			  foreach($neighbourServiceIds as $key=>$neighbourServiceId) {
-			    $neighbourServiceCrawlData = service::getCurrentCrawlData($neighbourServiceId['service_id']);
-			    if(!empty($neighbourServiceCrawlData['longitude']) AND !empty($neighbourServiceCrawlData['latitude'])) {
-			    $linedata[$key1.$key2.$key]['my_service_id'] = $service['service_id'];
-			    $linedata[$key1.$key2.$key]['my_lon'] = $data['longitude'];
-			    $linedata[$key1.$key2.$key]['my_lat'] = $data['latitude'];
-
-			    $linedata[$key1.$key2.$key]['neighbour_service_id'] = $neighbourServiceId['service_id'];
-			    $linedata[$key1.$key2.$key]['neighbour_lon'] = $neighbourServiceCrawlData['longitude'];
-			    $linedata[$key1.$key2.$key]['neighbour_lat'] = $neighbourServiceCrawlData['latitude'];
-			    }
-			  }
-
-
-
-			}
-		}
+		print $xw->outputMemory(true);
+		return true;
 	}
-
-foreach($linedata as $line) {
-	$xw->startElement('trkseg');
-	  $xw->startElement('trkpt');
-	    $xw->writeAttribute( 'lat', $line['my_lat']);
-	    $xw->writeAttribute( 'lon', $line['my_lon']);
-	  $xw->endElement();
-	  $xw->startElement('trkpt');
-	    $xw->writeAttribute( 'lat', $line['neighbour_lat']);
-	    $xw->writeAttribute( 'lon', $line['neighbour_lon']);
-	  $xw->endElement();
-	$xw->endElement();
-}
-
-
-      $xw->endElement();
-    $xw->endElement();
-
-$xw->endDocument();
-
-    print $xw->outputMemory(true);
-    return true;*/
-
-    header('Content-type: text/xml');
-    $xw = new xmlWriter();
-    $xw->openMemory();
-   
-    $xw->startDocument('1.0','UTF-8');
-    $xw->startElement ('kml'); 
-      $xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
-  
-      $xw->startElement('Document');   
-	$xw->writeElement ('name', '200903170407-200903170408');
-	
-	$xw->startElement('Folder');
-	  $xw->startElement('name');
-	    $xw->writeRaw('create');
-	  $xw->endElement();
-
-	  //Hole Alle Services vom Typ node die Online sind
-	  $services = Helper::getServicesByType("node");
-	  foreach ($services as $key1=>$service) {
-	    $data = service::getCurrentCrawlData($service['service_id']);
-	    if ($data['status']=='online') {
-	      foreach($data['olsrd_neighbors'] as $key2=>$neighbours) {
-		//Hole die Service-ID der Nachbarnodes
-		$neighbourServiceIds = Helper::getServicesByTypeAndNodeId('node', Helper::getNodeIdByIp($neighbours['IPaddress']));
-		foreach($neighbourServiceIds as $key=>$neighbourServiceId) {
-		  $neighbourServiceCrawlData = service::getCurrentCrawlData($neighbourServiceId['service_id']);
-		  if(!empty($neighbourServiceCrawlData['longitude']) AND !empty($neighbourServiceCrawlData['latitude'])) {
-		    $linedata[$key1.$key2.$key]['my_service_id'] = $service['service_id'];
-		    $linedata[$key1.$key2.$key]['my_lon'] = $data['longitude'];
-		    $linedata[$key1.$key2.$key]['my_lat'] = $data['latitude'];
-		    
-		    $linedata[$key1.$key2.$key]['neighbour_service_id'] = $neighbourServiceId['service_id'];
-		    $linedata[$key1.$key2.$key]['neighbour_lon'] = $neighbourServiceCrawlData['longitude'];
-		    $linedata[$key1.$key2.$key]['neighbour_lat'] = $neighbourServiceCrawlData['latitude'];
-		  }
-		}
-	      }
-	    }
-	  }
-	  
-	  foreach($linedata as $line) {
-	    $xw->startElement('Placemark');
-	      $xw->startElement('name');
-		$xw->writeRaw("myname");
-	      $xw->endElement();
-	      
-	      $xw->startElement('Polygon');
-		$xw->startElement('outerBoundaryIs');
-		  $xw->startElement('LinearRing');
-		    $xw->startElement('coordinates');
-		      $xw->writeRaw("$line[my_lon],$line[my_lat],0
-				     $line[neighbour_lon],$line[neighbour_lat],0");
-		    $xw->endElement();
-		  $xw->endElement();
-		$xw->endElement();
-	      $xw->endElement();
-	    $xw->endElement();
-	  }
-	$xw->endElement();
-      $xw->endElement();
-    $xw->endDocument();
-
-    print $xw->outputMemory(true);
-    return true;
-}
 }
 ?>
