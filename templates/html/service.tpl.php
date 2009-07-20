@@ -10,8 +10,8 @@
   <div nstyle="white-space: nowrap;">
     <div style="float:left; width: 50%;">
 
-{if !empty($service_data.service_title)}
-  <h2>{$service_data.service_title}</h2>
+{if !empty($service_data.title)}
+  <h2>{$service_data.title}</h2>
 {/if}
 <b>Service Typ:</b> {$service_data.typ}<br>
 <b>DHCP-bereich:</b> {$service_data.zone_start} bis {$service_data.zone_end}<br>
@@ -19,9 +19,9 @@
 <b>Benutzer:</b> <a href="./user.php?id={$service_data.user_id}">{$service_data.nickname}</a><br>
 <b>Eingetragen am:</b> {$service_data.create_date}<br>
 
-{if !empty($service_data.service_description)}
+{if !empty($service_data.description)}
   <h2>Beschreibung</h2>
-  <p>{$service_data.service_description}</p>
+  <p>{$service_data.description}</p>
 {/if}
 
 <h2>Daten</h2>

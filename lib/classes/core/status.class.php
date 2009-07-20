@@ -29,81 +29,83 @@
  */
 
 class status {
-  public function getCrawlerStatus() {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT id, UNIX_TIMESTAMP(crawl_time_end) as last_crawl
-			       FROM crawls
-			       ORDER BY id DESC LIMIT 1;");
-    
-    while($row = mysql_fetch_assoc($result)) {
-      $last_crawl = $row['last_crawl'];
-    }
-    unset($db);
-
-    $toleranzgrenze = 300; //sekunden
-    if ((time()-$last_crawl)>($GLOBALS['timeBetweenCrawls']*60+$toleranzgrenze)) {
-      $return['status'] = "Offline";
-    } else {
-      $return['status'] = "Online";
-    }
-
-    $return['last_crawl'] = date("H:i:s", $last_crawl);
-    $return['next_crawl'] = date("H:i:s", $GLOBALS['timeBetweenCrawls']*60+$last_crawl);
-
-    return $return;
-  }
+	public function getCrawlerStatus() {
+		try {
+			$sql = "SELECT id, UNIX_TIMESTAMP(crawl_time_end) as last_crawl
+					FROM crawls
+			        ORDER BY id DESC LIMIT 1;";
+			$result = DB::getInstance()->query($sql); 
+			$last_crawl = $result->fetch(PDO::FETCH_ASSOC); 
+		} 
+		catch(PDOException $e) { 
+			echo $e->getMessage(); 
+		}
+		
+		$last_crawl = $last_crawl['last_crawl'];
+		$toleranzgrenze = 300; //seconds
+		if ((time()-$last_crawl)>($GLOBALS['timeBetweenCrawls']*60+$toleranzgrenze))
+			$return['status'] = "Offline";
+		else
+			$return['status'] = "Online";
+		
+		$return['last_crawl'] = date("H:i:s", $last_crawl);
+		$return['next_crawl'] = date("H:i:s", $GLOBALS['timeBetweenCrawls']*60+$last_crawl);
+		return $return;
+	}
 
   public function getNewestUser() {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT id, nickname, create_date
-			       FROM users
-			       ORDER BY id DESC LIMIT 1;");
-    
-    while($row = mysql_fetch_assoc($result)) {
-      $newest_user = $row;
-    }
-    unset($db);
-
-    return $newest_user;    
-  }
+		try {
+			$sql = "SELECT id, nickname, create_date
+					FROM users
+					ORDER BY id DESC LIMIT 1;";
+			$result = DB::getInstance()->query($sql); 
+			$newest_user = $result->fetch(PDO::FETCH_ASSOC); 
+		} 
+		catch(PDOException $e) { 
+			echo $e->getMessage(); 
+		}
+		
+		return $newest_user;    
+	}
 
   public function getNewestNode() {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT nodes.id, nodes.user_id, nodes.node_ip, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
-					  users.nickname,
-					  subnets.title, subnets.subnet_ip
-				  FROM nodes
-				   LEFT JOIN users ON (users.id=nodes.user_id)
-				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-			       ORDER BY nodes.id DESC LIMIT 1;");
-    
-    while($row = mysql_fetch_assoc($result)) {
-      $newest_node = $row;
-    }
-    unset($db);
-
-    return $newest_node;    
-  }
+		try {
+			$sql = "SELECT nodes.id, nodes.user_id, nodes.node_ip, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
+						   users.nickname,
+						   subnets.title, subnets.subnet_ip
+					FROM nodes
+					LEFT JOIN users ON (users.id=nodes.user_id)
+					LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
+					ORDER BY nodes.id DESC LIMIT 1;";
+			$result = DB::getInstance()->query($sql); 
+			$newest_node = $result->fetch(PDO::FETCH_ASSOC); 
+		} 
+		catch(PDOException $e) { 
+			echo $e->getMessage(); 
+		}
+		
+		return $newest_node;    
+	}
 
   public function getNewestService() {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT services.node_id, services.title,
+		try {
+			$sql = "SELECT services.node_id, services.title,
 					  nodes.node_ip,
 					  subnets.subnet_ip
 				  FROM services
 				  LEFT JOIN nodes ON (nodes.id = services.node_id)
 				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
 				  WHERE services.typ LIKE 'service'
-			       ORDER BY services.id DESC LIMIT 1;");
-    
-    while($row = mysql_fetch_assoc($result)) {
-      $newest_user = $row;
-    }
-    unset($db);
-
-    return $newest_user;    
-  }
-
+			       ORDER BY services.id DESC LIMIT 1;";
+			$result = DB::getInstance()->query($sql); 
+			$newest_service = $result->fetch(PDO::FETCH_ASSOC); 
+		} 
+		catch(PDOException $e) { 
+			echo $e->getMessage(); 
+		}
+		
+		return $newest_service;    
+	}
 }
 
 ?>

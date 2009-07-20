@@ -29,45 +29,30 @@
  */
 
 class serviceeditor {
-  public function insertEditService($service_id, $typ, $crawler, $title, $description, $radius, $visible) {
-    //Mach DB Eintrag
-    $db = new mysqlClass;
-    $db->mysqlQuery("UPDATE services SET
-title = '$title',
-description = '$description',
-typ = '$typ',
-crawler = '$crawler',
-radius = $radius,
-visible = '$visible'
-WHERE id = '$service_id'
-");
-    $ergebniss = $db->mysqlAffectedRows();
-    unset($db);
-    if ($ergebniss>0) {
-      $message[] = array("Der Service mit der ID ".$service_id." wurde geändert.", 1);
-      message::setMessage($message);
-      return array("result"=>true, "service_id"=>$service_id);
-    } else {
-      $message[] = array("Der Service mit der ID ".$service_id." wurde nicht geändert, da keine Änderungen vorgenommen wurde.", 2);
-      message::setMessage($message);
-      return false;
-    }
-  }
+	public function insertEditService($service_id, $typ, $crawler, $title, $description, $radius, $visible) {
+		DB::getInstance()->exec("UPDATE services SET
+										title = '$title',
+										description = '$description',
+										typ = '$typ',
+										crawler = '$crawler',
+										radius = $radius,
+										visible = '$visible'
+								WHERE id = '$service_id'");
+		
+		$message[] = array("Der Service mit der ID ".$service_id." wurde geändert.", 1);
+		message::setMessage($message);
+		return array("result"=>true, "service_id"=>$service_id);
+	}
 
 	public function deleteService($service_id) {
-		$db = new mysqlClass;
-		$db->mysqlQuery("DELETE FROM services WHERE id='$service_id';");
-		unset($db);
+		DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
 		$message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
 
-		$db = new mysqlClass;
-		$db->mysqlQuery("DELETE FROM crawl_data WHERE service_id='$service_id';");
-		unset($db);
+		DB::getInstance()->exec("DELETE FROM crawl_data WHERE service_id='$service_id';");
 		$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurde gelöscht.",1);
 
 		message::setMessage($message);
 	}
-  
 }
 
 ?>
