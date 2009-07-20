@@ -18,11 +18,11 @@
     if ($_GET['section'] == "generate") {
       $node = Helper::getNodeDataByNodeId($_GET['node_id']);
       usermanagement::isOwner($smarty, $node['user_id']);
-      $keys = $this->generateKeys($_GET['node_id'], $_POST['organizationalunitname'], $_POST['commonname'], $_POST['emailaddress'], $_POST['privkeypass'], $_POST['privkeypass_chk'], $_POST['numberofdays']);
+      $keys = $vpn->generateKeys($_GET['node_id'], $_POST['organizationalunitname'], $_POST['commonname'], $_POST['emailaddress'], $_POST['privkeypass'], $_POST['privkeypass_chk'], $_POST['numberofdays']);
       if ($keys['return']) {
-		$this->saveKeysToDB($_GET['node_id'], $keys['vpn_client_cert'], $keys['vpn_client_key']);
-		$this->writeCCD($_GET['node_id']);
-		$this->downloadKeyBundle($_GET['node_id']);
+		$vpn->saveKeysToDB($_GET['node_id'], $keys['vpn_client_cert'], $keys['vpn_client_key']);
+		$vpn->writeCCD($_GET['node_id']);
+		$vpn->downloadKeyBundle($_GET['node_id']);
 		$smarty->assign('message', message::getMessage());
       } else {
 	$smarty->assign('message', message::getMessage());
@@ -32,7 +32,7 @@
     if ($_GET['section'] == "download") {
       $node = Helper::getNodeDataByNodeId($_GET['node_id']);
       usermanagement::isOwner($smarty, $node['user_id']);
-      $this->downloadKeyBundle($_GET['node_id']);
+      $vpn->downloadKeyBundle($_GET['node_id']);
       $smarty->assign('message', message::getMessage());
     }
     if ($_GET['section'] == "info") {
@@ -66,11 +66,11 @@
     }
 
     if ($_GET['section'] == "insert_regenerate_ccd") {
-      $this->writeCCD($_GET['node_id']);
+      $vpn->writeCCD($_GET['node_id']);
       header('Location: node.php?id='.$_GET['node_id']);
     }
     if ($_GET['section'] == "insert_delete_ccd") {
-      $this->deleteCCD($_GET['node_id']);
+      $vpn->deleteCCD($_GET['node_id']);
       header('Location: node.php?id='.$_GET['node_id']);
     }
 ?>

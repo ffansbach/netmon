@@ -4,7 +4,7 @@
   
   $register = new register;
 
-  if (empty($_POST['nickname'])) {
+  if (empty($_POST)) {
     $smarty->assign('message', message::getMessage());
     $smarty->display("header.tpl.php");
     $smarty->display("register.tpl.php");

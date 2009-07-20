@@ -38,11 +38,11 @@
 <h2>Aktionen</h2>
 
 <p>
-  <a href="./serviceeditor.php?section=new&node_id={$node.id}">Service hinzufügen</a>
+  <a href="./serviceeditor.php?section=new&node_id={$node.node_id}">Service hinzufügen</a>
 </p>
 
 <p>
-  <a href="./nodeeditor.php?section=edit&id={$node.id}">Node Editieren</a>
+  <a href="./nodeeditor.php?section=edit&id={$node.node_id}">Node Editieren</a>
 </p>
 
 <p>

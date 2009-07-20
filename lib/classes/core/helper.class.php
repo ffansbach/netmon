@@ -99,7 +99,6 @@ class Helper {
 	try {
 		$sql = "select nodes.id FROM nodes, services WHERE services.id='$service_id' AND nodes.id=services.node_id;";
 		$result = DB::getInstance()->query($sql);
-		
 		foreach($result as $row) {
 			$node = $row;
 		}
