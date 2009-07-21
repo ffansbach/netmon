@@ -44,7 +44,6 @@ class nodeeditor {
 
     if ($range) {
       if ($node != false) {
-	//Mach DB Eintrag
 	DB::getInstance()->exec("INSERT INTO nodes (user_id, subnet_id, node_ip, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$node', NOW());");
 	$node_id = DB::getInstance()->lastInsertId();
 
