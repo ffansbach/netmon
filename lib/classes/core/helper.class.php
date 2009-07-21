@@ -362,13 +362,11 @@ class Helper {
 
 	public function getSubnetDataBySubnetID($subnet_id) {
 		try {
-			$sql = "SELECT subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass
+			$sql = "SELECT *
 			        FROM  subnets
 			        WHERE subnets.id=$subnet_id";
 			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$service = $row;
-			}
+			$service = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
 		  echo $e->getMessage();

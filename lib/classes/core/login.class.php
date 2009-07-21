@@ -36,7 +36,7 @@ class login {
 			return false;
 		} else {
 			$password = usermanagement::encryptPassword($password);
-			//Check if mailadres exists
+			//Check if mailadress exists
 			try {
 				$sql = "select id , nickname, activated, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE nickname='$nickname' and password='$password'";
 				$result = DB::getInstance()->query($sql);
