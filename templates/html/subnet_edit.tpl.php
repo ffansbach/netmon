@@ -6,9 +6,8 @@
 
   <p>subnetz:
   <select name="subnet_ip">
-    <option selected value="{$subnet_data.subnet}">{$subnet_data.subnet}</option>
   {foreach item=subnet from=$avalailable_subnets}
-    <option value="{$subnet}">{$subnet}</option>
+    <option value="{$subnet}" {if $subnet eq $subnet_data.subnet_ip}seleted{/if}>{$subnet}</option>
   {/foreach}
   </select>
   </p>

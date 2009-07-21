@@ -92,6 +92,19 @@ class editingHelper {
 		}
 		return $available_subnets;
 	}
+
+	public function getFreeSubnetsPlusPredefinedSubnet($subnet) {
+		$subnets = editingHelper::getExistingSubnets();
+		for ($i=0; $i<=255; $i++) {
+			if(!in_array($i, $subnets)) {
+				$available_subnets[] = $i;
+			}
+		}
+		$available_subnets[] = $subnet;
+		asort($available_subnets);
+		return $available_subnets;
+	}
+
 	
 	public function getExistingNodes($subnet_id) {
 		$nodes = array();
