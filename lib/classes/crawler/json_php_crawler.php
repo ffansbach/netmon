@@ -35,52 +35,39 @@
   /**
   * KONFIGURATION
   */
-  
-  //Typ und Encoding Festlegen
-  header("Content-Type: text/html; charset=UTF-8");
 
-  //Pfad vom Root zu Netmon mit slash am Anfang und Ende
-  $path_to_netmon = "/home/httpd/html/netmon/";
+  //FREIFUNKNETZ
+  $GLOBALS['net_prefix'] = "10.18";
 
-  //Lokale Konfiguration einbinden
-  require_once($path_to_netmon.'config/config.local.inc.php');
+  //MYSQL
+  $GLOBALS['mysql_host'] = "10.18.0.1";
+  $GLOBALS['mysql_db'] = "freifunksql5";
+  $GLOBALS['mysql_user'] = "freifunksql5";
+  $GLOBALS['mysql_password'] = "5fac80ba3895";
+  $GLOBALS['mysql_enc'] = "utf8";
 
-  /**
-  * WICHTIGE KLASSEN
-  */
-
-  //Klasse für Mysql-Verbindungen einbinden
-  require_once($path_to_netmon.'lib/classes/core/mysql.class.php');
-  //Klasse fürs Logging
-  require_once($path_to_netmon.'lib/classes/core/logsystem.class.php');
-  //Pear Klasse für Ping
-  require_once($path_to_netmon.'lib/classes/extern/Ping.php');
+  mysql_connect($GLOBALS['mysql_host'], $GLOBALS['mysql_user'], $GLOBALS['mysql_password']);
+  mysql_select_db($GLOBALS['mysql_db']);
+  mysql_query("SET NAMES $GLOBALS[mysql_enc];") or die(mysql_error());
 
 class JsonDataCollector {
 
   public $crawl_id;
 
   function initialiseCrawl() {
-    $db = new mysqlClass;
-    $db->mysqlQuery("INSERT INTO crawls (crawl_time_start) VALUES (NOW())");
-    $crawl_id = $db->getInsertID();
-    unset($db);
+    mysql_query("INSERT INTO crawls (crawl_time_start) VALUES (NOW())");
+    $crawl_id = mysql_insert_id();
+
     $this->crawl_id = $crawl_id;
     return $crawl_id;
   }
 
   function endCrawl() {
-    $db = new mysqlClass;
-    $db->mysqlQuery("UPDATE crawls SET crawl_time_end = NOW() where id=".$this->crawl_id);
-    unset($db);
+    mysql_query("UPDATE crawls SET crawl_time_end = NOW() where id=".$this->crawl_id);
 
     //Löscht Crawl-Daten die älter als 31 Tage sind.
-    $db = new mysqlClass;
-    $db->mysqlQuery("DELETE FROM crawl_data WHERE TO_DAYS(crawl_time)+31 < TO_DAYS(NOW())");
-    unset($db);
-    $db = new mysqlClass;
-    $db->mysqlQuery("DELETE FROM crawls WHERE TO_DAYS(crawl_time_end)+31 < TO_DAYS(NOW())");
-    unset($db);
+    mysql_query("DELETE FROM crawl_data WHERE TO_DAYS(crawl_time)+31 < TO_DAYS(NOW())");
+    mysql_query("DELETE FROM crawls WHERE TO_DAYS(crawl_time_end)+31 < TO_DAYS(NOW())");
   }
 
   function file_get_contents_curl($url) {
@@ -101,7 +88,7 @@ class JsonDataCollector {
 
   public function pingHost($host) {
     $online=exec("ping $host -c 1 -w 1"); 
-    // $online=exec("ping $ip -n 1");  // für WINDOZ
+    // $online=exec("ping $ip -n 1");  // for MS Windows
     if (!empty($online)) {
       return true;
     } else {
@@ -111,20 +98,20 @@ class JsonDataCollector {
   
   function getServices($service_typ) {
     $nodes = array();
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT services.id as service_id, services.crawler, services.typ,
+    $sql = "SELECT services.id as service_id, services.crawler, services.typ,
 				      nodes.node_ip,
 				      subnets.subnet_ip
 			       FROM services
 			       LEFT JOIN nodes on (nodes.id=services.node_id)
 			       LEFT JOIN subnets on (subnets.id=nodes.subnet_id)
 			       WHERE services.typ='$service_typ'
-			       ORDER BY services.id ASC");
-    while($row = mysql_fetch_assoc($result)) {
+			       ORDER BY services.id ASC";
+	$query = mysql_query($sql) OR die(mysql_error());
+    while ($row = mysql_fetch_assoc($query)){
       $nodes[] = $row;
     }
+
     return $nodes;
-    unset($db);
   }
 
   public function crawl($service_typ) {
@@ -151,9 +138,6 @@ class JsonDataCollector {
       $data['status'] = "online";
     else
       $data['status'] = "offline";
-
-
-
 
 $data['nickname'] = $obj->freifunk->contact->nickname;
 $data['hostname'] = $obj->system->hostname;
@@ -186,12 +170,8 @@ $data['olsrd_mid'] = serialize($obj->olsrd->MID);
 $data['olsrd_routes'] = serialize($obj->olsrd->Routes);
 $data['olsrd_topology'] = serialize($obj->olsrd->Topology);
 
-
-
-    //Mach DB Eintrag
-    $db = new mysqlClass;
     $data['luciname'] = mysql_real_escape_string($data['luciname']);
-    $db->mysqlQuery("INSERT INTO crawl_data (
+    mysql_query("INSERT INTO crawl_data (
 
 crawl_id,
 service_id,
@@ -263,8 +243,6 @@ NOW(),
 '$data[olsrd_routes]',
 '$data[olsrd_topology]'
 );");
-    $ergebniss = $db->mysqlAffectedRows();
-    unset($db);
     return true;
   }
 
@@ -274,9 +252,16 @@ NOW(),
   $crawler = new JsonDataCollector;
 
   $crawler->initialiseCrawl();
+echo "crawl initialized";
   $crawler->crawl('node');
+echo "crawling nodes";
   $crawler->crawl('vpn');
+echo "crawling vpn";
   $crawler->crawl('service');
+echo "crawling services";
+  $crawler->crawl('client');
+echo "crawling clients";
   $crawler->endCrawl();
+echo "crawl end";
 
 ?>

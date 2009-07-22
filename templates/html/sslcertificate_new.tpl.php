@@ -5,7 +5,7 @@
 
 <h2>Daten zur erstellung des Zertifikats:</h2>
 
-<form action="./index.php?get=vpn&section=generate&node_id={$data.node_id}" method="POST">
+<form action="./vpn.php?section=generate&node_id={$data.node_id}" method="POST">
   <p>Organisationsbereich (Nickname):<br><input name="organizationalunitname" type="text" size="30" maxlength="30"  value="{$data.nickname}"></p>
   <p>Common Name (Node-ID, muss eindeutig sein zwecks IP-Zuweisung!):<br><input name="commonname" type="text" size="30" maxlength="30"  value="{$data.node_id}"></p>
   <p>Email:<br><input name="emailaddress" type="text" size="30" maxlength="30"  value="{$data.email}"></p>

@@ -14,6 +14,9 @@
       $smarty->assign('data', Helper::getNodeDataByNodeId($_GET['node_id']));
       $smarty->assign('expiration', $GLOBALS['expiration']);
       $smarty->assign('get_content', "sslcertificate_new");
+     	$smarty->display("header.tpl.php");
+		$smarty->display("sslcertificate_new.tpl.php");
+		$smarty->display("footer.tpl.php");
     }
     if ($_GET['section'] == "generate") {
       $node = Helper::getNodeDataByNodeId($_GET['node_id']);

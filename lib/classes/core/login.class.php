@@ -68,7 +68,7 @@ class login {
 		}
 	}
 	
-	public function user_logout(&$message) {
+	public function user_logout() {
 		if (!isset($_SESSION['user_id'])) {
 			$messages[] = array("Sie können sich nicht ausloggen, wenn Sie nicht eingeloggt sind", 2);
 			message::setMessage($messages);

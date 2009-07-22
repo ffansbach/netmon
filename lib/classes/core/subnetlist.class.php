@@ -30,21 +30,25 @@
 
 class subnetlist {
 	function getList() {
-		
-		$db = new mysqlClass;
-    	$result = $db->mysqlQuery("SELECT subnets.id, subnets.subnet_ip, subnets.title, subnets.user_id,
-users.nickname,
-COUNT(nodes.id) as nodes_in_net
-FROM subnets
-LEFT JOIN users ON (users.id=subnets.user_id)
-LEFT JOIN nodes ON (nodes.subnet_id=subnets.id)
-GROUP BY subnets.id
-ORDER BY subnets.subnet_ip ASC
-    ");
-    
-    	while($row = mysql_fetch_assoc($result)) {
-      		$subnetlist[] = $row;
-    	}
+		$subnetlist = array();
+		try {
+			$sql = "SELECT subnets.id, subnets.subnet_ip, subnets.title, subnets.user_id,
+						   users.nickname,
+						   COUNT(nodes.id) as nodes_in_net
+					FROM subnets
+					LEFT JOIN users ON (users.id=subnets.user_id)
+					LEFT JOIN nodes ON (nodes.subnet_id=subnets.id)
+					GROUP BY subnets.id
+					ORDER BY subnets.subnet_ip ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$subnetlist[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
     	return $subnetlist;
 	}	
 }
