@@ -30,25 +30,33 @@
 
 class userlist {
 	function getList() {
-	  $db = new mysqlClass;
-	  $result = $db->mysqlQuery("SELECT u.id, u.nickname, DATE_FORMAT(u.create_date, '%D.%m.%Y %H:%i:%s') as create_date
-				     FROM users u
-				     ORDER BY u.create_date DESC");
-	  while($row = mysql_fetch_assoc($result)) {
-	    $userlist[] = $row;
-	  }
-	  unset($db);
-	  foreach ($userlist as $key=>$user){
-	    $db = new mysqlClass;
-	    $result = $db->mysqlQuery("SELECT count(*) as nodecount
-				       FROM nodes
-				       WHERE user_id='$user[id]'");
-	    while($row = mysql_fetch_assoc($result)) {
-	      $userlist[$key]['nodecount'] = $row['nodecount'];
-	    }
-	    unset($db);
-	  }
-	  return $userlist;
+		try {
+			$sql = "SELECT u.id, u.nickname, DATE_FORMAT(u.create_date, '%D.%m.%Y %H:%i:%s') as create_date
+					FROM users u
+					ORDER BY u.create_date DESC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$userlist[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		foreach ($userlist as $key=>$user){
+			try {
+				$sql = "SELECT count(*) as nodecount
+						FROM nodes
+						WHERE user_id='$user[id]'";
+				$result = DB::getInstance()->query($sql);
+				$count = $result->fetch(PDO::FETCH_ASSOC);
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+			
+			$userlist[$key]['nodecount'] = $count['nodecount'];
+		}
+		return $userlist;
 	}
 }
 

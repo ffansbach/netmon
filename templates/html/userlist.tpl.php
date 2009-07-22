@@ -1,4 +1,4 @@
-<h1>Nodelist</h1>
+<h1>Benutzerliste</h1>
 
 <table border="1">
 	<tr>

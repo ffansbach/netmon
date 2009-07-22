@@ -91,43 +91,44 @@ class usermanagement {
     return $return;
   }
 
-  public function getUserPermission() {
-  	if (!isset($_SESSION['user_id'])) {
-      //Jeder Benutzer bekommt das recht 0
-      $userpermission = pow(2,0);
-      //Jder nicht eingeloggte Benutzer bekommt das recht 1
-      $userpermission = $userpermission + pow(2,1);
-    } else {
-      //Jeder Benutzer bekommt das recht 0
-      $userpermission = pow(2,0);
-      //Jeder eingeloggte Benutzer bekommt das recht "eingeloggt"
-      $userpermission = $userpermission + pow(2,2);
+	public function getUserPermission() {
+		if (!isset($_SESSION['user_id'])) {
+			//Jeder Benutzer bekommt das recht 0
+			$userpermission = pow(2,0);
+			//Jder nicht eingeloggte Benutzer bekommt das recht 1
+			$userpermission = $userpermission + pow(2,1);
+		} else {
+			//Jeder Benutzer bekommt das recht 0
+			$userpermission = pow(2,0);
+			//Jeder eingeloggte Benutzer bekommt das recht "eingeloggt"
+			$userpermission = $userpermission + pow(2,2);
+			try {
+				$sql = "select permission from users WHERE id=$_SESSION[user_id]";
+				$result = DB::getInstance()->query($sql);
+				$user_data = $result->fetch(PDO::FETCH_ASSOC);
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+			
+			//Jeder Benutzer bekommt das recht aus der Datenbank
+			$userpermission = $userpermission + $user_data['permission'];
+		}
+		return $userpermission;
+	}
 
-	  $db = new mysqlClass;
-      $result = $db->mysqlQuery("select permission from users WHERE id=$_SESSION[user_id]");
-      $user_data = mysql_fetch_assoc($result);
-      unset($db);
-      
-      //Jeder Benutzer bekommt das recht aus der Datenbank
-      $userpermission = $userpermission + $user_data['permission'];
-    }
-    return $userpermission;
-  }
-
-  public function getAllPermissions() {
-    /*
-0 = Alle, Recht wird vom Script erstellt
-1 = nicht eingeloggte, Recht wird vom Script erstellt
-2 = eingeloggte, Recht wird vom Script erstellt
-3 = user, Recht in DB
-4 = mod, Recht in DB
-5 = admin, Recht in DB
-6 = root, Recht in DB
-    */
-    return array(0,1,2,3,4,5,6);
-  }
-
-
+	public function getAllPermissions() {
+		/*
+		0 = Alle, Recht wird vom Script erstellt
+		1 = nicht eingeloggte, Recht wird vom Script erstellt
+		2 = eingeloggte, Recht wird vom Script erstellt
+		3 = user, Recht in DB
+		4 = mod, Recht in DB
+		5 = admin, Recht in DB
+		6 = root, Recht in DB
+		*/
+		return array(0,1,2,3,4,5,6);
+	}
 }
 
 ?>
