@@ -31,76 +31,74 @@
   require_once('./lib/classes/extern/archive.class.php');
 
 class vpn {
-public function generateKeys($node_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $privkeypass_chk, $expiration) {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass
-			       FROM nodes
-			       LEFT JOIN subnets on (subnets.id=nodes.subnet_id)
-			       WHERE nodes.id='$node_id'");
-    while($row = mysql_fetch_assoc($result)) {
-      $vpn = $row;
-    }
-    unset($db);
-
-    if (empty($vpn['vpn_server_ca']) OR empty($vpn['vpn_server_cert']) OR empty($vpn['vpn_server_key'])) {
-      $message[] = array("Die Zertifikate konnten nicht generiert werden.", 2);
-      $message[] = array("Der Subnetverwalter muss erst ein Masterzertifikat für das Subnetz erstellen.", 2);
-      message::setMessage($message);
-      return false;
-    } elseif (!empty($organizationalunitname) AND !empty($commonname) AND !empty($emailaddress)) {
-		//SSL-Errors lehren
-		while ($err = openssl_error_string());
-		//Keydaten
-		$dn = array("countryName" => $GLOBALS['countryName'], "stateOrProvinceName" => $GLOBALS['stateOrProvinceName'], "localityName" => $GLOBALS['localityName'], "organizationName" => $GLOBALS['organizationName'], "organizationalUnitName" => $organizationalunitname, "commonName" => $commonname, "emailAddress" => $emailaddress);
-		
-		//Passphrase auf null setzen wenn kein Paswort übergeben wird.
-		if (empty($privkeypass)) {
-			$privkeypass == null;
-		} elseif ($privkeypass != $privkeypass_chk) {
-			$message[] = array("Die beiden Passwörter stimmen nicht überein.", 2);
-   			message::setMessage($message);
-			return false;
+	public function generateKeys($node_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $privkeypass_chk, $expiration) {
+		try {
+			$sql = "SELECT subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass
+					FROM nodes
+					LEFT JOIN subnets on (subnets.id=nodes.subnet_id)
+					WHERE nodes.id='$node_id'";
+			$result = DB::getInstance()->query($sql);
+			$vpn = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
 		}
 		
-	    $req_key = openssl_pkey_new();
-    	if(openssl_pkey_export ($req_key, $out_key)) {
-			$req_csr  = openssl_csr_new ($dn, $req_key);
-			$req_cert = openssl_csr_sign($req_csr, $vpn['vpn_server_cert'], $vpn['vpn_server_key'], $expiration);
-			if(openssl_x509_export ($req_cert, $out_cert)) {
-	  			//  echo "$out_key\n";
-	  			// echo "$out_cert\n";
-			} else echo "Failed Cert\n";
-		} else echo "FailedKey\n";
-		
-    	return array("return" => true, "vpn_client_cert" => $out_cert, "vpn_client_key" => $out_key);
-	} else {
-		$message[] = array("Die Daten von Ihnen einzugebenen Daten sind unvollständig", 2);
-   		message::setMessage($message);
-		return false;
+		if (empty($vpn['vpn_server_ca']) OR empty($vpn['vpn_server_cert']) OR empty($vpn['vpn_server_key'])) {
+			$message[] = array("Die Zertifikate konnten nicht generiert werden.", 2);
+			$message[] = array("Der Subnetverwalter muss erst ein Masterzertifikat für das Subnetz erstellen.", 2);
+			message::setMessage($message);
+			return false;
+		} elseif (!empty($organizationalunitname) AND !empty($commonname) AND !empty($emailaddress)) {
+			//SSL-Errors lehren
+			while ($err = openssl_error_string());
+
+			//Keydaten
+			$dn = array("countryName" => $GLOBALS['countryName'], "stateOrProvinceName" => $GLOBALS['stateOrProvinceName'], "localityName" => $GLOBALS['localityName'], "organizationName" => $GLOBALS['organizationName'], "organizationalUnitName" => $organizationalunitname, "commonName" => $commonname, "emailAddress" => $emailaddress);
+			
+			//Passphrase auf null setzen wenn kein Paswort übergeben wird.
+			if (empty($privkeypass)) {
+				$privkeypass == null;
+			} elseif ($privkeypass != $privkeypass_chk) {
+				$message[] = array("Die beiden Passwörter stimmen nicht überein.", 2);
+				message::setMessage($message);
+				return false;
+			}
+			
+			$req_key = openssl_pkey_new();
+			if(openssl_pkey_export ($req_key, $out_key)) {
+				$req_csr  = openssl_csr_new ($dn, $req_key);
+				$req_cert = openssl_csr_sign($req_csr, $vpn['vpn_server_cert'], $vpn['vpn_server_key'], $expiration);
+				if(openssl_x509_export ($req_cert, $out_cert)) {
+					//  echo "$out_key\n";
+					// echo "$out_cert\n";
+				} else echo "Failed Cert\n";
+			} else echo "FailedKey\n";
+
+			return array("return" => true, "vpn_client_cert" => $out_cert, "vpn_client_key" => $out_key);
+		} else {
+			$message[] = array("Die Daten von Ihnen einzugebenen Daten sind unvollständig", 2);
+			message::setMessage($message);
+			return false;
+		}
 	}
-}
 
-  public function saveKeysToDB($node_id, $vpn_client_cert, $vpn_client_key) {
-
-    //Mach DB Eintrag
-    $db = new mysqlClass;
-    $db->mysqlQuery("UPDATE nodes SET
-vpn_client_cert = '$vpn_client_cert',
-vpn_client_key = '$vpn_client_key'
-WHERE id = '$node_id'
-");
-    $ergebniss = $db->mysqlAffectedRows();
-    unset($db);
-    if ($ergebniss>0) {
-      $message[] = array("Die Keys wurden in der Datenbank gespeichert und werden Ihnen jetzt zum Download angeboten.", 1);
-      message::setMessage($message);
-      return true;
-    } else {
-      $message[] = array("Die Keys konnten nicht in der Datenbank gespeichert werden.", 2);
-      message::setMessage($message);
-      return false;
-    }
-  }
+	public function saveKeysToDB($node_id, $vpn_client_cert, $vpn_client_key) {
+		$result = DB::getInstance()->exec("UPDATE nodes
+										   SET vpn_client_cert = '$vpn_client_cert',
+											   vpn_client_key = '$vpn_client_key'
+										   WHERE id = '$node_id'");
+		
+		if ($result>0) {
+			$message[] = array("Die Keys wurden in der Datenbank gespeichert und werden Ihnen jetzt zum Download angeboten.", 1);
+			message::setMessage($message);
+			return true;
+		} else {
+			$message[] = array("Die Keys konnten nicht in der Datenbank gespeichert werden.", 2);
+			message::setMessage($message);
+			return false;
+		}
+	}
 
   public function downloadKeyBundle($node_id) {
     $keys = Helper::getNodeDataByNodeId($node_id);
@@ -210,33 +208,41 @@ WHERE id = '$node_id'
     	return true;
 	}
 
-  public function regenerateCCD($subnet_id) {
-    $db = new mysqlClass;
-    $result = $db->mysqlQuery("SELECT nodes.id
-			       FROM nodes
-			       WHERE nodes.subnet_id='$subnet_id'");
-    while($row = mysql_fetch_assoc($result)) {
-      $node_ids[] = $row['id'];
-    }
-    unset($db);
-
-    foreach ($node_ids as $node_id) {
-      $db = new mysqlClass;
-      $result = $db->mysqlQuery("SELECT id
-				 FROM nodes
-			         WHERE id='$node_id' AND vpn_client_cert !='' AND vpn_client_key!='';");
-      while($row = mysql_fetch_assoc($result)) {
-	$node_ids[] = $row['id'];
-      }
-      unset($db);
-    }
-
-    foreach ($node_ids as $node_id) {
-      vpn::writeCCD($node_id);
-    }
-    
-    return true;
-  }
+	public function regenerateCCD($subnet_id) {
+		try {
+			$sql = "SELECT nodes.id
+					FROM nodes
+					WHERE nodes.subnet_id='$subnet_id'";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$node_ids[] = $row['id'];
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		
+		foreach ($node_ids as $node_id) {
+			try {
+				$sql = "SELECT id
+						FROM nodes
+						WHERE id='$node_id' AND vpn_client_cert !='' AND vpn_client_key!='';";
+				$result = DB::getInstance()->query($sql);
+				foreach($result as $row) {
+					$node_ids[] = $row['id'];
+				}
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+		}
+		
+		foreach ($node_ids as $node_id) {
+			vpn::writeCCD($node_id);
+		}
+		
+		return true;
+	}
   
   public function getVpnConfig($node_id) {
   	$data = Helper::getNodeDataByNodeId($node_id);

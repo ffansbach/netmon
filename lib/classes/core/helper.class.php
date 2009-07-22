@@ -74,7 +74,6 @@ class Helper {
 			$result = DB::getInstance()->query($sql);
 			$subnet = $result->fetch(PDO::FETCH_ASSOC);
 			$subnet = $subnet['subnet_ip'];
-
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
@@ -119,7 +118,7 @@ class Helper {
 		$result = DB::getInstance()->query($sql);
 		
 		foreach($result as $row) {
-			$nodes = $row;
+			$nodes[] = $row;
 		}
 	}
 
@@ -181,7 +180,6 @@ class Helper {
 			       LEFT JOIN users ON (users.id = nodes.user_id)
 			       WHERE services.typ='$type' AND nodes.id='$nodeId' $visible ORDER BY services.id";
 		$result = DB::getInstance()->query($sql);
-		
 		foreach($result as $row) {
 			$services[] = $row;
 		}
@@ -310,13 +308,19 @@ class Helper {
 	}
 
 	function getSubnetlistByUserID($id) {
-		$db = new mysqlClass;
-		$result = $db->mysqlQuery("SELECT COUNT(nodes.id) as nodes_in_net, subnets.id, subnets.subnet_ip, subnets.title FROM  subnets LEFT JOIN nodes on (nodes.subnet_id=subnets.id) WHERE subnets.user_id=$id GROUP BY subnets.id");
-		
-		while($row = mysql_fetch_assoc($result)) {
-			$subnetlist[] = $row;
+		try {
+			$sql = "SELECT COUNT(nodes.id) as nodes_in_net, subnets.id, subnets.subnet_ip, subnets.title
+					FROM  subnets
+					LEFT JOIN nodes on (nodes.subnet_id=subnets.id)
+					WHERE subnets.user_id=$id GROUP BY subnets.id";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$subnetlist[] = $row;
+			}
 		}
-		unset($db);
+		catch(PDOException $e) {
+		  echo $e->getMessage();
+		}
 		return $subnetlist;	
 	}
 
