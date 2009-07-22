@@ -252,16 +252,10 @@ NOW(),
   $crawler = new JsonDataCollector;
 
   $crawler->initialiseCrawl();
-echo "crawl initialized";
   $crawler->crawl('node');
-echo "crawling nodes";
   $crawler->crawl('vpn');
-echo "crawling vpn";
   $crawler->crawl('service');
-echo "crawling services";
   $crawler->crawl('client');
-echo "crawling clients";
   $crawler->endCrawl();
-echo "crawl end";
 
 ?>
