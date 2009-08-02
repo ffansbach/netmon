@@ -161,7 +161,6 @@ class vpn {
   }
 
   public function getCertificateInfo($node_id) {
-    $db = new mysqlClass;
     $keys = Helper::getNodeDataByNodeId($node_id);
     if (!empty($keys['vpn_server_ca']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
       $node_info = openssl_x509_parse($keys['vpn_client_cert']);
