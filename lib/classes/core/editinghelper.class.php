@@ -207,12 +207,12 @@ class editingHelper {
 		}
 	}
 	
-	public function addNodeTyp($node_id, $title, $description, $typ, $crawler, $port, $zone_start, $zone_end, $radius=80, $visible) {
+	public function addNodeTyp($node_id, $title, $description, $typ, $crawler, $port, $zone_start, $zone_end, $radius=80, $visible, $notify, $notification_wait) {
 		if (!empty($port)) {
 			$crawler = $port;
 		}
 		
-		DB::getInstance()->exec("INSERT INTO services (node_id, title, description, typ, crawler, zone_start, zone_end, radius, visible, create_date) VALUES ('$node_id', '$title', '$description', '$typ', '$crawler', '$zone_start', '$zone_end', '$radius', '$visible', NOW());");
+		DB::getInstance()->exec("INSERT INTO services (node_id, title, description, typ, crawler, zone_start, zone_end, radius, visible, notify, notification_wait, create_date) VALUES ('$node_id', '$title', '$description', '$typ', '$crawler', '$zone_start', '$zone_end', '$radius', '$visible', '$notify', '$notification_wait', NOW());");
 		$service_id = DB::getInstance()->lastInsertId();
 		
 		try {

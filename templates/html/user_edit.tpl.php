@@ -30,6 +30,14 @@
 
   <p>About:<br><textarea name="about" cols="50" rows="10">{$user.about}</textarea></p>
 
+	<h2>Benachrichtigungen</h2>
+	<p>Benachrichtigungen sollen mir per 
+    <select name="notification_method" size="1">
+      <option value="email" {if $user.notification_method=='email'}selected{/if}>Email</option>
+      <option value="jabber" {if $user.notification_method=='jabber'}selected{/if}>Jabber</option>
+    </select> gesendet werden.
+	</p>
+
   <p><input type="submit" value="Absenden"></p>
 </form>
 
