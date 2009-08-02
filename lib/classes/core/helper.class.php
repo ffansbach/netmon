@@ -344,7 +344,7 @@ class Helper {
 
 	public function getServiceDataByServiceId($service_id) {
 		try {
-			$sql = "SELECT services.id as service_id, services.node_id, services.title, services.description, services.typ, services.radius, services.crawler, services.zone_start, services.zone_end, services.visible, services.create_date,
+			$sql = "SELECT services.id as service_id, services.node_id, services.title, services.description, services.typ, services.radius, services.crawler, services.zone_start, services.zone_end, services.visible, notify, notification_wait, last_notification, services.create_date,
 			       nodes.node_ip,
 			       subnets.subnet_ip, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email

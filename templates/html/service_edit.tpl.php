@@ -25,9 +25,10 @@
     <p>(Optional) Radius: <input name="radius" type="text" size="5" maxlength="10" value="{$servicedata.radius}"><br>
     Sinnvoll wenn Typ "node" ist und man die ungefähre Reichweite seines W-Lan-Netzes in metern weiß.</p>
   </p>
-  
+
+	<h2>Privatsphäre:</h2>
   <p>
-    <p>Sichbar: 
+    <p>Diesen Service nicht angemeldeten Benutzer zeigen: 
     <select name="visible" size="1">
       <option value="1" {if $servicedata.visible==1}selected{/if}>Ja</option>
       <option value="0" {if $servicedata.visible==0}selected{/if}>Nein</option>
@@ -35,7 +36,16 @@
     <br>
     Alle Services sollten Sichbar sein. Wenn du aber einen Service anbietest bei dem es unter Umständen kritisch sein kann ihn öffentlich anzuzeigen, kannst du hier einstellen, dass nur angemeldete Personen den Service sehen können.</p>
   </p>
-  
+
+	<h2>Benachrichtigungen:</h2>
+	<p>Ein Crawldurchgang dauert {$timeBetweenCrawls} Minuten.<br>
+	Benachrichtige mich, wenn dieser Service länger als <input name="notification_wait" type="text" size="2" maxlength="2" value="{$servicedata.notification_wait}"> Crawldurchgänge nicht erreichbar ist
+    <select name="notify" size="1">
+      <option value="1" {if $servicedata.notify==1}selected{/if}>Ja</option>
+      <option value="0" {if $servicedata.notify==0}selected{/if}>Nein</option>
+    </select>
+	</p>
+
   <p><input type="submit" value="Absenden"></p>
 </form>
 
