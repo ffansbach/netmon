@@ -49,7 +49,8 @@ class user {
 								  jabber = '$_POST[jabber]',
 								  icq = '$_POST[icq]',
 								  website = '$_POST[website]',
-								  about = '$_POST[about]'
+								  about = '$_POST[about]',
+								  notification_method = '$_POST[notification_method]'
 								  WHERE id = '$_GET[id]'";	  	
 			} else {
 				$sqlinsert = "UPDATE users
@@ -63,7 +64,8 @@ class user {
 								  jabber = '$_POST[jabber]',
 								  icq = '$_POST[icq]',
 								  website = '$_POST[website]',
-								  about = '$_POST[about]'
+								  about = '$_POST[about]',
+								  notification_method = '$_POST[notification_method]'
 								  WHERE id = '$_GET[id]'";
 			}
 			

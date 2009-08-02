@@ -162,8 +162,8 @@ Passwort: $password
 Bitte klicke auf den nachfolgenden link um deinen Account freizuschalten.
 http://$GLOBALS[domain]/$GLOBALS[subfolder]/account_activate.php?activation_hash=$activation
 
-Das Oldenburger Freifunkteam";
-		$ergebniss = mail($email, "Anmeldung Freifunk Oldenburg", $text, "From: Freifunk Oldenburg Portal <portal@freifunk-ol.de>");
+Dein Freifunkteam $GLOBALS[city_name]";
+		$ergebniss = mail($email, "Anmeldung Freifunk Oldenburg", $text, "From: $GLOBALS[mail_sender]");
 		$message[] = array("Eine Email mit einem Link zum aktivieren des Nutzerkontos wurde an ".$email." verschickt.", 1);
 		message::setMessage($message);
 		return true;
@@ -190,7 +190,7 @@ Deine Logindaten Sind:
 Nickname: $nickname
 Passwort: $password
 
-Das Oldenburger Freifunkteam";
+Dein Freifunkteam $GLOBALS[city_name]";
 		$ergebniss = mail($email, "Neues Password (Freifunk Oldenburg)", $text, "From: Freifunk Oldenburg Portal <portal@freifunk-ol.de>");
 		$message[] = array("Dir wurde ein neues Passwort zugesendet.", 1);
 		message::setMessage($message);
