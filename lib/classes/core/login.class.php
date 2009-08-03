@@ -29,7 +29,7 @@
  */
 
 class login {
-	public function user_login ($nickname, $password, &$message) {
+	public function user_login ($nickname, $password) {
 		if (empty($nickname) or empty($password)) {
 			$messages[] = array("Sie müssen einen Nickname und ein Passwort angeben um sich einzuloggen", 2);
 			message::setMessage($messages);
@@ -51,7 +51,8 @@ class login {
 					message::setMessage($messages);
 					return false;
 				} else {
-					DB::getInstance()->query("UPDATE users SET last_login = NOW() where id=".$user_data['id']);
+					$session_id = session_id();
+					DB::getInstance()->query("UPDATE users SET session_id='$session_id', last_login = NOW() where id=".$user_data['id']);
 					$_SESSION['user_id'] = $user_data['id'];
 					if (isset($user_data['last_login'])) {
 						$last_login = " Ihr letzter Login war am ".$user_data['last_login'];
@@ -59,7 +60,7 @@ class login {
 					
 					$messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'].$last_login, 1);
 					message::setMessage($messages);
-					return true;
+					return array('result'=>true, 'user_id'=>$user_data['id'], 'session_id'=>$session_id);
 				}
 			}
 			catch(PDOException $e) {
