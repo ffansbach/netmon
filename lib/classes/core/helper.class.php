@@ -285,6 +285,24 @@ class Helper {
 		return $user;
 	}
 
+	function getPlublicUserInfoByID($id) {
+		try {
+			$sql = "SELECT nickname, vorname, nachname, strasse, plz, ort, telefon, email, jabber, icq, website, about FROM users WHERE id=$id";
+			$result = DB::getInstance()->query($sql);
+			$user = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+		  echo $e->getMessage();
+		}
+		return $user;
+	}
+
+	function getProjectInfo() {
+		return array('net_prefix'=>$GLOBALS['net_prefix'],'city_name'=>$GLOBALS['city_name'],
+					 'project_homepage'=>$GLOBALS['project_homepage'], 'project_name'=>$GLOBALS['project_name'],
+					  'project_essid'=>$GLOBALS['project_essid']);
+	}
+
 	function getNodelistByUserID($id) {
 		try {
 			$sql = "SELECT nodes.id, nodes.user_id, nodes.node_ip, nodes.subnet_id,

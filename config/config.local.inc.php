@@ -10,14 +10,28 @@ $GLOBALS['url_to_netmon'] = $GLOBALS['domain']."/".$GLOBALS['subfolder'];
 $GLOBALS['mysql_host'] = "localhost";
 $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
-$GLOBALS['mysql_password'] = "5fac80ba3895";
+$GLOBALS['mysql_password'] = "blabla";
 $GLOBALS['mysql_enc'] = "utf8";
+
+//JABBER
+$GLOBALS['jabber_server'] = "unixboard.de";
+$GLOBALS['jabber_username'] = "floh1111";
+$GLOBALS['jabber_password'] = "blabla";
+
+//MAIL
+$GLOBALS['mail_sender'] = "Freifunk Oldenburg Netmon <netmon@freifunk-ol.de>";
 
 //FREIFUNKNETZ
 $GLOBALS['net_prefix'] = "10.18";
 $GLOBALS['geographical_center_of_net_latitute'] = "8.213753";
 $GLOBALS['geographical_center_of_net_longitude'] = "53.139926";
 $GLOBALS['geographical_radius_of_net'] = "10";
+$GLOBALS['city_name'] = "Oldenburg";
+
+//PROJECTDATA
+$GLOBALS['project_homepage'] = "http://www.freifunk-ol.de/";
+$GLOBALS['project_name'] = "Freifunk Oldenburg";
+$GLOBALS['project_essid'] = "oldenburg.freifunk.net";
 
 //Logsystem
 //Logge bei Querrys die länge brauchen als X sekunden
