@@ -10,7 +10,7 @@
     $smarty->display("header.tpl.php");
     $smarty->display("login.tpl.php");
     $smarty->display("footer.tpl.php");
-  } elseif ($_GET['section']=="login_send" AND $login->user_login($_POST['nickname'], $_POST['password'], $message)) {
+  } elseif ($_GET['section']=="login_send" AND $login->user_login($_POST['nickname'], $_POST['password'])) {
     header('Location: desktop.php');
   } elseif($_GET['section']=="logout") {
     $login->user_logout($message);
