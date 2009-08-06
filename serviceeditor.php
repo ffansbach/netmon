@@ -41,9 +41,10 @@
 	header('Location: ./service.php?service_id='.$edit_result['service_id']);
     }
     if ($_GET['section'] == "delete") {
-	$node = Helper::getNodeIdByServiceId($_GET['service_id']);
-	$serviceeditor->deleteService($_GET['service_id']);
-	
-	header('Location: ./node.php?id='.$node['id']);
+		$node = Helper::getNodeIdByServiceId($_GET['service_id']);
+		if ($serviceeditor->deleteService($_GET['service_id']))
+			header('Location: ./node.php?id='.$node['id']);
+		else
+			header('Location: ./serviceeditor.php?section=edit&service_id='.$_GET['service_id']);
     }
 ?>

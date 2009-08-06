@@ -47,13 +47,21 @@ class serviceeditor {
 	}
 
 	public function deleteService($service_id) {
-		DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
-		$message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
+		if ($_POST['delete']=="true") {
+			DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
+			$message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
+	
+			DB::getInstance()->exec("DELETE FROM crawl_data WHERE service_id='$service_id';");
+			$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurde gelöscht.",1);
 
-		DB::getInstance()->exec("DELETE FROM crawl_data WHERE service_id='$service_id';");
-		$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurde gelöscht.",1);
+			message::setMessage($message);
+			return true;
+		} else {
+			$message[] = array("Zum löschen des Services bitte das Häckchen bei \"Ja\" setzen.",2);
 
-		message::setMessage($message);
+			message::setMessage($message);
+			return false;
+		}
 	}
 }
 
