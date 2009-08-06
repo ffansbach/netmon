@@ -193,6 +193,7 @@ class Helper {
   }
 
   public function getServicesByNodeId($node_id) {
+	$services = array();
     //Nur Services zurückgeben die der Benutzer sehen darf
     if (!usermanagement::checkPermission(4))
       $visible = "AND visible = 1";

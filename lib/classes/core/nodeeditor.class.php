@@ -47,7 +47,7 @@ class nodeeditor {
 	DB::getInstance()->exec("INSERT INTO nodes (user_id, subnet_id, node_ip, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$node', NOW());");
 	$node_id = DB::getInstance()->lastInsertId();
 
-	$service = editingHelper::addNodeTyp($node_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible']);
+	$service = editingHelper::addNodeTyp($node_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
 
 	$subnet = Helper::getSubnetById($subnet_id);
 	if ($ips > 0) {
