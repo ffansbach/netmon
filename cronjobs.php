@@ -1,7 +1,7 @@
 <?php
 
-require_once('./config/runtime.inc.php');
-require_once('./lib/classes/core/service.class.php');
+require_once('/var/kunden/webs/freifunk/netmon/config/runtime.inc.php');
+require_once('/var/kunden/webs/freifunk/netmon/lib/classes/core/service.class.php');
 
 /*
  * Get all Services that have notification on

@@ -71,7 +71,7 @@ class nodeeditor {
 
   public function deleteNode($node_id) {
 	foreach (Helper::getServicesByNodeId($node_id) as $services) {
-		serviceeditor::deleteService($services['service_id']);
+		serviceeditor::deleteService($services['service_id'], true);
 	}
 
 	vpn::deleteCCD($node_id);
