@@ -46,16 +46,28 @@ class serviceeditor {
 		return array("result"=>true, "service_id"=>$service_id);
 	}
 
-	public function deleteService($service_id) {
+	public function deleteService($service_id, $force=false) {
 		if ($_POST['delete']=="true") {
-			DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
-			$message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
-	
-			DB::getInstance()->exec("DELETE FROM crawl_data WHERE service_id='$service_id';");
-			$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurde gelöscht.",1);
 
-			message::setMessage($message);
-			return true;
+			$service_data = Helper::getServiceDataByServiceId($service_id);
+			if(count(Helper::getServicesByNodeId($service_data['node_id']))<2 AND !$force) {
+				$link1 = "<a href=\"./serviceeditor.php?section=new&node_id=$service_data[node_id]\">hier</a>";
+				$link2 = "<a href=\"./nodeeditor.php?section=edit&id=$service_data[node_id]\">hier</a>";
+				$message[] = array("Sie können diesen Service nicht löschen da eine IP durch mindestens einen Service spezifiziert werden muss.<br>"
+									."Um einen 2. Service zu erstellen klicken Sie bitte $link1<br>"
+									."Um die IP zu komplett zu löschen, klicken Sie bitte $link2", 2);
+				message::setMessage($message);
+				return false;
+			} else {
+				DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
+				$message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
+				
+				DB::getInstance()->exec("DELETE FROM crawl_data WHERE service_id='$service_id';");
+				$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurde gelöscht.",1);
+				
+				message::setMessage($message);
+				return true;
+			}
 		} else {
 			$message[] = array("Zum löschen des Services bitte das Häckchen bei \"Ja\" setzen.",2);
 

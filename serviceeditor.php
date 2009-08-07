@@ -7,23 +7,35 @@
   $serviceeditor = new serviceeditor;
 
     if ($_GET['section'] == "new") {
-	$smarty->assign('message', message::getMessage());
-	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	$smarty->assign('node_data', Helper::getNodeInfo($_GET['node_id']));	
-	$smarty->display("header.tpl.php");
-	$smarty->display("add_service.tpl.php");
-	$smarty->display("footer.tpl.php");
-    } 
+		if (usermanagement::checkPermission(4)) {
+			$smarty->assign('message', message::getMessage());
+			$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+			$smarty->assign('node_data', Helper::getNodeInfo($_GET['node_id']));	
+			$smarty->display("header.tpl.php");
+			$smarty->display("add_service.tpl.php");
+			$smarty->display("footer.tpl.php");
+		} else {
+			$message[] = array("Nur eingeloggte Benutzer dürfen einen Service anlegen!", 2);
+			message::setMessage($message);
+			header('Location: ./login.php');
+		}
+	}
     if ($_GET['section'] == "insert_service") {
-      if ($_POST['ips'] > 0) {
-	$node_info = Helper::getNodeInfo($_GET['node_id']);
-	$range = editingHelper::getFreeIpZone($node_info['subnet_id'], $_POST['ips'], 0);
-      } else {
-	$range['start'] = "NULL";
-	$range['end'] = "NULL";
-      }
-	$add_result = editingHelper::addNodeTyp($_GET['node_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
-	header('Location: ./service.php?service_id='.$add_result['service_id']);
+		if (usermanagement::checkPermission(4)) {
+			if ($_POST['ips'] > 0) {
+				$node_info = Helper::getNodeInfo($_GET['node_id']);
+				$range = editingHelper::getFreeIpZone($node_info['subnet_id'], $_POST['ips'], 0);
+			} else {
+				$range['start'] = "NULL";
+				$range['end'] = "NULL";
+			}
+			$add_result = editingHelper::addNodeTyp($_GET['node_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
+			header('Location: ./service.php?service_id='.$add_result['service_id']);
+		} else {
+			$message[] = array("Nur eingeloggte Benutzer dürfen einen Service anlegen!", 2);
+			message::setMessage($message);
+			header('Location: ./login.php');
+		}
     }
     if ($_GET['section'] == "edit") {
 	$service_data = Helper::getServiceDataByServiceId($_GET['service_id']);
