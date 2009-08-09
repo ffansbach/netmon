@@ -14,8 +14,8 @@ $GLOBALS['mysql_password'] = "blabla";
 $GLOBALS['mysql_enc'] = "utf8";
 
 //JABBER
-$GLOBALS['jabber_server'] = "unixboard.de";
-$GLOBALS['jabber_username'] = "floh1111";
+$GLOBALS['jabber_server'] = "jabber.nord-west.net";
+$GLOBALS['jabber_username'] = "netmon";
 $GLOBALS['jabber_password'] = "blabla";
 
 //MAIL
@@ -32,6 +32,8 @@ $GLOBALS['city_name'] = "Oldenburg";
 $GLOBALS['project_homepage'] = "http://www.freifunk-ol.de/";
 $GLOBALS['project_name'] = "Freifunk Oldenburg";
 $GLOBALS['project_essid'] = "oldenburg.freifunk.net";
+$GLOBALS['project_bssid'] = "02:ca:ff:ee:ba:be";
+$GLOBALS['project_kanal'] = "1";
 
 //Logsystem
 //Logge bei Querrys die länge brauchen als X sekunden
