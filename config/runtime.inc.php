@@ -37,28 +37,33 @@
   
   //Typ und Encoding Festlegen
   header("Content-Type: text/html; charset=UTF-8");
-
+/*
+if (!empty($_SERVER["REQUEST_URI"]))
+	$path = "";
+else
+	$path = dirname(__FILE__)."/";
+*/
   //Lokale Konfiguration einbinden
-  require_once('config/config.local.inc.php');
+  require_once($path.'config/config.local.inc.php');
 
   /**
   * WICHTIGE KLASSEN
   */
 
   //PDO Class
-  require_once('lib/classes/core/db.class.php');
+  require_once($path.'lib/classes/core/db.class.php');
   //Klasse für Nachrichten einbinden
-  require_once('lib/classes/core/message.class.php');
+  require_once($path.'lib/classes/core/message.class.php');
   //Allgemeine Helper-Klasse
-  require_once('lib/classes/core/helper.class.php');
+  require_once($path.'lib/classes/core/helper.class.php');
   //Klasse für Usermanagement
-  require_once('lib/classes/core/usermanagement.class.php');  
+  require_once($path.'lib/classes/core/usermanagement.class.php');  
   //Klasse fürs Logging
-  require_once('lib/classes/core/logsystem.class.php');
+  require_once($path.'lib/classes/core/logsystem.class.php');
   //Klasse fürs Menü
-  require_once('lib/classes/core/menus.class.php');
+  require_once($path.'lib/classes/core/menus.class.php');
   //Helper-Klasse fürs Editing
-  require_once('lib/classes/core/editinghelper.class.php');
+  require_once($path.'lib/classes/core/editinghelper.class.php');
 
   $usermanagement =  new usermanagement;
   $menus =  new menus;
@@ -68,7 +73,7 @@
   */
 
   //Smarty-Klasse einbinden
-  require_once ('smarty/libs/Smarty.class.php');
+  require_once ($path.'smarty/libs/Smarty.class.php');
 
   //Smarty Objekt initialisieren
   $smarty = new Smarty;

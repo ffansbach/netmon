@@ -1,7 +1,12 @@
 <?php
 
-require_once('/var/kunden/webs/freifunk/netmon/config/runtime.inc.php');
-require_once('/var/kunden/webs/freifunk/netmon/lib/classes/core/service.class.php');
+	if (!empty($_SERVER["REQUEST_URI"]))
+		$path = "";
+	else
+		$path = dirname(__FILE__)."/";
+
+	require_once($path.'config/runtime.inc.php');
+	require_once($path.'lib/classes/core/service.class.php');
 
 /*
  * Get all Services that have notification on

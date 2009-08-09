@@ -161,6 +161,38 @@ class Helper {
     return $services;
   }
 
+  public function getServicesByUserId($user_id) {
+    //Nur Services zurückgeben die der Benutzer sehen darf
+    if (!usermanagement::checkPermission(4))
+      $visible = "AND visible = 1";
+    else
+      $visible = "";
+
+    $services = array();
+	try {
+		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
+				      nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
+				      subnets.subnet_ip, subnets.title,
+				      users.nickname
+			       FROM services
+			       LEFT JOIN nodes ON (nodes.id = services.node_id)
+			       LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
+			       LEFT JOIN users ON (users.id = nodes.user_id)
+			       WHERE nodes.user_id='$user_id' $visible ORDER BY services.id";
+		$result = DB::getInstance()->query($sql);
+		
+		foreach($result as $row) {
+			$services[] = $row;
+		}
+	}
+
+	catch(PDOException $e) {
+		echo $e->getMessage();
+	}
+
+    return $services;
+  }
+
   public function getServicesByTypeAndNodeId($type, $nodeId) {
     //Nur Services zurückgeben die der Benutzer sehen darf
     if (!usermanagement::checkPermission(4))
