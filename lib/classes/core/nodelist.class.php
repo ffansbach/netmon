@@ -68,6 +68,16 @@ class nodelist {
 	  }
 	  return $nodelist;
 	}
+
+	function getServiceListByUserId($user_id) {
+	  $services = Helper::getServicesByUserId($user_id);
+	  foreach ($services as $service) {
+	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+	    $nodelist[] = array_merge($service, $crawl_data);
+	    unset($db);
+	  }
+	  return $nodelist;
+	}
   
 
 }
