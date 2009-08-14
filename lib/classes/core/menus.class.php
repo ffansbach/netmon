@@ -79,7 +79,7 @@ class menus extends usermanagement {
     if (usermanagement::checkPermission(32)) {
       $menu[] = array('name'=>'Neues Subnetz', 'href'=>'./subneteditor.php?section=new');
       $menu[] = array('name'=>'CCD regenerieren', 'href'=>'./vpn.php?section=regenerate_ccd_subnet');
-
+      $menu[] = array('name'=>'Crawlen', 'href'=>'./lib/classes/crawler/json_php_crawler.php');
     }
     return $menu;
   }

@@ -33,8 +33,8 @@ class nodelist {
 	  $services = Helper::getServicesByType('node');
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+		$crawl_data['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($crawl_data['crawl_time']));
 	    $nodelist[] = array_merge($service, $crawl_data);
-	    unset($db);
 	  }
 	  return $nodelist;
 	}
@@ -43,8 +43,8 @@ class nodelist {
 	  $services = Helper::getServicesByType('vpn');
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+		$crawl_data['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($crawl_data['crawl_time']));
 	    $nodelist[] = array_merge($service, $crawl_data);
-	    unset($db);
 	  }
 	  return $nodelist;
 	}
@@ -53,8 +53,9 @@ class nodelist {
 	  $services = Helper::getServicesByType('service');
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+		$crawl_data['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($crawl_data['crawl_time']));
 	    $nodelist[] = array_merge($service, $crawl_data);
-	    unset($db);
+
 	  }
 	  return $nodelist;
 	}
@@ -63,8 +64,9 @@ class nodelist {
 	  $services = Helper::getServicesByType('client');
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+		$crawl_data['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($crawl_data['crawl_time']));
 	    $nodelist[] = array_merge($service, $crawl_data);
-	    unset($db);
+
 	  }
 	  return $nodelist;
 	}
@@ -73,8 +75,9 @@ class nodelist {
 	  $services = Helper::getServicesByUserId($user_id);
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+		$crawl_data['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($crawl_data['crawl_time']));
 	    $nodelist[] = array_merge($service, $crawl_data);
-	    unset($db);
+
 	  }
 	  return $nodelist;
 	}

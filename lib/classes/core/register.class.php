@@ -169,26 +169,36 @@ Dein Freifunkteam $GLOBALS[city_name]";
 		return true;
 	}
   
-	public function setNewPassword($password, $user_id) {
-		$password_hash = md5($password);
-		$result = DB::getInstance()->exec("UPDATE users SET password = '$password_hash' WHERE id = '$user_id'");
-		if ($result>0) {
-			$message[] = array("Dem Benutzer mit der ID $user_id wurde ein neues Passwort gesetzt", 1);
-			message::setMessage($message);
-			return true;
+	public function setNewPassword($new_password_hash, $old_password_hash, $user_id) {
+		$user_data = Helper::getUserByID($user_id);
+		if($old_password_hash==$user_data['password']) {
+			$result = DB::getInstance()->exec("UPDATE users SET password = '$new_password_hash' WHERE id = '$user_id'");
+			if ($result>0) {
+				$message[] = array("Dem Benutzer mit der ID $user_id wurde ein neues Passwort gesetzt", 1);
+				message::setMessage($message);
+				return true;
+			} else {
+				$message[] = array("Dem Benutzer mit der ID ".$user_id." konnte keine neues Passwort gesetzt werden.", 2);
+				message::setMessage($message);
+				return false;
+			}
 		} else {
-			$message[] = array("Dem Benutzer mit der ID ".$user_id." konnte keine neues Passwort gesetzt werden.", 2);
+			$message[] = array("Der übergebene Passwordhash der User-ID ".$user_id." stimmt nicht mit dem gespeicherten Hash überein.", 2);
+			$message[] = array("Es wurde kein neues Passwort gesetzt!.", 2);
 			message::setMessage($message);
 			return false;
 		}
 	}
 	
-	public function sendPassword($email, $nickname, $password) {
+	public function sendPassword($user_id, $email, $nickname, $password, $password_md5, $oldpassword_hash) {
 		$text = "Hallo $nickname,
 
-Deine Logindaten Sind:
+Deine neuen Logindaten Sind:
 Nickname: $nickname
 Passwort: $password
+
+Bitte bestaetige die Aenderungen mit einem Klick auf diesen Link:
+http://$GLOBALS[domain]/$GLOBALS[subfolder]/set_new_password.php?user_id=$user_id&new_passwordhash=$password_md5&oldpassword_hash=$oldpassword_hash
 
 Dein Freifunkteam $GLOBALS[city_name]";
 		$ergebniss = mail($email, "Neues Password (Freifunk Oldenburg)", $text, "From: Freifunk Oldenburg Portal <portal@freifunk-ol.de>");

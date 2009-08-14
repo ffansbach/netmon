@@ -80,6 +80,7 @@ Dein Freifunkteam $GLOBALS[city_name]";
 	}
 
 	public function offlineNotification($service_id) {
+	echo $service_id;
 		$service_data = Helper::getServiceDataByServiceId($service_id);
 		$user_data = Helper::getUserByID($service_data['user_id']);
 		$history = service::getCrawlHistory($service_id, $service_data['notification_wait']);
@@ -94,13 +95,14 @@ Dein Freifunkteam $GLOBALS[city_name]";
 		}
 
 		//Wenn offline 
-		if (!$online AND ($history[$service_data['notification_wait']-1]['crawl_time']>$service_data['last_notification'])) {
+		if (!$online AND $service_data['notified']!=1) {
 			if($user_data['notification_method']=="email") {
 				service::emailIfDown($service_data, $user_data, $history);
 			} elseif ($user_data['notification_method']=="jabber") {
 				service::jabberIfDown($service_data, $user_data, $history);
 			}
 			DB::getInstance()->exec("UPDATE services SET
+										notified = 1,
 										last_notification = NOW()
 									 WHERE id = '$service_id'");
 		}
