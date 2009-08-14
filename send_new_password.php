@@ -8,13 +8,13 @@
 
   if (empty($_POST['email'])) {
     $smarty->display("header.tpl.php");
-    $smarty->display("resend_password.tpl.php");
+    $smarty->display("send_new_password.tpl.php");
     $smarty->display("footer.tpl.php");
   } else {
     $user = Helper::getUserByEmail($_POST['email']);
     $new_password = helper::randomPassword(8);
-    $register->setNewPassword($new_password, $user['id']);
-    $register->sendPassword($user['email'], $user['nickname'], $new_password);
+	$new_password_md5 = md5($new_password);
+    $register->sendPassword($user['id'], $user['email'], $user['nickname'], $new_password, $new_password_md5, $user['password']);
     header('Location: ./login.php');
   }
 
