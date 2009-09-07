@@ -4,7 +4,11 @@
 <b>Eingetragen seit:</b> {$node.create_date}<br>
 <b>Subnetz:</b>  <a href="./subnet.php?id={$node.subnet_id}">{$node.title}</a><br>
 
-<h2>Services auf dieser IP</h2>
+
+<h2>Live-Status der IP:</h2>
+<p>{if $ping}Aktueller Ping: {$ping} ms, online!{else}Ping nicht möglich, offline!{/if}</p>
+
+<h2>Services auf dieser IP:</h2>
 
 <div id="nodeitem" style="width: 80%; overflow: hidden;">
   <div nstyle="white-space: nowrap;">

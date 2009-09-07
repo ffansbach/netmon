@@ -6,7 +6,17 @@
 
   $smarty->assign('message', message::getMessage());
   
-  $smarty->assign('node', Helper::getNodeInfo($_GET['id']));
+  $node_data = Helper::getNodeInfo($_GET['id']);
+  $smarty->assign('node', $node_data);
+
+  $online=exec("ping $GLOBALS[net_prefix].$node_data[subnet_ip].$node_data[node_ip] -c 1 -w 1");
+  if ($online)
+    $ping = substr($online, -15, -9);
+  else
+	$ping =  false;
+
+  $smarty->assign('ping', $ping);
+
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
   $smarty->assign('is_node_owner', $node->is_node_owner);
   $smarty->assign('servicelist', $node->getServiceList($_GET['id']));

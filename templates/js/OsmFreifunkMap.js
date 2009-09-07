@@ -133,9 +133,10 @@ function fullmap() {
 	MapControls();
 	//Adding a second layer makes google Satelite weird!
 	AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
-	AddKmlLayer("online Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online");
 	// Please do *not* uncomment the following line
 	// currently there is a problem with SelectFeature for multiple layers
 	// if the following line is uncommented online nodes can't be selected any longer
-	//AddKmlLayer("offline Nodes", "./index.php?get=getinfo&section=getgoogleearthkmlfile_offline");
+	AddKmlLayer("offline Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_offline");
+
+	AddKmlLayer("online Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online");
 }

@@ -10,11 +10,7 @@
 		<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
 		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
-		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>
-
-
-
-
+<!--		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>-->
 		
 		<div id="map" style="height:500px; width:100%x; border:solid 1px black;font-size:9pt;">
 			<script type="text/javascript">

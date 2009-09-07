@@ -22,7 +22,6 @@ Eingetragen seit: {$subnet.create_date}<br>
 		<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
 		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
-		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>
 	<div id="map" style="height:300px; width:300px; border:solid 1px black;font-size:9pt;">
 		<script type="text/javascript">
 			var lon = {$subnet.longitude};
