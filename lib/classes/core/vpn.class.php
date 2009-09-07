@@ -140,7 +140,7 @@ class vpn {
         'maxsize' => 12*1024*1024 // Nur Dateien die <= 12 MB gross sind zippen
       ));
 
-      $zipfile->add_files(array("*"));
+      $zipfile->add_files(array("ca.crt", "client.key", "client.crt", "openvpn"));
 
       // Archiv erstellen
       $zipfile->create_archive();

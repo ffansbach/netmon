@@ -37,13 +37,7 @@
   
   //Typ und Encoding Festlegen
   header("Content-Type: text/html; charset=UTF-8");
-/*
-if (!empty($_SERVER["REQUEST_URI"]))
-	$path = "";
-else
-	$path = dirname(__FILE__)."/";
-*/
-  //Lokale Konfiguration einbinden
+
   require_once($path.'config/config.local.inc.php');
 
   /**
@@ -67,6 +61,15 @@ else
 
   $usermanagement =  new usermanagement;
   $menus =  new menus;
+
+  /**
+  * PEAR EZC LIBRARY FOR GRAPHS
+  */
+  
+  require_once "ezc/Base/base.php"; // dependent on installation method, see below
+  function __autoload( $className ) {
+	ezcBase::autoload( $className );
+  }
 
   /**
   * SMARTY TEMPLATEENGINE

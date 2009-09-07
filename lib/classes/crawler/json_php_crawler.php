@@ -87,13 +87,13 @@ class JsonDataCollector {
   }
 
   public function pingHost($host) {
-    $online=exec("ping $host -c 1 -w 1"); 
-    // $online=exec("ping $ip -n 1");  // for MS Windows
-    if (!empty($online)) {
-      return true;
-    } else {
-      return false;
-    }
+	$online=exec("ping $host -c 1 -w 1");
+	if ($online)
+		$ping = substr($online, -15, -9);
+	else
+		$ping =  false;
+		
+	return $ping;
   }
   
   function getServices($service_typ) {
@@ -117,58 +117,110 @@ class JsonDataCollector {
   public function crawl($service_typ) {
     $services = $this->getServices($service_typ);
     foreach ($services as $service) {
-      if ($service['crawler']=="json") {
-	$json = $this->getJason("http://$GLOBALS[net_prefix].$service[subnet_ip].$service[node_ip]/cgi-bin/luci/freifunk/status.json");
-	$this->isertIntoDB($json, $service['service_id']);
-      } elseif ($service['crawler']=="ping") {
-	$ping = $this->pingHost("$GLOBALS[net_prefix].$service[subnet_ip].$service[node_ip]");
-	$this->isertIntoDB($ping, $service['service_id']);
-      } elseif ($service['typ']=="service" AND is_numeric($service['crawler'])) {
-	$portcheck =  @fsockopen("$GLOBALS[net_prefix].$service[subnet_ip].$service[node_ip]", $service['crawler'], $errno, $errstr, 2);
-	$this->isertIntoDB($portcheck, $service['service_id']);
+		$ping = $this->pingHost("$GLOBALS[net_prefix].$service[subnet_ip].$service[node_ip]");
+		if ($service['crawler']=="json") {
+			if ($ping)
+				$json = $this->getJason("http://$GLOBALS[net_prefix].$service[subnet_ip].$service[node_ip]/cgi-bin/luci/freifunk/status.json");
+			$this->insertJsonIntoDB($ping, $json, $service['service_id']);
+		} elseif ($service['crawler']=="ping") {
+			$this->insertPingIntoDB($ping, $service['service_id']);
+		} elseif ($service['typ']=="service" AND is_numeric($service['crawler'])) {
+	if ($ping)
+		$portcheck =  @fsockopen("$GLOBALS[net_prefix].$service[subnet_ip].$service[node_ip]", $service['crawler'], $errno, $errstr, 2);
+	$this->insertPortsIntoDB($ping, $portcheck, $service['service_id']);
       }
+			unset($ping);
+			unset($json);
+			unset($portcheck);
     }
   }
 
-  public function isertIntoDB($obj, $service_id) {
+	public function updateNotificationStatus($status) {
+		if ($status = "online") {
+			mysql_query("UPDATE services SET
+								notified = 0
+						 WHERE id = '$service_id'");
+		}
+	}
+
+	public function insertPingIntoDB($ping, $service_id) {
+		$data['crawl_id'] = $this->crawl_id;
+		$data['service_id'] = $service_id;
+
+		if ($ping) {
+			$data['status'] = "online";
+			$data['ping'] = $ping;
+		} else {
+			$data['status'] = "offline";
+			$data['ping'] = 'NULL';
+		}
+
+		mysql_query("INSERT INTO crawl_data (crawl_id, service_id, crawl_time, ping, status)
+					VALUES ('$data[crawl_id]', '$data[service_id]', NOW(), '$data[ping]', '$data[status]'
+					);");
+
+		$this->updateNotificationStatus($data['status']);
+	}
+
+	public function insertPortsIntoDB($ping, $port, $service_id) {
+		$data['crawl_id'] = $this->crawl_id;
+		$data['service_id'] = $service_id;
+		$data['ping'] = $ping;
+
+		if ($port) {
+			$data['status'] = "online";
+		} else {
+			$data['status'] = "offline";
+		}
+
+		mysql_query("INSERT INTO crawl_data (crawl_id, service_id, crawl_time, ping, status)
+					VALUES ('$data[crawl_id]', '$data[service_id]', NOW(), '$data[ping]', '$data[status]'
+					);");
+
+		$this->updateNotificationStatus($data['status']);
+	}
+
+
+  public function insertJsonIntoDB($ping, $json_obj, $service_id) {
     $data['crawl_id'] = $this->crawl_id;
     $data['service_id'] = $service_id;
+	$data['ping'] = $ping;
 
-    if ($obj)
+    if ($json_obj)
       $data['status'] = "online";
     else
       $data['status'] = "offline";
 
-$data['nickname'] = $obj->freifunk->contact->nickname;
-$data['hostname'] = $obj->system->hostname;
-$data['email'] = $obj->freifunk->contact->mail;
-$data['location'] = $obj->freifunk->contact->location;
-$data['prefix'] = $obj->freifunk->community->prefix;
-$data['ssid'] = $obj->freifunk->community->ssid;
-$data['longitude'] = $obj->geo->longitude;
-$data['latitude'] = $obj->geo->latitude;
-$data['luciname'] = $obj->firmware->luciname;
-$data['luciversion'] = $obj->firmware->luciversion;
-$data['distname'] = $obj->firmware->distname;
-$data['distversion'] = $obj->firmware->distversion;
-$data['chipset'] = $obj->system->sysinfo[0];
-$data['cpu'] = $obj->system->sysinfo[1];
-$data['network'] = serialize($obj->network);
-$data['wireless_interfaces'] = serialize($obj->wireless->interfaces);
-$data['uptime'] = round(($obj->system->uptime[0])/60/60, 2);
-$data['idletime'] = round(($obj->system->uptime[1])/60/60, 2);
-$data['memory_total'] = $obj->system->sysinfo[2];
-$data['memory_caching'] = $obj->system->sysinfo[3];
-$data['memory_buffering'] = $obj->system->sysinfo[4];
-$data['memory_free'] = $obj->system->sysinfo[5];
-$data['loadavg'] = $obj->system->loadavg[0];
-$data['processes'] = $obj->system->loadavg[3];
-$data['olsrd_hna'] = serialize($obj->olsrd->HNA);
-$data['olsrd_neighbors'] = serialize($obj->olsrd->Neighbors);
-$data['olsrd_links'] = serialize($obj->olsrd->Links);
-$data['olsrd_mid'] = serialize($obj->olsrd->MID);
-$data['olsrd_routes'] = serialize($obj->olsrd->Routes);
-$data['olsrd_topology'] = serialize($obj->olsrd->Topology);
+$data['nickname'] = $json_obj->freifunk->contact->nickname;
+$data['hostname'] = $json_obj->system->hostname;
+$data['email'] = $json_obj->freifunk->contact->mail;
+$data['location'] = $json_obj->freifunk->contact->location;
+$data['prefix'] = $json_obj->freifunk->community->prefix;
+$data['ssid'] = $json_obj->freifunk->community->ssid;
+$data['longitude'] = $json_obj->geo->longitude;
+$data['latitude'] = $json_obj->geo->latitude;
+$data['luciname'] = $json_obj->firmware->luciname;
+$data['luciversion'] = $json_obj->firmware->luciversion;
+$data['distname'] = $json_obj->firmware->distname;
+$data['distversion'] = $json_obj->firmware->distversion;
+$data['chipset'] = $json_obj->system->sysinfo[0];
+$data['cpu'] = $json_obj->system->sysinfo[1];
+$data['network'] = serialize($json_obj->network);
+$data['wireless_interfaces'] = serialize($json_obj->wireless->interfaces);
+$data['uptime'] = round(($json_obj->system->uptime[0])/60/60, 2);
+$data['idletime'] = round(($json_obj->system->uptime[1])/60/60, 2);
+$data['memory_total'] = $json_obj->system->sysinfo[2];
+$data['memory_caching'] = $json_obj->system->sysinfo[3];
+$data['memory_buffering'] = $json_obj->system->sysinfo[4];
+$data['memory_free'] = $json_obj->system->sysinfo[5];
+$data['loadavg'] = $json_obj->system->loadavg[0];
+$data['processes'] = $json_obj->system->loadavg[3];
+$data['olsrd_hna'] = serialize($json_obj->olsrd->HNA);
+$data['olsrd_neighbors'] = serialize($json_obj->olsrd->Neighbors);
+$data['olsrd_links'] = serialize($json_obj->olsrd->Links);
+$data['olsrd_mid'] = serialize($json_obj->olsrd->MID);
+$data['olsrd_routes'] = serialize($json_obj->olsrd->Routes);
+$data['olsrd_topology'] = serialize($json_obj->olsrd->Topology);
 
     $data['luciname'] = mysql_real_escape_string($data['luciname']);
     mysql_query("INSERT INTO crawl_data (
@@ -176,6 +228,7 @@ $data['olsrd_topology'] = serialize($obj->olsrd->Topology);
 crawl_id,
 service_id,
 crawl_time,
+ping,
 status,
 nickname,
 hostname,
@@ -211,6 +264,7 @@ olsrd_topology
 '$data[crawl_id]',
 '$data[service_id]',
 NOW(),
+'$data[ping]',
 '$data[status]',
 '$data[nickname]',
 '$data[hostname]',
@@ -243,6 +297,9 @@ NOW(),
 '$data[olsrd_routes]',
 '$data[olsrd_topology]'
 );");
+
+		$this->updateNotificationStatus($data['status']);
+
     return true;
   }
 

@@ -33,7 +33,7 @@ class apiMap {
 	/**
 	* print a xml file to use with GoogleEarth
 	*/
-	public function getgoogleearthkmlfile_online( ) {
+	public function getgoogleearthkmlfile_online() {
 		header('Content-type: text/xml');
 		$xw = new xmlWriter();
 		$xw->openMemory();
@@ -84,15 +84,9 @@ class apiMap {
 				$xw->startElement('Style');
 					$xw->writeAttribute( 'id', 'sh_blue-pushpin');
 					$xw->startElement('IconStyle');
-						$xw->writeRaw('<scale>1.3</scale>');
+						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>');
-						$xw->endElement();
-						$xw->startElement('hotSpot');
-							$xw->writeAttribute( 'x', '20');
-							$xw->writeAttribute( 'y', '2');
-							$xw->writeAttribute( 'xunits', 'pixels');
-							$xw->writeAttribute( 'yunits', 'pixels');
+							$xw->writeRaw('<href>./templates/img/ffmap/node_highlighted.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -141,10 +135,15 @@ class apiMap {
 						}
 					}
 					foreach($nodelist as $entry) {
+						$entry['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($entry['crawl_time']));
 						if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
-									$xw->writeRaw("<![CDATA[Node <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a> ($entry[title])]]>");
+									if(!empty($entry['title']))
+										$title =  "($entry[title])";
+									else
+										$title = "";
+									$xw->writeRaw("<![CDATA[Node <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a> $title]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 									$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
@@ -156,7 +155,10 @@ class apiMap {
 									$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 								$xw->endElement();
 								$xw->startElement('styleUrl');
-									$xw->writeRaw('#sh_ylw-pushpin');
+									if(isset($_GET['highlighted_service']) AND $_GET['highlighted_service']==$entry['service_id'])
+										$xw->writeRaw('#sh_blue-pushpin');
+									else
+										$xw->writeRaw('#sh_ylw-pushpin');
 								$xw->endElement();
 								$xw->startElement('Point');
 									$xw->startElement('coordinates');
@@ -234,15 +236,9 @@ class apiMap {
 				$xw->startElement('Style');
 					$xw->writeAttribute( 'id', 'sh_blue-pushpin');
 					$xw->startElement('IconStyle');
-						$xw->writeRaw('<scale>1.3</scale>');
+						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href>');
-						$xw->endElement();
-						$xw->startElement('hotSpot');
-							$xw->writeAttribute( 'x', '20');
-							$xw->writeAttribute( 'y', '2');
-							$xw->writeAttribute( 'xunits', 'pixels');
-							$xw->writeAttribute( 'yunits', 'pixels');
+							$xw->writeRaw('<href>./templates/img/ffmap/node_highlighted.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -292,7 +288,12 @@ class apiMap {
 						}
 						
 						foreach($nodelist as $entry) {
+							$entry['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($entry['crawl_time']));
 							if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
+								if(!empty($entry['title']))
+									$title =  "($entry[title])";
+								else
+									$title = "";
 								$xw->startElement('Placemark');
 									$xw->startElement('name');
 										$xw->writeRaw("<![CDATA[Node <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a>]]>");
@@ -306,6 +307,9 @@ class apiMap {
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 									$xw->endElement();
 									$xw->startElement('styleUrl');
+									if(isset($_GET['highlighted_service']) AND $_GET['highlighted_service']==$entry['service_id'])
+										$xw->writeRaw('#sh_blue-pushpin');
+									else
 										$xw->writeRaw('#sh_ylw-pushpin');
 									$xw->endElement();
 									$xw->startElement('Point');

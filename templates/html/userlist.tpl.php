@@ -3,8 +3,11 @@
 <table border="1">
 	<tr>
 		<th>#</th>
-		<th>Nickname</th>
-		<th>Anzahl der Nodes</th>
+		<th>Benutzer</th>
+		<th>Nodes</th>
+		<th>Jabber-ID</th>
+		<th>ICQ</th>
+		<th>Email</th>
 		<th>Dabei seit</th>
 	</tr>
 {foreach key=count item=userlist from=$userlist}
@@ -12,7 +15,10 @@
 		<td>{$count+1}</td>
 		<td><a href="./user.php?id={$userlist.id}">{$userlist.nickname}</a></td>
 		<td>{$userlist.nodecount}</td>
-		<td>{$userlist.create_date}</td>
+		<td>{$userlist.jabber}</td>
+		<td>{$userlist.icq}</td>
+		<td>{$userlist.email}</td>
+		<td>{$userlist.create_date} Uhr</td>
 	</tr>
 {/foreach}
 </table>

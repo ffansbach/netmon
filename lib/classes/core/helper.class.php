@@ -591,10 +591,28 @@ class Helper {
 		} elseif(date("d.m.Y", $timestamp)==date("d.m.Y", time())) {
 			$time = "Heute ".date("H:i", $timestamp);
 		} else {
-			$time = date("d.m.", $timestamp)." ".date("H:i", $timestamp);
+			$time = date("d.m.Y", $timestamp)." ".date("H:i", $timestamp);
 		}
 
 		return $time;
+	}
+
+	public function countServiceStatusByType($type) {
+		$result['online']=0;
+		$result['offline']=0;
+		$result['unbekannt']=0;
+
+		$services = Helper::getServicesByType($type);
+		foreach ($services as $service) {
+			$crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+			if ($crawl_data['status']=='online')
+				$result['online']++;
+			elseif ($crawl_data['status']=='offline')
+				$result['offline']++;
+			elseif ($crawl_data['status']=='unbekannt')
+				$result['unbekannt']++;
+		}
+		return $result;
 	}
 }
 

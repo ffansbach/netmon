@@ -31,11 +31,12 @@
 class userlist {
 	function getList() {
 		try {
-			$sql = "SELECT u.id, u.nickname, DATE_FORMAT(u.create_date, '%D.%m.%Y %H:%i:%s') as create_date
+			$sql = "SELECT u.id, u.nickname, jabber, icq, website, email, create_date
 					FROM users u
 					ORDER BY u.create_date DESC";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
+				$row['create_date'] = Helper::makeSmoothNodelistTime(strtotime($row['create_date']));
 				$userlist[] = $row;
 			}
 		}

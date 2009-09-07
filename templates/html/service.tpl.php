@@ -2,7 +2,7 @@
 		<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
 		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
-		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>
+<!--		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>-->
 
 <h1>Service vom Typ <i>{$service_data.typ}</i> auf der IP <a href="./node.php?id={$service_data.node_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.node_ip}</a></h1>
 
@@ -131,8 +131,11 @@ processes: {$current_crawl.processes}<br>
 				map.setCenter(point, zoom);
 
 				/* Create the Subnet Layer */
-				SubnetLayer("Subnet", lon, lat, radius);
+/*				SubnetLayer("Subnet", lon, lat, radius);*/
 			{/literal}
+	AddKmlLayer("offline Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_offline&highlighted_service={$service_data.service_id}");
+	AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
+	AddKmlLayer("online Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online&highlighted_service={$service_data.service_id}");
 		</script>
 	</div>
 {else}
@@ -144,6 +147,14 @@ processes: {$current_crawl.processes}<br>
 <p>
   <a href="./serviceeditor.php?section=edit&service_id={$service_data.service_id}">Service editieren</a><br>
 </p>
+
+<img src="./tmp/service_ping_history.png"><br>
+<img src="./tmp/loadaverage_history.png"><br>
+<img src="./tmp/memory_free_history.png">
+
+
+
+
 
     </div>
 
