@@ -22,6 +22,77 @@
 
 require_once('./config/runtime.inc.php');
 
+ class verfuegbarkeitsPalette extends ezcGraphPalette
+ {
+ protected $dataSetColor = array(
+ '#00b308',
+ '#c10000',
+ '#fff600'
+ );
+
+ protected $dataSetSymbol = array(
+ ezcGraph::BULLET,
+ );
+
+ protected $fontName = 'sans-serif';
+
+ protected $fontColor = '#555753';
+ }
+
+
+
+$node_status = Helper::countServiceStatusByType('node');
+
+ $graph = new ezcGraphPieChart();
+$graph->palette = new verfuegbarkeitsPalette();
+$graph->driver = new ezcGraphGdDriver(); 
+$graph->options->font = './templates/fonts/verdana.ttf';
+
+ $graph->title = 'Aktuelle Node-Verfügbarkeit';
+
+ $graph->data['Access statistics'] = new ezcGraphArrayDataSet( array(
+ 'Online' => $node_status['online'],
+ 'Offline' => $node_status['offline'],
+ 'Unbekannt' => $node_status['unbekannt']
+) );
+ $graph->data['Access statistics']->highlight['Online'] = true;
+
+ $graph->render( 300, 200, './tmp/node_status.png' );
+//-----------
+$vpn_status = Helper::countServiceStatusByType('vpn');
+
+ $graph = new ezcGraphPieChart();
+$graph->palette = new verfuegbarkeitsPalette();
+$graph->driver = new ezcGraphGdDriver(); 
+$graph->options->font = './templates/fonts/verdana.ttf';
+ $graph->title = 'Aktuelle VPN-Verfügbarkeit';
+
+ $graph->data['Access statistics'] = new ezcGraphArrayDataSet( array(
+ 'Online' => $vpn_status['online'],
+ 'Offline' => $vpn_status['offline'],
+ 'Unbekannt' => $vpn_status['unbekannt']
+) );
+ $graph->data['Access statistics']->highlight['Online'] = true;
+
+ $graph->render( 300, 200, './tmp/vpn_status.png' );
+//------------------
+$service_status = Helper::countServiceStatusByType('service');
+
+ $graph = new ezcGraphPieChart();
+$graph->palette = new verfuegbarkeitsPalette();
+$graph->driver = new ezcGraphGdDriver(); 
+$graph->options->font = './templates/fonts/verdana.ttf';
+ $graph->title = 'Aktuelle Service-Verfügbarkeit';
+
+ $graph->data['Access statistics'] = new ezcGraphArrayDataSet( array(
+ 'Online' => $service_status['online'],
+ 'Offline' => $service_status['offline'],
+ 'Unbekannt' => $service_status['unbekannt']
+) );
+ $graph->data['Access statistics']->highlight['Online'] = true;
+ $graph->render( 300, 200, './tmp/service_status.png' );
+
+
 $smarty->assign('message', message::getMessage());
 $smarty->display("header.tpl.php");
 $smarty->display("portal.tpl.php");

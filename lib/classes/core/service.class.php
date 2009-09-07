@@ -32,6 +32,7 @@ include 'lib/classes/extern/XMPPHP/XMPP.php';
 
 class service {
 	public function getCrawlHistory($service_id, $count) {
+		$last_crawl = array();
 		try {
 			$sql = "SELECT * FROM crawl_data
 					WHERE service_id='$service_id' ORDER BY id DESC LIMIT $count";

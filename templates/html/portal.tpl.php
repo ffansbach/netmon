@@ -12,6 +12,10 @@ Die Menüs können in lib/classes/core/menus.class.php angepasst werden.</p>
 <p>Funk frei!<br>
 Floh1111</p>
 
+<img src="./tmp/node_status.png">
+<img src="./tmp/vpn_status.png">
+<img src="./tmp/service_status.png">
+
 <!--Bindet einen RSS-Feed ein. Siehe lib/classes/core/portal.clas.php-->
 <!--<h2>Neues im <a href="http://blog.freifunk-ol.de/">{$rssdata.title}</a></h2>
 
