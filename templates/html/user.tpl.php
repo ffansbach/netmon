@@ -1,6 +1,6 @@
 <h1>Benutzer {$user.nickname}</h1>
 
-{if !empty($user.vorname)}Vorname: {$user.vorname}, {/if}{if !empty($user.nachname)}nachname: {$user.nachname}<br>{/if}
+{if !empty($user.vorname)}Vorname: {$user.vorname}, {/if}{if !empty($user.nachname)}Nachname: {$user.nachname}<br>{/if}
 
 {if !empty($user.strasse)}Strasse: {$user.strasse}<br>{/if}
 {if !empty($user.plz)}Plz:  {$user.plz}, {/if}{if !empty($user.ort)}Ort: {$user.ort}<br>{/if}
