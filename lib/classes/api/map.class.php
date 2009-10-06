@@ -344,7 +344,7 @@ class apiMap {
 						$xw->endElement();
 
 						//Hole Alle Services vom Typ ip die Online sind
-						$services = Helper::getServicesByType("ip");
+						$services = Helper::getServicesByType("node");
 						foreach ($services as $key1=>$service) {
 							$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
 							if ($data['status']=='online') {

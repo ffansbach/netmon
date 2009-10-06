@@ -6,15 +6,34 @@
 
 <h1>Service vom Typ <i>{$service_data.typ}</i> auf der IP <a href="./ip.php?id={$service_data.ip_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.ip_ip}</a></h1>
 
+<h2>Status Historie:</h2>
+
+<div style="width: 800px; overflow: hidden;">
+{foreach key=count item=history from=$crawl_history}
+    {if $history.status=="online"}
+		<div style="float:left; width: 20px; height: 50px; background-color: green; border-width: 1px; border-style:solid;">&nbsp;</div>
+    {elseif $history.status=="offline"}
+		<div style="float:left; width: 20px; height: 50px; background-color: red; border-width: 1px; border-style:solid;">&nbsp;</div>
+    {/if}
+{/foreach}
+</div>
+<br>
+
 <div style="width: 100%; overflow: hidden;">
   <div nstyle="white-space: nowrap;">
     <div style="float:left; width: 50%;">
 
 {if !empty($service_data.title)}
   <h2>{$service_data.title}</h2>
+{else}
+	<h2>Service Grunddaten</h2>
 {/if}
 <b>Service Typ:</b> {$service_data.typ}<br>
-<b>DHCP-bereich:</b> {$service_data.zone_start} bis {$service_data.zone_end}<br>
+<b>DHCP-bereich:</b> {if $service_data.zone_start==0 OR $service_data.zone_end==0}
+						Kein DHCP-Bereich reserviert
+						{else}
+						{$service_data.zone_start} bis {$service_data.zone_end}
+					{/if}<br>
 <b>Crawl-Art:</b> {$service_data.crawler}<br>
 <b>Benutzer:</b> <a href="./user.php?id={$service_data.user_id}">{$service_data.nickname}</a><br>
 <b>Eingetragen am:</b> {$service_data.create_date}<br>
@@ -24,84 +43,42 @@
   <p>{$service_data.description}</p>
 {/if}
 
-<h2>Daten</h2>
+<h2>Hardware Daten</h2>
 <p>
-email: {$last_online_crawl.email}<br>
-hostname: {$last_online_crawl.hostname}<br>
-prefix: {$last_online_crawl.prefix}<br>
-ssid: {$last_online_crawl.ssid}<br>
-location: {$last_online_crawl.location}<br>
-luciname: {$last_online_crawl.luciname}<br>
-luciversion: {$last_online_crawl.luciversion}<br>
-distname: {$last_online_crawl.distname}<br>
-distversion: {$last_online_crawl.distversion}<br>
-chipset: {$last_online_crawl.chipset}<br>
-cpu: {$last_online_crawl.cpu}<br>
-memory: {$last_online_crawl.memory_total} Kb<br>
-free memory: {$current_crawl.memory_free} Kb<br>
-loadaverage: {$current_crawl.loadavg}<br>
-processes: {$current_crawl.processes}<br>
+	{if !empty($last_online_crawl)}
+		<b>Email:</b> {$last_online_crawl.email}<br>
+		<b>Hostname:</b> {$last_online_crawl.hostname}<br>
+		<b>Prefix:</b> {$last_online_crawl.prefix}<br>
+		<b>SSID:</b> {$last_online_crawl.ssid}<br>
+		<b>Standort:</b> {$last_online_crawl.location}<br>
+		<b>Luciname:</b> {$last_online_crawl.luciname}<br>
+		<b>Luciversion:</b> {$last_online_crawl.luciversion}<br>
+		<b>Distname:</b> {$last_online_crawl.distname}<br>
+		<b>Distversion:</b> {$last_online_crawl.distversion}<br>
+		<b>Chipset:</b> {$last_online_crawl.chipset}<br>
+		<b>Cpu:</b> {$last_online_crawl.cpu}<br>
+		<b>Memory:</b> {$last_online_crawl.memory_total} Kb<br>
+		<b>Free memory:</b> {$current_crawl.memory_free} Kb<br>
+		<b>Loadaverage:</b> {$current_crawl.loadavg}<br>
+		<b>Processes:</b> {$current_crawl.processes}<br>
+	{else}
+		Keine Daten vorhanden
+	{/if}
 </p>
 
-<h2>Nachbarn</h2>
+<h2>Benachbarte IP´s</h2>
 
-{foreach key=count item=olsrd_neighbors from=$current_crawl.olsrd_neighbors}
-  {if $olsrd_neighbors.2HopNeighbors eq '0'}<span style="background-color: yellow;">{/if}{$olsrd_neighbors.IPaddress} {if $olsrd_neighbors.2HopNeighbors eq '0'}(Direkter Client)</span>{/if}<br>
-{/foreach}
+{if !empty($current_crawl.olsrd_neighbors)}
+	{foreach key=count item=olsrd_neighbors from=$current_crawl.olsrd_neighbors}
+		{if $olsrd_neighbors.2HopNeighbors eq '0'}<span style="background-color: yellow;">{/if}{$olsrd_neighbors.IPaddress} {if $olsrd_neighbors.2HopNeighbors eq '0'}(Direkter Client)</span>{/if}<br>
+	{/foreach}
+{else}
+	Keine benachbarten IP´s
+{/if}
 
-
-
-
-<h2>Aktueller Status</h2>
-
-<div id="ipitem" style="width: 345px; overflow: hidden;">
-  <div nstyle="white-space: nowrap;">
-    <div style="float:left; width: 100px;"><b>Status</b></div>
-    <div style="float:left; width: 95px;"><b>Uptime</b></div>
-    <div style="float:left; width: 150px;"><b>Stand</b></div>
-  </div>
-</div>
-
-<div id="ipitem" style="width: 345px; overflow: hidden;">
-  <div style="white-space: nowrap;">
-    {if $current_crawl.status=="online"}
-      <div style="float:left; width: 100px;; background-color: green;">{$current_crawl.status}</div>
-    {elseif $current_crawl.status=="offline"}
-      <div style="float:left; width: 100px; background-color: red;">{$current_crawl.status}</div>
-    {elseif $current_crawl.status=="ping"}
-      <div style="float:left; width: 100px; background-color: #00c5cc;">{$current_crawl.status}</div>
-    {/if}
-    <div style="float:left; width: 95px;">{$current_crawl.uptime}</div>
-    <div style="float:left; width: 150px;">{$current_crawl.crawl_time} Uhr</div>
-  </div>
-</div>
-
-<h2>Historie</h2>
-<div id="ipitem" style="width: 345px; overflow: hidden;">
-  <div nstyle="white-space: nowrap;">
-    <div style="float:left; width: 100px;"><b>Status</b></div>
-    <div style="float:left; width: 95px;"><b>Uptime</b></div>
-    <div style="float:left; width: 150px;"><b>Stand</b></div>
-  </div>
-</div>
-
-{foreach key=count item=history from=$crawl_history}
-<div id="ipitem" style="width: 345px; overflow: hidden;">
-  <div style="white-space: nowrap;">
-    {if $history.status=="online"}
-      <div style="float:left; width: 100px;; background-color: green;">{$history.status}</div>
-    {elseif $history.status=="offline"}
-      <div style="float:left; width: 100px; background-color: red;">{$history.status}</div>
-    {elseif $history.status=="ping"}
-      <div style="float:left; width: 100px; background-color: #00c5cc;">{$history.status}</div>
-    {/if}
-    <div style="float:left; width: 95px;">{$history.uptime}</div>
-    <div style="float:left; width: 150px;">{$history.crawl_time} Uhr</div>
-  </div>
-</div>
-{/foreach}
 
     </div>
+
     <div style="float:left; width: 50%;">
 
 	<h2>Standort (Gelb markiert)</h2>
@@ -142,23 +119,22 @@ processes: {$current_crawl.processes}<br>
 <p>Keine Standortinformationen verfügbar</p>
 {/if}
 
-<h2>Aktionen</h2>
+<h2>Grafische Historie</h2>
 
-<p>
-  <a href="./serviceeditor.php?section=edit&service_id={$service_data.service_id}">Service editieren</a><br>
-</p>
+{if !empty($last_online_crawl)}
+	<img src="./tmp/service_ping_history.png"><br>
+	<img src="./tmp/loadaverage_history.png"><br>
+	<img src="./tmp/memory_free_history.png">
+{else}
+	Keine Daten vorhanden
+{/if}
 
-<img src="./tmp/service_ping_history.png"><br>
-<img src="./tmp/loadaverage_history.png"><br>
-<img src="./tmp/memory_free_history.png">
-
-
-
-
-
-    </div>
-
-
-
+{if $isOwner}
+	<h2>Aktionen</h2>
+		<p>
+			<a href="./serviceeditor.php?section=edit&service_id={$service_data.service_id}">Service editieren</a><br>
+		</p>
+{/if}
+</div>
   </div>
 </div>

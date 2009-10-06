@@ -434,7 +434,9 @@ class Helper {
 		$services = Helper::getServiceseBySubnetId($subnet_id);
 		foreach ($services as $service) {
 			for ($i=$service['zone_start']; $i<=$service['zone_end']; $i++) {
-				$zones[$i] = array('range'=>$i, 'ip_id'=>$service['ip_id'], 'service_id'=>$service['service_id']);
+				if($service['zone_start']!=0 AND $service['zone_end']!=0) {
+					$zones[$i] = array('range'=>$i, 'ip_id'=>$service['ip_id'], 'service_id'=>$service['service_id']);
+				}
 			}
 		}
 		unset($db);

@@ -1,4 +1,4 @@
-<h1>Subnet {$net_prefix}.{$subnet.subnet_ip}, {$subnet.title}</h1>
+<h1>Subnet {$net_prefix}.{$subnet.subnet_ip}.0/24, {$subnet.title}</h1>
 
 <div style="float:left; width: 40%;">
 
@@ -7,7 +7,7 @@
 VPN-Server: {if isset($subnet.vpn_server)}{$subnet.vpn_server} auf Port {$subnet.vpn_server_port}{else}Kein VPN-Server eingetragen{/if}<br>
 Daten zu VPN: {if isset($subnet.vpn_server)} Device {$subnet.vpn_server_device}, Protokoll {$subnet.vpn_server_proto}{else}Kein VPN-Server eingetragen{/if}<br>
 <br>
-Verantwortlicher: <a href="./index.php?get=user&id={$subnet.created_by}">{$subnet.nickname}</a><br>
+Verantwortlicher: <a href="./user.php?id={$subnet.created_by}">{$subnet.nickname}</a><br>
 Eingetragen seit: {$subnet.create_date}<br>
 
 <h2>Beschreibung:</h2>
@@ -54,7 +54,7 @@ Eingetragen seit: {$subnet.create_date}<br>
 Orange "r" = Range<br>
 Grün "f" = Frei</p>
 
-<div style="width: 1000px;">
+<div style="width: 800px;">
 
 {foreach key=key item=status from=$ipstatus}
 	<div style="float:left;">
@@ -63,10 +63,10 @@ Grün "f" = Frei</p>
 				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;">{$status.ip}</div>
 				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #6cff84;">f</div>
 			{elseif $status.typ=="ip"}
-				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./index.php?get=ip&id={$status.ip_id}">{$status.ip}</a></div>
+				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./ip.php?id={$status.ip_id}">{$status.ip}</a></div>
 		  		<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #ff0000;">n</div>
 			{elseif $status.typ=="range"}
-				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./index.php?get=service&service_id={$status.service_id}">{$status.ip}</a></div>
+				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./service.php?service_id={$status.service_id}">{$status.ip}</a></div>
 				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #ff9448;">r</div>
 			{/if}
 

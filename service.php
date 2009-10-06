@@ -22,10 +22,10 @@
   $smarty->assign('service_data', $service_data);
   $smarty->assign('current_crawl', Helper::getCurrentCrawlDataByServiceId($_GET['service_id']));
   $smarty->assign('last_online_crawl', Helper::getLastOnlineCrawlDataByServiceId($_GET['service_id']));
-  $crawl_history = $service->getCrawlHistory($_GET['service_id'], 25);
+  $crawl_history = $service->getCrawlHistory($_GET['service_id'], 35);
   $smarty->assign('crawl_history', $crawl_history);
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-  $smarty->assign('is_ip_owner', $service->is_ip_owner);
+  $smarty->assign('isOwner', usermanagement::isThisUserOwner($service_data['user_id']));
 
 foreach ($crawl_history as $hist) {
 	$time = date("H:i", strtotime($hist['crawl_time']));

@@ -348,7 +348,7 @@ NOW(),
 	}*/
 
 	foreach ($history_data as $hist_data) {
-		mysql_query("INSERT INTO history (type, create_date, data) VALUES ('network', NOW(), '$hist_data');");
+		mysql_query("INSERT INTO history (object, object_id, create_date, data) VALUES ('service', '$service_id', NOW(), '$hist_data');");
 	}
 
 /*	unset($history_data);
