@@ -29,43 +29,43 @@
  */
 
 class Helper {
-	public function getNodeInfo($id) {
+	public function getIpInfo($id) {
 		try {
-			$sql = "SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
+			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip_ip, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.create_date,
 						   users.nickname,
 						   subnets.title, subnets.subnet_ip
-					FROM nodes
-					LEFT JOIN users ON (users.id=nodes.user_id)
-					LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-					WHERE nodes.id=$id";
+					FROM ips
+					LEFT JOIN users ON (users.id=ips.user_id)
+					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
+					WHERE ips.id=$id";
 			$result = DB::getInstance()->query($sql);
-			$node = $result->fetch(PDO::FETCH_ASSOC);
+			$ip = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		$node['is_node_owner'] = usermanagement::isThisUserOwner($node['user_id']);
-		return $node;
+		$ip['is_ip_owner'] = usermanagement::isThisUserOwner($ip['user_id']);
+		return $ip;
 	}
   
-  public function getNodeDataByNodeId($id) {
+  public function getIpDataByIpId($id) {
     try {
-      $sql = "SELECT nodes.id as node_id, nodes.user_id, nodes.node_ip, nodes.subnet_id, nodes.vpn_client_cert, nodes.vpn_client_key, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
+      $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip_ip, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
 				      users.nickname, users.email,
 				      subnets.title, subnets.subnet_ip, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
-				   FROM nodes
-				   LEFT JOIN users ON (users.id=nodes.user_id)
-				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-				   WHERE nodes.id=$id";
+				   FROM ips
+				   LEFT JOIN users ON (users.id=ips.user_id)
+				   LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
+				   WHERE ips.id=$id";
       $result = DB::getInstance()->query($sql);
-	  $node = $result->fetch(PDO::FETCH_ASSOC);
+	  $ip = $result->fetch(PDO::FETCH_ASSOC);
     }
     catch(PDOException $e) {
       echo $e->getMessage();
     }
 
-    $node['is_node_owner'] = usermanagement::isThisUserOwner($node['user_id']);
-    return $node;
+    $ip['is_ip_owner'] = usermanagement::isThisUserOwner($ip['user_id']);
+    return $ip;
   }
 
 	public function getSubnetById($subnet_id) {
@@ -81,25 +81,25 @@ class Helper {
 		return $subnet;
 	}
 
-	public function getIpOfNodeById($node_id) {
+	public function getIpOfIpById($ip_id) {
 		try {
-			$sql = "select node_ip FROM nodes WHERE id='$node_id';";
+			$sql = "select ip_ip FROM ips WHERE id='$ip_id';";
 			$result = DB::getInstance()->query($sql);
-			$node = $result->fetch(PDO::FETCH_ASSOC);
+			$ip = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
 		
-		return $node['node_ip'];
+		return $ip['ip_ip'];
 	}
 
-  public function getNodeIdByServiceId($service_id) {
+  public function getIpIdByServiceId($service_id) {
 	try {
-		$sql = "select nodes.id FROM nodes, services WHERE services.id='$service_id' AND nodes.id=services.node_id;";
+		$sql = "select ips.id FROM ips, services WHERE services.id='$service_id' AND ips.id=services.ip_id;";
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
-			$node = $row;
+			$ip = $row;
 		}
 	}
 	
@@ -107,18 +107,18 @@ class Helper {
 		echo $e->getMessage();
 	}
 
-    return $node;
+    return $ip;
   }
 
 
-  public function getNodesByUserId($user_id) {
-    $nodes = array();
+  public function getIpsByUserId($user_id) {
+    $ips = array();
 	try {
-		$sql = "select nodes.id, nodes.node_ip, nodes.user_id, subnets.subnet_ip FROM nodes LEFT JOIN subnets on (subnets.id = nodes.subnet_id) WHERE nodes.user_id='$user_id' ORDER BY subnets.subnet_ip, nodes.node_ip;";
+		$sql = "select ips.id, ips.ip_ip, ips.user_id, subnets.subnet_ip FROM ips LEFT JOIN subnets on (subnets.id = ips.subnet_id) WHERE ips.user_id='$user_id' ORDER BY subnets.subnet_ip, ips.ip_ip;";
 		$result = DB::getInstance()->query($sql);
 		
 		foreach($result as $row) {
-			$nodes[] = $row;
+			$ips[] = $row;
 		}
 	}
 
@@ -126,7 +126,7 @@ class Helper {
 		echo $e->getMessage();
 	}
 
-    return $nodes;
+    return $ips;
   }
 
   public function getServicesByType($type) {
@@ -139,13 +139,13 @@ class Helper {
     $services = array();
 	try {
 		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
-				      nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
+				      ips.user_id, ips.ip_ip, ips.id as ip_id, ips.subnet_id,
 				      subnets.subnet_ip, subnets.title,
 				      users.nickname
 			       FROM services
-			       LEFT JOIN nodes ON (nodes.id = services.node_id)
-			       LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
-			       LEFT JOIN users ON (users.id = nodes.user_id)
+			       LEFT JOIN ips ON (ips.id = services.ip_id)
+			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
+			       LEFT JOIN users ON (users.id = ips.user_id)
 			       WHERE services.typ='$type' $visible ORDER BY services.id";
 		$result = DB::getInstance()->query($sql);
 		
@@ -171,14 +171,14 @@ class Helper {
     $services = array();
 	try {
 		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
-				      nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
+				      ips.user_id, ips.ip_ip, ips.id as ip_id, ips.subnet_id,
 				      subnets.subnet_ip, subnets.title,
 				      users.nickname
 			       FROM services
-			       LEFT JOIN nodes ON (nodes.id = services.node_id)
-			       LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
-			       LEFT JOIN users ON (users.id = nodes.user_id)
-			       WHERE nodes.user_id='$user_id' $visible ORDER BY services.id";
+			       LEFT JOIN ips ON (ips.id = services.ip_id)
+			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
+			       LEFT JOIN users ON (users.id = ips.user_id)
+			       WHERE ips.user_id='$user_id' $visible ORDER BY services.id";
 		$result = DB::getInstance()->query($sql);
 		
 		foreach($result as $row) {
@@ -193,7 +193,7 @@ class Helper {
     return $services;
   }
 
-  public function getServicesByTypeAndNodeId($type, $nodeId) {
+  public function getServicesByTypeAndIpId($type, $ipId) {
     //Nur Services zurückgeben die der Benutzer sehen darf
     if (!usermanagement::checkPermission(4))
       $visible = "AND visible = 1";
@@ -203,14 +203,14 @@ class Helper {
     $services = array();
 	try {
 		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
-				      nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
+				      ips.user_id, ips.ip_ip, ips.id as ip_id, ips.subnet_id,
 				      subnets.subnet_ip, subnets.title,
 				      users.nickname
 			       FROM services
-			       LEFT JOIN nodes ON (nodes.id = services.node_id)
-			       LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
-			       LEFT JOIN users ON (users.id = nodes.user_id)
-			       WHERE services.typ='$type' AND nodes.id='$nodeId' $visible ORDER BY services.id";
+			       LEFT JOIN ips ON (ips.id = services.ip_id)
+			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
+			       LEFT JOIN users ON (users.id = ips.user_id)
+			       WHERE services.typ='$type' AND ips.id='$ipId' $visible ORDER BY services.id";
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
 			$services[] = $row;
@@ -224,7 +224,7 @@ class Helper {
     return $services;
   }
 
-  public function getServicesByNodeId($node_id) {
+  public function getServicesByIpId($ip_id) {
 	$services = array();
     //Nur Services zurückgeben die der Benutzer sehen darf
     if (!usermanagement::checkPermission(4))
@@ -235,14 +235,14 @@ class Helper {
     try {
       /*** query the database ***/
       $sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
-				      nodes.user_id, nodes.node_ip, nodes.id as node_id, nodes.subnet_id,
+				      ips.user_id, ips.ip_ip, ips.id as ip_id, ips.subnet_id,
 				      subnets.subnet_ip, subnets.title,
 				      users.nickname
 			       FROM services
-			       LEFT JOIN nodes ON (nodes.id = services.node_id)
-			       LEFT JOIN subnets ON (subnets.id = nodes.subnet_id)
-			       LEFT JOIN users ON (users.id = nodes.user_id)
-			       WHERE services.node_id='$node_id' $visible ORDER BY services.id";
+			       LEFT JOIN ips ON (ips.id = services.ip_id)
+			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
+			       LEFT JOIN users ON (users.id = ips.user_id)
+			       WHERE services.ip_id='$ip_id' $visible ORDER BY services.id";
       $result = DB::getInstance()->query($sql);
 
       foreach($result as $row) {
@@ -272,27 +272,27 @@ class Helper {
     return $subnets;
   }
 
-  public function getNodesBySubnetId($subnet_id) {
-    $nodes = array();
+  public function getIpsBySubnetId($subnet_id) {
+    $ips = array();
 	try {
-		$sql = "select id FROM nodes WHERE subnet_id='$subnet_id';";
+		$sql = "select id FROM ips WHERE subnet_id='$subnet_id';";
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
-			$nodes[] = $row['id'];
+			$ips[] = $row['id'];
 		}
     }
     catch(PDOException $e) {
 		echo $e->getMessage();
     }
-    return $nodes;
+    return $ips;
   }
 
 
-	public function getSubnetIpOfNodeById($node_id) {
+	public function getSubnetIpOfIpById($ip_id) {
 		try {
-			$sql = "SELECT subnets.subnet_ip FROM nodes
-					LEFT JOIN subnets on (subnets.id=nodes.subnet_id)
-					WHERE nodes.id='$node_id';";
+			$sql = "SELECT subnets.subnet_ip FROM ips
+					LEFT JOIN subnets on (subnets.id=ips.subnet_id)
+					WHERE ips.id='$ip_id';";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$subnet = $row['subnet_ip'];
@@ -336,33 +336,33 @@ class Helper {
 					  'project_essid'=>$GLOBALS['project_essid']);
 	}
 
-	function getNodelistByUserID($id) {
+	function getIplistByUserID($id) {
 		try {
-			$sql = "SELECT nodes.id, nodes.user_id, nodes.node_ip, nodes.subnet_id,
+			$sql = "SELECT ips.id, ips.user_id, ips.ip_ip, ips.subnet_id,
 						   users.nickname,
 					LEFT(subnets.title, 25) as title, subnets.subnet_ip
-					FROM nodes
-					LEFT JOIN users ON (users.id=nodes.user_id)
-					LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
+					FROM ips
+					LEFT JOIN users ON (users.id=ips.user_id)
+					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
 					WHERE users.id=$id
-					ORDER BY subnets.subnet_ip, nodes.node_ip";
+					ORDER BY subnets.subnet_ip, ips.ip_ip";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
-				$row['is_node_owner'] = usermanagement::isThisUserOwner($row['user_id']);
-				$nodelist[] = $row;
+				$row['is_ip_owner'] = usermanagement::isThisUserOwner($row['user_id']);
+				$iplist[] = $row;
 			}
 		}
 		catch(PDOException $e) {
 		  echo $e->getMessage();
 		}
-    	return $nodelist;
+    	return $iplist;
 	}
 
 	function getSubnetlistByUserID($id) {
 		try {
-			$sql = "SELECT COUNT(nodes.id) as nodes_in_net, subnets.id, subnets.subnet_ip, subnets.title
+			$sql = "SELECT COUNT(ips.id) as ips_in_net, subnets.id, subnets.subnet_ip, subnets.title
 					FROM  subnets
-					LEFT JOIN nodes on (nodes.subnet_id=subnets.id)
+					LEFT JOIN ips on (ips.subnet_id=subnets.id)
 					WHERE subnets.user_id=$id GROUP BY subnets.id";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
@@ -378,10 +378,10 @@ class Helper {
 	public function getServiceseBySubnetId($subnet_id) {
 		$servicelist = array();
 		try {
-			$sql = "SELECT nodes.id as node_id, nodes.node_ip, services.id as service_id, services.zone_start, services.zone_end
-					FROM nodes
-					LEFT JOIN services ON (services.node_id=nodes.id)
-					WHERE nodes.subnet_id='$subnet_id'";
+			$sql = "SELECT ips.id as ip_id, ips.ip_ip, services.id as service_id, services.zone_start, services.zone_end
+					FROM ips
+					LEFT JOIN services ON (services.ip_id=ips.id)
+					WHERE ips.subnet_id='$subnet_id'";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$servicelist[] = $row;
@@ -395,14 +395,14 @@ class Helper {
 
 	public function getServiceDataByServiceId($service_id) {
 		try {
-			$sql = "SELECT services.id as service_id, services.node_id, services.title, services.description, services.typ, services.radius, services.crawler, services.zone_start, services.zone_end, services.visible, notify, notification_wait, services.notified, last_notification, services.create_date,
-			       nodes.node_ip,
+			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.radius, services.crawler, services.zone_start, services.zone_end, services.visible, notify, notification_wait, services.notified, last_notification, services.create_date,
+			       ips.ip_ip,
 			       subnets.subnet_ip, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email
 			       FROM  services
-			       LEFT JOIN nodes ON (nodes.id=services.node_id)
-			       LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-			       LEFT JOIN users ON (users.id=nodes.user_id)
+			       LEFT JOIN ips ON (ips.id=services.ip_id)
+			       LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
+			       LEFT JOIN users ON (users.id=ips.user_id)
 			       WHERE services.id=$service_id";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
@@ -434,7 +434,7 @@ class Helper {
 		$services = Helper::getServiceseBySubnetId($subnet_id);
 		foreach ($services as $service) {
 			for ($i=$service['zone_start']; $i<=$service['zone_end']; $i++) {
-				$zones[$i] = array('range'=>$i, 'node_id'=>$service['node_id'], 'service_id'=>$service['service_id']);
+				$zones[$i] = array('range'=>$i, 'ip_id'=>$service['ip_id'], 'service_id'=>$service['service_id']);
 			}
 		}
 		unset($db);
@@ -442,8 +442,9 @@ class Helper {
 	}
 
 	public function getLastOnlineCrawlDataByServiceId($service_id) {
-		try {
-			$sql = "SELECT id FROM services WHERE node_id='$id' ORDER BY id DESC LIMIT 1";
+//Überflüssiger Code?
+/*		try {
+			$sql = "SELECT id FROM services WHERE ip_id='$id' ORDER BY id DESC LIMIT 1";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$services = $row['id'];
@@ -451,7 +452,7 @@ class Helper {
 		}
 		catch(PDOException $e) {
 		  echo $e->getMessage();
-		};
+		};*/
 
 		try {
 			$sql = "SELECT * FROM crawl_data
@@ -509,7 +510,7 @@ class Helper {
 		return $array;
 	}
 	
-	public function linkIp2NodeIdAndGetTyp($ip2check, $parentNodeID=false) {
+	public function linkIp2IpIdAndGetTyp($ip2check, $parentIpID=false) {
 		
 		
 	}
@@ -561,12 +562,12 @@ class Helper {
 		}
 	}
 
-	public function getNodeIdByIp($ip) {
+	public function getIpIdByIp($ip) {
 		$ipParts = explode(".", $ip);
 		try {
-			$sql = "SELECT nodes.id
-				FROM nodes, subnets
-				WHERE subnets.subnet_ip=$ipParts[2] AND nodes.subnet_id=subnets.id AND nodes.node_ip=$ipParts[3]";
+			$sql = "SELECT ips.id
+				FROM ips, subnets
+				WHERE subnets.subnet_ip=$ipParts[2] AND ips.subnet_id=subnets.id AND ips.ip_ip=$ipParts[3]";
 			$result = DB::getInstance()->query($sql);
 			
 			foreach($result as $row) {
@@ -581,17 +582,19 @@ class Helper {
 	}
 
 	public function getServicesByIp($ip) {
-		$nodeId = Helper::getNodeIdByIp($ip);
-		return Helper::getServicesByNodeId($nodeId);
+		$ipId = Helper::getIpIdByIp($ip);
+		return Helper::getServicesByIpId($ipId);
 	}
 
-	public function makeSmoothNodelistTime($timestamp) {
-		if (date("d.m.Y", $timestamp)==date("d.m.Y", time()-86400)) {
-			$time = "Gestern ".date("H:i", $timestamp);
+	public function makeSmoothIplistTime($timestamp) {
+		if (empty($timestamp)) {
+			$time = "unbekannt";
+		} elseif (date("d.m.Y", $timestamp)==date("d.m.Y", time()-86400)) {
+			$time = "Gestern ".date("H:i", $timestamp." uhr");
 		} elseif(date("d.m.Y", $timestamp)==date("d.m.Y", time())) {
-			$time = "Heute ".date("H:i", $timestamp);
+			$time = "Heute ".date("H:i", $timestamp)." uhr";
 		} else {
-			$time = date("d.m.Y", $timestamp)." ".date("H:i", $timestamp);
+			$time = date("d.m.Y", $timestamp)." ".date("H:i", $timestamp)." uhr";
 		}
 
 		return $time;

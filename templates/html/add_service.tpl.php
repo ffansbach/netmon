@@ -1,6 +1,6 @@
-<h1>Service zum Node {$net_prefix}.{$node_data.subnet_ip}.{$node_data.node_ip} hinzufügen</h1>
+<h1>Service zum Ip {$net_prefix}.{$ip_data.subnet_ip}.{$ip_data.ip_ip} hinzufügen</h1>
 
-<form action="./serviceeditor.php?section=insert_service&node_id={$node_data.node_id}" method="POST">
+<form action="./serviceeditor.php?section=insert_service&ip_id={$ip_data.ip_id}" method="POST">
 
 <script type="text/javascript" src="./templates/js/servicesAuswahl.js"></script>
 <script type="text/javascript" src="./templates/js/LinkedSelection.js"></script>
@@ -50,7 +50,7 @@ window.onload = function()
   
   <p>
     <p>(Optional) Radius: <input name="radius" type="text" size="5" maxlength="10" value="80"><br>
-    Sinnvoll wenn Typ "node" ist und man die ungefähre Reichweite seines W-Lan-Netzes in metern weiß.</p>
+    Sinnvoll wenn Typ "ip" ist und man die ungefähre Reichweite seines W-Lan-Netzes in metern weiß.</p>
   </p>
 
 	<h2>Privatsphäre:</h2>

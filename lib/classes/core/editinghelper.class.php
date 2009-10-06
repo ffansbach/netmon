@@ -33,7 +33,7 @@ class editingHelper {
 		//Alle irgendwie im Subnet existierende IP's holen
 		$existingips = editingHelper::getExistingIps($subnet_id);
 		
-		//Für den Node bestimmte Range den Existierenden IP's hinzufügen
+		//Für den Ip bestimmte Range den Existierenden IP's hinzufügen
 		if ($zone_start AND $zone_end) {
 			for ($i=$zone_start; $i<=$zone_end; $i++) {
 				array_push($existingips, $i);
@@ -41,14 +41,14 @@ class editingHelper {
 		}
 		
 		//Erste freie IP nehmen
-		for ($i=1; ($i<=245 AND !isset($available_node)); $i++) {
+		for ($i=1; ($i<=245 AND !isset($available_ip)); $i++) {
 			if(!in_array($i, $existingips)) {
-				$available_node = $i;
+				$available_ip = $i;
 			}
 		}
 		
-		if (isset($available_node)) {
-			return $available_node;
+		if (isset($available_ip)) {
+			return $available_ip;
 		} else {
 			return false;
 		}
@@ -106,34 +106,34 @@ class editingHelper {
 	}
 
 	
-	public function getExistingNodes($subnet_id) {
-		$nodes = array();
+	public function getExistingIps($subnet_id) {
+		$ips = array();
 		try {
-			$sql = "SELECT node_ip FROM nodes  WHERE subnet_id='$subnet_id' ORDER BY node_ip ASC";
+			$sql = "SELECT ip_ip FROM ips  WHERE subnet_id='$subnet_id' ORDER BY ip_ip ASC";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
-				$nodes[$row['node_ip']] = $row['node_ip'];
+				$ips[$row['ip_ip']] = $row['ip_ip'];
 			}
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $nodes;
+		return $ips;
 	}
 
-	public function getExistingNodesWithID($subnet_id) {
-		$nodes = array();
+	public function getExistingIpsWithID($subnet_id) {
+		$ips = array();
 		try {
-			$sql = "SELECT id, node_ip FROM nodes WHERE subnet_id='$subnet_id' ORDER BY node_ip ASC";
+			$sql = "SELECT id, ip_ip FROM ips WHERE subnet_id='$subnet_id' ORDER BY ip_ip ASC";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
-				$nodes[$row['node_ip']] = array('node_ip'=>$row['node_ip'], 'id'=>$row['id']);
+				$ips[$row['ip_ip']] = array('ip_ip'=>$row['ip_ip'], 'id'=>$row['id']);
 			}
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $nodes;
+		return $ips;
 	}
 	
 	public function getExistingRanges($subnet_id) {
@@ -147,11 +147,11 @@ class editingHelper {
 		return $zones;
 	}
 
-	public function getExistingIps($subnet_id) {
-		return array_merge(editingHelper::getExistingNodes($subnet_id), editingHelper::getExistingRanges($subnet_id));
+	public function getExistingRealIps($subnet_id) {
+		return array_merge(editingHelper::getExistingIps($subnet_id), editingHelper::getExistingRanges($subnet_id));
 	}
 	
-	public function getFreeIpZone($subnet_id, $range, $node) {
+	public function getFreeIpZone($subnet_id, $range, $ip) {
 		//Anzahl der zu reservierenden IP's
 		$range = $range-1;
 		$used_zones = array();
@@ -159,9 +159,9 @@ class editingHelper {
 		
 		$existing_ips = editingHelper::getExistingIps($subnet_id);
 		
-		//Array aller nicht mit Zonen oder Nodes belegter IPs erstellen
+		//Array aller nicht mit Zonen oder Ips belegter IPs erstellen
 		for ($i=1; $i<=255; $i++) {
-			if (!in_array($i, $existing_ips) AND $i!=$node) {
+			if (!in_array($i, $existing_ips) AND $i!=$ip) {
 				$zonestrahl[] = $i;	
 			}
 		}
@@ -207,23 +207,23 @@ class editingHelper {
 		}
 	}
 	
-	public function addNodeTyp($node_id, $title, $description, $typ, $crawler, $port, $zone_start, $zone_end, $radius=80, $visible, $notify, $notification_wait) {
+	public function addIpTyp($ip_id, $title, $description, $typ, $crawler, $port, $zone_start, $zone_end, $radius=80, $visible, $notify, $notification_wait) {
 		if (!empty($port)) {
 			$crawler = $port;
 		}
 		
-		DB::getInstance()->exec("INSERT INTO services (node_id, title, description, typ, crawler, zone_start, zone_end, radius, visible, notify, notification_wait, create_date) VALUES ('$node_id', '$title', '$description', '$typ', '$crawler', '$zone_start', '$zone_end', '$radius', '$visible', '$notify', '$notification_wait', NOW());");
+		DB::getInstance()->exec("INSERT INTO services (ip_id, title, description, typ, crawler, zone_start, zone_end, radius, visible, notify, notification_wait, create_date) VALUES ('$ip_id', '$title', '$description', '$typ', '$crawler', '$zone_start', '$zone_end', '$radius', '$visible', '$notify', '$notification_wait', NOW());");
 		$service_id = DB::getInstance()->lastInsertId();
 		
 		try {
-			$sql = "select nodes.node_ip, subnets.subnet_ip FROM nodes LEFT JOIN subnets ON (subnets.id=nodes.subnet_id) WHERE nodes.id='$node_id'";
+			$sql = "select ips.ip_ip, subnets.subnet_ip FROM ips LEFT JOIN subnets ON (subnets.id=ips.subnet_id) WHERE ips.id='$ip_id'";
 			$result = DB::getInstance()->query($sql);
-			$node_data = $result->fetch(PDO::FETCH_ASSOC);
+			$ip_data = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		$message[] = array("Ein Nodetyp  vom Typ ".$typ." wurde dem Node mit der IP $GLOBALS[net_prefix].$node_data[subnet_ip].$node_data[node_ip] hinzugefügt.",1);
+		$message[] = array("Ein Iptyp  vom Typ ".$typ." wurde dem Ip mit der IP $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip_ip] hinzugefügt.",1);
 		message::setMessage($message);
 		
 		return array("result"=>true, "service_id"=>$service_id);

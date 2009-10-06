@@ -97,36 +97,57 @@ class JsonDataCollector {
   }
   
   function getServices($service_typ) {
-    $nodes = array();
+    $ips = array();
     $sql = "SELECT services.id as service_id, services.crawler, services.typ,
-				      nodes.node_ip,
+				      ips.ip_ip,
 				      subnets.subnet_ip
 			       FROM services
-			       LEFT JOIN nodes on (nodes.id=services.node_id)
-			       LEFT JOIN subnets on (subnets.id=nodes.subnet_id)
+			       LEFT JOIN ips on (ips.id=services.ip_id)
+			       LEFT JOIN subnets on (subnets.id=ips.subnet_id)
 			       WHERE services.typ='$service_typ'
 			       ORDER BY services.id ASC";
 	$query = mysql_query($sql) OR die(mysql_error());
     while ($row = mysql_fetch_assoc($query)){
-      $nodes[] = $row;
+      $ips[] = $row;
     }
 
-    return $nodes;
+    return $ips;
+  }
+
+  function getLastCrawlDataByServiceId($service_id) {
+	$last_crawl_id = $this->crawl_id-1;
+    $sql = "SELECT id, service_id, crawl_time, status, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, uptime
+			FROM crawl_data
+			WHERE crawl_id = $last_crawl_id AND service_id = $service_id";
+	$query = mysql_query($sql) OR die(mysql_error());
+    $crawl = mysql_fetch_assoc($query);
+
+    return $crawl;
+  }
+
+  function getLastOnlineCrawlDataByServiceId($service_id) {
+    $sql = "SELECT id, service_id, crawl_time, status, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, uptime
+			FROM crawl_data
+			WHERE service_id='$service_id' AND status='online' ORDER BY id DESC LIMIT 1";
+	$query = mysql_query($sql) OR die(mysql_error());
+    $crawl = mysql_fetch_assoc($query);
+
+    return $crawl;
   }
 
   public function crawl($service_typ) {
     $services = $this->getServices($service_typ);
     foreach ($services as $service) {
-		$ping = $this->pingHost("$GLOBALS[net_prefix].$service[subnet_ip].$service[node_ip]");
+		$ping = $this->pingHost("$GLOBALS[net_prefix].$service[subnet_ip].$service[ip_ip]");
 		if ($service['crawler']=="json") {
 			if ($ping)
-				$json = $this->getJason("http://$GLOBALS[net_prefix].$service[subnet_ip].$service[node_ip]/cgi-bin/luci/freifunk/status.json");
+				$json = $this->getJason("http://$GLOBALS[net_prefix].$service[subnet_ip].$service[ip_ip]/cgi-bin/luci/freifunk/status.json");
 			$this->insertJsonIntoDB($ping, $json, $service['service_id']);
 		} elseif ($service['crawler']=="ping") {
 			$this->insertPingIntoDB($ping, $service['service_id']);
 		} elseif ($service['typ']=="service" AND is_numeric($service['crawler'])) {
 	if ($ping)
-		$portcheck =  @fsockopen("$GLOBALS[net_prefix].$service[subnet_ip].$service[node_ip]", $service['crawler'], $errno, $errstr, 2);
+		$portcheck =  @fsockopen("$GLOBALS[net_prefix].$service[subnet_ip].$service[ip_ip]", $service['crawler'], $errno, $errstr, 2);
 	$this->insertPortsIntoDB($ping, $portcheck, $service['service_id']);
       }
 			unset($ping);
@@ -299,6 +320,41 @@ NOW(),
 );");
 
 		$this->updateNotificationStatus($data['status']);
+
+
+	$history_data = array();
+	$last_crawl_data = $this->getLastCrawlDataByServiceId($service_id);
+
+	if ($data['status']!=$last_crawl_data['status']) {
+		$history_data[] = serialize(array('service_id'=>$service_id, 'action'=>'status', 'from'=>$last_crawl_data['status'], 'to'=>$data['status']));
+	}
+
+/*	if($data['status']=='online') {
+		if ($last_crawl_data['status']=='offline') {
+			$last_crawl_data = $this->getLastOnlineCrawlDataByServiceId($service_id);
+		}
+
+/*		if (!empty($last_crawl_data)) {
+			if ($last_crawl_data['distversion']!=$data['distversion']) {
+				$history_data[] = serialize(array('service_id'=>$service_id, 'action'=>'distversion', 'from'=> $last_crawl_data['distversion'], 'to'=>$data['distversion']));
+			}
+			if ($last_crawl_data['luciversion']!=$data['luciversion']) {
+				$history_data[] = serialize(array('service_id'=>$service_id, 'action'=>'luciversion', 'from'=> $last_crawl_data['luciversion'], 'to'=>$data['luciversion']));
+			}
+			if ($last_crawl_data['uptime']>$data['uptime']) {
+				$history_data[] = serialize(array('service_id'=>$service_id, 'action'=>'reboot'));
+			}
+		}
+	}*/
+
+	foreach ($history_data as $hist_data) {
+		mysql_query("INSERT INTO history (type, create_date, data) VALUES ('network', NOW(), '$hist_data');");
+	}
+
+/*	unset($history_data);
+	unset($hist_data);
+	unset($data);
+	unset($last_crawl_data);*/
 
     return true;
   }

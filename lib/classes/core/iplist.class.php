@@ -21,65 +21,65 @@
 // +---------------------------------------------------------------------------+/
 
 /**
- * This file contains the class for the nodelist site.
+ * This file contains the class for the iplist site.
  *
  * @author	Clemens John <clemens-john@gmx.de>
  * @version	0.1
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class nodelist {
-	function getNodeList() {
+class iplist {
+	function getIpList() {
 	  $services = Helper::getServicesByType('node');
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-		$crawl_data['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($crawl_data['crawl_time']));
-	    $nodelist[] = array_merge($service, $crawl_data);
+		$crawl_data['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($crawl_data['crawl_time']));
+	    $iplist[] = array_merge($service, $crawl_data);
 	  }
-	  return $nodelist;
+	  return $iplist;
 	}
 
 	function getVpnList() {
 	  $services = Helper::getServicesByType('vpn');
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-		$crawl_data['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($crawl_data['crawl_time']));
-	    $nodelist[] = array_merge($service, $crawl_data);
+		$crawl_data['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($crawl_data['crawl_time']));
+	    $iplist[] = array_merge($service, $crawl_data);
 	  }
-	  return $nodelist;
+	  return $iplist;
 	}
 	
 	function getServiceList() {
 	  $services = Helper::getServicesByType('service');
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-		$crawl_data['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($crawl_data['crawl_time']));
-	    $nodelist[] = array_merge($service, $crawl_data);
+		$crawl_data['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($crawl_data['crawl_time']));
+	    $iplist[] = array_merge($service, $crawl_data);
 
 	  }
-	  return $nodelist;
+	  return $iplist;
 	}
 
 	function getClientList() {
 	  $services = Helper::getServicesByType('client');
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-		$crawl_data['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($crawl_data['crawl_time']));
-	    $nodelist[] = array_merge($service, $crawl_data);
+		$crawl_data['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($crawl_data['crawl_time']));
+	    $iplist[] = array_merge($service, $crawl_data);
 
 	  }
-	  return $nodelist;
+	  return $iplist;
 	}
 
 	function getServiceListByUserId($user_id) {
 	  $services = Helper::getServicesByUserId($user_id);
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-		$crawl_data['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($crawl_data['crawl_time']));
-	    $nodelist[] = array_merge($service, $crawl_data);
+		$crawl_data['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($crawl_data['crawl_time']));
+	    $iplist[] = array_merge($service, $crawl_data);
 
 	  }
-	  return $nodelist;
+	  return $iplist;
 	}
   
 

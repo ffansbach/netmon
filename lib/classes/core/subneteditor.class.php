@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
-require_once("./lib/classes/core/nodeeditor.class.php");
+require_once("./lib/classes/core/ipeditor.class.php");
 
 /**
  * This file contains the class for editing a subnet.
@@ -207,8 +207,8 @@ class subneteditor {
 	}
 	
 	public function deleteSubnet($subnet_id) {
-		foreach (Helper::getNodesBySubnetId($subnet_id) as $node) {
-			nodeeditor::deleteNode($node);
+		foreach (Helper::getIpsBySubnetId($subnet_id) as $ip) {
+			ipeditor::deleteIp($ip);
 		}
 		
 		DB::getInstance()->exec("DELETE FROM subnets WHERE id='$subnet_id';");

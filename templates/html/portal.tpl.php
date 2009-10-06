@@ -1,18 +1,30 @@
 <h1>Netmon 0.2 TESTING, Codename "shake-up"</h1>
 
-<p>Netmon ist ein Projekt des <a href="http://freifunk-ol.de">Oldenburger Freifunknetzwerkes</a>.<br>
-Netmon 0.1 stellt das erste offizielle Release dar und kann noch Fehler enthalten.</p>
+<h2>Netmon-History</h2>
 
-<p>Informationen und eine Installationsanleitung zu Netmon gibt es in unserem <a href="http://wiki.freifunk-ol.de/index.php/Netmon">Wiki</a><br>
-Möchtest du mithelfen Netmon weiter zu entwickeln oder hast Fragen zu Netmon, dann wende dich bitte an unsere <a href="http://wiki.freifunk-ol.de/index.php/Mailingliste">Mailingliste</a></p>
+{if !empty($history)}
+{foreach key=count item=hist from=$history}
+	{$hist.create_date}: 
+	{if $hist.type == 'user'}Der Benutzer <a href="./user.php?id={$hist.object_id}">{$hist.object_name_1}</a> hat sich registriert
+	{elseif $hist.type == 'subnet'} Das Subnets <a href="./subnet.php?id={$hist.object_id}">{$hist.object_name_1}</a> wurde angelgt
+	{elseif $hist.type == 'ip'} Die Ip <a href="./ip.php?id={$hist.object_id}">{$net_prefix}.{$hist.object_name_1}.{$hist.object_name_2}</a> wurde angelegt
+	{elseif $hist.type == 'service'} Ein <a href="./service.php?id={$hist.service_id}">Service</a> wurde auf der IP <a href="./ip.php?id={$hist.ip_id}">{$net_prefix}.{$hist.subnet_ip}.{$hist.ip_ip}</a> angelegt
+	{elseif $hist.data.action == 'status'}
+		{if $hist.data.action == 'status' AND $hist.data.from=='offline'}
+			Der Service {$hist.data.service_id} geht online
+		{elseif $hist.data.action == 'status' AND $hist.data.from=='online'}
+			Der Service {$hist.data.service_id} geht offline
+		{/if}
+	{/if}
+<br>
+{/foreach}
+{else}
+<p>Keine History vorhanden</p>
+{/if}
 
-<p>Diese Seite kann in templates/html/portal.tpl.php geändert werden um Informationen über euer eigenes Projekt anzuzeigen.<br>
-Die Menüs können in lib/classes/core/menus.class.php angepasst werden.</p>
+<h2>Netmon-Schnellübersicht</h2>
 
-<p>Funk frei!<br>
-Floh1111</p>
-
-<img src="./tmp/node_status.png">
+<img src="./tmp/ip_status.png">
 <img src="./tmp/vpn_status.png">
 <img src="./tmp/service_status.png">
 

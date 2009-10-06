@@ -31,12 +31,12 @@
   require_once('./lib/classes/extern/archive.class.php');
 
 class vpn {
-	public function generateKeys($node_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $privkeypass_chk, $expiration) {
+	public function generateKeys($ip_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $privkeypass_chk, $expiration) {
 		try {
 			$sql = "SELECT subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass
-					FROM nodes
-					LEFT JOIN subnets on (subnets.id=nodes.subnet_id)
-					WHERE nodes.id='$node_id'";
+					FROM ips
+					LEFT JOIN subnets on (subnets.id=ips.subnet_id)
+					WHERE ips.id='$ip_id'";
 			$result = DB::getInstance()->query($sql);
 			$vpn = $result->fetch(PDO::FETCH_ASSOC);
 		}
@@ -83,11 +83,11 @@ class vpn {
 		}
 	}
 
-	public function saveKeysToDB($node_id, $vpn_client_cert, $vpn_client_key) {
-		$result = DB::getInstance()->exec("UPDATE nodes
+	public function saveKeysToDB($ip_id, $vpn_client_cert, $vpn_client_key) {
+		$result = DB::getInstance()->exec("UPDATE ips
 										   SET vpn_client_cert = '$vpn_client_cert',
 											   vpn_client_key = '$vpn_client_key'
-										   WHERE id = '$node_id'");
+										   WHERE id = '$ip_id'");
 		
 		if ($result>0) {
 			$message[] = array("Die Keys wurden in der Datenbank gespeichert und werden Ihnen jetzt zum Download angeboten.", 1);
@@ -100,12 +100,12 @@ class vpn {
 		}
 	}
 
-  public function downloadKeyBundle($node_id) {
-    $keys = Helper::getNodeDataByNodeId($node_id);
+  public function downloadKeyBundle($ip_id) {
+    $keys = Helper::getIpDataByIpId($ip_id);
     
     if (!empty($keys['vpn_server_ca']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
 		//Get Config Datei
-		$config = $this->getVpnConfig($node_id);
+		$config = $this->getVpnConfig($ip_id);
 
       $tmpdir = "./tmp/";
       
@@ -126,7 +126,7 @@ class vpn {
       fclose($handle);      
 
       // Objekt erzeugen. Das Argument bezeichnet den Dateinamen
-      $zipfile= new zip_file("VpnKeys_".$GLOBALS['net_prefix'].".".$keys['subnet_ip'].".".$keys['node_ip'].".zip");
+      $zipfile= new zip_file("VpnKeys_".$GLOBALS['net_prefix'].".".$keys['subnet_ip'].".".$keys['ip_ip'].".zip");
 
       // Die Optionen
       $zipfile->set_options(array (
@@ -160,48 +160,48 @@ class vpn {
     }
   }
 
-  public function getCertificateInfo($node_id) {
-    $keys = Helper::getNodeDataByNodeId($node_id);
+  public function getCertificateInfo($ip_id) {
+    $keys = Helper::getIpDataByIpId($ip_id);
     if (!empty($keys['vpn_server_ca']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
-      $node_info = openssl_x509_parse($keys['vpn_client_cert']);
+      $ip_info = openssl_x509_parse($keys['vpn_client_cert']);
       $subnet_info = openssl_x509_parse($keys['vpn_server_ca']);
 
-      $node_info['validFrom_time_t'] = date("d.m.Y H:m:s", $node_info['validFrom_time_t']);
-      $node_info['validTo_time_t'] = date("d.m.Y H:m:s", $node_info['validTo_time_t']);
+      $ip_info['validFrom_time_t'] = date("d.m.Y H:m:s", $ip_info['validFrom_time_t']);
+      $ip_info['validTo_time_t'] = date("d.m.Y H:m:s", $ip_info['validTo_time_t']);
 
       $subnet_info['validFrom_time_t'] = date("d.m.Y H:m:s", $subnet_info['validFrom_time_t']);
       $subnet_info['validTo_time_t'] = date("d.m.Y H:m:s", $subnet_info['validTo_time_t']);
 
-      $return = array('node'=>$node_info, 'subnet'=>$subnet_info);
+      $return = array('ip'=>$ip_info, 'subnet'=>$subnet_info);
 
       return $return;
     } else return false;
   }
 
-  public function writeCCD($node_id) {
-    $node_data = Helper::getNodeDataByNodeId($node_id);
+  public function writeCCD($ip_id) {
+    $ip_data = Helper::getIpDataByIpId($ip_id);
     
-    $cert_info = $this->getCertificateInfo($node_id);
-    $CN = $cert_info['node']['subject']['CN'];
+    $cert_info = $this->getCertificateInfo($ip_id);
+    $CN = $cert_info['ip']['subject']['CN'];
     if (!empty($CN)) {
       $ccd = "./ccd/";
       $handle = fopen($ccd."$CN", "w+");
-      fwrite($handle, "ifconfig-push $GLOBALS[net_prefix].$node_data[subnet_ip].$node_data[node_ip] 255.255.255.0");
+      fwrite($handle, "ifconfig-push $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip_ip] 255.255.255.0");
       fclose($handle);
 
-      $message[] = array("CCD wurde für den Node mit der ID $node_id erstellt.", 1);
+      $message[] = array("CCD wurde für den Ip mit der ID $ip_id erstellt.", 1);
     } else {
-      $message[] = array("CCD konnte für den Node mit der ID $node_id  nicht erstellt, da der CN leer ist.", 2);
+      $message[] = array("CCD konnte für den Ip mit der ID $ip_id  nicht erstellt, da der CN leer ist.", 2);
       $message[] = array("Sie müssen erst ein VPN-Zertifikat anlegen!", 2);
     }
     message::setMessage($message);
     return true;
   }
   
-	public function deleteCCD($node_id) {
+	public function deleteCCD($ip_id) {
 		$ccd = "./ccd/";
-		if (@unlink($ccd."$node_id")) {
-			$message[] = array("CCD des Nodes $node_id wurde gelöscht.", 1);
+		if (@unlink($ccd."$ip_id")) {
+			$message[] = array("CCD des Ips $ip_id wurde gelöscht.", 1);
 	    	message::setMessage($message);
 		}
     	return true;
@@ -209,26 +209,26 @@ class vpn {
 
 	public function regenerateCCD($subnet_id) {
 		try {
-			$sql = "SELECT nodes.id
-					FROM nodes
-					WHERE nodes.subnet_id='$subnet_id'";
+			$sql = "SELECT ips.id
+					FROM ips
+					WHERE ips.subnet_id='$subnet_id'";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
-				$node_ids[] = $row['id'];
+				$ip_ids[] = $row['id'];
 			}
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
 		
-		foreach ($node_ids as $node_id) {
+		foreach ($ip_ids as $ip_id) {
 			try {
 				$sql = "SELECT id
-						FROM nodes
-						WHERE id='$node_id' AND vpn_client_cert !='' AND vpn_client_key!='';";
+						FROM ips
+						WHERE id='$ip_id' AND vpn_client_cert !='' AND vpn_client_key!='';";
 				$result = DB::getInstance()->query($sql);
 				foreach($result as $row) {
-					$node_ids[] = $row['id'];
+					$ip_ids[] = $row['id'];
 				}
 			}
 			catch(PDOException $e) {
@@ -236,15 +236,15 @@ class vpn {
 			}
 		}
 		
-		foreach ($node_ids as $node_id) {
-			vpn::writeCCD($node_id);
+		foreach ($ip_ids as $ip_id) {
+			vpn::writeCCD($ip_id);
 		}
 		
 		return true;
 	}
   
-  public function getVpnConfig($node_id) {
-  	$data = Helper::getNodeDataByNodeId($node_id);
+  public function getVpnConfig($ip_id) {
+  	$data = Helper::getIpDataByIpId($ip_id);
   	
   	$config = "package openvpn
 

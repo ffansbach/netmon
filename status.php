@@ -6,7 +6,7 @@
   
   $smarty->assign('status', $status->getCrawlerStatus());
   $smarty->assign('newest_user', $status->getNewestUser());
-  $smarty->assign('newest_node', $status->getNewestNode());
+  $smarty->assign('newest_ip', $status->getNewestIp());
   $smarty->assign('newest_service', $status->getNewestService());
 
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);

@@ -17,7 +17,7 @@
   $smarty->assign('message', message::getMessage());
 
   $service_data = Helper::getServiceDataByServiceId($_GET['service_id']);
-  $service_data['create_date'] = Helper::makeSmoothNodelistTime(strtotime($service_data['create_date']));
+  $service_data['create_date'] = Helper::makeSmoothIplistTime(strtotime($service_data['create_date']));
 
   $smarty->assign('service_data', $service_data);
   $smarty->assign('current_crawl', Helper::getCurrentCrawlDataByServiceId($_GET['service_id']));
@@ -25,7 +25,7 @@
   $crawl_history = $service->getCrawlHistory($_GET['service_id'], 25);
   $smarty->assign('crawl_history', $crawl_history);
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-  $smarty->assign('is_node_owner', $service->is_node_owner);
+  $smarty->assign('is_ip_owner', $service->is_ip_owner);
 
 foreach ($crawl_history as $hist) {
 	$time = date("H:i", strtotime($hist['crawl_time']));

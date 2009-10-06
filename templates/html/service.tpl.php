@@ -4,7 +4,7 @@
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 <!--		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>-->
 
-<h1>Service vom Typ <i>{$service_data.typ}</i> auf der IP <a href="./node.php?id={$service_data.node_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.node_ip}</a></h1>
+<h1>Service vom Typ <i>{$service_data.typ}</i> auf der IP <a href="./ip.php?id={$service_data.ip_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.ip_ip}</a></h1>
 
 <div style="width: 100%; overflow: hidden;">
   <div nstyle="white-space: nowrap;">
@@ -46,7 +46,7 @@ processes: {$current_crawl.processes}<br>
 <h2>Nachbarn</h2>
 
 {foreach key=count item=olsrd_neighbors from=$current_crawl.olsrd_neighbors}
-  {$olsrd_neighbors.IPaddress} {if $olsrd_neighbors.2HopNeighbors eq '0'}(Direkter Client){/if}<br>
+  {if $olsrd_neighbors.2HopNeighbors eq '0'}<span style="background-color: yellow;">{/if}{$olsrd_neighbors.IPaddress} {if $olsrd_neighbors.2HopNeighbors eq '0'}(Direkter Client)</span>{/if}<br>
 {/foreach}
 
 
@@ -54,7 +54,7 @@ processes: {$current_crawl.processes}<br>
 
 <h2>Aktueller Status</h2>
 
-<div id="nodeitem" style="width: 345px; overflow: hidden;">
+<div id="ipitem" style="width: 345px; overflow: hidden;">
   <div nstyle="white-space: nowrap;">
     <div style="float:left; width: 100px;"><b>Status</b></div>
     <div style="float:left; width: 95px;"><b>Uptime</b></div>
@@ -62,7 +62,7 @@ processes: {$current_crawl.processes}<br>
   </div>
 </div>
 
-<div id="nodeitem" style="width: 345px; overflow: hidden;">
+<div id="ipitem" style="width: 345px; overflow: hidden;">
   <div style="white-space: nowrap;">
     {if $current_crawl.status=="online"}
       <div style="float:left; width: 100px;; background-color: green;">{$current_crawl.status}</div>
@@ -77,7 +77,7 @@ processes: {$current_crawl.processes}<br>
 </div>
 
 <h2>Historie</h2>
-<div id="nodeitem" style="width: 345px; overflow: hidden;">
+<div id="ipitem" style="width: 345px; overflow: hidden;">
   <div nstyle="white-space: nowrap;">
     <div style="float:left; width: 100px;"><b>Status</b></div>
     <div style="float:left; width: 95px;"><b>Uptime</b></div>
@@ -86,7 +86,7 @@ processes: {$current_crawl.processes}<br>
 </div>
 
 {foreach key=count item=history from=$crawl_history}
-<div id="nodeitem" style="width: 345px; overflow: hidden;">
+<div id="ipitem" style="width: 345px; overflow: hidden;">
   <div style="white-space: nowrap;">
     {if $history.status=="online"}
       <div style="float:left; width: 100px;; background-color: green;">{$history.status}</div>
@@ -133,9 +133,9 @@ processes: {$current_crawl.processes}<br>
 				/* Create the Subnet Layer */
 /*				SubnetLayer("Subnet", lon, lat, radius);*/
 			{/literal}
-	AddKmlLayer("offline Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_offline&highlighted_service={$service_data.service_id}");
+	AddKmlLayer("offline Ips", "./api.php?class=apiMap&section=getgoogleearthkmlfile_offline&highlighted_service={$service_data.service_id}");
 	AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
-	AddKmlLayer("online Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online&highlighted_service={$service_data.service_id}");
+	AddKmlLayer("online Ips", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online&highlighted_service={$service_data.service_id}");
 		</script>
 	</div>
 {else}

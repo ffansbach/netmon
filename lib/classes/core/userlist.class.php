@@ -36,7 +36,7 @@ class userlist {
 					ORDER BY u.create_date DESC";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
-				$row['create_date'] = Helper::makeSmoothNodelistTime(strtotime($row['create_date']));
+				$row['create_date'] = Helper::makeSmoothIplistTime(strtotime($row['create_date']));
 				$userlist[] = $row;
 			}
 		}
@@ -45,8 +45,8 @@ class userlist {
 		}
 		foreach ($userlist as $key=>$user){
 			try {
-				$sql = "SELECT count(*) as nodecount
-						FROM nodes
+				$sql = "SELECT count(*) as ipcount
+						FROM ips
 						WHERE user_id='$user[id]'";
 				$result = DB::getInstance()->query($sql);
 				$count = $result->fetch(PDO::FETCH_ASSOC);
@@ -55,7 +55,7 @@ class userlist {
 				echo $e->getMessage();
 			}
 			
-			$userlist[$key]['nodecount'] = $count['nodecount'];
+			$userlist[$key]['ipcount'] = $count['ipcount'];
 		}
 		return $userlist;
 	}
