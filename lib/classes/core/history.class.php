@@ -127,7 +127,7 @@ class History {
 			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR
 					  ORDER BY history.create_date desc";
 		try {
-			$sql = "SELECT id, type, create_date, data
+			$sql = "SELECT id, object, object_id, create_date, data
 			       FROM history
 				   $range";
 			$result = DB::getInstance()->query($sql);
