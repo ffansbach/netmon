@@ -33,7 +33,7 @@
 	<!--Top-Menü-->
 	<div id="topmenu">
 		{foreach item=topmenu from=$top_menu}
-			<span class="topmenubox"><a style="color: #FFFFFF;" href="{$topmenu.href}">{$topmenu.name}</a></span>
+			<span class="topmenubox"><a style="color: #FFFFFF;" href="{$topmenu.href}" target="blank">{$topmenu.name}</a></span>
 		{/foreach}
 	</div>
 </div>

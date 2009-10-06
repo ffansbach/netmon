@@ -61,15 +61,15 @@ class subnet {
 											 'service_id'=>$range['service_id'],
 											 'typ'=>"range");
 		}
-		
-		for ($i=0; $i<=255; $i++) {
+
+		for ($i=1; $i<=254; $i++) {
 			if (!isset($iplist[$i])) {
 				$iplist[$i] = array('ip'=>$i,
 									'typ'=>"free");				
 			}
 			ksort($iplist);
 		}
-		
+
 		return $iplist;
 	}
 }

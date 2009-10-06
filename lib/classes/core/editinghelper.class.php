@@ -41,7 +41,7 @@ class editingHelper {
 		}
 		
 		//Erste freie IP nehmen
-		for ($i=1; ($i<=245 AND !isset($available_ip)); $i++) {
+		for ($i=1; ($i<=254 AND !isset($available_ip)); $i++) {
 			if(!in_array($i, $existingips)) {
 				$available_ip = $i;
 			}
@@ -160,7 +160,7 @@ class editingHelper {
 		$existing_ips = editingHelper::getExistingIps($subnet_id);
 		
 		//Array aller nicht mit Zonen oder Ips belegter IPs erstellen
-		for ($i=1; $i<=255; $i++) {
+		for ($i=1; $i<=254; $i++) {
 			if (!in_array($i, $existing_ips) AND $i!=$ip) {
 				$zonestrahl[] = $i;	
 			}
