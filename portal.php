@@ -22,42 +22,29 @@
 
 require_once('./config/runtime.inc.php');
 
- class verfuegbarkeitsPalette extends ezcGraphPalette
- {
- protected $dataSetColor = array(
- '#00b308',
- '#c10000',
- '#fff600'
- );
+class verfuegbarkeitsPalette extends ezcGraphPalette {
+	protected $dataSetColor = array('#00b308', '#c10000', '#fff600');
+	protected $dataSetSymbol = array(ezcGraph::BULLET);
+	protected $fontName = 'sans-serif';
+	protected $fontColor = '#555753';
+}
 
- protected $dataSetSymbol = array(
- ezcGraph::BULLET,
- );
-
- protected $fontName = 'sans-serif';
-
- protected $fontColor = '#555753';
- }
-
-
-
-$node_status = Helper::countServiceStatusByType('node');
-
- $graph = new ezcGraphPieChart();
+$ip_status = Helper::countServiceStatusByType('node');
+$graph = new ezcGraphPieChart();
 $graph->palette = new verfuegbarkeitsPalette();
 $graph->driver = new ezcGraphGdDriver(); 
 $graph->options->font = './templates/fonts/verdana.ttf';
 
- $graph->title = 'Aktuelle Node-Verfügbarkeit';
+ $graph->title = 'Aktuelle Ip-Verfügbarkeit';
 
  $graph->data['Access statistics'] = new ezcGraphArrayDataSet( array(
- 'Online' => $node_status['online'],
- 'Offline' => $node_status['offline'],
- 'Unbekannt' => $node_status['unbekannt']
+ 'Online' => $ip_status['online'],
+ 'Offline' => $ip_status['offline'],
+ 'Unbekannt' => $ip_status['unbekannt']
 ) );
  $graph->data['Access statistics']->highlight['Online'] = true;
 
- $graph->render( 300, 200, './tmp/node_status.png' );
+ $graph->render( 300, 200, './tmp/ip_status.png' );
 //-----------
 $vpn_status = Helper::countServiceStatusByType('vpn');
 
@@ -92,6 +79,10 @@ $graph->options->font = './templates/fonts/verdana.ttf';
  $graph->data['Access statistics']->highlight['Online'] = true;
  $graph->render( 300, 200, './tmp/service_status.png' );
 
+	require_once('./lib/classes/core/history.class.php');
+	
+	$history = History::getNetworkHistory($countlimit, 5);
+	$smarty->assign('history', $history);
 
 $smarty->assign('message', message::getMessage());
 $smarty->display("header.tpl.php");

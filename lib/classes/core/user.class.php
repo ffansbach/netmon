@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
-require_once("./lib/classes/core/nodeeditor.class.php");
+require_once("./lib/classes/core/ipeditor.class.php");
 require_once("./lib/classes/core/subneteditor.class.php");
 require_once("./lib/classes/core/login.class.php");
 
@@ -185,12 +185,12 @@ class user {
 	*/
 	public function userDelete($id) {
 		if ($_POST['delete'] == "true") {
-			//Nodes mit Services löschen
-			foreach(Helper::getNodesByUserId($id) as $node) {
-				nodeeditor::deleteNode($node['id']);
+			//Ips mit Services löschen
+			foreach(Helper::getIpsByUserId($id) as $ip) {
+				ipeditor::deleteIp($ip['id']);
 			}
 			
-			//Subnets, Nodes und Services löschen
+			//Subnets, Ips und Services löschen
 			foreach(Helper::getSubnetsByUserId($_SESSION['user_id']) as $subnet) {
 				subneteditor::deleteSubnet($subnet['id']);
 			}

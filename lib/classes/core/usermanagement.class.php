@@ -51,9 +51,8 @@ class usermanagement {
     if($owning_user_id!=$_SESSION['user_id'] OR !isset($owning_user_id)) {
       $message[] = array("Sie haben nicht das Recht auf diesen Bereich zuzugreifen, da Sie nicht der Eigentümer des Objekts sind!",2);
       message::setMessage($message);
-      $smarty->assign('message', message::getMessage());
-//      $smarty->assign('get_content', "portal");
-      $smarty->display("design.tpl.php");
+	  $_SESSION['redirect_url'] = ".".$_SERVER['REQUEST_URI'];
+	  header('Location: ./login.php?section=login');
       die();
     } else {
       return true;

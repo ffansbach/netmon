@@ -5,7 +5,7 @@
   $smarty->assign('message', message::getMessage());
   
   $smarty->assign('user', Helper::getUserByID($_GET['id']));
-  $smarty->assign('nodelist', Helper::getNodelistByUserID($_GET['id']));
+  $smarty->assign('iplist', Helper::getIplistByUserID($_GET['id']));
   $smarty->assign('subnetlist', Helper::getSubnetlistByUserID($_GET['id']));
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
   $smarty->assign('timeBetweenCrawls', $GLOBALS['timeBetweenCrawls']);

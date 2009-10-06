@@ -50,9 +50,9 @@ class serviceeditor {
 		if ($_POST['delete']=="true") {
 
 			$service_data = Helper::getServiceDataByServiceId($service_id);
-			if(count(Helper::getServicesByNodeId($service_data['node_id']))<2 AND !$force) {
-				$link1 = "<a href=\"./serviceeditor.php?section=new&node_id=$service_data[node_id]\">hier</a>";
-				$link2 = "<a href=\"./nodeeditor.php?section=edit&id=$service_data[node_id]\">hier</a>";
+			if(count(Helper::getServicesByIpId($service_data['ip_id']))<2 AND !$force) {
+				$link1 = "<a href=\"./serviceeditor.php?section=new&ip_id=$service_data[ip_id]\">hier</a>";
+				$link2 = "<a href=\"./ipeditor.php?section=edit&id=$service_data[ip_id]\">hier</a>";
 				$message[] = array("Sie können diesen Service nicht löschen da eine IP durch mindestens einen Service spezifiziert werden muss.<br>"
 									."Um einen 2. Service zu erstellen klicken Sie bitte $link1<br>"
 									."Um die IP zu komplett zu löschen, klicken Sie bitte $link2", 2);

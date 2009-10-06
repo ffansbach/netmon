@@ -34,10 +34,10 @@ class subnetlist {
 		try {
 			$sql = "SELECT subnets.id, subnets.subnet_ip, subnets.title, subnets.user_id,
 						   users.nickname,
-						   COUNT(nodes.id) as nodes_in_net
+						   COUNT(ips.id) as ips_in_net
 					FROM subnets
 					LEFT JOIN users ON (users.id=subnets.user_id)
-					LEFT JOIN nodes ON (nodes.subnet_id=subnets.id)
+					LEFT JOIN ips ON (ips.subnet_id=subnets.id)
 					GROUP BY subnets.id
 					ORDER BY subnets.subnet_ip ASC";
 			$result = DB::getInstance()->query($sql);
