@@ -1,9 +1,9 @@
 <?php
   require_once('./config/runtime.inc.php');
-  require_once('./lib/classes/core/nodelist.class.php');
+  require_once('./lib/classes/core/iplist.class.php');
 
 	if (usermanagement::checkPermission(4)) {
-		$nodelist = new nodelist;
+		$iplist = new iplist;
 		
 		$smarty->assign('message', message::getMessage());
 		$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
@@ -12,7 +12,7 @@
 		$smarty->assign('kanal', $GLOBALS['project_kanal']);
 		$smarty->assign('project_name', $GLOBALS['project_name']);
 
-		$smarty->assign('servicelist', $nodelist->getServiceListByUserId($_SESSION['user_id']));
+		$smarty->assign('servicelist', $iplist->getServiceListByUserId($_SESSION['user_id']));
 		
 		$smarty->display("header.tpl.php");
 		$smarty->display("desktop.tpl.php");

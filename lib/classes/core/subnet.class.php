@@ -48,16 +48,16 @@ class subnet {
 	public function getIPStatus($subnet_id) {
 		$iplist = array();
 		
-		//Nodes eintragen
-		foreach (editingHelper::getExistingNodesWithID($subnet_id) as $node) {
-		$iplist[$node['node_ip']] = array('ip'=>$node['node_ip'],
-									      'node_id'=>$node['id'],
-										  'typ'=>"node");
+		//Ips eintragen
+		foreach (editingHelper::getExistingIpsWithID($subnet_id) as $ip) {
+		$iplist[$ip['ip_ip']] = array('ip'=>$ip['ip_ip'],
+									      'ip_id'=>$ip['id'],
+										  'typ'=>"ip");
 		}
 		
 		foreach (Helper::getExistingRangesBySubnetId($subnet_id) as $range) {
 			$iplist[$range['range']] = array('ip'=>$range['range'],
-											 'node_id'=>$range['node_id'],
+											 'ip_id'=>$range['ip_id'],
 											 'service_id'=>$range['service_id'],
 											 'typ'=>"range");
 		}

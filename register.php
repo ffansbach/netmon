@@ -3,6 +3,8 @@
   require_once('./lib/classes/core/register.class.php');
   
   $register = new register;
+    $smarty->assign('networkpolicy', $GLOBALS['networkPolicy']);
+
 
   if (empty($_POST)) {
     $smarty->assign('message', message::getMessage());

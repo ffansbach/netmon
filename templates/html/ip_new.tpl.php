@@ -1,6 +1,6 @@
 <h1>Einen neuen Knoten im Netz {$net_prefix} eintragen:</h1>
 
-<form action="./nodeeditor.php?section=insert" method="POST">
+<form action="./ipeditor.php?section=insert" method="POST">
 
   <p>Subnetz wählen:
   <select name="subnet_id">
@@ -33,7 +33,7 @@ window.onload = function()
 <label id="typLabel" for="typ">Service:</label>
 <select id="typ" name="typ">
   <option value="--">Bitte wählen:</option>
-  <option value="node">node</option>
+  <option value="node">ip</option>
   <option value="vpn">vpn</option>
   <option value="client">client</option>
   <option value="service">service</option>
@@ -62,7 +62,7 @@ window.onload = function()
 
   <p>
     <p>(Optional) Radius: <input name="radius" type="text" size="5" maxlength="10" value="80"><br>
-    Sinnvoll wenn Typ "node" ist und man die ungefähre Reichweite seines W-Lan-Netzes in metern weiß.</p>
+    Sinnvoll wenn Typ "ip" ist und man die ungefähre Reichweite seines W-Lan-Netzes in metern weiß.</p>
   </p>
 
   <p>
@@ -75,7 +75,7 @@ window.onload = function()
     Alle Services sollten Sichbar sein. Wenn du aber einen Service anbietest bei dem es unter Umständen kritisch sein kann ihn öffentlich anzuzeigen, kannst du hier einstellen, dass nur angemeldete Personen den Service sehen können.</p>
   </p>
 
-  <p>Hinweis:<br>Wenn eine IP gleichzeitig Node und Service ist, oder mehrere Services zur Verfügung stellt, können später noch weitere Services zum Node hinzugefügt werden. Hier bitte nur <b>einen</b> angeben!</p>
+  <p>Hinweis:<br>Wenn eine IP gleichzeitig Ip und Service ist, oder mehrere Services zur Verfügung stellt, können später noch weitere Services zum Ip hinzugefügt werden. Hier bitte nur <b>einen</b> angeben!</p>
 
   <p><input type="submit" value="Absenden"></p>
 </form>

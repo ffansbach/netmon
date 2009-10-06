@@ -77,7 +77,7 @@ class apiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/img/ffmap/node.png</href>');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -86,7 +86,7 @@ class apiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/img/ffmap/node_highlighted.png</href>');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -131,11 +131,11 @@ class apiMap {
 									}
 								}
 							}
-							$nodelist[] = array_merge($crawl, $data, array('clients'=>$clients));
+							$iplist[] = array_merge($crawl, $data, array('clients'=>$clients));
 						}
 					}
-					foreach($nodelist as $entry) {
-						$entry['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($entry['crawl_time']));
+					foreach($iplist as $entry) {
+						$entry['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($entry['crawl_time']));
 						if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
@@ -143,7 +143,7 @@ class apiMap {
 										$title =  "($entry[title])";
 									else
 										$title = "";
-									$xw->writeRaw("<![CDATA[Node <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a> $title]]>");
+									$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[ip_ip]</a> $title]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 									$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
@@ -223,7 +223,7 @@ class apiMap {
 						$xw->startElement('IconStyle');
 							$xw->writeRaw('<scale>0.5</scale>');
 							$xw->startElement('Icon');
-								$xw->writeRaw('<href>http://freifunk-ol.de/netmon/templates/img/ffmap/node_offline.png</href>');
+								$xw->writeRaw('<href>http://freifunk-ol.de/netmon/templates/img/ffmap/ip_offline.png</href>');
 						$xw->endElement();
 						$xw->startElement('hotSpot');
 							$xw->writeAttribute( 'x', '20');
@@ -238,7 +238,7 @@ class apiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/img/ffmap/node_highlighted.png</href>');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -283,12 +283,12 @@ class apiMap {
 									$crawl = array();
 								} 
 								$data = Helper::getServiceDataByServiceId($service);
-								$nodelist[] = array_merge($crawl, $data);
+								$iplist[] = array_merge($crawl, $data);
 							}
 						}
 						
-						foreach($nodelist as $entry) {
-							$entry['crawl_time'] = Helper::makeSmoothNodelistTime(strtotime($entry['crawl_time']));
+						foreach($iplist as $entry) {
+							$entry['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($entry['crawl_time']));
 							if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
 								if(!empty($entry['title']))
 									$title =  "($entry[title])";
@@ -296,13 +296,13 @@ class apiMap {
 									$title = "";
 								$xw->startElement('Placemark');
 									$xw->startElement('name');
-										$xw->writeRaw("<![CDATA[Node <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[node_ip]</a>]]>");
+										$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[ip_ip]</a>]]>");
 									$xw->endElement();
 									$xw->startElement('description');
 										$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
 										$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 													   DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
-													   <br><b>Dieser Node ist offline</b><br>
+													   <br><b>Dieser Ip ist offline</b><br>
 													   Letztes mal online: $entry[crawl_time]<br>";
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 									$xw->endElement();
@@ -343,14 +343,14 @@ class apiMap {
 							$xw->writeRaw('create');
 						$xw->endElement();
 
-						//Hole Alle Services vom Typ node die Online sind
-						$services = Helper::getServicesByType("node");
+						//Hole Alle Services vom Typ ip die Online sind
+						$services = Helper::getServicesByType("ip");
 						foreach ($services as $key1=>$service) {
 							$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
 							if ($data['status']=='online') {
 								foreach($data['olsrd_neighbors'] as $key2=>$neighbours) {
-									//Hole die Service-ID der Nachbarnodes
-									$neighbourServiceIds = Helper::getServicesByTypeAndNodeId('node', Helper::getNodeIdByIp($neighbours['IPaddress']));
+									//Hole die Service-ID der Nachbarips
+									$neighbourServiceIds = Helper::getServicesByTypeAndIpId('node', Helper::getIpIdByIp($neighbours['IPaddress']));
 									foreach($neighbourServiceIds as $key=>$neighbourServiceId) {
 										$neighbourServiceCrawlData = Helper::getCurrentCrawlDataByServiceId($neighbourServiceId['service_id']);
 										if(!empty($neighbourServiceCrawlData['longitude']) AND !empty($neighbourServiceCrawlData['latitude'])) {

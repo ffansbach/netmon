@@ -24,60 +24,60 @@ require_once("./lib/classes/core/serviceeditor.class.php");
 require_once("./lib/classes/core/vpn.class.php");
 
 /**
- * This file contains the class for editing a node (IP). 
+ * This file contains the class for editing a ip (IP). 
  *
  * @author	Clemens John <clemens-john@gmx.de>
  * @version	0.1
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class nodeeditor {
-  public function insertNewNode($subnet_id, $ips) {
-    $node = editingHelper::getAFreeIP($subnet_id);
+class ipeditor {
+  public function insertNewIp($subnet_id, $ips) {
+    $ip = editingHelper::getAFreeIP($subnet_id);
 
     if ($ips > 0) {
-      $range = editingHelper::getFreeIpZone($subnet_id, $ips, $node);
+      $range = editingHelper::getFreeIpZone($subnet_id, $ips, $ip);
     } else {
       $range['start'] = "NULL";
       $range['end'] = "NULL";
     }
 
     if ($range) {
-      if ($node != false) {
-	DB::getInstance()->exec("INSERT INTO nodes (user_id, subnet_id, node_ip, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$node', NOW());");
-	$node_id = DB::getInstance()->lastInsertId();
+      if ($ip != false) {
+	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip_ip, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$ip', NOW());");
+	$ip_id = DB::getInstance()->lastInsertId();
 
-	$service = editingHelper::addNodeTyp($node_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
+	$service = editingHelper::addIpTyp($ip_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
 
 	$subnet = Helper::getSubnetById($subnet_id);
 	if ($ips > 0) {
-	  $message[] = array("Der Node ".$GLOBALS['net_prefix'].".".$subnet.".".$node." wurde erfolgreich im Subnetz $subnet angelegt und der IP-Bereich $range[start]-$range[end] reserviert", 1);
+	  $message[] = array("Der Ip ".$GLOBALS['net_prefix'].".".$subnet.".".$ip." wurde erfolgreich im Subnetz $subnet angelegt und der IP-Bereich $range[start]-$range[end] reserviert", 1);
 	} else {
-	  $message[] = array("Der Node ".$GLOBALS['net_prefix'].".".$subnet.".".$node." wurde erfolgreich im Subnetz $subnet angelegt. Es wurde KEIN IP-Bereich reserviert", 1);
+	  $message[] = array("Der Ip ".$GLOBALS['net_prefix'].".".$subnet.".".$ip." wurde erfolgreich im Subnetz $subnet angelegt. Es wurde KEIN IP-Bereich reserviert", 1);
 	}
 	message::setMessage($message);
-	return array("result"=>true, "node_id"=>$node_id, "service_id"=>$service['service_id']);
+	return array("result"=>true, "ip_id"=>$ip_id, "service_id"=>$service['service_id']);
       } else {
-	$message[] = array("Der Node konnte nicht im Subnetz $subnet angelegt werden. Das Netz ist voll!", 2);
+	$message[] = array("Der Ip konnte nicht im Subnetz $subnet angelegt werden. Das Netz ist voll!", 2);
 	message::setMessage($message);
 	return false;
       }
     } else {
-      $message[] = array("Der Node konnte nicht im Subnetz $subnet angelegt werden. Für den Node ist kein IP Bereich mehr frei!<br>Bitte wählen Sie einen kleineren Bereich oder benutzen Sie ein anderes Subnetz.", 2);
+      $message[] = array("Der Ip konnte nicht im Subnetz $subnet angelegt werden. Für den Ip ist kein IP Bereich mehr frei!<br>Bitte wählen Sie einen kleineren Bereich oder benutzen Sie ein anderes Subnetz.", 2);
       message::setMessage($message);
       return false;
     }
   }
 
-  public function deleteNode($node_id) {
-	foreach (Helper::getServicesByNodeId($node_id) as $services) {
+  public function deleteIp($ip_id) {
+	foreach (Helper::getServicesByIpId($ip_id) as $services) {
 		serviceeditor::deleteService($services['service_id'], true);
 	}
 
-	vpn::deleteCCD($node_id);
+	vpn::deleteCCD($ip_id);
 	
-	DB::getInstance()->exec("DELETE FROM nodes WHERE id='$node_id';");
-	$message[] = array("Der Node mit der ID ".$node_id." wurde gelöscht.",1);
+	DB::getInstance()->exec("DELETE FROM ips WHERE id='$ip_id';");
+	$message[] = array("Der Ip mit der ID ".$ip_id." wurde gelöscht.",1);
 	message::setMessage($message);
   }
   

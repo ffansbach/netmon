@@ -68,33 +68,33 @@ class status {
 		return $newest_user;    
 	}
 
-  public function getNewestNode() {
+  public function getNewestIp() {
 		try {
-			$sql = "SELECT nodes.id, nodes.user_id, nodes.node_ip, DATE_FORMAT(nodes.create_date, '%D %M %Y') as create_date,
+			$sql = "SELECT ips.id, ips.user_id, ips.ip_ip, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
 						   users.nickname,
 						   subnets.title, subnets.subnet_ip
-					FROM nodes
-					LEFT JOIN users ON (users.id=nodes.user_id)
-					LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
-					ORDER BY nodes.id DESC LIMIT 1;";
+					FROM ips
+					LEFT JOIN users ON (users.id=ips.user_id)
+					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
+					ORDER BY ips.id DESC LIMIT 1;";
 			$result = DB::getInstance()->query($sql); 
-			$newest_node = $result->fetch(PDO::FETCH_ASSOC); 
+			$newest_ip = $result->fetch(PDO::FETCH_ASSOC); 
 		} 
 		catch(PDOException $e) { 
 			echo $e->getMessage(); 
 		}
 		
-		return $newest_node;    
+		return $newest_ip;    
 	}
 
   public function getNewestService() {
 		try {
-			$sql = "SELECT services.node_id, services.title,
-					  nodes.node_ip,
+			$sql = "SELECT services.ip_id, services.title,
+					  ips.ip_ip,
 					  subnets.subnet_ip
 				  FROM services
-				  LEFT JOIN nodes ON (nodes.id = services.node_id)
-				   LEFT JOIN subnets ON (subnets.id=nodes.subnet_id)
+				  LEFT JOIN ips ON (ips.id = services.ip_id)
+				   LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
 				  WHERE services.typ LIKE 'service'
 			       ORDER BY services.id DESC LIMIT 1;";
 			$result = DB::getInstance()->query($sql); 

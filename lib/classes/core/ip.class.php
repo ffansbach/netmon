@@ -21,16 +21,16 @@
 // +---------------------------------------------------------------------------+/
 
 /**
- * This file contains the class for the node site.
+ * This file contains the class for the ip site.
  *
  * @author	Clemens John <clemens-john@gmx.de>
  * @version	0.1
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class node {
-  public function getServiceList($node_id) {
-	$services = Helper::getServicesByNodeId($node_id);
+class ip {
+  public function getServiceList($ip_id) {
+	$services = Helper::getServicesByIpId($ip_id);
 	if (is_array($services))
 	  foreach ($services as $service) {
 	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);

@@ -1,14 +1,14 @@
-<h2>Node Zertifikat</h2>
-countryName: {$certificate_data.node.subject.C}<br>
-stateOrProvinceName: {$certificate_data.node.subject.ST}<br>
-localityName: {$certificate_data.node.subject.L}<br>
-organizationName: {$certificate_data.node.subject.O}<br>
-organizationalUnitName: {$certificate_data.node.subject.OU}<br>
-commonName: {$certificate_data.node.subject.CN}<br>
-emailAddress: {$certificate_data.node.subject.emailAddress}<br>
+<h2>Ip Zertifikat</h2>
+countryName: {$certificate_data.ip.subject.C}<br>
+stateOrProvinceName: {$certificate_data.ip.subject.ST}<br>
+localityName: {$certificate_data.ip.subject.L}<br>
+organizationName: {$certificate_data.ip.subject.O}<br>
+organizationalUnitName: {$certificate_data.ip.subject.OU}<br>
+commonName: {$certificate_data.ip.subject.CN}<br>
+emailAddress: {$certificate_data.ip.subject.emailAddress}<br>
 
-Erstellt am: {$certificate_data.node.validFrom_time_t}<br>
-Gültig bis: {$certificate_data.node.validTo_time_t}<br></p>
+Erstellt am: {$certificate_data.ip.validFrom_time_t}<br>
+Gültig bis: {$certificate_data.ip.validTo_time_t}<br></p>
 
 <h2>Server Zertifikat</h2>
 countryName: {$certificate_data.subnet.subject.C}<br>

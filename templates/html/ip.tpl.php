@@ -1,8 +1,8 @@
-<h1>IP <a href="http://{$net_prefix}.{$node.subnet_ip}.{$node.node_ip}">{$net_prefix}.{$node.subnet_ip}.{$node.node_ip}</h1>
+<h1>IP <a href="http://{$net_prefix}.{$ip.subnet_ip}.{$ip.ip_ip}">{$net_prefix}.{$ip.subnet_ip}.{$ip.ip_ip}</h1>
 
-<b>Inhaber:</b> <a href="./user.php?id={$node.user_id}">{$node.nickname}</a><br>
-<b>Eingetragen seit:</b> {$node.create_date}<br>
-<b>Subnetz:</b>  <a href="./subnet.php?id={$node.subnet_id}">{$node.title}</a><br>
+<b>Inhaber:</b> <a href="./user.php?id={$ip.user_id}">{$ip.nickname}</a><br>
+<b>Eingetragen seit:</b> {$ip.create_date}<br>
+<b>Subnetz:</b>  <a href="./subnet.php?id={$ip.subnet_id}">{$ip.title}</a><br>
 
 
 <h2>Live-Status der IP:</h2>
@@ -10,7 +10,7 @@
 
 <h2>Services auf dieser IP:</h2>
 
-<div id="nodeitem" style="width: 80%; overflow: hidden;">
+<div id="ipitem" style="width: 80%; overflow: hidden;">
   <div nstyle="white-space: nowrap;">
     <div style="float:left; width: 100px;">Typ</div>
     <div style="float:left; width: 95px;">Crawler</div>
@@ -20,7 +20,7 @@
 </div>
 
 {foreach key=count item=service from=$servicelist}
-<div id="nodeitem" style="width: 80%; overflow: hidden;">
+<div id="ipitem" style="width: 80%; overflow: hidden;">
   <div style="float:left; width: 100px;"><a href="./service.php?service_id={$service.service_id}">{$service.typ}</a></div>
   <div style="float:left; width: 95px;">{$service.crawler}</div>
     {if $service.status=="online"}
@@ -38,23 +38,23 @@
 
 
 
-{if $node.is_node_owner}
+{if $ip.is_ip_owner}
 <h2>Aktionen</h2>
 
 <p>
-  <a href="./serviceeditor.php?section=new&node_id={$node.node_id}">Service hinzufügen</a>
+  <a href="./serviceeditor.php?section=new&ip_id={$ip.ip_id}">Service hinzufügen</a>
 </p>
 
 <p>
-  <a href="./nodeeditor.php?section=edit&id={$node.node_id}">Node Editieren</a>
+  <a href="./ipeditor.php?section=edit&id={$ip.ip_id}">Ip Editieren</a>
 </p>
 
 <p>
-  <a href="./vpn.php?section=new&node_id={$node.node_id}">Neue VPN-Zertifikate generieren</a><br>
-  <a href="./vpn.php?section=info&node_id={$node.node_id}">VPN-Zertifikat Info und Config-Datei ansehen</a><br>
-  <a href="./vpn.php?section=insert_regenerate_ccd&node_id={$node.node_id}">CCD neu anlegen</a><br>
-  <a href="./vpn.php?section=insert_delete_ccd&node_id={$node.node_id}">CCD löschen</a><br>
-  <a href="./vpn.php?section=download&node_id={$node.node_id}">VPN-Zertifikate und Config-Datei downloaden</a><br>
+  <a href="./vpn.php?section=new&ip_id={$ip.ip_id}">Neue VPN-Zertifikate generieren</a><br>
+  <a href="./vpn.php?section=info&ip_id={$ip.ip_id}">VPN-Zertifikat Info und Config-Datei ansehen</a><br>
+  <a href="./vpn.php?section=insert_regenerate_ccd&ip_id={$ip.ip_id}">CCD neu anlegen</a><br>
+  <a href="./vpn.php?section=insert_delete_ccd&ip_id={$ip.ip_id}">CCD löschen</a><br>
+  <a href="./vpn.php?section=download&ip_id={$ip.ip_id}">VPN-Zertifikate und Config-Datei downloaden</a><br>
 </p>
 
 {/if}
