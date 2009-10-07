@@ -1,4 +1,11 @@
-<h1>IP <a href="http://{$net_prefix}.{$ip.subnet_ip}.{$ip.ip_ip}">{$net_prefix}.{$ip.subnet_ip}.{$ip.ip_ip}</h1>
+<h1>IP <a href="http://{$net_prefix}.{$ip.subnet_ip}.{$ip.ip_ip}">{$net_prefix}.{$ip.subnet_ip}.{$ip.ip_ip}</a></h1>
+
+<b>IP:</b> {$net_prefix}.{$ip.subnet_ip}.{$ip.ip_ip}<br>
+<b>DHCP-bereich:</b> {if $ip.zone_start==0 OR $ip.zone_end==0}
+						Kein DHCP-Bereich reserviert
+						{else}
+						{$net_prefix}.{$ip.subnet_ip}.{$ip.zone_start} bis {$net_prefix}.{$ip.subnet_ip}.{$ip.zone_end}
+					{/if}<br>
 
 <b>Inhaber:</b> <a href="./user.php?id={$ip.user_id}">{$ip.nickname}</a><br>
 <b>Eingetragen seit:</b> {$ip.create_date}<br>

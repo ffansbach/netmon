@@ -4,8 +4,8 @@
 
 <h2>Daten:</h2>
 
-VPN-Server: {if isset($subnet.vpn_server)}{$subnet.vpn_server} auf Port {$subnet.vpn_server_port}{else}Kein VPN-Server eingetragen{/if}<br>
-Daten zu VPN: {if isset($subnet.vpn_server)} Device {$subnet.vpn_server_device}, Protokoll {$subnet.vpn_server_proto}{else}Kein VPN-Server eingetragen{/if}<br>
+VPN-Server: {if !empty($subnet.vpn_server)}{$subnet.vpn_server} auf Port {$subnet.vpn_server_port}{else}Kein VPN-Server eingetragen{/if}<br>
+Daten zu VPN: {if !empty($subnet.vpn_server)} Device {$subnet.vpn_server_device}, Protokoll {$subnet.vpn_server_proto}{else}Kein VPN-Server eingetragen{/if}<br>
 <br>
 Verantwortlicher: <a href="./user.php?id={$subnet.created_by}">{$subnet.nickname}</a><br>
 Eingetragen seit: {$subnet.create_date}<br>
@@ -15,7 +15,7 @@ Eingetragen seit: {$subnet.create_date}<br>
 </div>
 
 <div style="padding-left: 50%;">
-	<h2>Radius des Netzes<h2>
+	<h2>Ort des Subnetzes<h2>
 	<!--<small style="font-size: 9pt;">Map Data from <a href="http://openstreetmap.org">OpenStreetMap</a></small>-->
 
 		<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
@@ -66,7 +66,7 @@ Grün "f" = Frei</p>
 				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./ip.php?id={$status.ip_id}">{$status.ip}</a></div>
 		  		<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #ff0000;">n</div>
 			{elseif $status.typ=="range"}
-				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./service.php?service_id={$status.service_id}">{$status.ip}</a></div>
+				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./ip.php?id={$status.belonging_ip_id}">{$status.range_ip}</a></div>
 				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #ff9448;">r</div>
 			{/if}
 

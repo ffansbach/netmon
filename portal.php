@@ -81,9 +81,24 @@ $graph->options->font = './templates/fonts/verdana.ttf';
 
 	require_once('./lib/classes/core/history.class.php');
 	
-	$history = History::getNetworkHistory($countlimit, 5);
+	$history = History::getServiceHistory($countlimit, 5);
+   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
 	$smarty->assign('history', $history);
 
+/*		try {
+			$sql = "SELECT ip_id, zone_start, zone_end
+			       FROM services";
+			$result = DB::getInstance()->query($sql);
+			
+			foreach($result as $row) {
+				DB::getInstance()->exec("UPDATE ips SET zone_start='$row[zone_start]', zone_end='$row[zone_end]' WHERE id='$row[ip_id]';");
+				$services[] = $row;
+			}
+		}
+		catch(PDOException $e) { 
+			echo $e->getMessage(); 
+		}
+*/
 $smarty->assign('message', message::getMessage());
 $smarty->display("header.tpl.php");
 $smarty->display("portal.tpl.php");

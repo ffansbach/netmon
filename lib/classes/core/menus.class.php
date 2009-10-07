@@ -40,6 +40,10 @@ class menus extends usermanagement {
       $menu[] = array('name'=>'Trac', 'href'=>'https://trac.freifunk-ol.de');
       $menu[] = array('name'=>'Software Repository', 'href' => 'http://freifunk-ol.de/dev/');
     }
+    return $menu;
+  }
+  
+  public function loginOutMenu() {
     if (usermanagement::checkPermission(2)) {
       $menu[] = array('name'=>'Login', 'href'=>'./login.php?section=login');
       $menu[] = array('name'=>'Registrieren', 'href'=>'./register.php');

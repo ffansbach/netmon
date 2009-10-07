@@ -115,3 +115,24 @@ border-left-width: 0px;
 padding-top: 4px;
 padding-bottom: 4px;
 margin-top: 10px;}
+
+.error
+{
+  width: 680px;
+  margin: 20px;
+  padding: 5px;
+  border: 1px solid #CD2D1D;
+  background-color: #FFEBE9;
+  color: #930E00;
+  text-align: center;
+}
+
+.notice {
+  width: 680px;
+  margin: 20px;
+  padding: 5px;
+  border: 1px solid #95DA3A;
+  background-color: #E1FFB8;
+  color: #3D6744;
+  text-align: center;
+}
