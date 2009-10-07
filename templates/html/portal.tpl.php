@@ -11,9 +11,9 @@
 	{elseif $hist.type == 'service'} Ein <a href="./service.php?id={$hist.service_id}">Service</a> wurde auf der IP <a href="./ip.php?id={$hist.ip_id}">{$net_prefix}.{$hist.subnet_ip}.{$hist.ip_ip}</a> angelegt
 	{elseif $hist.data.action == 'status'}
 		{if $hist.data.action == 'status' AND $hist.data.from=='offline'}
-			Der Service {$hist.data.service_id} geht online
+			Der Service {$hist.data.service_id} auf der IP {$net_prefix}.{$hist.additional_data.subnet_ip}.{$hist.additional_data.ip_ip} ({$hist.additional_data.nickname}) geht online.
 		{elseif $hist.data.action == 'status' AND $hist.data.from=='online'}
-			Der Service {$hist.data.service_id} geht offline
+			Der Service {$hist.data.service_id} auf der IP {$net_prefix}.{$hist.additional_data.subnet_ip}.{$hist.additional_data.ip_ip} ({$hist.additional_data.nickname}) geht offline.
 		{/if}
 	{/if}
 <br>

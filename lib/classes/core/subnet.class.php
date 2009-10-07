@@ -56,12 +56,14 @@ class subnet {
 		}
 		
 		foreach (Helper::getExistingRangesBySubnetId($subnet_id) as $range) {
-			$iplist[$range['range']] = array('ip'=>$range['range'],
-											 'ip_id'=>$range['ip_id'],
-											 'service_id'=>$range['service_id'],
+			$iplist[$range['range']] = array('range_ip'=>$range['range'],
+											 'belonging_ip_id'=>$range['id'],
 											 'typ'=>"range");
 		}
-
+/*		echo "<pre>";
+			print_r($iplist);
+		echo "</pre>";*/
+		
 		for ($i=1; $i<=254; $i++) {
 			if (!isset($iplist[$i])) {
 				$iplist[$i] = array('ip'=>$i,
