@@ -119,12 +119,14 @@ class History {
 	}
 
 
-	public function getNetworkHistory($countlimit, $hourlimit) {
+	public function getServiceHistory($countlimit, $hourlimit) {
 		if($countlimit)
-			$range = "ORDER BY history.create_date desc
+			$range = "
+						WHERE object='service'
+						ORDER BY history.create_date desc
 					  LIMIT 0, $limit";
 		elseif ($hourlimit)
-			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR
+			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR AND object='service'
 					  ORDER BY history.create_date desc";
 		try {
 			$sql = "SELECT id, object, object_id, create_date, data
@@ -134,6 +136,7 @@ class History {
 			foreach($result as $key=>$row) {
 				$history[$key] = $row;
 				$history[$key]['data'] = unserialize($history[$key]['data']);
+				$history[$key]['additional_data'] = Helper::getServiceDataByServiceId($row['object_id']);
 				$history[$key]['create_date'] = Helper::makeSmoothIplistTime(strtotime($history[$key]['create_date']));
 			}
 		}
@@ -142,6 +145,8 @@ class History {
 		}
 		return $history;
 	}
+	
+	
 
 	
 }

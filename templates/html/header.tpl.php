@@ -29,12 +29,17 @@
   <body>
 
 <!--Banner-->
-<div id="banner" style="background-image: url(./templates/img/header/fussgaengerzohne.jpg);">
+<div id="banner" style="background-image: url(./templates/img/header/hafen_oldenburg.jpg);">
 	<!--Top-Menü-->
 	<div id="topmenu">
 		{foreach item=topmenu from=$top_menu}
-			<span class="topmenubox"><a style="color: #FFFFFF;" href="{$topmenu.href}" target="blank">{$topmenu.name}</a></span>
+			<span class="topmenubox"><a style="color: #000000" href="{$topmenu.href}" target="_blank">{$topmenu.name}</a></span>
 		{/foreach}
+		{foreach item=loginOutMenu from=$loginOutMenu}
+			<span class="topmenubox"><a style="color: #FFFFFF" href="{$loginOutMenu.href}">{$loginOutMenu.name}</a></span>
+		{/foreach}
+		
+		
 	</div>
 </div>
 

@@ -32,7 +32,11 @@ foreach ($crawl_history as $hist) {
 	$ping_array[$time] = $hist['ping'];
 	$load_array[$time] = $hist['loadavg'];
 	$memory_free_array[$time] = $hist['memory_free'];
+	if(!empty($hist['loadavg']))
+		$dont_show_indicator[] = $hist['loadavg'];
 }
+
+  $smarty->assign('dont_show_indicator', $dont_show_indicator);
 
 if(!empty($ping_array)) {
  $graph = new ezcGraphLineChart();

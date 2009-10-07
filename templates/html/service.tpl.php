@@ -7,6 +7,11 @@
 <h1>Service vom Typ <i>{$service_data.typ}</i> auf der IP <a href="./ip.php?id={$service_data.ip_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.ip_ip}</a></h1>
 
 <h2>Status Historie:</h2>
+{if $current_crawl.status=='online'}
+<div class="notice">Dieser Node ist gerade online, alle Daten sind aktuell.</div>
+{elseif $current_crawl.status=='offline'}
+<div class="error">Dieser Node ist gerade offline, es werden die Daten des letzten online-Crawls gezeigt.</div>
+{/if}
 
 <div style="width: 800px; overflow: hidden;">
 {foreach key=count item=history from=$crawl_history}
@@ -29,11 +34,6 @@
 	<h2>Service Grunddaten</h2>
 {/if}
 <b>Service Typ:</b> {$service_data.typ}<br>
-<b>DHCP-bereich:</b> {if $service_data.zone_start==0 OR $service_data.zone_end==0}
-						Kein DHCP-Bereich reserviert
-						{else}
-						{$service_data.zone_start} bis {$service_data.zone_end}
-					{/if}<br>
 <b>Crawl-Art:</b> {$service_data.crawler}<br>
 <b>Benutzer:</b> <a href="./user.php?id={$service_data.user_id}">{$service_data.nickname}</a><br>
 <b>Eingetragen am:</b> {$service_data.create_date}<br>
@@ -45,20 +45,44 @@
 
 <h2>Hardware Daten</h2>
 <p>
-	{if !empty($last_online_crawl)}
+	{if !empty($last_online_crawl.chipset)}
+		<b>Chipset:</b> {$last_online_crawl.chipset}<br>
+		<b>Cpu:</b> {$last_online_crawl.cpu}<br>
+		<b>Memory:</b> {$last_online_crawl.memory_total} Kb<br>
+	{else}
+		Keine Daten vorhanden
+	{/if}
+</p>
+
+<h2>Software</h2>
+<p>
+	{if !empty($last_online_crawl.luciname)}
+		<b>Luciname:</b> {$last_online_crawl.luciname}<br>
+		<b>Luciversion:</b> {$last_online_crawl.luciversion}<br>
+		<b>Distname:</b> {$last_online_crawl.distname}<br>
+		<b>Distversion:</b> {$last_online_crawl.distversion}<br>
+	{else}
+		Keine Daten vorhanden
+	{/if}
+</p>
+
+<h2>Konfiguration</h2>
+<p>
+	{if !empty($last_online_crawl.luciname)}
 		<b>Email:</b> {$last_online_crawl.email}<br>
 		<b>Hostname:</b> {$last_online_crawl.hostname}<br>
 		<b>Prefix:</b> {$last_online_crawl.prefix}<br>
 		<b>SSID:</b> {$last_online_crawl.ssid}<br>
 		<b>Standort:</b> {$last_online_crawl.location}<br>
-		<b>Luciname:</b> {$last_online_crawl.luciname}<br>
-		<b>Luciversion:</b> {$last_online_crawl.luciversion}<br>
-		<b>Distname:</b> {$last_online_crawl.distname}<br>
-		<b>Distversion:</b> {$last_online_crawl.distversion}<br>
-		<b>Chipset:</b> {$last_online_crawl.chipset}<br>
-		<b>Cpu:</b> {$last_online_crawl.cpu}<br>
-		<b>Memory:</b> {$last_online_crawl.memory_total} Kb<br>
-		<b>Free memory:</b> {$current_crawl.memory_free} Kb<br>
+	{else}
+		Keine Daten vorhanden
+	{/if}
+</p>
+
+<h2>Status</h2>
+<p>
+	{if !empty($last_online_crawl.memory_total)}
+		<b>Free memory:</b> {$current_crawl.memory_free}/{$last_online_crawl.memory_total} Kb<br>
 		<b>Loadaverage:</b> {$current_crawl.loadavg}<br>
 		<b>Processes:</b> {$current_crawl.processes}<br>
 	{else}
@@ -81,7 +105,7 @@
 
     <div style="float:left; width: 50%;">
 
-	<h2>Standort (Gelb markiert)</h2>
+	<h2>Standort (Hellblau markiert)</h2>
 {if !empty($last_online_crawl.longitude) AND !empty($last_online_crawl.latitude)}
 	<!--<small style="font-size: 9pt;">Map Data from <a href="http://openstreetmap.org">OpenStreetMap</a></small>-->
 
@@ -115,13 +139,16 @@
 	AddKmlLayer("online Ips", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online&highlighted_service={$service_data.service_id}");
 		</script>
 	</div>
+	{if !empty($last_online_crawl.location)}
+	<p><b>Standortbeschreibung:</b> {$last_online_crawl.location}<br></p>
+	{/if}
 {else}
 <p>Keine Standortinformationen verfügbar</p>
 {/if}
 
 <h2>Grafische Historie</h2>
 
-{if !empty($last_online_crawl)}
+{if !empty($dont_show_indicator)}
 	<img src="./tmp/service_ping_history.png"><br>
 	<img src="./tmp/loadaverage_history.png"><br>
 	<img src="./tmp/memory_free_history.png">

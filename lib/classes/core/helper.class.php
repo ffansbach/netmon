@@ -31,7 +31,7 @@
 class Helper {
 	public function getIpInfo($id) {
 		try {
-			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip_ip, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.create_date,
+			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip_ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.create_date,
 						   users.nickname,
 						   subnets.title, subnets.subnet_ip
 					FROM ips
@@ -50,7 +50,7 @@ class Helper {
   
   public function getIpDataByIpId($id) {
     try {
-      $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip_ip, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
+      $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip_ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
 				      users.nickname, users.email,
 				      subnets.title, subnets.subnet_ip, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
 				   FROM ips
@@ -275,10 +275,10 @@ class Helper {
   public function getIpsBySubnetId($subnet_id) {
     $ips = array();
 	try {
-		$sql = "select id FROM ips WHERE subnet_id='$subnet_id';";
+		$sql = "select * FROM ips WHERE subnet_id='$subnet_id';";
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
-			$ips[] = $row['id'];
+			$ips[] = $row;
 		}
     }
     catch(PDOException $e) {
@@ -286,7 +286,6 @@ class Helper {
     }
     return $ips;
   }
-
 
 	public function getSubnetIpOfIpById($ip_id) {
 		try {
@@ -378,7 +377,7 @@ class Helper {
 	public function getServiceseBySubnetId($subnet_id) {
 		$servicelist = array();
 		try {
-			$sql = "SELECT ips.id as ip_id, ips.ip_ip, services.id as service_id, services.zone_start, services.zone_end
+			$sql = "SELECT ips.id as ip_id, ips.ip_ip, services.id as service_id
 					FROM ips
 					LEFT JOIN services ON (services.ip_id=ips.id)
 					WHERE ips.subnet_id='$subnet_id'";
@@ -395,7 +394,7 @@ class Helper {
 
 	public function getServiceDataByServiceId($service_id) {
 		try {
-			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.radius, services.crawler, services.zone_start, services.zone_end, services.visible, notify, notification_wait, services.notified, last_notification, services.create_date,
+			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.radius, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.create_date,
 			       ips.ip_ip,
 			       subnets.subnet_ip, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email
@@ -431,15 +430,14 @@ class Helper {
 
   public function getExistingRangesBySubnetId($subnet_id) {
 		$zones = array();
-		$services = Helper::getServiceseBySubnetId($subnet_id);
-		foreach ($services as $service) {
-			for ($i=$service['zone_start']; $i<=$service['zone_end']; $i++) {
-				if($service['zone_start']!=0 AND $service['zone_end']!=0) {
-					$zones[$i] = array('range'=>$i, 'ip_id'=>$service['ip_id'], 'service_id'=>$service['service_id']);
+		$ips = Helper::getIpsBySubnetId($subnet_id);
+		foreach ($ips as $ip) {
+			for ($i=$ip['zone_start']; $i<=$ip['zone_end']; $i++) {
+				if($ip['zone_start']!=0 AND $ip['zone_end']!=0) {
+					$zones[$i] = array('range'=>$i, 'id'=>$ip['id']);
 				}
 			}
 		}
-		unset($db);
 		return $zones;
 	}
 
