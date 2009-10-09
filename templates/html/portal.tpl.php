@@ -1,6 +1,6 @@
 <h1>Netmon 0.2 TESTING, Codename "shake-up"</h1>
 
-<h2>Netmon-History</h2>
+<h2>History der letzten {$portal_history_hours} Stunden</h2>
 
 {if !empty($history)}
 {foreach key=count item=hist from=$history}
@@ -19,14 +19,24 @@
 <br>
 {/foreach}
 {else}
-<p>Keine History vorhanden</p>
+<p>In den letzten {$portal_history_hours} Stunden ist nichts passiert.</p>
 {/if}
 
 <h2>Netmon-Schnellübersicht</h2>
 
+{if $ip_status}
 <img src="./tmp/ip_status.png">
+{/if}
+{if $vpn_status}
 <img src="./tmp/vpn_status.png">
+{/if}
+{if $service_status}
 <img src="./tmp/service_status.png">
+{/if}
+
+{if !$ip_status AND !$vpn_status AND !$service_status}
+<p>Schnellübersichtdiagramme können nicht generiert werden, da keine Daten vorhanden sind.</p>
+{/if}
 
 <!--Bindet einen RSS-Feed ein. Siehe lib/classes/core/portal.clas.php-->
 <!--<h2>Neues im <a href="http://blog.freifunk-ol.de/">{$rssdata.title}</a></h2>

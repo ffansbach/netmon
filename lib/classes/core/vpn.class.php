@@ -43,7 +43,6 @@ class vpn {
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		
 		if (empty($vpn['vpn_server_ca']) OR empty($vpn['vpn_server_cert']) OR empty($vpn['vpn_server_key'])) {
 			$message[] = array("Die Zertifikate konnten nicht generiert werden.", 2);
 			$message[] = array("Der Subnetverwalter muss erst ein Masterzertifikat für das Subnetz erstellen.", 2);
@@ -105,7 +104,7 @@ class vpn {
     
     if (!empty($keys['vpn_server_ca']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
 		//Get Config Datei
-		$config = $this->getVpnConfig($ip_id);
+		$config = vpn::getVpnConfig($ip_id);
 
       $tmpdir = "./tmp/";
       
@@ -181,7 +180,7 @@ class vpn {
   public function writeCCD($ip_id) {
     $ip_data = Helper::getIpDataByIpId($ip_id);
     
-    $cert_info = $this->getCertificateInfo($ip_id);
+    $cert_info = vpn::getCertificateInfo($ip_id);
     $CN = $cert_info['ip']['subject']['CN'];
     if (!empty($CN)) {
       $ccd = "./ccd/";
@@ -189,22 +188,34 @@ class vpn {
       fwrite($handle, "ifconfig-push $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip_ip] 255.255.255.0");
       fclose($handle);
 
-      $message[] = array("CCD wurde für den Ip mit der ID $ip_id erstellt.", 1);
+      $message[] = array("CCD wurde für die IP $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip_ip] erstellt.", 1);
     } else {
-      $message[] = array("CCD konnte für den Ip mit der ID $ip_id  nicht erstellt, da der CN leer ist.", 2);
-      $message[] = array("Sie müssen erst ein VPN-Zertifikat anlegen!", 2);
+      $message[] = array("CCD für die IP $GLOBALS[net_prefix].$ip_data[ip_ip].$ip_data[subnet_ip] konnte nicht erstellt, da der CN leer ist.", 2);
+      $message[] = array("Sie müssen erst ein VPN-Zertifikat erstellen!", 2);
     }
     message::setMessage($message);
     return true;
   }
   
 	public function deleteCCD($ip_id) {
+		$ip = Helper::getIpDataByIpId($ip_id);
+		$cert_info = vpn::getCertificateInfo($ip_id);
 		$ccd = "./ccd/";
-		if (@unlink($ccd."$ip_id")) {
-			$message[] = array("CCD des Ips $ip_id wurde gelöscht.", 1);
-	    	message::setMessage($message);
+		if (empty($cert_info['ip']['subject']['CN'])) {
+			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip_ip].$ip[subnet_ip] kann nicht gelöscht werden, da kein CN eingetragen ist.", 2);
+			message::setMessage($message);
+			return false;
+		} elseif (file_exists($ccd.$cert_info['ip']['subject']['CN'])) {
+			if (@unlink($ccd."$ip_id")) {
+				$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip_ip].$ip[subnet_ip] wurde gelöscht.", 1);
+				message::setMessage($message);
+				return true;
+			}
+		} else {
+			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip_ip].$ip[subnet_ip] kann nicht gelöscht werden, da er nicht existiert.", 2);
+			message::setMessage($message);
+			return false;
 		}
-    	return true;
 	}
 
 	public function regenerateCCD($subnet_id) {

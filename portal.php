@@ -30,59 +30,76 @@ class verfuegbarkeitsPalette extends ezcGraphPalette {
 }
 
 $ip_status = Helper::countServiceStatusByType('node');
-$graph = new ezcGraphPieChart();
-$graph->palette = new verfuegbarkeitsPalette();
-$graph->driver = new ezcGraphGdDriver(); 
-$graph->options->font = './templates/fonts/verdana.ttf';
+if ($ip_status['online']!=0 OR $ip_status['offline']!=0 OR $ip_status['unbekannt']!=0) {
+	$graph = new ezcGraphPieChart();
+	$graph->palette = new verfuegbarkeitsPalette();
+	$graph->driver = new ezcGraphGdDriver(); 
+	$graph->options->font = './templates/fonts/verdana.ttf';
+	
+	$graph->title = 'Ip Verfügbarkeit';
+	
+	$graph->data['Access statistics'] = new ezcGraphArrayDataSet( array(
+		'Online' => $ip_status['online'],
+		'Offline' => $ip_status['offline'],
+		'Unbekannt' => $ip_status['unbekannt']
+	) );
 
- $graph->title = 'Aktuelle Ip-Verfügbarkeit';
+	$graph->data['Access statistics']->highlight['Online'] = true;
+	$graph->render( 260, 200, './tmp/ip_status.png' );
+	$smarty->assign('ip_status', true);
+} else {
+   $smarty->assign('ip_status', false);
+}
 
- $graph->data['Access statistics'] = new ezcGraphArrayDataSet( array(
- 'Online' => $ip_status['online'],
- 'Offline' => $ip_status['offline'],
- 'Unbekannt' => $ip_status['unbekannt']
-) );
- $graph->data['Access statistics']->highlight['Online'] = true;
-
- $graph->render( 300, 200, './tmp/ip_status.png' );
-//-----------
 $vpn_status = Helper::countServiceStatusByType('vpn');
+if ($vpn_status['online']!=0 OR $vpn_status['offline']!=0 OR $vpn_status['unbekannt']!=0) {
+	$graph = new ezcGraphPieChart();
+	$graph->palette = new verfuegbarkeitsPalette();
+	$graph->driver = new ezcGraphGdDriver(); 
+	$graph->options->font = './templates/fonts/verdana.ttf';
+	$graph->title = 'VPN Verfügbarkeit';
+	
+	$graph->data['Access statistics'] = new ezcGraphArrayDataSet( array(
+		'Online' => $vpn_status['online'],
+		'Offline' => $vpn_status['offline'],
+		'Unbekannt' => $vpn_status['unbekannt']
+	) );
 
- $graph = new ezcGraphPieChart();
-$graph->palette = new verfuegbarkeitsPalette();
-$graph->driver = new ezcGraphGdDriver(); 
-$graph->options->font = './templates/fonts/verdana.ttf';
- $graph->title = 'Aktuelle VPN-Verfügbarkeit';
+	$graph->data['Access statistics']->highlight['Online'] = true;
+	$graph->render( 260, 200, './tmp/vpn_status.png' );
+	$smarty->assign('vpn_status', true);
+} else {
+	$smarty->assign('vpn_status', false);
+}
 
- $graph->data['Access statistics'] = new ezcGraphArrayDataSet( array(
- 'Online' => $vpn_status['online'],
- 'Offline' => $vpn_status['offline'],
- 'Unbekannt' => $vpn_status['unbekannt']
-) );
- $graph->data['Access statistics']->highlight['Online'] = true;
-
- $graph->render( 300, 200, './tmp/vpn_status.png' );
-//------------------
 $service_status = Helper::countServiceStatusByType('service');
+if ($service_status['online']!=0 OR $service_status['offline']!=0 OR $service_status['unbekannt']!=0) {
+	$graph = new ezcGraphPieChart();
+	$graph->palette = new verfuegbarkeitsPalette();
+	$graph->driver = new ezcGraphGdDriver(); 
+	$graph->options->font = './templates/fonts/verdana.ttf';
+	$graph->title = 'Service Verfügbarkeit';
+	
+	$graph->data['Access statistics'] = new ezcGraphArrayDataSet( array(
+		'Online' => $service_status['online'],
+		'Offline' => $service_status['offline'],
+		'Unbekannt' => $service_status['unbekannt']
+	) );
 
- $graph = new ezcGraphPieChart();
-$graph->palette = new verfuegbarkeitsPalette();
-$graph->driver = new ezcGraphGdDriver(); 
-$graph->options->font = './templates/fonts/verdana.ttf';
- $graph->title = 'Aktuelle Service-Verfügbarkeit';
+	$graph->data['Access statistics']->highlight['Online'] = true;
+	$graph->render( 260, 200, './tmp/service_status.png' );
+	$smarty->assign('service_status', true);
+} else {
+	$smarty->assign('service_status', false);
+}
 
- $graph->data['Access statistics'] = new ezcGraphArrayDataSet( array(
- 'Online' => $service_status['online'],
- 'Offline' => $service_status['offline'],
- 'Unbekannt' => $service_status['unbekannt']
-) );
- $graph->data['Access statistics']->highlight['Online'] = true;
- $graph->render( 300, 200, './tmp/service_status.png' );
+
 
 	require_once('./lib/classes/core/history.class.php');
 	
-	$history = History::getServiceHistory($countlimit, 5);
-   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+	$history = History::getServiceHistory($countlimit, $GLOBALS['portal_history_hours']);
+   $smarty->assign('portal_history_hours', $GLOBALS['portal_history_hours']);
+
 	$smarty->assign('history', $history);
 
 /*		try {

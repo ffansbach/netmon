@@ -8,9 +8,11 @@
 
 <h2>Status Historie:</h2>
 {if $current_crawl.status=='online'}
-<div class="notice">Dieser Node ist gerade online, alle Daten sind aktuell.</div>
+<div class="notice">Dieser Service ist gerade online, alle Daten sind aktuell.</div>
 {elseif $current_crawl.status=='offline'}
-<div class="error">Dieser Node ist gerade offline, es werden die Daten des letzten online-Crawls gezeigt.</div>
+<div class="error">Dieser Service ist gerade offline, es werden die Daten des letzten online-Crawls gezeigt.</div>
+{elseif $current_crawl.status=='unbekannt'}
+<div class="unknown">Dieser Service wurde noch nicht gecrawlt, daher sind keine Invormationen verfügbar.</div>
 {/if}
 
 <div style="width: 800px; overflow: hidden;">
@@ -32,6 +34,7 @@
 {else}
 	<h2>Service Grunddaten</h2>
 {/if}
+<b>Service IP:</b> <a href="./ip.php?id={$service_data.ip_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.ip_ip}</a><br>
 <b>Service Typ:</b> {$service_data.typ}<br>
 <b>Crawl-Art:</b> {$service_data.crawler}<br>
 <b>Benutzer:</b> <a href="./user.php?id={$service_data.user_id}">{$service_data.nickname}</a><br>

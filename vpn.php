@@ -18,26 +18,33 @@
 		$smarty->display("sslcertificate_new.tpl.php");
 		$smarty->display("footer.tpl.php");
     }
-    if ($_GET['section'] == "generate") {
-      $ip = Helper::getIpDataByIpId($_GET['ip_id']);
-      usermanagement::isOwner($smarty, $ip['user_id']);
-      $keys = $vpn->generateKeys($_GET['ip_id'], $_POST['organizationalunitname'], $_POST['commonname'], $_POST['emailaddress'], $_POST['privkeypass'], $_POST['privkeypass_chk'], $_POST['numberofdays']);
-      if ($keys['return']) {
-		$vpn->saveKeysToDB($_GET['ip_id'], $keys['vpn_client_cert'], $keys['vpn_client_key']);
-		$vpn->writeCCD($_GET['ip_id']);
-		$vpn->downloadKeyBundle($_GET['ip_id']);
-		$smarty->assign('message', message::getMessage());
-      } else {
-	$smarty->assign('message', message::getMessage());
-        $smarty->assign('get_content', "sslcertificate_new");
-      }
-    }
-    if ($_GET['section'] == "download") {
-      $ip = Helper::getIpDataByIpId($_GET['ip_id']);
-      usermanagement::isOwner($smarty, $ip['user_id']);
-      $vpn->downloadKeyBundle($_GET['ip_id']);
-      $smarty->assign('message', message::getMessage());
-    }
+	if ($_GET['section'] == "generate") {
+		$ip = Helper::getIpDataByIpId($_GET['ip_id']);
+		usermanagement::isOwner($smarty, $ip['user_id']);
+		$keys = $vpn->generateKeys($_GET['ip_id'], $_POST['organizationalunitname'], $_POST['commonname'], $_POST['emailaddress'], $_POST['privkeypass'], $_POST['privkeypass_chk'], $_POST['numberofdays']);
+		if ($keys['return']) {
+			$vpn->saveKeysToDB($_GET['ip_id'], $keys['vpn_client_cert'], $keys['vpn_client_key']);
+			$vpn->writeCCD($_GET['ip_id']);
+			$vpn->downloadKeyBundle($_GET['ip_id']);
+		} else {
+			header('Location: ./vpn.php?section=new&ip_id='.$_GET['ip_id']);
+		}
+	}
+
+	if ($_GET['section'] == "download") {
+		$ip = Helper::getIpDataByIpId($_GET['ip_id']);
+		if (!empty($ip['vpn_server_ca']) AND !empty($ip['vpn_client_cert']) AND !empty($ip['vpn_client_key'])) {
+			usermanagement::isOwner($smarty, $ip['user_id']);
+			$vpn->downloadKeyBundle($_GET['ip_id']);
+			$smarty->assign('message', message::getMessage());
+		} else {
+			$message[] = array("Es sind nicht genügen Informationen vorhanden, um die Keys zum Download bereit zu stellen.", 2);
+			$message[] = array("Warscheinlich müssen haben sie die Keys noch nicht erstellt.", 2);
+			message::setMessage($message);
+			header('Location: ./ip.php?id='.$_GET['ip_id']);
+    	}
+	}
+
     if ($_GET['section'] == "info") {
       $ip = Helper::getIpDataByIpId($_GET['ip_id']);
       usermanagement::isOwner($smarty, $ip['user_id']);
@@ -53,7 +60,6 @@
     	  	$message[] = array("Warscheinlich müssen haben sie die Keys noch nicht erstellt.", 2);
       		message::setMessage($message);
 		header('Location: ./ip.php?id='.$_GET['ip_id']);
-
     	}
     }
 
@@ -69,9 +75,10 @@
     }
 
     if ($_GET['section'] == "insert_regenerate_ccd") {
-      $vpn->writeCCD($_GET['ip_id']);
-      header('Location: ip.php?id='.$_GET['ip_id']);
-    }
+		$vpn->writeCCD($_GET['ip_id']);
+		header('Location: ip.php?id='.$_GET['ip_id']);
+	}
+
     if ($_GET['section'] == "insert_delete_ccd") {
       $vpn->deleteCCD($_GET['ip_id']);
       header('Location: ip.php?id='.$_GET['ip_id']);

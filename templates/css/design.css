@@ -136,3 +136,13 @@ margin-top: 10px;}
   color: #3D6744;
   text-align: center;
 }
+
+.unknown {
+  width: 680px;
+  margin: 20px;
+  padding: 5px;
+  border: 1px solid #e3c936;
+  background-color: #fff3af;
+  color: #3D6744;
+  text-align: center;
+}

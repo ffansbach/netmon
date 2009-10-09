@@ -7,9 +7,9 @@
 						{$net_prefix}.{$ip.subnet_ip}.{$ip.zone_start} bis {$net_prefix}.{$ip.subnet_ip}.{$ip.zone_end}
 					{/if}<br>
 
-<b>Inhaber:</b> <a href="./user.php?id={$ip.user_id}">{$ip.nickname}</a><br>
+<b>Benutzer:</b> <a href="./user.php?id={$ip.user_id}">{$ip.nickname}</a><br>
 <b>Eingetragen seit:</b> {$ip.create_date}<br>
-<b>Subnetz:</b>  <a href="./subnet.php?id={$ip.subnet_id}">{$ip.title}</a><br>
+<b>Subnetz:</b>  <a href="./subnet.php?id={$ip.subnet_id}">{$net_prefix}.{$ip.subnet_ip}.0/24 ({$ip.title})</a><br>
 
 
 <h2>Live-Status der IP:</h2>
