@@ -203,11 +203,12 @@ class subneteditor {
 	
 	public function deleteSubnet($subnet_id) {
 		foreach (Helper::getIpsBySubnetId($subnet_id) as $ip) {
-			ipeditor::deleteIp($ip);
+			ipeditor::deleteIp($ip['id']);
 		}
 		
+		$subnet_data = Helper::getSubnetDataBySubnetID($subnet_id);
 		DB::getInstance()->exec("DELETE FROM subnets WHERE id='$subnet_id';");
-		$message[] = array("Das Subnet  mit der ID ".$subnet_id." wurde gelöscht.",1);
+		$message[] = array("Das Subnetz $GLOBALS[net_prefix].$subnet_data[subnet_ip].0/24 wurde gelöscht.",1);
 		message::setMessage($message);
 		return true;
 	}

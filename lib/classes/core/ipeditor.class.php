@@ -44,16 +44,17 @@ class ipeditor {
 
     if ($range) {
       if ($ip != false) {
-	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip_ip, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$ip', NOW());");
+	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip_ip, zone_start, zone_end, radius, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$ip', '$range[start]', '$range[end]', '$_POST[radius]', NOW());");
 	$ip_id = DB::getInstance()->lastInsertId();
 
-	$service = editingHelper::addIpTyp($ip_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
+	$service = editingHelper::addIpTyp($ip_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
 
 	$subnet = Helper::getSubnetById($subnet_id);
 	if ($ips > 0) {
-	  $message[] = array("Der Ip ".$GLOBALS['net_prefix'].".".$subnet.".".$ip." wurde erfolgreich im Subnetz $subnet angelegt und der IP-Bereich $range[start]-$range[end] reserviert", 1);
+	  $message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$subnet.".".$ip." wurde erfolgreich im Subnetz $GLOBALS[net_prefix].$subnet.0/24 angelegt.", 1);
+	  $message[] = array("Der IP-Bereich ".$GLOBALS['net_prefix'].".".$subnet.".".$range['start']." - ".$GLOBALS['net_prefix'].".".$subnet.".".$range['end']." wurde zur Vergabe über DHCP reserviert", 1);
 	} else {
-	  $message[] = array("Der Ip ".$GLOBALS['net_prefix'].".".$subnet.".".$ip." wurde erfolgreich im Subnetz $subnet angelegt. Es wurde KEIN IP-Bereich reserviert", 1);
+	  $message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$subnet.".".$ip." wurde erfolgreich im Subnetz $GLOBALS[net_prefix].$subnet.0/24 angelegt.", 1);
 	}
 	message::setMessage($message);
 	return array("result"=>true, "ip_id"=>$ip_id, "service_id"=>$service['service_id']);
@@ -75,9 +76,9 @@ class ipeditor {
 	}
 
 	vpn::deleteCCD($ip_id);
-	
+	$ip_data = Helper::getIpInfo($ip_id);
 	DB::getInstance()->exec("DELETE FROM ips WHERE id='$ip_id';");
-	$message[] = array("Der Ip mit der ID ".$ip_id." wurde gelöscht.",1);
+	$message[] = array("Die IP $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip_ip] wurde gelöscht.",1);
 	message::setMessage($message);
   }
   

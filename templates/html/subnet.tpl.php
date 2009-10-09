@@ -10,7 +10,7 @@
 			<b>VPN-Protokoll:</b> {if !empty($subnet.vpn_server)}{$subnet.vpn_server_proto}{else}Kein VPN-Server eingetragen{/if}
 		</p>
 		<p>
-			<b>Administrator:</b> <a href="./user.php?id={$subnet.created_by}">{$subnet.nickname}</a><br>
+			<b>Administrator:</b> <a href="./user.php?id={$subnet.user_id}">{$subnet.nickname}</a><br>
 			<b>Angelegt am:</b> {$subnet.create_date}
 		</p>
 

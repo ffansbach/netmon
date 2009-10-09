@@ -208,12 +208,12 @@ class editingHelper {
 		}
 	}
 	
-	public function addIpTyp($ip_id, $title, $description, $typ, $crawler, $port, $zone_start, $zone_end, $radius=80, $visible, $notify, $notification_wait) {
+	public function addIpTyp($ip_id, $title, $description, $typ, $crawler, $port, $visible, $notify, $notification_wait) {
 		if (!empty($port)) {
 			$crawler = $port;
 		}
 		
-		DB::getInstance()->exec("INSERT INTO services (ip_id, title, description, typ, crawler, zone_start, zone_end, radius, visible, notify, notification_wait, create_date) VALUES ('$ip_id', '$title', '$description', '$typ', '$crawler', '$zone_start', '$zone_end', '$radius', '$visible', '$notify', '$notification_wait', NOW());");
+		DB::getInstance()->exec("INSERT INTO services (ip_id, title, description, typ, crawler, visible, notify, notification_wait, create_date) VALUES ('$ip_id', '$title', '$description', '$typ', '$crawler', '$visible', '$notify', '$notification_wait', NOW());");
 		$service_id = DB::getInstance()->lastInsertId();
 		
 		try {
@@ -224,7 +224,7 @@ class editingHelper {
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		$message[] = array("Ein Iptyp  vom Typ ".$typ." wurde dem Ip mit der IP $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip_ip] hinzugefügt.",1);
+		$message[] = array("Ein Service vom Typ ".$typ." wurde der Ip $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip_ip] hinzugefügt.",1);
 		message::setMessage($message);
 		
 		return array("result"=>true, "service_id"=>$service_id);
