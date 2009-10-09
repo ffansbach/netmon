@@ -23,8 +23,8 @@ $GLOBALS['mail_sender'] = "Freifunk Oldenburg Netmon <netmon@freifunk-ol.de>";
 
 //FREIFUNKNETZ
 $GLOBALS['net_prefix'] = "10.18";
-$GLOBALS['geographical_center_of_net_latitute'] = "8.213753";
-$GLOBALS['geographical_center_of_net_longitude'] = "53.139926";
+$GLOBALS['geographical_center_of_net_latitute'] = "53.139926";
+$GLOBALS['geographical_center_of_net_longitude'] = "8.213753";
 $GLOBALS['geographical_radius_of_net'] = "10";
 $GLOBALS['city_name'] = "Oldenburg";
 
@@ -50,5 +50,8 @@ $GLOBALS['ccd_dir'] = $GLOBALS['monitor_root']."/ccd";
 //Crawl
 //Zeit zwischen einem Crawl bis zum nächsten in Minuten
 $GLOBALS['timeBetweenCrawls'] = 10;
+
+//Project
+$GLOBALS['networkPolicy'] = "http://wiki.freifunk-ol.de/index.php/Nutzungsvereinbarung";
 
 ?>

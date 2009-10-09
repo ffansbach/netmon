@@ -25,7 +25,6 @@
 <br>
 
 <div style="width: 100%; overflow: hidden;">
-  <div nstyle="white-space: nowrap;">
     <div style="float:left; width: 50%;">
 
 {if !empty($service_data.title)}
@@ -162,6 +161,5 @@
 			<a href="./serviceeditor.php?section=edit&service_id={$service_data.service_id}">Service editieren</a><br>
 		</p>
 {/if}
-</div>
   </div>
 </div>
