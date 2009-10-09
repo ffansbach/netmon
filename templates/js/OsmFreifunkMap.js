@@ -140,3 +140,8 @@ function fullmap() {
 
 	AddKmlLayer("online Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online");
 }
+
+function new_subnet() {
+	init();
+	map.addControl(new OpenLayers.Control.MousePosition());
+}

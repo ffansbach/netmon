@@ -153,13 +153,13 @@ class register {
 	public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum) {
 		$text = "Hallo $nickname,
 
-Du hast dich am ".date("d.m.Y H:i:s", $datum)." beim Oldenburger Freifunkprojekt angemeldet.
+Du hast dich am ".date("d.m.Y H:i:s", $datum)." bei $GLOBALS[project_name] registriert.
 
 Deine Logindaten Sind:
 Nickname: $nickname
 Passwort: $password
 
-Bitte klicke auf den nachfolgenden link um deinen Account freizuschalten.
+Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalten.
 http://$GLOBALS[domain]/$GLOBALS[subfolder]/account_activate.php?activation_hash=$activation
 
 Dein Freifunkteam $GLOBALS[city_name]";

@@ -1,20 +1,24 @@
 <h1>Subnet {$net_prefix}.{$subnet.subnet_ip}.0/24, {$subnet.title}</h1>
+<div style="width: 100%; overflow: hidden;">
+	<div style="float:left; width: 50%;">
+		<h2>Daten:</h2>
+		<p>
+			<b>DHCP erlaubt:</b> {if $subnet.allows_dhcp}Ja{else}Nein{/if}
+		<p>
+			<b>VPN-Server:</b> {if !empty($subnet.vpn_server)}{$subnet.vpn_server}:{$subnet.vpn_server_port}{else}Kein VPN-Server eingetragen{/if}<br>
+			<b>VPN-Device:</b> {if !empty($subnet.vpn_server)}{$subnet.vpn_server_device}{else}Kein VPN-Server eingetragen{/if}<br>
+			<b>VPN-Protokoll:</b> {if !empty($subnet.vpn_server)}{$subnet.vpn_server_proto}{else}Kein VPN-Server eingetragen{/if}
+		</p>
+		<p>
+			<b>Administrator:</b> <a href="./user.php?id={$subnet.created_by}">{$subnet.nickname}</a><br>
+			<b>Angelegt am:</b> {$subnet.create_date}
+		</p>
 
-<div style="float:left; width: 40%;">
-
-<h2>Daten:</h2>
-
-VPN-Server: {if !empty($subnet.vpn_server)}{$subnet.vpn_server} auf Port {$subnet.vpn_server_port}{else}Kein VPN-Server eingetragen{/if}<br>
-Daten zu VPN: {if !empty($subnet.vpn_server)} Device {$subnet.vpn_server_device}, Protokoll {$subnet.vpn_server_proto}{else}Kein VPN-Server eingetragen{/if}<br>
-<br>
-Verantwortlicher: <a href="./user.php?id={$subnet.created_by}">{$subnet.nickname}</a><br>
-Eingetragen seit: {$subnet.create_date}<br>
-
-<h2>Beschreibung:</h2>
+<h2>Beschreibung</h2>
 <p>{$subnet.description}</p>
-</div>
-
-<div style="padding-left: 50%;">
+		</div>
+		
+		<div style="float:left; width: 50%;">
 	<h2>Ort des Subnetzes<h2>
 	<!--<small style="font-size: 9pt;">Map Data from <a href="http://openstreetmap.org">OpenStreetMap</a></small>-->
 
@@ -46,16 +50,20 @@ Eingetragen seit: {$subnet.create_date}<br>
 			{/literal}
 		</script>
 	</div>
-</div>
+
+{if $isOwner}
+	<h2>Aktionen</h2>
+		<p>
+			<a href="./subneteditor.php?section=edit&id={$subnet.id}">Subnetz editieren</a><br>
+		</p>
+{/if}
+
+		</div>
+	</div>
 
 <h2>IP-Verteilung</h2>
 
-<p>Rot "n" = Ip<br>
-Orange "r" = Range<br>
-Grün "f" = Frei</p>
-
 <div style="width: 800px;">
-
 {foreach key=key item=status from=$ipstatus}
 	<div style="float:left;">
 
@@ -72,8 +80,14 @@ Grün "f" = Frei</p>
 
 	</div>
 {/foreach}
-
 </div>
+
 <br style="clear:both;">
+
+<h3>Legende</h3>
+
+<span style="padding: 3px; text-align: center; background: #6cff84;">IP ist frei</span>
+<span style="padding: 3px; text-align: center; background: #ff0000;">IP ist belegt</span>
+<span style="padding: 3px; text-align: center; background: #ff9448;">IP wird per DHCP vergeben</span>
 
 </div>

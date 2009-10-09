@@ -4,6 +4,7 @@
   
   $register = new register;
     $smarty->assign('networkpolicy', $GLOBALS['networkPolicy']);
+    $smarty->assign('project_name', $GLOBALS['project_name']);
 
 
   if (empty($_POST)) {

@@ -43,7 +43,7 @@
   $GLOBALS['mysql_host'] = "10.18.0.1";
   $GLOBALS['mysql_db'] = "freifunksql5";
   $GLOBALS['mysql_user'] = "freifunksql5";
-  $GLOBALS['mysql_password'] = "5fac80ba3895";
+  $GLOBALS['mysql_password'] = "blabla";
   $GLOBALS['mysql_enc'] = "utf8";
 
   mysql_connect($GLOBALS['mysql_host'], $GLOBALS['mysql_user'], $GLOBALS['mysql_password']);

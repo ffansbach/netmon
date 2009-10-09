@@ -8,7 +8,7 @@
     if ($_GET['section'] == "new") {
 		if (usermanagement::checkPermission(4)) {
 			$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-			$smarty->assign('existing_subnets', editingHelper::getExistingSubnetsWithID());
+			$smarty->assign('existing_subnets', editingHelper::getExistingSubnets());
 			$smarty->assign('message', message::getMessage());
 			
 			$smarty->display("header.tpl.php");

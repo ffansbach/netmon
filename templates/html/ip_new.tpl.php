@@ -5,7 +5,7 @@
   <p>Subnetz wählen:
   <select name="subnet_id">
   {foreach item=subnet from=$existing_subnets}
-    <option value="{$subnet.id}">{$subnet.subnet_ip}</option>
+    <option value="{$subnet.id}">{$net_prefix}.{$subnet.subnet_ip}.0/24 ({$subnet.title})</option>
   {/foreach}
   </select>
   </p>
