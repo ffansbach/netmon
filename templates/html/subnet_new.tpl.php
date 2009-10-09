@@ -44,20 +44,24 @@
 	
 	<h2>VPN</h2>
 	<p>
-		<input type="radio" name="vpn_kind" value="no" checked="checked">Kein VPN-Server.<br>
+		<input type="radio" name="vpn_kind" value="no" checked="checked" onchange="document.getElementById('other').style.display = 'none'; document.getElementById('own').style.display = 'none';">Kein VPN-Server.<br>
 		<input type="radio" name="vpn_kind" value="other" onchange="document.getElementById('other').style.display = 'block'; document.getElementById('own').style.display = 'none';">VPN-Server von anderem Subnetz nutzen.<br>
 		<input type="radio" name="vpn_kind" value="own" onchange="document.getElementById('own').style.display = 'block'; document.getElementById('other').style.display = 'none';">Eigenen VPN-Server definieren.
 	</p>
 
 	<div id="other" style="display: none;">
 		<h3>Übernehme VPN-Daten</h3>
-		<p>VPN-Daten von Subnetz 
-			<select name="vpnserver_from_project">
-				{foreach item=subnet from=$subnets_with_defined_vpnserver}
-					<option value="{$subnet.id}">{$net_prefix}.{$subnet.subnet_ip}.0/24</option>
-				{/foreach}
-			</select> übernehmen.
-		</p>
+		{if !empty($subnets_with_defined_vpnserver)}
+			<p>VPN-Daten von Subnetz 
+				<select name="vpnserver_from_project">
+					{foreach item=subnet from=$subnets_with_defined_vpnserver}
+						<option value="{$subnet.id}">{$net_prefix}.{$subnet.subnet_ip}.0/24</option>
+					{/foreach}
+				</select> übernehmen.
+			</p>
+		{else}
+			<p>Keine Subnetze vorhanden, von denen Daten übernommen werden könnten</p>
+		{/if}
 	</div>
 	
 	<div id="own" style="display: none;">
