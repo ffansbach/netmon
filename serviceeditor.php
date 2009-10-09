@@ -9,7 +9,6 @@
     if ($_GET['section'] == "new") {
 		if (usermanagement::checkPermission(4)) {
 			$smarty->assign('message', message::getMessage());
-			$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
 			$smarty->assign('ip_data', Helper::getIpInfo($_GET['ip_id']));	
 			$smarty->display("header.tpl.php");
 			$smarty->display("add_service.tpl.php");

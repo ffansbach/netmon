@@ -32,11 +32,11 @@ require_once("./lib/classes/core/ipeditor.class.php");
 
 class subneteditor {
 	public function createNewSubnet($data) {
-		$result = DB::getInstance()->exec("INSERT INTO subnets (subnet_ip, user_id, title, description, longitude, latitude, radius, vpn_server, vpn_server_port, vpn_server_device, vpn_server_proto, vpn_server_ca, vpn_server_cert, vpn_server_key, vpn_server_pass, create_date)
-										   VALUES ('$data[subnet_ip]', '$_SESSION[user_id]', '$data[title]', '$data[description]', '$data[longitude]', '$data[latitude]', '$data[radius]', '$data[vpn_server]','$data[vpn_server_port]', '$data[vpn_server_device]', '$data[vpn_server_proto]', '$data[vpn_server_ca]', '$data[vpn_server_cert]', '$data[vpn_server_key]', '$data[vpn_server_pass]', NOW());");
+		$result = DB::getInstance()->exec("INSERT INTO subnets (subnet_ip, allows_dhcp, user_id, title, description, longitude, latitude, radius, vpn_server, vpn_server_port, vpn_server_device, vpn_server_proto, vpn_server_ca, vpn_server_cert, vpn_server_key, vpn_server_pass, create_date)
+										   VALUES ('$data[subnet_ip]', '$data[allows_dhcp]', '$_SESSION[user_id]', '$data[title]', '$data[description]', '$data[longitude]', '$data[latitude]', '$data[radius]', '$data[vpn_server]','$data[vpn_server_port]', '$data[vpn_server_device]', '$data[vpn_server_proto]', '$data[vpn_server_ca]', '$data[vpn_server_cert]', '$data[vpn_server_key]', '$data[vpn_server_pass]', NOW());");
 		$subnet_id = DB::getInstance()->lastInsertId();
 		if ($result>0) {
-			$message[] = array("Das Subnetz ".$GLOBALS['net_prefix'].$data['subnet_ip']." wurde in die Datenbank eingetragen.", 1);
+			$message[] = array("Das Subnetz ".$GLOBALS['net_prefix'].".".$data['subnet_ip']." wurde in die Datenbank eingetragen.", 1);
 			message::setMessage($message);
 			return array("result"=>true, "subnet_id"=>$subnet_id);
 		} else {
@@ -120,48 +120,20 @@ class subneteditor {
 	}
 	
 	public function checkSubnetData() {
-		//Prüfen ob Subnet gesetzt ist
-		if (empty($_POST['subnet_ip'])) {
-			$message[] = array("Sie müssen ein freies Subnetz auswählen.",2);
+		//Check if the chosen subnet IP is still free
+		if (!in_array($_POST['subnet_ip'], editingHelper::getFreeSubnets())) {
+			$message[] = array("Das gewählte Subnetz ist nicht mehr frei, bitte wählen Sie ein anderes.",2);
 		} else {
 			$subnet_ip = $_POST['subnet_ip'];
 		}
+
+		if (empty($_POST['allows_dhcp']))
+			$allows_dhcp = 0;
+		else
+			$allows_dhcp = 1;
 		
-		//Prüfen ob die Daten zum Subnet vollständig sind
-		if ($_POST['no_vpnserver_check']!="true") {
-			if ($_POST['vpnserver_from_project_check']!="true") {
-				if (!isset($_POST['vpn_server']) OR $_POST['vpn_server'] == "") {
-					$message[] = array("Sie müssen einen VPN-Server angeben oder eine der anderen Optionen wählen.",2);
-				} else {
-					if (empty($_POST['vpn_server']) OR empty($_POST['vpn_server_port']) OR empty($_POST['vpn_server_proto']) OR empty($_POST['vpn_server_device'])) {
-						$message[] = array("Die Daten zum VPN-Server sind unvollständig!",2);
-					} elseif (empty($_POST['vpn_server_ca']) OR empty($_POST['vpn_server_cert']) OR empty($_POST['vpn_server_key'])) {
-						$message[] = array("Die Daten zu den Zertifikaten sind unvollständig!",2);
-					} else {
-						$vpn_server = $_POST['vpn_server'];
-						$vpn_server_port = $_POST['vpn_server_port'];
-						$vpn_server_device = $_POST['vpn_server_device'];
-						$vpn_server_proto = $_POST['vpn_server_proto'];
-						$vpn_server_ca = $_POST['vpn_server_ca'];
-						$vpn_server_key = $_POST['vpn_server_key'];
-						$vpn_server_cert = $_POST['vpn_server_cert'];
-						$vpn_server_pass = $_POST['vpn_server_pass'];
-					}
-				}
-			} elseif (isset($_POST['vpnserver_from_project_check']) AND empty($_POST['vpnserver_from_project'])) {
-				$message[] = array("Wenn Sie die VPN-Daten von einem anderen Projekt übernehmen möchten, müssen Sie sagen von welchem!",2);
-			} else {
-				$vpn_data = Helper::getSubnetDataBySubnetID($_POST['vpnserver_from_project']);
-				$vpn_server = $vpn_data['vpn_server'];
-				$vpn_server_port = $vpn_data['vpn_server_port'];
-				$vpn_server_device = $vpn_data['vpn_server_device'];
-				$vpn_server_proto = $vpn_data['vpn_server_proto'];
-				$vpn_server_ca = $vpn_data['vpn_server_ca'];
-				$vpn_server_key = $vpn_data['vpn_server_key'];
-				$vpn_server_cert = $vpn_data['vpn_server_cert'];
-				$vpn_server_pass = $vpn_data['vpn_server_pass'];
-			}
-		} else {
+		//Check if the data for the vpn server is complete
+		if ($_POST['vpn_kind']=='no') {
 			$vpn_server = "";
 			$vpn_server_port = "";
 			$vpn_server_device = "";
@@ -170,11 +142,34 @@ class subneteditor {
 			$vpn_server_key = "";
 			$vpn_server_cert = "";
 			$vpn_server_pass = "";
+		} elseif ($_POST['vpn_kind']=='other') {
+			$vpn_data = Helper::getSubnetDataBySubnetID($_POST['vpnserver_from_project']);
+			$vpn_server = $vpn_data['vpn_server'];
+			$vpn_server_port = $vpn_data['vpn_server_port'];
+			$vpn_server_device = $vpn_data['vpn_server_device'];
+			$vpn_server_proto = $vpn_data['vpn_server_proto'];
+			$vpn_server_ca = $vpn_data['vpn_server_ca'];
+			$vpn_server_key = $vpn_data['vpn_server_key'];
+			$vpn_server_cert = $vpn_data['vpn_server_cert'];
+			$vpn_server_pass = $vpn_data['vpn_server_pass'];
+		} elseif ($_POST['vpn_kind']=='own') {
+			if (empty($_POST['vpn_server']) OR empty($_POST['vpn_server_port']) OR empty($_POST['vpn_server_proto']) OR empty($_POST['vpn_server_device']) OR empty($_POST['vpn_server_ca']) OR empty($_POST['vpn_server_cert']) OR empty($_POST['vpn_server_key'])) {
+				$message[] = array("Die Daten zum VPN-Server sind unvollständig!",2);
+			} else {
+				$vpn_server = $_POST['vpn_server'];
+				$vpn_server_port = $_POST['vpn_server_port'];
+				$vpn_server_device = $_POST['vpn_server_device'];
+				$vpn_server_proto = $_POST['vpn_server_proto'];
+				$vpn_server_ca = $_POST['vpn_server_ca'];
+				$vpn_server_key = $_POST['vpn_server_key'];
+				$vpn_server_cert = $_POST['vpn_server_cert'];
+				$vpn_server_pass = $_POST['vpn_server_pass'];
+			}
 		}
 		
-		//Standartwerte bei Optionalen Feldern setzen wenn sie nicht gesetzt sind
+		//preset data for optional, not set values
 		if (empty($_POST['title']))
-			$title = "Subnetz ".$subnet;
+			$title = "Subnetz ".$GLOBALS['net_prefix'].".".$subnet_ip.".0/24";
 		else
 			$title = $_POST['title'];
 		
@@ -202,7 +197,7 @@ class subneteditor {
 			message::setMessage($message);
 			return false;
 		} else {
-			return array('subnet_ip'=>$subnet_ip, 'title'=>$title, 'description'=>$description, 'longitude'=>$longitude, 'latitude'=>$latitude, 'radius'=>$radius, 'vpn_server'=>$vpn_server, 'vpn_server_port'=> $vpn_server_port, 'vpn_server_device'=> $vpn_server_device, 'vpn_server_proto'=> $vpn_server_proto, 'vpn_server_ca'=> $vpn_server_ca, 'vpn_server_cert'=> $vpn_server_cert, 'vpn_server_key'=> $vpn_server_key, 'vpn_server_pass'=>$vpn_server_pass);
+			return array('subnet_ip'=>$subnet_ip, 'allows_dhcp'=>$allows_dhcp, 'title'=>$title, 'description'=>$description, 'longitude'=>$longitude, 'latitude'=>$latitude, 'radius'=>$radius, 'vpn_server'=>$vpn_server, 'vpn_server_port'=> $vpn_server_port, 'vpn_server_device'=> $vpn_server_device, 'vpn_server_proto'=> $vpn_server_proto, 'vpn_server_ca'=> $vpn_server_ca, 'vpn_server_cert'=> $vpn_server_cert, 'vpn_server_key'=> $vpn_server_key, 'vpn_server_pass'=>$vpn_server_pass);
 		}
 	}
 	

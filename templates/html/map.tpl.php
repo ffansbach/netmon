@@ -12,7 +12,7 @@
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 <!--		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>-->
 		
-		<div id="map" style="height:500px; width:100%x; border:solid 1px black;font-size:9pt;">
+		<div id="map" style="height:500px; width:100%; border:solid 1px black;font-size:9pt;">
 			<script type="text/javascript">
 				fullmap();
 			</script>

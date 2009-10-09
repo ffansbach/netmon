@@ -90,7 +90,11 @@
 
 
   $smarty->assign('top_menu', $menus->topMenu());
+  $smarty->assign('loginOutMenu', $menus->loginOutMenu());
   $smarty->assign('normal_menu', $menus->normalMenu());
   $smarty->assign('user_menu', $menus->userMenu());
   $smarty->assign('admin_menu', $menus->adminMenu());
+
+  //Wichtige Config-Variablen an Smarty übergeben
+  $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
 ?>
