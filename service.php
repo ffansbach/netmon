@@ -26,9 +26,6 @@
 		$id = Helper::linkIp2IpId($olsrd_neighbors[$tmp2]);
 		$current_crawl['olsrd_neighbors'][$key]['netmon_ip_id'] = $id['id'];
 	}
-echo "<pre>";
-print_r($current_crawl);
-echo "</pre>";
   $smarty->assign('current_crawl', $current_crawl);
 
 
