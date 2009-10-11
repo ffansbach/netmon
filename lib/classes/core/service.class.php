@@ -96,7 +96,7 @@ Dein Freifunkteam $GLOBALS[city_name]";
 			}
 			
 			//Wenn offline 
-			if ($online AND $service_data['notified']!=1) {
+			if (!$online AND $service_data['notified']!=1) {
 				if($user_data['notification_method']=="email") {
 					service::emailIfDown($service_data, $user_data, $history);
 				} elseif ($user_data['notification_method']=="jabber") {

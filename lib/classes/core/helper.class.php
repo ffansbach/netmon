@@ -442,18 +442,6 @@ class Helper {
 	}
 
 	public function getLastOnlineCrawlDataByServiceId($service_id) {
-//Überflüssiger Code?
-/*		try {
-			$sql = "SELECT id FROM services WHERE ip_id='$id' ORDER BY id DESC LIMIT 1";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$services = $row['id'];
-			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		};*/
-
 		try {
 			$sql = "SELECT * FROM crawl_data
 					WHERE service_id='$service_id' AND status='online' ORDER BY id DESC LIMIT 1";
@@ -479,26 +467,18 @@ class Helper {
 			        WHERE service_id='$service_id'
 					ORDER BY id DESC LIMIT 1";
 			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				//In der Datenbank als String gespeicherte Objekte unserialisieren und in Arrays verwandeln.
-				$row['olsrd_neighbors'] = Helper::object2array(unserialize($row['olsrd_neighbors']));
-				$row['olsrd_routes'] = Helper::object2array(unserialize($row['olsrd_routes']));
-				$row['olsrd_topology'] = Helper::object2array(unserialize($row['olsrd_topology']));
-				
-				//Leerzeichen und Punkte aus Arrayindizies entfernen!
-				$row['olsrd_neighbors'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_neighbors']);
-				$row['olsrd_routes'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_routes']);
-				$row['olsrd_topology'] = Helper::removeDotsAndWhitspacesFromArrayInizies($row['olsrd_topology']);
-				
-				$last_crawl = $row;
-			}
+			$last_crawl = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
+		$last_crawl['olsrd_neighbors'] = unserialize($last_crawl['olsrd_neighbors']);
+		$last_crawl['olsrd_routes'] = unserialize($last_crawl['olsrd_routes']);
+		$last_crawl['olsrd_topology'] = unserialize($last_crawl['olsrd_topology']);
+
 		return $last_crawl;
 	}
-
+	
 	function object2array($object) {
 		if (is_object($object) || is_array($object)) {
 			foreach ($object as $key => $value) {
@@ -510,9 +490,23 @@ class Helper {
 		return $array;
 	}
 	
-	public function linkIp2IpIdAndGetTyp($ip2check, $parentIpID=false) {
-		
-		
+	public function linkIp2IpId($ip2check) {
+		$exploded_ip = explode(".", $ip2check);
+
+		if($exploded_ip[0].".".$exploded_ip[1]==$GLOBALS['net_prefix']) {
+			try {
+				$sql = "SELECT ips.id FROM ips, subnets WHERE ips.ip_ip='$exploded_ip[3]' AND subnets.subnet_ip='$exploded_ip[2]' AND ips.subnet_id=subnets.id";
+				$result = DB::getInstance()->query($sql);
+				$ip_id = $result->fetch(PDO::FETCH_ASSOC);
+			}
+			catch(PDOException $e) {
+			echo $e->getMessage();
+			};
+			return $ip_id;
+		} else {
+			return false;
+		}
+
 	}
 	
 	public function getUserByEmail($email) {
