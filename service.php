@@ -20,7 +20,18 @@
   $service_data['create_date'] = Helper::makeSmoothIplistTime(strtotime($service_data['create_date']));
 
   $smarty->assign('service_data', $service_data);
-  $smarty->assign('current_crawl', Helper::getCurrentCrawlDataByServiceId($_GET['service_id']));
+  $current_crawl = Helper::getCurrentCrawlDataByServiceId($_GET['service_id']);
+	foreach ($current_crawl['olsrd_neighbors'] as $key=>$olsrd_neighbors) {
+		$tmp2 = 'IP address';
+		$id = Helper::linkIp2IpId($olsrd_neighbors[$tmp2]);
+		$current_crawl['olsrd_neighbors'][$key]['netmon_ip_id'] = $id['id'];
+	}
+echo "<pre>";
+print_r($current_crawl);
+echo "</pre>";
+  $smarty->assign('current_crawl', $current_crawl);
+
+
   $smarty->assign('last_online_crawl', Helper::getLastOnlineCrawlDataByServiceId($_GET['service_id']));
   $crawl_history = $service->getCrawlHistory($_GET['service_id'], 35);
   $smarty->assign('crawl_history', $crawl_history);
@@ -37,7 +48,7 @@ foreach ($crawl_history as $hist) {
 }
 
   $smarty->assign('dont_show_indicator', $dont_show_indicator);
-/*
+
 if(!empty($ping_array)) {
  $graph = new ezcGraphLineChart();
  $graph->driver = new ezcGraphGdDriver(); 
@@ -87,7 +98,7 @@ if(!empty($memory_free_array)) {
 
 
 
-*/
+
 
 
 

@@ -152,8 +152,8 @@ class JsonDataCollector {
 		$current_crawl_data['luciversion'] = $json_obj['firmware']['luciversion'];
 		$current_crawl_data['distname'] = $json_obj['firmware']['distname'];
 		$current_crawl_data['distversion'] = $json_obj['firmware']['distversion'];
-		$current_crawl_data['chipset'] = $json_obj['system']['sysinfo[0]'];
-		$current_crawl_data['cpu'] = $json_obj['system']['sysinfo[1]'];
+		$current_crawl_data['chipset'] = $json_obj['system']['sysinfo'][0];
+		$current_crawl_data['cpu'] = $json_obj['system']['sysinfo'][1];
 		$current_crawl_data['network'] = serialize($json_obj['network']);
 		$current_crawl_data['wireless_interfaces'] = serialize($json_obj['wireless']['interfaces']);
 		$current_crawl_data['uptime'] = round(($json_obj['system']['uptime'][0])/60/60, 2);

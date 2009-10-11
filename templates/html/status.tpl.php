@@ -1,4 +1,4 @@
-<h1>Status um {$zeit} uhr</h1>
+<h1>Statusübersicht</h1>
 
 <div style="width: 800px; overflow: hidden; padding-bottom: 15px; border-top: solid 0px grey;">
   <div nstyle="white-space: nowrap;">

@@ -31,6 +31,9 @@
 <!--Banner-->
 <div id="banner" style="background-image: url(./templates/img/header/hafen_oldenburg.jpg);">
 	<!--Top-Menü-->
+	<div id="time">
+		Serverzeit: {$zeit}
+	</div>
 	<div id="topmenu">
 		{foreach item=topmenu from=$top_menu}
 			<span class="topmenubox"><a style="color: #000000" href="{$topmenu.href}" target="_blank">{$topmenu.name}</a></span>
@@ -38,8 +41,6 @@
 		{foreach item=loginOutMenu from=$loginOutMenu}
 			<span class="topmenubox"><a style="color: #FFFFFF" href="{$loginOutMenu.href}">{$loginOutMenu.name}</a></span>
 		{/foreach}
-		
-		
 	</div>
 </div>
 

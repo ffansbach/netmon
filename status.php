@@ -11,7 +11,6 @@
   $smarty->assign('newest_service', $status->getNewestService());
 
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-  $smarty->assign('zeit', date("H:i:s", time()));
 
   $smarty->display("header.tpl.php");
   $smarty->display("status.tpl.php");
