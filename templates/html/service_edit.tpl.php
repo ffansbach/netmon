@@ -38,7 +38,6 @@
   </p>
 
 	<h2>Benachrichtigungen:</h2>
-	<p>Ein Crawldurchgang dauert {$timeBetweenCrawls} Minuten.<br>
 	Benachrichtige mich, wenn dieser Service länger als <input name="notification_wait" type="text" size="2" maxlength="2" value="{$servicedata.notification_wait}"> Crawldurchgänge nicht erreichbar ist
     <select name="notify" size="1">
       <option value="1" {if $servicedata.notify==1}selected{/if}>Ja</option>

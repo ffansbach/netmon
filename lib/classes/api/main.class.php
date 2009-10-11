@@ -18,6 +18,10 @@ class main {
 		echo json_encode(Helper::getProjectInfo());
 	}
 
+	public function get_services_by_type() {
+		echo serialize(Helper::getServicesByType($_GET['type']));
+	}
+
 }
 
 ?>
