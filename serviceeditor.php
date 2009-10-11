@@ -40,7 +40,6 @@
 	$service_data = Helper::getServiceDataByServiceId($_GET['service_id']);
     usermanagement::isOwner($smarty, $service_data['user_id']);
 	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	$smarty->assign('timeBetweenCrawls', $GLOBALS['timeBetweenCrawls']);
 	$smarty->assign('servicedata', $service_data);
 	$smarty->assign('message', message::getMessage());
 	$smarty->display("header.tpl.php");

@@ -4,7 +4,8 @@
   
   $status = new status;
   
-  $smarty->assign('status', $status->getCrawlerStatus());
+//Deprecated
+//  $smarty->assign('status', $status->getCrawlerStatus());
   $smarty->assign('newest_user', $status->getNewestUser());
   $smarty->assign('newest_ip', $status->getNewestIp());
   $smarty->assign('newest_service', $status->getNewestService());

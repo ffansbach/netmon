@@ -59,8 +59,12 @@ class usermanagement {
     }
   }
 
-  public function isThisUserOwner($owning_user_id) {
-    if($owning_user_id!=$_SESSION['user_id'] OR !isset($owning_user_id)) {
+  public function isThisUserOwner($owning_user_id, $user_id=false) {
+	if(!$user_id) {
+		$user_id = $_SESSION['user_id'];
+	}
+
+    if($owning_user_id!=$user_id OR !isset($owning_user_id)) {
       return false;
     } else {
       return true;

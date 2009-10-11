@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-include 'lib/classes/extern/XMPPHP/XMPP.php';
+require_once './lib/classes/extern/XMPPHP/XMPP.php';
 
 class service {
 	public function getCrawlHistory($service_id, $count) {
@@ -52,7 +52,7 @@ class service {
 		$text = "Hallo $user_data[nickname],
 
 der Service $GLOBALS[net_prefix].$service_data[subnet_ip].$service_data[ip_ip]:$service_data[typ] ist seit dem ".date("d.m H:i", strtotime($history[$service_data['notification_wait']-1]['crawl_time']))." uhr offline.
-Siehe http://$GLOBALS[domain]/$GLOBALS[subfolder]/service.php?service_id=49
+Siehe http://$GLOBALS[domain]/$GLOBALS[subfolder]/service.php?service_id=$service_data[service_id]
 
 Bitte stelle den Service zur erhaltung des Meshnetzwerkes wieder zur Verfügung oder entferne den Service.
 Dein Freifunkteam $GLOBALS[city_name]";
@@ -69,7 +69,7 @@ Dein Freifunkteam $GLOBALS[city_name]";
 			$message = "Hallo $user_data[nickname],
 
 der Service $GLOBALS[net_prefix].$service_data[subnet_ip].$service_data[ip_ip]:$service_data[typ] ist seit dem ".date("d.m H:i", strtotime($history[$service_data['notification_wait']-1]['crawl_time']))." uhr offline.
-Siehe http://$GLOBALS[domain]/$GLOBALS[subfolder]/service.php?service_id=49
+Siehe http://$GLOBALS[domain]/$GLOBALS[subfolder]/service.php?service_id=$service_data[service_id]
 
 Bitte stelle den Service zur Erhaltung des Meshnetzwerkes wieder zur Verfuegung oder entferne den Service.
 Dein Freifunkteam $GLOBALS[city_name]";
@@ -81,31 +81,150 @@ Dein Freifunkteam $GLOBALS[city_name]";
 	}
 
 	public function offlineNotification($service_id) {
-	echo $service_id;
 		$service_data = Helper::getServiceDataByServiceId($service_id);
-		$user_data = Helper::getUserByID($service_data['user_id']);
-		$history = service::getCrawlHistory($service_id, $service_data['notification_wait']);
-
-		//Wenn der Serivice in der notification_wait einmal online gecrawlt wurde, beende.
-		$online = false;
-		foreach($history as $hist) {
-			if ($hist['status']=="online") {
-				$online = true;
-				break;
+		if($service_data['notify']==1) {
+			$user_data = Helper::getUserByID($service_data['user_id']);
+			$history = service::getCrawlHistory($service_id, $service_data['notification_wait']);
+			
+			//Wenn der Serivice in der notification_wait einmal online gecrawlt wurde, beende.
+			$online = false;
+			foreach($history as $hist) {
+				if ($hist['status']=="online") {
+					$online = true;
+					break;
+				}
+			}
+			
+			//Wenn offline 
+			if ($online AND $service_data['notified']!=1) {
+				if($user_data['notification_method']=="email") {
+					service::emailIfDown($service_data, $user_data, $history);
+				} elseif ($user_data['notification_method']=="jabber") {
+					service::jabberIfDown($service_data, $user_data, $history);
+				}
+				DB::getInstance()->exec("UPDATE services SET
+											notified = 1,
+											last_notification = NOW()
+										WHERE id = '$service_id'");
 			}
 		}
+	}
 
-		//Wenn offline 
-		if (!$online AND $service_data['notified']!=1) {
-			if($user_data['notification_method']=="email") {
-				service::emailIfDown($service_data, $user_data, $history);
-			} elseif ($user_data['notification_method']=="jabber") {
-				service::jabberIfDown($service_data, $user_data, $history);
-			}
+  public function insertStatus($current_crawl_data, $service_id) {
+		$current_crawl_data['luciname'] = addslashes($current_crawl_data['luciname']);
+
+    DB::getInstance()->exec("INSERT INTO crawl_data (
+service_id,
+crawl_time,
+ping,
+status,
+nickname,
+hostname,
+email,
+location,
+prefix,
+ssid,
+longitude,
+latitude,
+luciname,
+luciversion,
+distname,
+distversion,
+chipset,
+cpu,
+network,
+wireless_interfaces,
+uptime,
+idletime,
+memory_total,
+memory_caching,
+memory_buffering,
+memory_free,
+loadavg,
+processes,
+olsrd_hna,
+olsrd_neighbors,
+olsrd_links,
+olsrd_mid,
+olsrd_routes,
+olsrd_topology
+) VALUES (
+'$service_id',
+NOW(),
+'$current_crawl_data[ping]',
+'$current_crawl_data[status]',
+'$current_crawl_data[nickname]',
+'$current_crawl_data[hostname]',
+'$current_crawl_data[email]',
+'$current_crawl_data[location]',
+'$current_crawl_data[prefix]',
+'$current_crawl_data[ssid]',
+'$current_crawl_data[longitude]',
+'$current_crawl_data[latitude]',
+'$current_crawl_data[luciname]',
+'$current_crawl_data[luciversion]',
+'$current_crawl_data[distname]',
+'$current_crawl_data[distversion]',
+'$current_crawl_data[chipset]',
+'$current_crawl_data[cpu]',
+'$current_crawl_data[network]',
+'$current_crawl_data[wireless_interfaces]',
+'$current_crawl_data[uptime]',
+'$current_crawl_data[idletime]',
+'$current_crawl_data[memory_total]',
+'$current_crawl_data[memory_caching]',
+'$current_crawl_data[memory_buffering]',
+'$current_crawl_data[memory_free]',
+'$current_crawl_data[loadavg]',
+'$current_crawl_data[processes]',
+'$current_crawl_data[olsrd_hna]',
+'$current_crawl_data[olsrd_neighbors]',
+'$current_crawl_data[olsrd_links]',
+'$current_crawl_data[olsrd_mid]',
+'$current_crawl_data[olsrd_routes]',
+'$current_crawl_data[olsrd_topology]'
+);");
+    return true;
+  }
+
+	public function clearCrawlDatabase($service_id) {
+		DB::getInstance()->exec("DELETE FROM crawl_data WHERE TO_DAYS(crawl_time)+31 < TO_DAYS(NOW()) AND service_id='$service_id'");
+	}
+
+	public function makeHistoryEntry($current_crawl_data, $service_id){
+		$last_crawl_data['status'] = "unbekannt";
+		
+		//Hole letzten Crawl
+		try {
+			$sql = "SELECT crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes FROM crawl_data
+			        WHERE service_id='$service_id'
+					ORDER BY id DESC LIMIT 1,1";
+			$result = DB::getInstance()->query($sql);
+			$last_crawl_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		$history_data = array();
+		if ($current_crawl_data['status']!=$last_crawl_data['status']) {
+			$history_data[] = serialize(array('service_id'=>$service_id, 'action'=>'status', 'from'=>$last_crawl_data['status'], 'to'=>$current_crawl_data['status']));
+		}
+		
+		foreach ($history_data as $hist_data) {
+			DB::getInstance()->exec("INSERT INTO history (object, object_id, create_date, data) VALUES ('service', '$service_id', NOW(), '$hist_data');");
+		}
+	}
+
+	public function clearHistory($service_id) {
+		DB::getInstance()->exec("DELETE FROM history WHERE TO_DAYS(create_date)+$GLOBALS[days_to_keep_portal_history] < TO_DAYS(NOW()) AND object_id='$service_id'");
+	}
+
+	public function updateNotificationStatus($status, $service_id) {
+		if ($status=="online") {
 			DB::getInstance()->exec("UPDATE services SET
-										notified = 1,
-										last_notification = NOW()
-									 WHERE id = '$service_id'");
+								notified = 0
+						 WHERE id = '$service_id'");
 		}
 	}
 }

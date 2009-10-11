@@ -3,6 +3,7 @@
 
   require_once('./lib/classes/api/map.class.php');
   require_once('./lib/classes/api/main.class.php');
+  require_once('./lib/classes/api/crawl.class.php');
   require_once('./lib/classes/core/login.class.php');
 
 class api {

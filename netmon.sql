@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2009 at 04:51 PM
+-- Generation Time: Oct 11, 2009 at 07:43 PM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.11-1
 
@@ -22,26 +22,11 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawls`
---
-
-CREATE TABLE IF NOT EXISTS `crawls` (
-  `id` int(11) NOT NULL auto_increment,
-  `crawl_time_start` datetime NOT NULL,
-  `crawl_time_end` datetime NOT NULL,
-  `crawl_ip` varchar(12) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `crawl_data`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_data` (
   `id` int(11) NOT NULL auto_increment,
-  `crawl_id` int(11) NOT NULL,
   `service_id` int(11) NOT NULL,
   `crawl_time` datetime NOT NULL,
   `ping` varchar(10) NOT NULL,
