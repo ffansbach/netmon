@@ -38,7 +38,7 @@ class login {
 			$password = usermanagement::encryptPassword($password);
 			//Check if mailadress exists
 			try {
-				$sql = "select id , nickname, activated, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE nickname='$nickname' and password='$password'";
+				$sql = "select id , nickname, activated, permission, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE nickname='$nickname' and password='$password'";
 				$result = DB::getInstance()->query($sql);
 				$user_data = $result->fetch(PDO::FETCH_ASSOC);
 				$login = $result->rowCount();
@@ -60,7 +60,7 @@ class login {
 					
 					$messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'].$last_login, 1);
 					message::setMessage($messages);
-					return array('result'=>true, 'user_id'=>$user_data['id'], 'session_id'=>$session_id);
+					return array('result'=>true, 'user_id'=>$user_data['id'], 'permission'=>$user_data['permission'], 'session_id'=>$session_id);
 				}
 			}
 			catch(PDOException $e) {

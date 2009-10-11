@@ -54,4 +54,5 @@ $GLOBALS['timeBetweenCrawls'] = 10;
 //Project
 $GLOBALS['networkPolicy'] = "http://wiki.freifunk-ol.de/index.php/Nutzungsvereinbarung";
 $GLOBALS['portal_history_hours'] = 5;
+$GLOBALS['days_to_keep_portal_history'] = 1;
 ?>

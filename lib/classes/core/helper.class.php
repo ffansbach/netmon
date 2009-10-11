@@ -475,7 +475,7 @@ class Helper {
 		
 		//Hole letzten Crawl
 		try {
-			$sql = "SELECT id, crawl_id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, olsrd_hna, olsrd_neighbors, olsrd_links, olsrd_mid, olsrd_routes, olsrd_topology FROM crawl_data
+			$sql = "SELECT id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, olsrd_hna, olsrd_neighbors, olsrd_links, olsrd_mid, olsrd_routes, olsrd_topology FROM crawl_data
 			        WHERE service_id='$service_id'
 					ORDER BY id DESC LIMIT 1";
 			$result = DB::getInstance()->query($sql);
@@ -499,7 +499,7 @@ class Helper {
 		return $last_crawl;
 	}
 
-      function object2array($object) {
+	function object2array($object) {
 		if (is_object($object) || is_array($object)) {
 			foreach ($object as $key => $value) {
 				$array[$key] = Helper::object2array($value);

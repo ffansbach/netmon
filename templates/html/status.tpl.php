@@ -24,7 +24,7 @@
 <div style="width: 800px; overflow: hidden; padding-top: 15px; border-top: solid 1px grey;">
   <div nstyle="white-space: nowrap;">
 
-    <div style="float:left; width: 140px; margin-right: 20px;     border: solid 1px; black;">
+    <!--<div style="float:left; width: 140px; margin-right: 20px;     border: solid 1px; black;">
       <div style="width: 140px;">Crawler Status: </div>
       {if $status.status=="Online"}
 	<div style="width: 140px; background-color: green;">{$status.status}</div>
@@ -40,7 +40,7 @@
       {elseif $status.status=="Offline"}
 	<div style="width: 260px;">Nächster Crawl: Crawler ist offline!</div>
       {/if}
-    </div>
+    </div>-->
 <!--
     <div style="float:left; width: 290px; margin-right: 20px; border: solid 1px; black;">
       <div style="width: 290px;">Letzte Backups: </div>

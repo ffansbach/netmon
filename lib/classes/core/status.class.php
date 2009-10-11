@@ -29,7 +29,9 @@
  */
 
 class status {
-	public function getCrawlerStatus() {
+//Deprecated
+//We need another function to show the last crawl.
+/*	public function getCrawlerStatus() {
 		try {
 			$sql = "SELECT id, UNIX_TIMESTAMP(crawl_time_end) as last_crawl
 					FROM crawls
@@ -51,7 +53,7 @@ class status {
 		$return['last_crawl'] = date("H:i:s", $last_crawl);
 		$return['next_crawl'] = date("H:i:s", $GLOBALS['timeBetweenCrawls']*60+$last_crawl);
 		return $return;
-	}
+	}*/
 
   public function getNewestUser() {
 		try {

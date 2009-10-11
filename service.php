@@ -37,7 +37,7 @@ foreach ($crawl_history as $hist) {
 }
 
   $smarty->assign('dont_show_indicator', $dont_show_indicator);
-
+/*
 if(!empty($ping_array)) {
  $graph = new ezcGraphLineChart();
  $graph->driver = new ezcGraphGdDriver(); 
@@ -87,7 +87,7 @@ if(!empty($memory_free_array)) {
 
 
 
-
+*/
 
 
 
