@@ -350,7 +350,8 @@ class apiMap {
 							if ($data['status']=='online') {
 								foreach($data['olsrd_neighbors'] as $key2=>$neighbours) {
 									//Hole die Service-ID der Nachbarips
-									$neighbourServiceIds = Helper::getServicesByTypeAndIpId('node', Helper::getIpIdByIp($neighbours['IPaddress']));
+									$tmp1 = 'IP address';
+									$neighbourServiceIds = Helper::getServicesByTypeAndIpId('node', Helper::getIpIdByIp($neighbours[$tmp1]));
 									foreach($neighbourServiceIds as $key=>$neighbourServiceId) {
 										$neighbourServiceCrawlData = Helper::getCurrentCrawlDataByServiceId($neighbourServiceId['service_id']);
 										if(!empty($neighbourServiceCrawlData['longitude']) AND !empty($neighbourServiceCrawlData['latitude'])) {

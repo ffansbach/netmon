@@ -97,4 +97,5 @@
 
   //Wichtige Config-Variablen an Smarty übergeben
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+  $smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
 ?>

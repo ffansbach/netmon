@@ -75,7 +75,6 @@
 		<b>Hostname:</b> {$last_online_crawl.hostname}<br>
 		<b>Prefix:</b> {$last_online_crawl.prefix}<br>
 		<b>SSID:</b> {$last_online_crawl.ssid}<br>
-		<b>Standort:</b> {$last_online_crawl.location}<br>
 	{else}
 		Keine Daten vorhanden
 	{/if}
@@ -94,9 +93,13 @@
 
 <h2>Benachbarte IP´s</h2>
 
+{assign var="tmp" value="2 Hop Neighbors"}
+{assign var="tmp2" value="IP address"}
+
+
 {if !empty($current_crawl.olsrd_neighbors)}
 	{foreach key=count item=olsrd_neighbors from=$current_crawl.olsrd_neighbors}
-		{if $olsrd_neighbors.2HopNeighbors eq '0'}<span style="background-color: yellow;">{/if}{$olsrd_neighbors.IPaddress} {if $olsrd_neighbors.2HopNeighbors eq '0'}(Direkter Client)</span>{/if}<br>
+		{if $olsrd_neighbors.$tmp eq '0'}<span style="background-color: yellow;">{/if}{if $olsrd_neighbors.netmon_ip_id}<a href="./ip.php?id={$olsrd_neighbors.netmon_ip_id}">{/if}{$olsrd_neighbors.$tmp2}{if $olsrd_neighbors.netmon_ip_id}</a>{/if} {if $olsrd_neighbors.$tmp eq '0'}(Direkter Client)</span>{/if}<br>
 	{/foreach}
 {else}
 	Keine benachbarten IP´s
