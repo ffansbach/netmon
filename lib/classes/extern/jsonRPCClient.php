@@ -129,17 +129,11 @@ class jsonRPCClient {
 							'content' => $request
 							));
 		$context  = stream_context_create($opts);
-
-		$curl_handle=curl_init();
-		curl_setopt($curl_handle,CURLOPT_URL,$this->url);
-		curl_setopt($curl_handle, CURLOPT_POST, 1);
-		curl_setopt($curl_handle, CURLOPT_POSTFIELDS, $request);
-		curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,3);
-		curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,1);
-		$response = curl_exec($curl_handle);
-		curl_close($curl_handle);
-
-		if($response) {
+		if ($fp = fopen($this->url, 'r', false, $context)) {
+			$response = '';
+			while($row = fgets($fp)) {
+				$response.= trim($row)."\n";
+			}
 			$this->debug && $this->debug.='***** Server response *****'."\n".$response.'***** End of server response *****'."\n";
 			$response = json_decode($response,true);
 		} else {
