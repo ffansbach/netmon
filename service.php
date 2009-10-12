@@ -2,16 +2,6 @@
   require_once('./config/runtime.inc.php');
   require_once('./lib/classes/core/service.class.php');
 
-/*  require_once './lib/classes/extern/jsonRPCClient.php';
-  $auth = new jsonRPCClient('http://10.18.0.11/cgi-bin/luci/rpc/auth');
-  $token = $auth->login('root', 'hs7812kxlsqjog');
-
-  $sys = new jsonRPCClient('http://10.18.0.11/cgi-bin/luci/rpc/sys?auth='.$token);
-  $cmd = 'net.devices';
-  $device_array = $sys->{'net.devices'}();
-  print_r($device_array);*/
-
-
   $service = new service;
 
   $smarty->assign('message', message::getMessage());

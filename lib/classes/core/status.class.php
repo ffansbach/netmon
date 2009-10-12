@@ -29,32 +29,6 @@
  */
 
 class status {
-//Deprecated
-//We need another function to show the last crawl.
-/*	public function getCrawlerStatus() {
-		try {
-			$sql = "SELECT id, UNIX_TIMESTAMP(crawl_time_end) as last_crawl
-					FROM crawls
-			        ORDER BY id DESC LIMIT 1;";
-			$result = DB::getInstance()->query($sql); 
-			$last_crawl = $result->fetch(PDO::FETCH_ASSOC); 
-		} 
-		catch(PDOException $e) { 
-			echo $e->getMessage(); 
-		}
-		
-		$last_crawl = $last_crawl['last_crawl'];
-		$toleranzgrenze = 300; //seconds
-		if ((time()-$last_crawl)>($GLOBALS['timeBetweenCrawls']*60+$toleranzgrenze))
-			$return['status'] = "Offline";
-		else
-			$return['status'] = "Online";
-		
-		$return['last_crawl'] = date("H:i:s", $last_crawl);
-		$return['next_crawl'] = date("H:i:s", $GLOBALS['timeBetweenCrawls']*60+$last_crawl);
-		return $return;
-	}*/
-
   public function getNewestUser() {
 		try {
 			$sql = "SELECT id, nickname, create_date
