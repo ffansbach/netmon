@@ -42,7 +42,7 @@
   //Login-Data
   $GLOBALS['nickname'] = "crawler";
   $GLOBALS['password'] = "test";
-  $GLOBALS['netmon_url'] = "http://localhost/netmon/";
+  $GLOBALS['netmon_url'] = "http://netmon.freifunk-ol.de/";
 
 class JsonDataCollector {
   function file_get_contents_curl($url) {
@@ -74,13 +74,13 @@ class JsonDataCollector {
 		//Hole Services
 		$api_main = new jsonRPCClient($GLOBALS['netmon_url']."api_main.php");
 		try {
-			$services = $api_main->get_services_by_type($service_typ);
+			$services = $api_main->getAllServiceIDsByServiceType($service_typ);
 		} catch (Exception $e) {
 			echo nl2br($e->getMessage());
 		}
 
 		foreach ($services as $service) {
-			echo "Service: $service[service_id]\n";
+			//echo "Service: $service[service_id]: $GLOBALS[net_prefix].$service[subnet_ip].$service[ip_ip]\n";
 			$ping = $this->pingHost("$GLOBALS[net_prefix].$service[subnet_ip].$service[ip_ip]");
 
 			if ($service['crawler']=="json") {
@@ -112,6 +112,7 @@ class JsonDataCollector {
 					$current_crawl_data['status'] = "offline";
 				}
 			}
+
 			//Send Data
 			$api_crawl = new jsonRPCClient($GLOBALS['netmon_url']."api_crawl.php");
 			try {
