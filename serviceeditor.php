@@ -28,7 +28,7 @@
 				$range['start'] = "NULL";
 				$range['end'] = "NULL";
 			}
-			$add_result = editingHelper::addIpTyp($_GET['ip_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $range['start'], $range['end'], $_POST['radius'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
+			$add_result = editingHelper::addIpTyp($_GET['ip_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
 			header('Location: ./service.php?service_id='.$add_result['service_id']);
 		} else {
 			$message[] = array("Nur eingeloggte Benutzer dürfen einen Service anlegen!", 2);
@@ -47,7 +47,7 @@
 	$smarty->display("footer.tpl.php");
     }
     if ($_GET['section'] == "insert_edit") {
-	$edit_result = $serviceeditor->insertEditService($_GET['service_id'], $_POST['typ'], $_POST['crawler'], $_POST['title'], $_POST['description'], $_POST['radius'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
+	$edit_result = $serviceeditor->insertEditService($_GET['service_id'], $_POST['typ'], $_POST['crawler'], $_POST['title'], $_POST['description'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
 	header('Location: ./service.php?service_id='.$edit_result['service_id']);
     }
     if ($_GET['section'] == "delete") {

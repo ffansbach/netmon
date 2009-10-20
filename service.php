@@ -11,10 +11,12 @@
 
   $smarty->assign('service_data', $service_data);
   $current_crawl = Helper::getCurrentCrawlDataByServiceId($_GET['service_id']);
-	foreach ($current_crawl['olsrd_neighbors'] as $key=>$olsrd_neighbors) {
-		$tmp2 = 'IP address';
-		$id = Helper::linkIp2IpId($olsrd_neighbors[$tmp2]);
-		$current_crawl['olsrd_neighbors'][$key]['netmon_ip_id'] = $id['id'];
+	if(is_array($current_crawl['olsrd_neighbors'])) {
+		foreach ($current_crawl['olsrd_neighbors'] as $key=>$olsrd_neighbors) {
+			$tmp2 = 'IP address';
+			$id = Helper::linkIp2IpId($olsrd_neighbors[$tmp2]);
+			$current_crawl['olsrd_neighbors'][$key]['netmon_ip_id'] = $id['id'];
+		}
 	}
   $smarty->assign('current_crawl', $current_crawl);
 

@@ -136,9 +136,11 @@ function fullmap() {
 	// Please do *not* uncomment the following line
 	// currently there is a problem with SelectFeature for multiple layers
 	// if the following line is uncommented online nodes can't be selected any longer
-	AddKmlLayer("offline Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_offline");
+//	AddKmlLayer("offline Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_offline");
 
-	AddKmlLayer("online Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online");
+//	AddKmlLayer("online Nodes", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online");
+	AddKmlLayer("online and offline Nodes", "./api.php?class=apiMap&section=getOnlineAndOfflineServiceKML");
+
 }
 
 function new_subnet() {

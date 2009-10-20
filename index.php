@@ -28,6 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+
   header('Location: portal.php')
 
 ?>
