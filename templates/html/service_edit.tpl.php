@@ -21,11 +21,6 @@
     Sinnvoll wenn Typ "service" sowie Port "80" ist und sich hinter der IP eine Website verbirgt. Oder ein VPN-Server, oder ein NFS-Downloadserver usw.</p>
   </p>
   
-  <p>
-    <p>(Optional) Radius: <input name="radius" type="text" size="5" maxlength="10" value="{$servicedata.radius}"><br>
-    Sinnvoll wenn Typ "node" ist und man die ungefähre Reichweite seines W-Lan-Netzes in metern weiß.</p>
-  </p>
-
 	<h2>Privatsphäre:</h2>
   <p>
     <p>Diesen Service nicht angemeldeten Benutzer zeigen: 

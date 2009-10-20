@@ -14,8 +14,8 @@ class main {
 	}
 
 
-	public function get_services_by_type($type) {
-		return(Helper::getServicesByType($type));
+	public function getAllServiceIDsByServiceType($type) {
+		return(Helper::getAllServiceIDsByServiceType($type));
 	}
 
 	public function writeSomething($something) {

@@ -161,6 +161,30 @@ class Helper {
     return $services;
   }
 
+  public function getAllServiceIDsByServiceType($type) {
+    $services = array();
+	try {
+		$sql = "SELECT services.id as service_id, services.typ, services.crawler,
+					   ips.ip_ip,
+					   subnets.subnet_ip
+			       FROM services
+			       LEFT JOIN ips ON (ips.id = services.ip_id)
+			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
+			       WHERE services.typ='$type'";
+		$result = DB::getInstance()->query($sql);
+		
+		foreach($result as $row) {
+			$services[] = $row;
+		}
+	}
+
+	catch(PDOException $e) {
+		echo $e->getMessage();
+	}
+
+    return $services;
+  }
+
   public function getServicesByUserId($user_id) {
     //Nur Services zurückgeben die der Benutzer sehen darf
     if (!usermanagement::checkPermission(4))
@@ -395,7 +419,7 @@ class Helper {
 	public function getServiceDataByServiceId($service_id) {
 		try {
 			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.radius, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.create_date,
-			       ips.ip_ip,
+			       ips.ip_ip, ips.zone_start, ips.zone_end,
 			       subnets.subnet_ip, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email
 			       FROM  services
