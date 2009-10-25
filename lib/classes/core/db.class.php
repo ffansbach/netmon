@@ -27,7 +27,7 @@
     if (!self::$instance) {
       self::$instance = new PDO("mysql:host=".$GLOBALS['mysql_host'].";dbname=".$GLOBALS['mysql_db'], $GLOBALS['mysql_user'], $GLOBALS['mysql_password']);
       self::$instance-> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      self::$instance-> query('SET NAMES UTF8');
+      self::$instance-> query('SET NAMES utf8');
     }
     return self::$instance;
   }

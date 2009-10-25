@@ -1,7 +1,9 @@
 <?php
 
-//INSTALL
-$GLOBALS['installed'] = false;
+//INSTALLATION-LOCK
+$GLOBALS['installed'] = true;
+
+//INSTALL-INFO
 $GLOBALS['netmon_version'] = "0.2 SVN";
 $GLOBALS['netmon_codename'] = "Shake-up";
 
@@ -16,7 +18,6 @@ $GLOBALS['mysql_host'] = "localhost";
 $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
 $GLOBALS['mysql_password'] = "blabla";
-$GLOBALS['mysql_enc'] = "utf8";
 
 //JABBER
 $GLOBALS['jabber_server'] = "jabber.nord-west.net";
@@ -60,4 +61,5 @@ $GLOBALS['timeBetweenCrawls'] = 10;
 $GLOBALS['networkPolicy'] = "http://wiki.freifunk-ol.de/index.php/Nutzungsvereinbarung";
 $GLOBALS['portal_history_hours'] = 5;
 $GLOBALS['days_to_keep_portal_history'] = 1;
+
 ?>
