@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 12, 2009 at 12:23 AM
+-- Generation Time: Oct 25, 2009 at 10:37 PM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.11-1
 
@@ -25,6 +25,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `crawl_data`
 --
 
+DROP TABLE IF EXISTS `crawl_data`;
 CREATE TABLE IF NOT EXISTS `crawl_data` (
   `id` int(11) NOT NULL auto_increment,
   `service_id` int(11) NOT NULL,
@@ -70,6 +71,7 @@ CREATE TABLE IF NOT EXISTS `crawl_data` (
 -- Table structure for table `history`
 --
 
+DROP TABLE IF EXISTS `history`;
 CREATE TABLE IF NOT EXISTS `history` (
   `id` int(11) NOT NULL auto_increment,
   `object` varchar(20) NOT NULL,
@@ -85,6 +87,7 @@ CREATE TABLE IF NOT EXISTS `history` (
 -- Table structure for table `ips`
 --
 
+DROP TABLE IF EXISTS `ips`;
 CREATE TABLE IF NOT EXISTS `ips` (
   `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL,
@@ -105,6 +108,7 @@ CREATE TABLE IF NOT EXISTS `ips` (
 -- Table structure for table `services`
 --
 
+DROP TABLE IF EXISTS `services`;
 CREATE TABLE IF NOT EXISTS `services` (
   `id` int(11) NOT NULL auto_increment,
   `ip_id` int(11) NOT NULL,
@@ -112,7 +116,6 @@ CREATE TABLE IF NOT EXISTS `services` (
   `description` text NOT NULL,
   `typ` varchar(20) NOT NULL,
   `crawler` varchar(20) NOT NULL,
-  `radius` int(11) NOT NULL,
   `visible` int(11) NOT NULL,
   `notify` tinyint(1) NOT NULL,
   `notification_wait` int(11) NOT NULL,
@@ -128,6 +131,7 @@ CREATE TABLE IF NOT EXISTS `services` (
 -- Table structure for table `subnets`
 --
 
+DROP TABLE IF EXISTS `subnets`;
 CREATE TABLE IF NOT EXISTS `subnets` (
   `id` int(11) NOT NULL auto_increment,
   `subnet_ip` int(11) NOT NULL,
@@ -156,6 +160,7 @@ CREATE TABLE IF NOT EXISTS `subnets` (
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL auto_increment,
   `session_id` varchar(32) NOT NULL,

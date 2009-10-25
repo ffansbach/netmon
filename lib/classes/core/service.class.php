@@ -85,27 +85,28 @@ Dein Freifunkteam $GLOBALS[city_name]";
 		if($service_data['notify']==1) {
 			$user_data = Helper::getUserByID($service_data['user_id']);
 			$history = service::getCrawlHistory($service_id, $service_data['notification_wait']);
-			
-			//Wenn der Serivice in der notification_wait einmal online gecrawlt wurde, beende.
-			$online = false;
-			foreach($history as $hist) {
-				if ($hist['status']=="online") {
-					$online = true;
-					break;
+			if(count($history)>=$service_data['notifiaction_wait']) {
+				//Wenn der Serivice in der notification_wait einmal online gecrawlt wurde, beende.
+				$online = false;
+				foreach($history as $hist) {
+					if ($hist['status']=="online") {
+						$online = true;
+						break;
+					}
 				}
-			}
-			
-			//Wenn offline 
-			if (!$online AND $service_data['notified']!=1) {
-				if($user_data['notification_method']=="email") {
-					service::emailIfDown($service_data, $user_data, $history);
-				} elseif ($user_data['notification_method']=="jabber") {
-					service::jabberIfDown($service_data, $user_data, $history);
+				
+				//Wenn offline 
+				if (!$online AND $service_data['notified']!=1) {
+					if($user_data['notification_method']=="email") {
+						service::emailIfDown($service_data, $user_data, $history);
+					} elseif ($user_data['notification_method']=="jabber") {
+						service::jabberIfDown($service_data, $user_data, $history);
+					}
+					DB::getInstance()->exec("UPDATE services SET
+													notified = 1,
+													last_notification = NOW()
+											 WHERE id = '$service_id'");
 				}
-				DB::getInstance()->exec("UPDATE services SET
-											notified = 1,
-											last_notification = NOW()
-										WHERE id = '$service_id'");
 			}
 		}
 	}
@@ -194,7 +195,7 @@ NOW(),
 	public function makeHistoryEntry($current_crawl_data, $service_id){
 		$last_crawl_data['status'] = "unbekannt";
 		
-		//Hole letzten Crawl
+		//Fetch last crawl
 		try {
 			$sql = "SELECT crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes FROM crawl_data
 			        WHERE service_id='$service_id'
@@ -206,10 +207,39 @@ NOW(),
 			echo $e->getMessage();
 		}
 
+		if ($last_crawl_data['status']=='offline') {
+			//Fetch last online crawl
+			try {
+				$sql = "SELECT crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes FROM crawl_data
+						WHERE service_id='$service_id' AND status='online'
+						ORDER BY id DESC LIMIT 1";
+				$result = DB::getInstance()->query($sql);
+				$last_online_crawl_data = $result->fetch(PDO::FETCH_ASSOC);
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+		}
+
 		$history_data = array();
 		if ($current_crawl_data['status']!=$last_crawl_data['status']) {
 			$history_data[] = serialize(array('service_id'=>$service_id, 'action'=>'status', 'from'=>$last_crawl_data['status'], 'to'=>$current_crawl_data['status']));
 		}
+		if($current_crawl_data['status']=='online' AND !empty($last_online_crawl_data)) {
+			if ($current_crawl_data['luciname']!=$last_online_crawl_data['luciname']) {
+				$history_data[] = serialize(array('service_id'=>$service_id, 'action'=>'luciname', 'from'=>$last_crawl_data['luciname'], 'to'=>$current_crawl_data['luciname']));
+			}
+			if ($current_crawl_data['luciversion']!=$last_online_crawl_data['luciversion']) {
+				$history_data[] = serialize(array('service_id'=>$service_id, 'action'=>'luciversion', 'from'=>$last_crawl_data['luciversion'], 'to'=>$current_crawl_data['luciversion']));
+			}
+			if ($current_crawl_data['distname']!=$last_online_crawl_data['distname']) {
+				$history_data[] = serialize(array('service_id'=>$service_id, 'action'=>'distname', 'from'=>$last_crawl_data['distname'], 'to'=>$current_crawl_data['distname']));
+			}
+			if ($current_crawl_data['distversion']!=$last_online_crawl_data['distversion']) {
+				$history_data[] = serialize(array('service_id'=>$service_id, 'action'=>'distversion', 'from'=>$last_crawl_data['distversion'], 'to'=>$current_crawl_data['distversion']));
+			}
+		}
+
 		
 		foreach ($history_data as $hist_data) {
 			DB::getInstance()->exec("INSERT INTO history (object, object_id, create_date, data) VALUES ('service', '$service_id', NOW(), '$hist_data');");

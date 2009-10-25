@@ -50,7 +50,7 @@ class Helper {
   
   public function getIpDataByIpId($id) {
     try {
-      $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip_ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
+      $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip_ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.radius, ips.vpn_client_cert, ips.vpn_client_key, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
 				      users.nickname, users.email,
 				      subnets.title, subnets.subnet_ip, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
 				   FROM ips
@@ -418,7 +418,7 @@ class Helper {
 
 	public function getServiceDataByServiceId($service_id) {
 		try {
-			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.radius, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.create_date,
+			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.create_date,
 			       ips.ip_ip, ips.zone_start, ips.zone_end,
 			       subnets.subnet_ip, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email
@@ -482,10 +482,6 @@ class Helper {
 	}
 
 	public function getCurrentCrawlDataByServiceId($service_id) {
-		//Belege vor, falls noch nich gecrawlt wurde
-		$last_crawl['status'] = "unbekannt";
-		
-		//Hole letzten Crawl
 		try {
 			$sql = "SELECT id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, olsrd_hna, olsrd_neighbors, olsrd_links, olsrd_mid, olsrd_routes, olsrd_topology FROM crawl_data
 			        WHERE service_id='$service_id'
@@ -499,6 +495,10 @@ class Helper {
 		$last_crawl['olsrd_neighbors'] = unserialize($last_crawl['olsrd_neighbors']);
 		$last_crawl['olsrd_routes'] = unserialize($last_crawl['olsrd_routes']);
 		$last_crawl['olsrd_topology'] = unserialize($last_crawl['olsrd_topology']);
+
+		//Belege vor, falls noch nich gecrawlt wurde
+		if(empty($last_crawl['status']))
+			$last_crawl['status'] = "unbekannt";
 
 		return $last_crawl;
 	}

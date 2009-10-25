@@ -37,6 +37,10 @@
 <b>Service IP:</b> <a href="./ip.php?id={$service_data.ip_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.ip_ip}</a><br>
 <b>Service Typ:</b> {$service_data.typ}<br>
 <b>Crawl-Art:</b> {$service_data.crawler}<br>
+<b>Letzter Crawl:</b> {$current_crawl.crawl_time}<br>
+{if $current_crawl.status=='offline'}
+<b>Letzter Online Crawl: </b>{$last_online_crawl.crawl_time}<br>
+{/if}
 <b>Benutzer:</b> <a href="./user.php?id={$service_data.user_id}">{$service_data.nickname}</a><br>
 <b>Eingetragen am:</b> {$service_data.create_date}<br>
 
