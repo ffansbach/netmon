@@ -1,4 +1,4 @@
-<h1>Eine neue IP anlegen:</h1>
+<h1>IP anlegen:</h1>
 <form action="./ipeditor.php?section=insert" method="POST">
 	<h2>Subnetz</h2>
 	<p>
@@ -59,19 +59,20 @@ window.onload = function()
   Portnummer: <input name="port" type="text" size="5" maxlength="10" value="">
 </span> 
 </p>
-
+<h2>Beschreibung</h2>
   <p>
-    <p>(Optional) Titel: <input name="title" type="text" size="40" maxlength="40" value=""><br>
+    <p>Titel:<br><input name="title" type="text" size="40" maxlength="40" value=""><br>
     Sinnvoll wenn Typ "service" sowie Port "80" ist und sich hinter der IP eine Website verbirgt. Oder ein VPN-Server, oder ein NFS-Downloadserver usw.</p>
   </p>
 
   <p>
-    <p>(Optional) Beschreibung: <br><textarea name="description" cols="50" rows="10"></textarea><br>
+    <p>Beschreibung: <br><textarea name="description" cols="50" rows="10"></textarea><br>
     Sinnvoll wenn Typ "service" sowie Port "80" ist und sich hinter der IP eine Website verbirgt. Oder ein VPN-Server, oder ein NFS-Downloadserver usw.</p>
   </p>
-
+  
+  <h2>Privatsphäre:</h2>
   <p>
-    <p>Sichbar: 
+    <p>Diesen Service nicht angemeldeten Benutzer zeigen: 
     <select name="visible" size="1">
       <option value="1" selected>Ja</option>
       <option value="0">Nein</option>
@@ -80,8 +81,14 @@ window.onload = function()
     Alle Services sollten Sichbar sein. Wenn du aber einen Service anbietest bei dem es unter Umständen kritisch sein kann ihn öffentlich anzuzeigen, kannst du hier einstellen, dass nur angemeldete Personen den Service sehen können.</p>
   </p>
 
-  <p>Hinweis:<br>Wenn eine IP gleichzeitig Ip und Service ist, oder mehrere Services zur Verfügung stellt, können später noch weitere Services zum Ip hinzugefügt werden. Hier bitte nur <b>einen</b> angeben!</p>
-
+	<h2>Benachrichtigungen:</h2>
+	<p>Ein Crawldurchgang dauert {$timeBetweenCrawls} Minuten.<br>
+	Benachrichtige mich, wenn dieser Service länger als <input name="notification_wait" type="text" size="2" maxlength="2" value="6"> Crawldurchgänge nicht erreichbar ist
+    <select name="notify" size="1">
+      <option value="1" selected>Ja</option>
+      <option value="0">Nein</option>
+    </select>
+	</p>
 
 
   <p><input type="submit" value="Absenden"></p>
