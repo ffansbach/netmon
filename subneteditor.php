@@ -3,7 +3,76 @@
   require_once('./config/runtime.inc.php');
   require_once('./lib/classes/core/helper.class.php');
   require_once('./lib/classes/core/subneteditor.class.php');
+  require_once('./lib/classes/core/subnetcalculator.class.php');
   require_once('./lib/classes/core/editinghelper.class.php');
+
+/*print "<form method=\"post\" action=\"$_SERVER[PHP_SELF]\">
+	IP Mask or CIDR: <input type=\"text\" name=\"my_net_info\" size=\"32\" maxlength=\"32\">
+</form>";
+*/
+
+if(isset($_POST['my_net_info'])) {
+$my_net_info = subnetCalculator::checkIfInputIsValidAndCIDR($_POST['my_net_info']);
+if(!$my_net_info){
+	echo "Invalid Input or Input is not CIDR";
+}
+
+
+
+	$dq_host = subnetCalculator::getDqHost($my_net_info);
+	if (!$dq_host) {
+		echo "Not a CIDR Adress";
+	}
+
+	$cdr_nmask = subnetCalculator::getCdrNmask($my_net_info);
+	if (!$cdr_nmask) {
+		echo "Invalid CIDR value. Try an integer 0 - 32.";
+	}
+
+
+	$bin_nmask=subnetCalculator::cdrtobin($cdr_nmask);
+	$bin_wmask=subnetCalculator::binnmtowm($bin_nmask);
+
+
+if (!subnetCalculator::checkIfDqHostIsValid($dq_host)) {
+	echo "Invalid IP Address DQ-Host";
+}
+
+$bin_host=subnetCalculator::getBinHost($dq_host);
+$bin_bcast=subnetCalculator::getBinBcast($dq_host, $cdr_nmask);
+$bin_net=subnetCalculator::getBinNet($dq_host, $cdr_nmask);
+$bin_first=subnetCalculator::getBinFirstIP($dq_host, $cdr_nmask);
+$bin_last=subnetCalculator::getBinLastIP($dq_host, $cdr_nmask);
+$host_total=subnetCalculator::getHostsTotal($cdr_nmask);
+
+
+
+$subnet_class = subnetCalculator::getSubnetClass($bin_net, $cdr_nmask);
+$dotbin_net = $subnet_class['dotbin_net'];
+$special = $subnet_class['special'];
+$class = $subnet_class['class'];
+
+// Print Results
+subnetCalculator::tr('Address:',"<font color=\"blue\">$dq_host</font>",
+	'<font color="brown">'.subnetCalculator::dotbin($bin_host,$cdr_nmask).'</font>');
+subnetCalculator::tr('Netmask:','<font color="blue">'.subnetCalculator::bintodq($bin_nmask)." = $cdr_nmask</font>",
+	'<font color="red">'.subnetCalculator::dotbin($bin_nmask, $cdr_nmask).'</font>');
+subnetCalculator::tr('Wildcard:', '<font color="blue">'.subnetCalculator::bintodq($bin_wmask).'</font>',
+	'<font color="brown">'.subnetCalculator::dotbin($bin_wmask, $cdr_nmask).'</font>');
+subnetCalculator::tr('Network:', '<font color="blue">'.subnetCalculator::bintodq($bin_net).'</font>',
+	"<font color=\"brown\">$dotbin_net</font>","<font color=\"Green\">(Class $class)</font>");
+subnetCalculator::tr('Broadcast:','<font color="blue">'.subnetCalculator::bintodq($bin_bcast).'</font>',
+	'<font color="brown">'.subnetCalculator::dotbin($bin_bcast, $cdr_nmask).'</font>');
+subnetCalculator::tr('HostMin:', '<font color="blue">'.subnetCalculator::bintodq($bin_first).'</font>',
+	'<font color="brown">'.subnetCalculator::dotbin($bin_first, $cdr_nmask).'</font>');
+subnetCalculator::tr('HostMax:', '<font color="blue">'.subnetCalculator::bintodq($bin_last).'</font>',
+	'<font color="brown">'.subnetCalculator::dotbin($bin_last, $cdr_nmask).'</font>');
+@subnetCalculator::tr('Hosts/Net:', '<font color="blue">'.$host_total.'</font>', "$special");
+
+}
+
+
+
 
   $subneteditor = new subneteditor;
 
