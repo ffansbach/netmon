@@ -70,18 +70,18 @@
 <h2>IP-Verteilung</h2>
 
 <div style="width: 800px;">
-{foreach key=key item=status from=$ipstatus}
-	<div style="float:left;">
+{foreach item=status from=$ipstatus}
+	<div style="float:left; overflow: hidden;">
 
-			{if $status.typ=="free"}
-				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;">{$status.ip}</div>
-				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #6cff84;">f</div>
-			{elseif $status.typ=="ip"}
-				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./ip.php?id={$status.ip_id}">{$status.ip}</a></div>
-		  		<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #ff0000;">n</div>
-			{elseif $status.typ=="range"}
-				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./ip.php?id={$status.belonging_ip_id}">{$status.range_ip}</a></div>
-				<div style="width:35px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #ff9448;">r</div>
+			{if $status.type=="free"}
+				<div style="width:90px; text-align: center; border: 0px; border-right: 1px; border-style: solid;">{$status.ip}</div>
+				<div style="width:90px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #6cff84;">f</div>
+			{elseif $status.type=="ip"}
+				<div style="width:90px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./ip.php?id={$status.ip_id}">{$status.ip}</a></div>
+		  		<div style="width:90px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #ff0000;">n</div>
+			{elseif $status.type=="range"}
+				<div style="width:90px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./ip.php?id={$status.ip_id}">{$status.range_ip}</a></div>
+				<div style="width:90px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #ff9448;">r</div>
 			{/if}
 
 	</div>

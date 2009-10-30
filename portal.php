@@ -103,21 +103,22 @@ if ($service_status['online']!=0 OR $service_status['offline']!=0 OR $service_st
 	$smarty->assign('history', $history);
 
 /*		try {
-			$sql = "SELECT ips.id, ips.ip_ip, subnets.subnet_ip
-			       FROM ips, subnets
-					WHERE ips.subnet_id=subnets.id";
+			$sql = "SELECT ips.id, ips.zone_start, ips.zone_end
+			       FROM ips
+					WHERE ips.zone_start!=0";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 			echo "<pre>";
 			print_r($row);
-				DB::getInstance()->exec("UPDATE ips SET ip_ip='$row[subnet_ip].$row[ip_ip]' WHERE id='$row[id]';");
-				$services[] = $row;
+				DB::getInstance()->exec("UPDATE ips SET zone_start='1.$row[zone_start]',
+														zone_end='1.$row[zone_end]'
+										WHERE id='$row[id]'");
 			}
 		}
 		catch(PDOException $e) { 
 			echo $e->getMessage(); 
-		}
-*/
+		}*/
+
 $smarty->assign('message', message::getMessage());
 $smarty->display("header.tpl.php");
 $smarty->display("portal.tpl.php");

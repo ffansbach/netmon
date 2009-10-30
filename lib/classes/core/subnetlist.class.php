@@ -39,7 +39,7 @@ class subnetlist {
 					LEFT JOIN users ON (users.id=subnets.user_id)
 					LEFT JOIN ips ON (ips.subnet_id=subnets.id)
 					GROUP BY subnets.id
-					ORDER BY subnets.subnet_ip ASC";
+					ORDER BY subnets.host ASC";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$subnetlist[] = $row;
