@@ -36,7 +36,7 @@ class History {
 			$range = "WHERE ips.create_date>=NOW() - INTERVAL $daylimit DAY
 					  ORDER BY ips.create_date desc";
 		try {
-			$sql = "SELECT ips.id as object_id, ips.ip_ip as object_name_2, ips.create_date,
+			$sql = "SELECT ips.id as object_id, ips.ip as object_name_2, ips.create_date,
 						   subnets.subnet_ip as object_name_1
 					FROM ips
 					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
@@ -95,7 +95,7 @@ class History {
 					  ORDER BY services.create_date desc";
 		try {
 			$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler, services.create_date,
-				      ips.user_id, ips.ip_ip, ips.id as ip_id, ips.subnet_id,
+				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
 				      subnets.subnet_ip, subnets.title
 			       FROM services
 			       LEFT JOIN ips ON (ips.id = services.ip_id)

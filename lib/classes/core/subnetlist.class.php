@@ -32,7 +32,7 @@ class subnetlist {
 	function getList() {
 		$subnetlist = array();
 		try {
-			$sql = "SELECT subnets.id, subnets.subnet_ip, subnets.title, subnets.user_id,
+			$sql = "SELECT subnets.id, subnets.host, subnets.netmask, subnets.title, subnets.user_id,
 						   users.nickname,
 						   COUNT(ips.id) as ips_in_net
 					FROM subnets

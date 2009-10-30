@@ -1,6 +1,6 @@
-<h1>IP <a href="http://{$net_prefix}.{$ip.subnet_ip}.{$ip.ip_ip}">{$net_prefix}.{$ip.subnet_ip}.{$ip.ip_ip}</a></h1>
+<h1>IP <a href="http://{$net_prefix}.{$ip.ip}">{$net_prefix}.{$ip.ip}</a></h1>
 
-<b>IP:</b> {$net_prefix}.{$ip.subnet_ip}.{$ip.ip_ip}<br>
+<b>IP:</b> {$net_prefix}.{$ip.ip}<br>
 <b>DHCP-bereich:</b> {if $ip.zone_start==0 OR $ip.zone_end==0}
 						Kein DHCP-Bereich reserviert
 						{else}
@@ -9,7 +9,7 @@
 
 <b>Benutzer:</b> <a href="./user.php?id={$ip.user_id}">{$ip.nickname}</a><br>
 <b>Eingetragen seit:</b> {$ip.create_date}<br>
-<b>Subnetz:</b>  <a href="./subnet.php?id={$ip.subnet_id}">{$net_prefix}.{$ip.subnet_ip}.0/24 ({$ip.title})</a><br>
+<b>Subnetz:</b>  <a href="./subnet.php?id={$ip.subnet_id}">{$net_prefix}.{$ip.subnet_host}/{$ip.subnet_netmask} ({$ip.title})</a><br>
 
 
 <h2>Live-Status der IP:</h2>

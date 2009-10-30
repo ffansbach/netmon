@@ -1,4 +1,4 @@
-<h1>Service zum Ip {$net_prefix}.{$ip_data.subnet_ip}.{$ip_data.ip_ip} hinzufügen</h1>
+<h1>Service zum Ip {$net_prefix}.{$ip_data.ip} hinzufügen</h1>
 <h2>Art des Services und Crawloptionen</h2>
 <form action="./serviceeditor.php?section=insert_service&ip_id={$ip_data.ip_id}" method="POST">
 

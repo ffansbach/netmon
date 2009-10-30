@@ -28,21 +28,56 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+  require_once('./lib/classes/core/subnetcalculator.class.php');
+
 class subnet {
 	function getSubnet($subnet_id) {
 		try {
-			$sql = "SELECT subnets.id, subnets.subnet_ip, subnets.allows_dhcp, subnets.user_id, subnets.create_date, subnets.title, subnets.description, subnets.longitude, subnets.latitude, subnets.radius, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device,	subnets.vpn_server_proto,
+			$sql = "SELECT subnets.id, subnets.subnet_ip, subnets.host, subnets.netmask, subnets.allows_dhcp, subnets.user_id, subnets.create_date, subnets.title, subnets.description, subnets.longitude, subnets.latitude, subnets.radius, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device,	subnets.vpn_server_proto,
 				      users.nickname
 			       FROM subnets
 			       LEFT JOIN users ON (users.id=subnets.user_id)
 			       WHERE subnets.id=$subnet_id";
 			$result = DB::getInstance()->query($sql); 
 			$subnet = $result->fetch(PDO::FETCH_ASSOC); 
-		} 
+
+			$subnet['last_ip'] = subnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet['first_ip'] = subnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet['hosts_total'] = subnetCalculator::getHostsTotal($subnet['netmask']);
+
+		}
 		catch(PDOException $e) { 
 			echo $e->getMessage(); 
 		}
 		return $subnet;
+	}
+
+	public function getPosibleIpsBySubnetId($subnet_id) {
+		try {
+			$sql = "SELECT host, netmask
+			       FROM subnets
+			       WHERE id=$subnet_id";
+			$result = DB::getInstance()->query($sql); 
+			$subnet = $result->fetch(PDO::FETCH_ASSOC);
+			
+			$subnet['last_ip'] = subnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet['first_ip'] = subnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet['hosts_total'] = subnetCalculator::getHostsTotal($subnet['netmask']);
+
+			$exploded_last_ip = explode(".", $subnet['last_ip']);
+			$exploded_first_ip = explode(".", $subnet['first_ip']);
+			
+			for($i=$exploded_first_ip[2]; $i<=$exploded_last_ip[2]; $i++) {
+				for($ii=$exploded_first_ip[3]; $ii<=$exploded_last_ip[3]; $ii++) {
+					$iplist[] = $GLOBALS['net_prefix'].".".$i.".".$ii;
+				}
+			}
+			return $iplist;
+		}
+		catch(PDOException $e) { 
+			echo $e->getMessage(); 
+		}
+
 	}
 	
 	public function getIPStatus($subnet_id) {
@@ -50,7 +85,7 @@ class subnet {
 		
 		//Ips eintragen
 		foreach (editingHelper::getExistingIpsWithID($subnet_id) as $ip) {
-		$iplist[$ip['ip_ip']] = array('ip'=>$ip['ip_ip'],
+		$iplist[$ip['ip']] = array('ip'=>$ip['ip'],
 									      'ip_id'=>$ip['id'],
 										  'typ'=>"ip");
 		}
@@ -60,9 +95,6 @@ class subnet {
 											 'belonging_ip_id'=>$range['id'],
 											 'typ'=>"range");
 		}
-/*		echo "<pre>";
-			print_r($iplist);
-		echo "</pre>";*/
 		
 		for ($i=1; $i<=254; $i++) {
 			if (!isset($iplist[$i])) {
