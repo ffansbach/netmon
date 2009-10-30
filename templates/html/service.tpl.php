@@ -4,7 +4,7 @@
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 <!--		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>-->
 
-<h1>Service vom Typ <i>{$service_data.typ}</i> auf der IP <a href="./ip.php?id={$service_data.ip_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.ip_ip}</a></h1>
+<h1>Service vom Typ <i>{$service_data.typ}</i> auf der IP <a href="./ip.php?id={$service_data.ip_id}">{$net_prefix}.{$service_data.ip}</a></h1>
 
 <h2>Status Historie:</h2>
 {if $current_crawl.status=='online'}
@@ -34,7 +34,7 @@
 {else}
 	<h2>Service Grunddaten</h2>
 {/if}
-<b>Service IP:</b> <a href="./ip.php?id={$service_data.ip_id}">{$net_prefix}.{$service_data.subnet_ip}.{$service_data.ip_ip}</a><br>
+<b>Service IP:</b> <a href="./ip.php?id={$service_data.ip_id}">{$net_prefix}.{$service_data.ip}</a><br>
 <b>Service Typ:</b> {$service_data.typ}<br>
 <b>Crawl-Art:</b> {$service_data.crawler}<br>
 <b>Letzter Crawl:</b> {$current_crawl.crawl_time}<br>

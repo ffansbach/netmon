@@ -3,17 +3,11 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 25, 2009 at 10:37 PM
+-- Generation Time: Oct 30, 2009 at 02:27 PM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.11-1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `freifunksql5`
@@ -92,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `ips` (
   `id` int(11) NOT NULL auto_increment,
   `user_id` int(11) NOT NULL,
   `subnet_id` int(3) NOT NULL,
-  `ip_ip` int(3) NOT NULL,
+  `ip` varchar(7) NOT NULL,
   `zone_start` int(11) NOT NULL,
   `zone_end` int(11) NOT NULL,
   `radius` int(11) NOT NULL,
@@ -135,6 +129,8 @@ DROP TABLE IF EXISTS `subnets`;
 CREATE TABLE IF NOT EXISTS `subnets` (
   `id` int(11) NOT NULL auto_increment,
   `subnet_ip` int(11) NOT NULL,
+  `host` varchar(15) NOT NULL,
+  `netmask` int(11) NOT NULL,
   `allows_dhcp` tinyint(1) NOT NULL,
   `user_id` int(11) NOT NULL,
   `title` varchar(255) default NULL,

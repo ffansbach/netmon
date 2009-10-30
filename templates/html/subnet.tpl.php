@@ -1,7 +1,13 @@
-<h1>Subnet {$net_prefix}.{$subnet.subnet_ip}.0/24, {$subnet.title}</h1>
+<h1>Subnet {$net_prefix}.{$subnet.host}/{$subnet.netmask}, {$subnet.title}</h1>
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 50%;">
 		<h2>Daten:</h2>
+		<p>
+			<b>Subnet:</b> {$net_prefix}.{$subnet.host}/{$subnet.netmask}<br>
+			<b>Erste IP:</b> {$subnet.first_ip}<br>
+			<b>Letzte IP:</b> {$subnet.last_ip}<br>
+			<b>IP´s belegt/möglich</b> ka/{$subnet.hosts_total}<br>
+		</p>
 		<p>
 			<b>DHCP erlaubt:</b> {if $subnet.allows_dhcp}Ja{else}Nein{/if}
 		<p>

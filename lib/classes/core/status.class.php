@@ -46,7 +46,7 @@ class status {
 
   public function getNewestIp() {
 		try {
-			$sql = "SELECT ips.id, ips.user_id, ips.ip_ip, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
+			$sql = "SELECT ips.id, ips.user_id, ips.ip, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
 						   users.nickname,
 						   subnets.title, subnets.subnet_ip
 					FROM ips
@@ -66,7 +66,7 @@ class status {
   public function getNewestService() {
 		try {
 			$sql = "SELECT services.ip_id, services.title,
-					  ips.ip_ip,
+					  ips.ip,
 					  subnets.subnet_ip
 				  FROM services
 				  LEFT JOIN ips ON (ips.id = services.ip_id)

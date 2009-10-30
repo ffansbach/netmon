@@ -51,7 +51,7 @@ class service {
 	public function emailIfDown($service_data, $user_data, $history) {
 		$text = "Hallo $user_data[nickname],
 
-der Service $GLOBALS[net_prefix].$service_data[subnet_ip].$service_data[ip_ip]:$service_data[typ] ist seit dem ".date("d.m H:i", strtotime($history[$service_data['notification_wait']-1]['crawl_time']))." uhr offline.
+der Service $GLOBALS[net_prefix].$service_data[subnet_ip].$service_data[ip]:$service_data[typ] ist seit dem ".date("d.m H:i", strtotime($history[$service_data['notification_wait']-1]['crawl_time']))." uhr offline.
 Siehe http://$GLOBALS[domain]/$GLOBALS[subfolder]/service.php?service_id=$service_data[service_id]
 
 Bitte stelle den Service zur erhaltung des Meshnetzwerkes wieder zur Verfügung oder entferne den Service.
@@ -68,7 +68,7 @@ Dein Freifunkteam $GLOBALS[city_name]";
 			$conn->presence();
 			$message = "Hallo $user_data[nickname],
 
-der Service $GLOBALS[net_prefix].$service_data[subnet_ip].$service_data[ip_ip]:$service_data[typ] ist seit dem ".date("d.m H:i", strtotime($history[$service_data['notification_wait']-1]['crawl_time']))." uhr offline.
+der Service $GLOBALS[net_prefix].$service_data[subnet_ip].$service_data[ip]:$service_data[typ] ist seit dem ".date("d.m H:i", strtotime($history[$service_data['notification_wait']-1]['crawl_time']))." uhr offline.
 Siehe http://$GLOBALS[domain]/$GLOBALS[subfolder]/service.php?service_id=$service_data[service_id]
 
 Bitte stelle den Service zur Erhaltung des Meshnetzwerkes wieder zur Verfuegung oder entferne den Service.

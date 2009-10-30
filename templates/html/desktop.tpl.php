@@ -41,7 +41,7 @@
 {foreach key=count item=iplist from=$servicelist}
 <div id="ipitem" style="width: 745px; overflow: hidden;">
   <div style="white-space: nowrap;">
-    <div style="float:left; width: 85px;"><a href="./service.php?service_id={$iplist.service_id}">{$net_prefix}.{$iplist.subnet_ip}.{$iplist.ip_ip}</a></div>
+    <div style="float:left; width: 85px;"><a href="./service.php?service_id={$iplist.service_id}">{$net_prefix}.{$iplist.ip}</a></div>
     <div style="float:left; width: 50px;">{$iplist.crawler}</div>
 
     <div style="float:left; width: 100px;"><a href="./user.php?id={$iplist.user_id}">{$iplist.nickname}</a></div>
@@ -56,7 +56,7 @@
     {/if}
     <div style="float:left; width: 150px;">{$iplist.crawl_time}</div>
     <div style="float:left; width: 150px;"><a href="./subnet.php?id={$iplist.subnet_id}">{$iplist.title}</a></div>
-    <div style="float:left; width: 150px;">{if is_numeric($iplist.crawler)}<a href="{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{elseif $iplist.crawler=='8888'}http://{/if}{$net_prefix}.{$iplist.subnet_ip}.{$iplist.ip_ip}">{$iplist.services_title|substr:0:20}...</a>{else}&nbsp;{/if}</div>
+    <div style="float:left; width: 150px;">{if is_numeric($iplist.crawler)}<a href="{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{elseif $iplist.crawler=='8888'}http://{/if}{$net_prefix}.{$iplist.ip}">{$iplist.services_title|substr:0:20}...</a>{else}&nbsp;{/if}</div>
   </div>
 </div>
 {/foreach}

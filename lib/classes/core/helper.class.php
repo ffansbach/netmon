@@ -31,9 +31,9 @@
 class Helper {
 	public function getIpInfo($id) {
 		try {
-			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip_ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.create_date,
+			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.create_date,
 						   users.nickname,
-						   subnets.title, subnets.subnet_ip
+						   subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask
 					FROM ips
 					LEFT JOIN users ON (users.id=ips.user_id)
 					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
@@ -50,9 +50,9 @@ class Helper {
   
   public function getIpDataByIpId($id) {
     try {
-      $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip_ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.radius, ips.vpn_client_cert, ips.vpn_client_key, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
+      $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.radius, ips.vpn_client_cert, ips.vpn_client_key, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
 				      users.nickname, users.email,
-				      subnets.title, subnets.subnet_ip, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
+				      subnets.title, subnets.host, subnets.netmask, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
 				   FROM ips
 				   LEFT JOIN users ON (users.id=ips.user_id)
 				   LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
@@ -70,10 +70,9 @@ class Helper {
 
 	public function getSubnetById($subnet_id) {
 		try {
-			$sql = "select subnet_ip FROM subnets WHERE id='$subnet_id'";
+			$sql = "select host, netmask FROM subnets WHERE id='$subnet_id'";
 			$result = DB::getInstance()->query($sql);
 			$subnet = $result->fetch(PDO::FETCH_ASSOC);
-			$subnet = $subnet['subnet_ip'];
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
@@ -83,7 +82,7 @@ class Helper {
 
 	public function getIpOfIpById($ip_id) {
 		try {
-			$sql = "select ip_ip FROM ips WHERE id='$ip_id';";
+			$sql = "select ip FROM ips WHERE id='$ip_id';";
 			$result = DB::getInstance()->query($sql);
 			$ip = $result->fetch(PDO::FETCH_ASSOC);
 		}
@@ -91,7 +90,7 @@ class Helper {
 			echo $e->getMessage();
 		}
 		
-		return $ip['ip_ip'];
+		return $ip['ip'];
 	}
 
   public function getIpIdByServiceId($service_id) {
@@ -114,7 +113,7 @@ class Helper {
   public function getIpsByUserId($user_id) {
     $ips = array();
 	try {
-		$sql = "select ips.id, ips.ip_ip, ips.user_id, subnets.subnet_ip FROM ips LEFT JOIN subnets on (subnets.id = ips.subnet_id) WHERE ips.user_id='$user_id' ORDER BY subnets.subnet_ip, ips.ip_ip;";
+		$sql = "select ips.id, ips.ip, ips.user_id, subnets.host as subnet_host, subnets.netmask as subnet_netmask FROM ips LEFT JOIN subnets on (subnets.id = ips.subnet_id) WHERE ips.user_id='$user_id' ORDER BY subnets.host, ips.ip;";
 		$result = DB::getInstance()->query($sql);
 		
 		foreach($result as $row) {
@@ -139,8 +138,8 @@ class Helper {
     $services = array();
 	try {
 		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
-				      ips.user_id, ips.ip_ip, ips.id as ip_id, ips.subnet_id,
-				      subnets.subnet_ip, subnets.title,
+				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
+				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
 				      users.nickname
 			       FROM services
 			       LEFT JOIN ips ON (ips.id = services.ip_id)
@@ -165,8 +164,8 @@ class Helper {
     $services = array();
 	try {
 		$sql = "SELECT services.id as service_id, services.typ, services.crawler,
-					   ips.ip_ip,
-					   subnets.subnet_ip
+					   ips.ip,
+					   subnets.host as subnet_host, subnets.netmask as subnet_netmask
 			       FROM services
 			       LEFT JOIN ips ON (ips.id = services.ip_id)
 			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
@@ -195,8 +194,8 @@ class Helper {
     $services = array();
 	try {
 		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
-				      ips.user_id, ips.ip_ip, ips.id as ip_id, ips.subnet_id,
-				      subnets.subnet_ip, subnets.title,
+				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
+				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
 				      users.nickname
 			       FROM services
 			       LEFT JOIN ips ON (ips.id = services.ip_id)
@@ -227,8 +226,8 @@ class Helper {
     $services = array();
 	try {
 		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
-				      ips.user_id, ips.ip_ip, ips.id as ip_id, ips.subnet_id,
-				      subnets.subnet_ip, subnets.title,
+				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
+				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
 				      users.nickname
 			       FROM services
 			       LEFT JOIN ips ON (ips.id = services.ip_id)
@@ -259,8 +258,8 @@ class Helper {
     try {
       /*** query the database ***/
       $sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
-				      ips.user_id, ips.ip_ip, ips.id as ip_id, ips.subnet_id,
-				      subnets.subnet_ip, subnets.title,
+				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
+				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
 				      users.nickname
 			       FROM services
 			       LEFT JOIN ips ON (ips.id = services.ip_id)
@@ -283,7 +282,7 @@ class Helper {
   public function getSubnetsByUserId($user_id) {
     $subnets = array();
 	try {
-		$sql = "select id, subnet_ip FROM subnets WHERE user_id='$user_id';";
+		$sql = "select id, subnets.host, subnets.netmask FROM subnets WHERE user_id='$user_id';";
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
 			$subnets[] = $row;
@@ -313,13 +312,11 @@ class Helper {
 
 	public function getSubnetIpOfIpById($ip_id) {
 		try {
-			$sql = "SELECT subnets.subnet_ip FROM ips
+			$sql = "SELECT subnets.host as subnet_host, subnets.netmask as subnet_netmask FROM ips
 					LEFT JOIN subnets on (subnets.id=ips.subnet_id)
 					WHERE ips.id='$ip_id';";
 			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$subnet = $row['subnet_ip'];
-			}
+			$subnet = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
@@ -361,14 +358,14 @@ class Helper {
 
 	function getIplistByUserID($id) {
 		try {
-			$sql = "SELECT ips.id, ips.user_id, ips.ip_ip, ips.subnet_id,
+			$sql = "SELECT ips.id, ips.user_id, ips.ip, ips.subnet_id,
 						   users.nickname,
-					LEFT(subnets.title, 25) as title, subnets.subnet_ip
+					LEFT(subnets.title, 25) as title, subnets.host as subnet_host, subnets.netmask as subnet_netmask
 					FROM ips
 					LEFT JOIN users ON (users.id=ips.user_id)
 					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
 					WHERE users.id=$id
-					ORDER BY subnets.subnet_ip, ips.ip_ip";
+					ORDER BY subnets.host, ips.ip";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$row['is_ip_owner'] = usermanagement::isThisUserOwner($row['user_id']);
@@ -383,7 +380,7 @@ class Helper {
 
 	function getSubnetlistByUserID($id) {
 		try {
-			$sql = "SELECT COUNT(ips.id) as ips_in_net, subnets.id, subnets.subnet_ip, subnets.title
+			$sql = "SELECT COUNT(ips.id) as ips_in_net, subnets.id, subnets.host, subnets.netmask, subnets.title
 					FROM  subnets
 					LEFT JOIN ips on (ips.subnet_id=subnets.id)
 					WHERE subnets.user_id=$id GROUP BY subnets.id";
@@ -401,7 +398,7 @@ class Helper {
 	public function getServiceseBySubnetId($subnet_id) {
 		$servicelist = array();
 		try {
-			$sql = "SELECT ips.id as ip_id, ips.ip_ip, services.id as service_id
+			$sql = "SELECT ips.id as ip_id, ips.ip, services.id as service_id
 					FROM ips
 					LEFT JOIN services ON (services.ip_id=ips.id)
 					WHERE ips.subnet_id='$subnet_id'";
@@ -419,8 +416,8 @@ class Helper {
 	public function getServiceDataByServiceId($service_id) {
 		try {
 			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.create_date,
-			       ips.ip_ip, ips.zone_start, ips.zone_end,
-			       subnets.subnet_ip, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
+			       ips.ip, ips.zone_start, ips.zone_end,
+			       subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email
 			       FROM  services
 			       LEFT JOIN ips ON (ips.id=services.ip_id)
@@ -519,7 +516,7 @@ class Helper {
 
 		if($exploded_ip[0].".".$exploded_ip[1]==$GLOBALS['net_prefix']) {
 			try {
-				$sql = "SELECT ips.id FROM ips, subnets WHERE ips.ip_ip='$exploded_ip[3]' AND subnets.subnet_ip='$exploded_ip[2]' AND ips.subnet_id=subnets.id";
+				$sql = "SELECT ips.id FROM ips, subnets WHERE ips.ip='$exploded_ip[3]' AND subnets.subnet_ip='$exploded_ip[2]' AND ips.subnet_id=subnets.id";
 				$result = DB::getInstance()->query($sql);
 				$ip_id = $result->fetch(PDO::FETCH_ASSOC);
 			}
@@ -585,7 +582,7 @@ class Helper {
 		try {
 			$sql = "SELECT ips.id
 				FROM ips, subnets
-				WHERE subnets.subnet_ip=$ipParts[2] AND ips.subnet_id=subnets.id AND ips.ip_ip=$ipParts[3]";
+				WHERE subnets.subnet_ip=$ipParts[2] AND ips.subnet_id=subnets.id AND ips.ip=$ipParts[3]";
 			$result = DB::getInstance()->query($sql);
 			
 			foreach($result as $row) {
