@@ -79,7 +79,7 @@ subnetCalculator::tr('HostMax:', '<font color="blue">'.subnetCalculator::bintodq
     if ($_GET['section'] == "new") {
 		if (usermanagement::checkPermission(32)) {
 			$smarty->assign('message', message::getMessage());
-			$smarty->assign('avalailable_subnets', editingHelper::getFreeSubnets());
+			$smarty->assign('existing_subnets', editingHelper::getExistingSubnets());
 			$smarty->assign('subnets_with_defined_vpnserver', $subneteditor->getSubnetsWithDefinedVpnserver());
 			$smarty->display("header.tpl.php");
 			$smarty->display("subnet_new.tpl.php");
@@ -112,7 +112,7 @@ subnetCalculator::tr('HostMax:', '<font color="blue">'.subnetCalculator::bintodq
 			$smarty->assign('subnets_with_defined_vpnserver', $subneteditor->getSubnetsWithDefinedVpnserver());
 			$subnetdata = Helper::getSubnetDataBySubnetID($_GET['id']);
 			$smarty->assign('subnet_data', $subnetdata);
-			$smarty->assign('avalailable_subnets', editingHelper::getFreeSubnetsPlusPredefinedSubnet($subnetdata['subnet_ip']));
+//			$smarty->assign('avalailable_subnets', editingHelper::getFreeSubnetsPlusPredefinedSubnet($subnetdata['subnet_ip']));
 			$smarty->display("header.tpl.php");
 			$smarty->display("subnet_edit.tpl.php");
 			$smarty->display("footer.tpl.php");

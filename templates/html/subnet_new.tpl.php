@@ -1,14 +1,57 @@
 <form action="./subneteditor.php?section=insert" method="POST">
 
 	<h1>Ein neues Subnetz erstellen:</h1>
-	<h2>Daten zum Netz</h2>
-	<p>Neues Subnetz wählen:
-		<select name="subnet_ip">
-			{foreach item=subnet from=$avalailable_subnets}
-				<option value="{$subnet}">{$net_prefix}.{$subnet}.0/24</option>
-			{/foreach}
-		</select>
+
+	<h2>Subnetz Bereich</h2>
+	<p>
+		<input type="radio" name="subnet_kind" value="extend" checked="checked" onchange="document.getElementById('simple').style.display = 'none'; document.getElementById('extend').style.display = 'block';">Extend<br>
+		<input type="radio" name="subnet_kind" value="simple" onchange="document.getElementById('simple').style.display = 'block'; document.getElementById('extend').style.display = 'none';">Simple<br>
 	</p>
+
+	<div id="simple" style="display: none;">
+		<h3>Einfache Bereichvergabe</h3>
+		IP´s im Subnetz: <select name="ip_count">
+			<option value="2">2 (/30)</option>
+			<option value="6">6 (/29)</option>
+			<option value="14">14 (/28)</option>
+			<option value="30">30 (/27)</option>
+			<option value="62">62 (/26)</option>
+			<option value="126">126 (/25)</option>
+			<option value="254">254 (/24)</option>
+			<option value="510">510 (/23)</option>
+			<option value="1022">1022 (/22)</option>
+			<option value="2046">2046 (/21)</option>
+		</select>
+
+	</div>
+	<div id="extend" style="display: block;">
+		<div style="width: 100%; overflow: hidden;">
+			<div style="float:left; width: 50%;">
+				<h3>neues Netz</h2>
+				<div style="width: 100%; overflow: hidden;">
+					<div style="float:left;">
+						Host:<br>
+						<input name="host" type="text" size="15"> /
+					</div>
+					<div style="float:left; margin-left:3px;">
+						Netmask:<br>
+						<input name="netmask" type="text" size="5">
+					</div>
+				</div>
+			</div>
+			<div style="float:left; width: 50%;">
+				<h3>Bereits existierende Subnetze</h3>
+				<ul>
+					{foreach item=existing_subnet from=$existing_subnets}
+						<li>{$net_prefix}.{$existing_subnet.host}/{$existing_subnet.netmask}</li>
+					{/foreach}
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	<h2>DHCP</h2>
 	<p><input type="checkbox" name="allows_dhcp" value="true" checked="checked"> IP´s dürfen einen bestimmten IP-Bereich zum verteilen per DHCP reservieren.</p>
 	
 	<h2>Beschreibung</h2>
@@ -55,7 +98,7 @@
 			<p>VPN-Daten von Subnetz 
 				<select name="vpnserver_from_project">
 					{foreach item=subnet from=$subnets_with_defined_vpnserver}
-						<option value="{$subnet.id}">{$net_prefix}.{$subnet.subnet_ip}.0/24</option>
+						<option value="{$subnet.id}">{$net_prefix}.{$subnet.host}./{$subnet.netmask}</option>
 					{/foreach}
 				</select> übernehmen.
 			</p>

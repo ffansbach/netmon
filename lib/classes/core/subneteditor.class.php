@@ -32,15 +32,15 @@ require_once("./lib/classes/core/ipeditor.class.php");
 
 class subneteditor {
 	public function createNewSubnet($data) {
-		$result = DB::getInstance()->exec("INSERT INTO subnets (subnet_ip, allows_dhcp, user_id, title, description, longitude, latitude, radius, vpn_server, vpn_server_port, vpn_server_device, vpn_server_proto, vpn_server_ca, vpn_server_cert, vpn_server_key, vpn_server_pass, create_date)
-										   VALUES ('$data[subnet_ip]', '$data[allows_dhcp]', '$_SESSION[user_id]', '$data[title]', '$data[description]', '$data[longitude]', '$data[latitude]', '$data[radius]', '$data[vpn_server]','$data[vpn_server_port]', '$data[vpn_server_device]', '$data[vpn_server_proto]', '$data[vpn_server_ca]', '$data[vpn_server_cert]', '$data[vpn_server_key]', '$data[vpn_server_pass]', NOW());");
+		$result = DB::getInstance()->exec("INSERT INTO subnets (host, netmask, allows_dhcp, user_id, title, description, longitude, latitude, radius, vpn_server, vpn_server_port, vpn_server_device, vpn_server_proto, vpn_server_ca, vpn_server_cert, vpn_server_key, vpn_server_pass, create_date)
+										   VALUES ('$data[host]', '$data[netmask]', '$data[allows_dhcp]', '$_SESSION[user_id]', '$data[title]', '$data[description]', '$data[longitude]', '$data[latitude]', '$data[radius]', '$data[vpn_server]','$data[vpn_server_port]', '$data[vpn_server_device]', '$data[vpn_server_proto]', '$data[vpn_server_ca]', '$data[vpn_server_cert]', '$data[vpn_server_key]', '$data[vpn_server_pass]', NOW());");
 		$subnet_id = DB::getInstance()->lastInsertId();
 		if ($result>0) {
-			$message[] = array("Das Subnetz ".$GLOBALS['net_prefix'].".".$data['subnet_ip']." wurde in die Datenbank eingetragen.", 1);
+			$message[] = array("Das Subnetz ".$GLOBALS['net_prefix'].".".$data['host']."/".$data['netmask']." wurde in die Datenbank eingetragen.", 1);
 			message::setMessage($message);
 			return array("result"=>true, "subnet_id"=>$subnet_id);
 		} else {
-			$message[] = array("Das Subnetz ".$GLOBALS['net_prefix'].$data['subnet_ip']." konnte nicht in die Datenbank eingetragen werden.", 2);
+			$message[] = array("Das Subnetz ".$GLOBALS['net_prefix'].".".$data['host']."/".$data['netmask']." konnte nicht in die Datenbank eingetragen werden.", 2);
 			message::setMessage($message);
 			return false;
 		}
@@ -91,7 +91,7 @@ class subneteditor {
 
 	public function getSubnetsWithDefinedVpnserver() {
 		try {
-			$sql = "select id, subnet_ip FROM subnets WHERE vpn_server IS NOT NULL ORDER BY subnet_ip ASC";
+			$sql = "select id, host, netmask FROM subnets WHERE vpn_server IS NOT NULL ORDER BY host ASC";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$subnets[] = $row;
@@ -120,12 +120,30 @@ class subneteditor {
 	}
 	
 	public function checkSubnetData() {
-		//Check if the chosen subnet IP is still free
-		if (!in_array($_POST['subnet_ip'], editingHelper::getFreeSubnets())) {
-			$message[] = array("Das gewählte Subnetz ist nicht mehr frei, bitte wählen Sie ein anderes.",2);
-		} else {
-			$subnet_ip = $_POST['subnet_ip'];
+		if($_POST['subnet_kind'] == "simple") {
+			die('Not implemented yet!');
+		} elseif ($_POST['subnet_kind'] == "extend") {
+			$exploded_host = explode(".", $_POST['host']);
+
+			//Check if the chosen subnet IP is still free
+			//-->!!!checktIfSubnetExists
+			/*$existing_subnets = editingHelper::getExistingSubnets();
+			foreach($existing_subnets as $subnet) {
+				$first_ip = 
+				$last_ip = 
+			}
+		
+			if (!in_array($_POST['subnet_ip'], editingHelper::getExistingSubnets())) {
+				$message[] = array("Das gewählte Subnetz ist nicht mehr frei, bitte wählen Sie ein anderes.",2);
+			} else {
+				$subnet_ip = $_POST['subnet_ip'];
+			}*/
 		}
+
+		//Workaround!
+		$host = $exploded_host[2].".".$exploded_host[3];		
+		$netmask = $_POST['netmask'];
+		//-------
 
 		if (empty($_POST['allows_dhcp']))
 			$allows_dhcp = 0;
@@ -197,7 +215,7 @@ class subneteditor {
 			message::setMessage($message);
 			return false;
 		} else {
-			return array('subnet_ip'=>$subnet_ip, 'allows_dhcp'=>$allows_dhcp, 'title'=>$title, 'description'=>$description, 'longitude'=>$longitude, 'latitude'=>$latitude, 'radius'=>$radius, 'vpn_server'=>$vpn_server, 'vpn_server_port'=> $vpn_server_port, 'vpn_server_device'=> $vpn_server_device, 'vpn_server_proto'=> $vpn_server_proto, 'vpn_server_ca'=> $vpn_server_ca, 'vpn_server_cert'=> $vpn_server_cert, 'vpn_server_key'=> $vpn_server_key, 'vpn_server_pass'=>$vpn_server_pass);
+			return array('host'=>$host, 'netmask'=>$netmask, 'allows_dhcp'=>$allows_dhcp, 'title'=>$title, 'description'=>$description, 'longitude'=>$longitude, 'latitude'=>$latitude, 'radius'=>$radius, 'vpn_server'=>$vpn_server, 'vpn_server_port'=> $vpn_server_port, 'vpn_server_device'=> $vpn_server_device, 'vpn_server_proto'=> $vpn_server_proto, 'vpn_server_ca'=> $vpn_server_ca, 'vpn_server_cert'=> $vpn_server_cert, 'vpn_server_key'=> $vpn_server_key, 'vpn_server_pass'=>$vpn_server_pass);
 		}
 	}
 	
@@ -208,7 +226,7 @@ class subneteditor {
 		
 		$subnet_data = Helper::getSubnetDataBySubnetID($subnet_id);
 		DB::getInstance()->exec("DELETE FROM subnets WHERE id='$subnet_id';");
-		$message[] = array("Das Subnetz $GLOBALS[net_prefix].$subnet_data[subnet_ip].0/24 wurde gelöscht.",1);
+		$message[] = array("Das Subnetz $GLOBALS[net_prefix].$subnet_data[host]/$subnet_data[netmask] wurde gelöscht.",1);
 		message::setMessage($message);
 		return true;
 	}
