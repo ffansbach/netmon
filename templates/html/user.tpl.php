@@ -28,7 +28,7 @@ Ich bin seit dem {$user.create_date} dabei.<br>
 {foreach key=count item=iplist from=$iplist}
 	<tr>
 		<td>{$count+1}</td>
-		<td><a href="./ip.php?id={$iplist.id}">{$net_prefix}.{$iplist.subnet_ip}.{$iplist.ip_ip}</a></td>
+		<td><a href="./ip.php?id={$iplist.id}">{$net_prefix}.{$iplist.ip}</a></td>
 		<td>
 		  {if $iplist.is_ip_owner}
 		    <a href="./ipeditor.php?section=edit&id={$iplist.id}">Editieren</a>
@@ -54,7 +54,7 @@ Ich bin seit dem {$user.create_date} dabei.<br>
 {foreach key=count item=subnetlist from=$subnetlist}
 	<tr>
 		<td>{$count+1}</td>
-		<td><a href="./subnet.php?id={$subnetlist.id}">{$net_prefix}.{$subnetlist.subnet_ip}.0/24</a></td>
+		<td><a href="./subnet.php?id={$subnetlist.id}">{$net_prefix}.{$subnetlist.host}/{$subnetlist.netmask}</a></td>
 		<td>{$subnetlist.title}</td>
 		<td>{$subnetlist.ips_in_net}</td>
 		<td><a href="./subneteditor.php?section=edit&id={$subnetlist.id}">Editieren</a></td>

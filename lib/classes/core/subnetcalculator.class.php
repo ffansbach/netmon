@@ -129,6 +129,32 @@ public function getBinLastIP($dq_host, $cdr_nmask) {
 	}
 }
 
+
+public function getDqLastIp($dq_host, $cdr_nmask) {
+	$binin = subnetCalculator::getBinLastIP($dq_host, $cdr_nmask);
+	if ($binin==0) return $binin;
+		$binin=explode(".", chunk_split($binin,8,"."));
+		for ($i=0; $i<4 ; $i++) {
+			$dq[$i]=bindec($binin[$i]);
+	}
+	return implode(".",$dq) ;
+}
+
+public function getDqFirstIp($dq_host, $cdr_nmask) {
+	$binin = subnetCalculator::getBinFirstIP($dq_host, $cdr_nmask);
+	if ($binin==0) return $binin;
+		$binin=explode(".", chunk_split($binin,8,"."));
+		for ($i=0; $i<4 ; $i++) {
+			$dq[$i]=bindec($binin[$i]);
+	}
+	return implode(".",$dq) ;
+}
+
+
+
+
+
+
 public function getHostsTotal($cdr_nmask) {
 	//Takes care of 31 and 32 bit masks.
 	$host_total = (bindec(str_pad("",(32-$cdr_nmask),1)) - 1);

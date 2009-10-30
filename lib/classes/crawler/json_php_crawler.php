@@ -41,7 +41,7 @@
 
   //Login-Data
   $GLOBALS['nickname'] = "crawler";
-  $GLOBALS['password'] = "test";
+  $GLOBALS['password'] = "blabla";
   $GLOBALS['netmon_url'] = "http://netmon.freifunk-ol.de/";
 
 class JsonDataCollector {
@@ -80,12 +80,11 @@ class JsonDataCollector {
 		}
 
 		foreach ($services as $service) {
-			//echo "Service: $service[service_id]: $GLOBALS[net_prefix].$service[subnet_ip].$service[ip_ip]\n";
-			$ping = $this->pingHost("$GLOBALS[net_prefix].$service[subnet_ip].$service[ip_ip]");
+			$ping = $this->pingHost("$GLOBALS[net_prefix].$service[ip]");
 
 			if ($service['crawler']=="json") {
 				if ($ping) {
-					$json_obj = $this->getJason("http://$GLOBALS[net_prefix].$service[subnet_ip].$service[ip_ip]/cgi-bin/luci/freifunk/status.json");
+					$json_obj = $this->getJason("http://$GLOBALS[net_prefix].$service[ip]/cgi-bin/luci/freifunk/status.json");
 				}
 
 				if ($json_obj) {
@@ -104,7 +103,7 @@ class JsonDataCollector {
 				}
 			} elseif ($service['typ']=="service" AND is_numeric($service['crawler'])) {
 				if ($ping) {
-					$portcheck =  @fsockopen("$GLOBALS[net_prefix].$service[subnet_ip].$service[ip_ip]", $service['crawler'], $errno, $errstr, 2);
+					$portcheck =  @fsockopen("$GLOBALS[net_prefix].$service[ip]", $service['crawler'], $errno, $errstr, 2);
 				}
 				if ($portcheck) {
 					$current_crawl_data['status'] = "online";

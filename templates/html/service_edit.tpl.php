@@ -1,4 +1,4 @@
-<h1>Service der Ip {$net_prefix}.{$servicedata.subnet_ip}.{$servicedata.ip_ip} editieren</h1>
+<h1>Service der Ip {$net_prefix}.{$servicedata.ip} editieren</h1>
 
 <form action="./serviceeditor.php?section=insert_edit&service_id={$servicedata.service_id}" method="POST">
   <p>

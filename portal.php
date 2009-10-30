@@ -103,12 +103,14 @@ if ($service_status['online']!=0 OR $service_status['offline']!=0 OR $service_st
 	$smarty->assign('history', $history);
 
 /*		try {
-			$sql = "SELECT ip_id, zone_start, zone_end
-			       FROM services";
+			$sql = "SELECT ips.id, ips.ip_ip, subnets.subnet_ip
+			       FROM ips, subnets
+					WHERE ips.subnet_id=subnets.id";
 			$result = DB::getInstance()->query($sql);
-			
 			foreach($result as $row) {
-				DB::getInstance()->exec("UPDATE ips SET zone_start='$row[zone_start]', zone_end='$row[zone_end]' WHERE id='$row[ip_id]';");
+			echo "<pre>";
+			print_r($row);
+				DB::getInstance()->exec("UPDATE ips SET ip_ip='$row[subnet_ip].$row[ip_ip]' WHERE id='$row[id]';");
 				$services[] = $row;
 			}
 		}

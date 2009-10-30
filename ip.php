@@ -9,7 +9,7 @@
   $ip_data = Helper::getIpInfo($_GET['id']);
   $smarty->assign('ip', $ip_data);
 
-  $online=exec("ping $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip_ip] -c 1 -w 1");
+  $online=exec("ping $GLOBALS[net_prefix].$ip_data[ip] -c 1 -w 1");
   if ($online)
     $ping = substr($online, -15, -9);
   else

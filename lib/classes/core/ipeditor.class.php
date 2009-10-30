@@ -44,7 +44,7 @@ class ipeditor {
 
     if ($range) {
       if ($ip != false) {
-	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip_ip, zone_start, zone_end, radius, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$ip', '$range[start]', '$range[end]', '$_POST[radius]', NOW());");
+	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip, zone_start, zone_end, radius, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$ip', '$range[start]', '$range[end]', '$_POST[radius]', NOW());");
 	$ip_id = DB::getInstance()->lastInsertId();
 
 	$service = editingHelper::addIpTyp($ip_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
@@ -78,7 +78,7 @@ class ipeditor {
 	vpn::deleteCCD($ip_id);
 	$ip_data = Helper::getIpInfo($ip_id);
 	DB::getInstance()->exec("DELETE FROM ips WHERE id='$ip_id';");
-	$message[] = array("Die IP $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip_ip] wurde gelöscht.",1);
+	$message[] = array("Die IP $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip] wurde gelöscht.",1);
 	message::setMessage($message);
   }
   
