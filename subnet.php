@@ -12,7 +12,7 @@
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
   $smarty->assign('isOwner', usermanagement::isThisUserOwner($subnet_data['user_id']));
 
-  $smarty->assign('ipstatus', $subnet->getIPStatus($_GET['id']));
+  $smarty->assign('ipstatus', subnet::getIPStatus($_GET['id']));
   
   $smarty->assign('iplist', subnet::getPosibleIpsBySubnetId($_GET['id']));
 

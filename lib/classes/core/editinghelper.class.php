@@ -54,25 +54,9 @@ class editingHelper {
 		}
 	}
 
-
-	public function getExistingSubnetIps() {
-		$subnets = array();
-		try {
-			$sql = "select subnet_ip FROM subnets ORDER BY subnet_ip ASC";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$subnets[] = $row['subnet_ip'];
-			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $subnets;
-	}
-
 	public function getExistingSubnets() {
 		try {
-			$sql = "select * FROM subnets ORDER BY subnet_ip ASC";
+			$sql = "select * FROM subnets ORDER BY host ASC";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$subnets[] = $row;
@@ -83,29 +67,6 @@ class editingHelper {
 		}
 		return $subnets;
 	}
-	
-	public function getFreeSubnets() {
-		$subnets = editingHelper::getExistingSubnetIps();
-		for ($i=0; $i<=255; $i++) {
-			if(!in_array($i, $subnets)) {
-				$available_subnets[] = $i;
-			}
-		}
-		return $available_subnets;
-	}
-
-	public function getFreeSubnetsPlusPredefinedSubnet($subnet) {
-		$subnets = editingHelper::getExistingSubnetIps();
-		for ($i=0; $i<=255; $i++) {
-			if(!in_array($i, $subnets)) {
-				$available_subnets[] = $i;
-			}
-		}
-		$available_subnets[] = $subnet;
-		asort($available_subnets);
-		return $available_subnets;
-	}
-
 	
 	public function getExistingIps($subnet_id) {
 		$ips = array();
@@ -122,21 +83,6 @@ class editingHelper {
 		return $ips;
 	}
 
-	public function getExistingIpsWithID($subnet_id) {
-		$ips = array();
-		try {
-			$sql = "SELECT id, ip FROM ips WHERE subnet_id='$subnet_id' ORDER BY ip ASC";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$ips[$row['ip']] = array('ip'=>$row['ip'], 'id'=>$row['id']);
-			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $ips;
-	}
-	
 	public function getExistingRanges($subnet_id) {
 		$services = Helper::getServiceseBySubnetId($subnet_id);
 		$zones = array();

@@ -449,17 +449,38 @@ class Helper {
 		return $service;
 	}
 
+	public function getExistingIpsBySubnetId($subnet_id) {
+		$ips = array();
+		try {
+			$sql = "SELECT * FROM ips WHERE subnet_id='$subnet_id' ORDER BY ip ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$ips[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $ips;
+	}
+
   public function getExistingRangesBySubnetId($subnet_id) {
-		$zones = array();
+		$rangelist = array();
 		$ips = Helper::getIpsBySubnetId($subnet_id);
+		
 		foreach ($ips as $ip) {
-			for ($i=$ip['zone_start']; $i<=$ip['zone_end']; $i++) {
-				if($ip['zone_start']!=0 AND $ip['zone_end']!=0) {
-					$zones[$i] = array('range'=>$i, 'id'=>$ip['id']);
+			$exploded_zone_start = explode(".", $ip['zone_start']);
+			$exploded_zone_end = explode(".", $ip['zone_end']);
+
+			for ($i=$exploded_zone_start[0]; $i<=$exploded_zone_end[0]; $i++) {
+				for ($ii=$exploded_zone_start[1]; $ii<=$exploded_zone_end[1]; $ii++) {
+					$key_ip = $GLOBALS['net_prefix'].".".$i.".".$ii;
+					$rangelist[$key_ip]['range_ip'] = $GLOBALS['net_prefix'].".".$i.".".$ii;
+					$rangelist[$key_ip]['ip_id'] = $ip['id'];
 				}
 			}
 		}
-		return $zones;
+		return $rangelist;
 	}
 
 	public function getLastOnlineCrawlDataByServiceId($service_id) {

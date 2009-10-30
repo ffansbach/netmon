@@ -4,7 +4,7 @@
 <b>DHCP-bereich:</b> {if $ip.zone_start==0 OR $ip.zone_end==0}
 						Kein DHCP-Bereich reserviert
 						{else}
-						{$net_prefix}.{$ip.subnet_ip}.{$ip.zone_start} bis {$net_prefix}.{$ip.subnet_ip}.{$ip.zone_end}
+						{$net_prefix}.{$ip.zone_start} bis {$net_prefix}.{$ip.zone_end}
 					{/if}<br>
 
 <b>Benutzer:</b> <a href="./user.php?id={$ip.user_id}">{$ip.nickname}</a><br>

@@ -33,7 +33,7 @@
 class subnet {
 	function getSubnet($subnet_id) {
 		try {
-			$sql = "SELECT subnets.id, subnets.subnet_ip, subnets.host, subnets.netmask, subnets.allows_dhcp, subnets.user_id, subnets.create_date, subnets.title, subnets.description, subnets.longitude, subnets.latitude, subnets.radius, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device,	subnets.vpn_server_proto,
+			$sql = "SELECT subnets.id, subnets.host, subnets.netmask, subnets.allows_dhcp, subnets.user_id, subnets.create_date, subnets.title, subnets.description, subnets.longitude, subnets.latitude, subnets.radius, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device,	subnets.vpn_server_proto,
 				      users.nickname
 			       FROM subnets
 			       LEFT JOIN users ON (users.id=subnets.user_id)
@@ -67,9 +67,11 @@ class subnet {
 			$exploded_last_ip = explode(".", $subnet['last_ip']);
 			$exploded_first_ip = explode(".", $subnet['first_ip']);
 			
+			$iplist = array();			
 			for($i=$exploded_first_ip[2]; $i<=$exploded_last_ip[2]; $i++) {
 				for($ii=$exploded_first_ip[3]; $ii<=$exploded_last_ip[3]; $ii++) {
-					$iplist[] = $GLOBALS['net_prefix'].".".$i.".".$ii;
+					$iplist[$GLOBALS['net_prefix'].".".$i.".".$ii]['type'] = 'free';
+					$iplist[$GLOBALS['net_prefix'].".".$i.".".$ii]['ip'] = $GLOBALS['net_prefix'].".".$i.".".$ii;
 				}
 			}
 			return $iplist;
@@ -81,27 +83,20 @@ class subnet {
 	}
 	
 	public function getIPStatus($subnet_id) {
-		$iplist = array();
-		
+		$iplist = subnet::getPosibleIpsBySubnetId($subnet_id);
+
 		//Ips eintragen
-		foreach (editingHelper::getExistingIpsWithID($subnet_id) as $ip) {
-		$iplist[$ip['ip']] = array('ip'=>$ip['ip'],
-									      'ip_id'=>$ip['id'],
-										  'typ'=>"ip");
+		foreach (Helper::getExistingIpsBySubnetId($subnet_id) as $key=>$ip) {
+			$key_ip = $GLOBALS['net_prefix'].".".$ip['ip'];
+
+			$iplist[$key_ip]['type'] = "ip";
+			$iplist[$key_ip]['ip_id']	= $ip['id'];
 		}
 		
 		foreach (Helper::getExistingRangesBySubnetId($subnet_id) as $range) {
-			$iplist[$range['range']] = array('range_ip'=>$range['range'],
-											 'belonging_ip_id'=>$range['id'],
-											 'typ'=>"range");
-		}
-		
-		for ($i=1; $i<=254; $i++) {
-			if (!isset($iplist[$i])) {
-				$iplist[$i] = array('ip'=>$i,
-									'typ'=>"free");				
-			}
-			ksort($iplist);
+			$iplist[$range['range_ip']] = array('range_ip'=>$range['range_ip'],
+											 'ip_id'=>$range['ip_id'],
+											 'type'=>"range");
 		}
 
 		return $iplist;
