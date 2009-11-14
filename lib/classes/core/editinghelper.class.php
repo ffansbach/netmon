@@ -163,14 +163,14 @@ class editingHelper {
 		$service_id = DB::getInstance()->lastInsertId();
 		
 		try {
-			$sql = "select ips.ip, subnets.subnet_ip FROM ips LEFT JOIN subnets ON (subnets.id=ips.subnet_id) WHERE ips.id='$ip_id'";
+			$sql = "select ips.ip FROM ips WHERE ips.id='$ip_id'";
 			$result = DB::getInstance()->query($sql);
 			$ip_data = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		$message[] = array("Ein Service vom Typ ".$typ." wurde der Ip $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip] hinzugefügt.",1);
+		$message[] = array("Ein Service vom Typ ".$typ." wurde der Ip $GLOBALS[net_prefix].$ip_data[ip] hinzugefügt.",1);
 		message::setMessage($message);
 		
 		return array("result"=>true, "service_id"=>$service_id);
