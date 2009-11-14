@@ -21,6 +21,7 @@
 // +---------------------------------------------------------------------------+/
 
 require_once("./lib/classes/core/ipeditor.class.php");
+require_once("./lib/classes/core/subnet.class.php");
 
 /**
  * This file contains the class for editing a subnet.
@@ -118,9 +119,15 @@ class subneteditor {
 			echo $e->getMessage();
 		}
 	}
-	
+
 	public function checkSubnetData() {
 		if($_POST['subnet_kind'] == "simple") {
+//			$_POST['ip_count']
+
+			foreach(editinghelper::getExistingSubnets() as $subnet) {
+				subnet::getPosibleIpsBySubnetId();
+			}
+
 			die('Not implemented yet!');
 		} elseif ($_POST['subnet_kind'] == "extend") {
 			$exploded_host = explode(".", $_POST['host']);
