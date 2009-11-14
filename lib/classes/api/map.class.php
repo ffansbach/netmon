@@ -299,7 +299,6 @@ class apiMap {
 										$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
 									$xw->endElement();
 									$xw->startElement('description');
-										$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
 										$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 													   DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
 													   <br><b>Dieser Ip ist offline</b><br>
@@ -533,7 +532,17 @@ class apiMap {
 									$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a> $title]]>");
 								$xw->endElement();
 								$xw->startElement('description');
-									$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
+
+									$zone_start = explode(".", $entry['zone_start']);
+									$zone_end = explode(".", $entry['zone_end']);
+
+									$entry['ips'] = 0;
+									for($i = $zone_start[0]; $i<=$zone_end[0]; $i++) {
+										for($ii = $zone_start[1]; $ii<=$zone_end[1]; $ii++) {
+											$entry['ips']++;
+										}
+									}
+
 									$box_inhalt = "<b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
 												   <b>SSID:</b> $entry[ssid]<br>
@@ -596,7 +605,6 @@ unset($entry);
 										$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
 									$xw->endElement();
 									$xw->startElement('description');
-										$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
 									$box_inhalt = "<b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end]<br>
 												   <b>SSID:</b> $entry[ssid]<br>
