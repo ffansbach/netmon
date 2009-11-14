@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class ip {
+class Ip {
   public function getServiceList($ip_id) {
 	$services = Helper::getServicesByIpId($ip_id);
 	if (is_array($services))

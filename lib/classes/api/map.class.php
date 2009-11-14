@@ -27,7 +27,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class apiMap {
+class ApiMap {
 	//Funktion modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
 	//Prints a KML file that can be used with OpenStreetmap and the Modified freifunkmap.php
 	/**

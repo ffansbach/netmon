@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class portal extends netmonLib{
+class Portal extends NetmonLib{
 
 }
 

@@ -32,7 +32,7 @@ require_once("./lib/classes/core/login.class.php");
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class user {
+class User {
 	function userInsertEdit() {
 		if ($this->checkUserEditData($_GET['id'], $_POST['changepassword'], $_POST['oldpassword'], $_POST['newpassword'], $_POST['newpasswordchk'], $_POST['email'])) {
 			$password = usermanagement::encryptPassword($_POST['newpassword']);

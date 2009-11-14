@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class register {
+class Register {
 	public function insertNewUser($nickname, $password, $passwordchk, $email, $agb) {
 		if ($this->checkUserData($nickname, $password, $passwordchk, $email, $agb)) {
 			$password = usermanagement::encryptPassword($password);

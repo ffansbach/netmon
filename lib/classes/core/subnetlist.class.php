@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class subnetlist {
+class SubnetList {
 	function getList() {
 		$subnetlist = array();
 		try {

@@ -3,7 +3,7 @@
 require_once("./lib/classes/core/service.class.php");
 require_once("./lib/classes/core/login.class.php");
 
-class crawl {
+class Crawl {
 	public function receive($nickname, $password, $service_id, $crawl_data) {
 		$session = login::user_login($nickname, $password);
 		
