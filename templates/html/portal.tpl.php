@@ -1,8 +1,7 @@
 <h1>Arbeiten an der Datenbank</h1>
 
-<p>Im Moment arbeitet Floh1111 an der Netmon-Datenban.<br>
-Es wird darum gebeten keine Aenderungen vorzunehmen.<br>
-Die angezeigten Daten sind warscheinlich Fehlerhaft.
+<p>Im Moment arbeitet Floh1111 an der Netmon-Datenbank.<br>
+Editier- und Anlegefunktionen sind daher verbugt und sollten nicht genutzt werden.!
 </p>
 
 <h1>Netmon 0.2 TESTING, Codename "shake-up"</h1>

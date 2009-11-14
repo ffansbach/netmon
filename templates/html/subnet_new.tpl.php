@@ -21,6 +21,11 @@
 			<option value="510">510 (/23)</option>
 			<option value="1022">1022 (/22)</option>
 			<option value="2046">2046 (/21)</option>
+			<option value="4094">4094 (/20)</option>
+			<option value="8190">8190 (/19)</option>
+			<option value="16382">16382 (/18)</option>
+			<option value="32766">32766 (/17)</option>
+			<option value="65534">65534 (/16)</option>
 		</select>
 
 	</div>

@@ -534,10 +534,10 @@ class Helper {
 	
 	public function linkIp2IpId($ip2check) {
 		$exploded_ip = explode(".", $ip2check);
-
+		
 		if($exploded_ip[0].".".$exploded_ip[1]==$GLOBALS['net_prefix']) {
 			try {
-				$sql = "SELECT ips.id FROM ips, subnets WHERE ips.ip='$exploded_ip[3]' AND subnets.subnet_ip='$exploded_ip[2]' AND ips.subnet_id=subnets.id";
+				$sql = "SELECT ips.id FROM ips WHERE ips.ip='$exploded_ip[2].$exploded_ip[3]'";
 				$result = DB::getInstance()->query($sql);
 				$ip_id = $result->fetch(PDO::FETCH_ASSOC);
 			}
