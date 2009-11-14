@@ -143,7 +143,7 @@ class apiMap {
 										$title =  "($entry[title])";
 									else
 										$title = "";
-									$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[ip_ip]</a> $title]]>");
+									$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a> $title]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 									$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
@@ -296,7 +296,7 @@ class apiMap {
 									$title = "";
 								$xw->startElement('Placemark');
 									$xw->startElement('name');
-										$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[ip_ip]</a>]]>");
+										$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
 									$xw->endElement();
 									$xw->startElement('description');
 										$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
@@ -530,12 +530,12 @@ class apiMap {
 										$title =  "($entry[title])";
 									else
 										$title = "";
-									$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[ip_ip]</a> $title]]>");
+									$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a> $title]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 									$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
 									$box_inhalt = "<b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
-												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[subnet_ip].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[subnet_ip].$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
+												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
 												   <b>SSID:</b> $entry[ssid]<br>
 												   <b>Standortbeschreibung:</b> $entry[location]<br>
 												   <b>Letzter Crawl:</b> $entry[crawl_time]<br>";
@@ -593,12 +593,12 @@ unset($entry);
 									$title = "";
 								$xw->startElement('Placemark');
 									$xw->startElement('name');
-										$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[subnet_ip].$entry[ip_ip]</a>]]>");
+										$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
 									$xw->endElement();
 									$xw->startElement('description');
 										$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
 									$box_inhalt = "<b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
-												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[subnet_ip].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[subnet_ip].$entry[zone_end]<br>
+												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end]<br>
 												   <b>SSID:</b> $entry[ssid]<br>
 												   <b>Standortbeschreibung:</b> $entry[location]<br>
 													<b>Diese Ip ist offline!</b><br>
