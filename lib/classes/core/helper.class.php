@@ -602,8 +602,8 @@ class Helper {
 		$ipParts = explode(".", $ip);
 		try {
 			$sql = "SELECT ips.id
-				FROM ips, subnets
-				WHERE subnets.subnet_ip=$ipParts[2] AND ips.subnet_id=subnets.id AND ips.ip=$ipParts[3]";
+				FROM ips
+				WHERE ips.ip='$ipParts[2].$ipParts[3]'";
 			$result = DB::getInstance()->query($sql);
 			
 			foreach($result as $row) {
