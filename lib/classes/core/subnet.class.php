@@ -52,6 +52,19 @@ class subnet {
 		return $subnet;
 	}
 
+	public function getSubnetsIds() {
+		try {
+			$sql = "select id FROM subnets ORDER by host DESC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$subnets[] = $row['id'];
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
 	public function getPosibleIpsBySubnetId($subnet_id) {
 		try {
 			$sql = "SELECT host, netmask

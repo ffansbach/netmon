@@ -10,6 +10,15 @@
 		</select> anlegen.
 	</p>
 	
+	<h2>IP</h2>
+	<p>
+		<input type="radio" name="ip_kind" value="simple" checked="checked" onchange="document.getElementById('extend').style.display = 'none';">IP vom System generieren lassen<br>
+		<input type="radio" name="ip_kind" value="extend" onchange="document.getElementById('extend').style.display = 'block';">IP selber angeben<br>
+	</p>
+	<div id="extend" style="display: none;">
+		<b>IP:</b>  {$net_prefix}.<input name="ip" type="text" size="7">
+	</div>
+
 	<h2>DHCP</h2>
 	<p>
 		<p>Für Clients zu reservierende IP's: <input name="ips" type="text" size="1" maxlength="3" value="5"><br>Für Vergabe per DHCP (Wenn keine IP´s vergeben werden sollen bitte 0 eintragen!)</p>
