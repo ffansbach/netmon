@@ -1,6 +1,6 @@
 <?php
 
-class rssParser {
+class RssParser {
 	
 	public function parseRSS($xml) {
 		$rssdata['title'] = $xml->channel->title;

@@ -30,7 +30,7 @@
 
 require_once './lib/classes/extern/XMPPHP/XMPP.php';
 
-class service {
+class Service {
 	public function getCrawlHistory($service_id, $count) {
 		$last_crawl = array();
 		try {

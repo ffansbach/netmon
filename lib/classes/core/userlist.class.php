@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class userlist {
+class UserList {
 	function getList() {
 		try {
 			$sql = "SELECT u.id, u.nickname, jabber, icq, website, email, create_date

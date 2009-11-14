@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class usermanagement {
+class UserManagement {
   
   //Verschlüssele Passwort (nicht mit md5! Ändern!)
   //Funktion muss auch für Login und überall wo das Passwort benötigt wird angewendet werden!

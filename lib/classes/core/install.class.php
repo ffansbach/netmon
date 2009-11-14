@@ -1,5 +1,5 @@
 <?php
-class install {
+class Install {
 	public function insertDB() {
 		try {
 			$sql = file_get_contents('./netmon.sql');

@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class logsystem {
+class Logsystem {
 
   public function getTime() {
     return date("d:m:Y H:i:s", time());
@@ -37,7 +37,7 @@ class logsystem {
   public function mysqlQueryLog($needed_time, $query) {
     $logfile = $GLOBALS['monitor_root']."/log/querylog.log";
     if ($needed_time>$GLOBALS['mysql_querry_log_time']) {
-      $time = logsystem::getTime();
+      $time = Logsystem::getTime();
     
       $message = "$time	$needed_time	$_SERVER[REMOTE_ADDR] :: $query \n";
 

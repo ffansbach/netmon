@@ -2,7 +2,7 @@
   require_once('./config/runtime.inc.php');
   require_once('./lib/classes/core/iplist.class.php');
   
-  $iplist = new iplist;
+  $iplist = new IpList;
   
   $smarty->assign('iplist', $iplist->getIpList());
   $smarty->assign('vpnlist', $iplist->getVpnList());

@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class iplist {
+class IpList {
 	function getIpList() {
 	  $services = Helper::getServicesByType('node');
 	  foreach ($services as $service) {

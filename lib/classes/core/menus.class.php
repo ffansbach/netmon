@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class menus extends usermanagement {
+class Menus extends usermanagement {
 
   function topMenu() {
     if (usermanagement::checkPermission(1)) {

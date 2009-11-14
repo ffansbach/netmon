@@ -28,10 +28,10 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class editingHelper {
+class EditingHelper {
 	public function getAFreeIP($subnet_id, $zone_start=false, $zone_end=false) {
 		//Alle irgendwie im Subnet existierende IP's holen
-		$existingips = editingHelper::getExistingIps($subnet_id);
+		$existingips = EditingHelper::getExistingIps($subnet_id);
 		
 		//Für den Ip bestimmte Range den Existierenden IP's hinzufügen
 		if ($zone_start AND $zone_end) {
@@ -95,7 +95,7 @@ class editingHelper {
 	}
 
 	public function getExistingRealIps($subnet_id) {
-		return array_merge(editingHelper::getExistingIps($subnet_id), editingHelper::getExistingRanges($subnet_id));
+		return array_merge(EditingHelper::getExistingIps($subnet_id), EditingHelper::getExistingRanges($subnet_id));
 	}
 	
 	public function getFreeIpZone($subnet_id, $range, $ip) {
@@ -104,7 +104,7 @@ class editingHelper {
 		$used_zones = array();
 		$zones = array();
 		
-		$existing_ips = editingHelper::getExistingIps($subnet_id);
+		$existing_ips = EditingHelper::getExistingIps($subnet_id);
 		
 		//Array aller nicht mit Zonen oder Ips belegter IPs erstellen
 		for ($i=1; $i<=254; $i++) {

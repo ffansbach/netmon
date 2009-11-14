@@ -1,6 +1,6 @@
 <?php
 
-class main {
+class Main {
 	public function login($nickname, $password){
 		return(login::user_login($nickname, $password));
 	}

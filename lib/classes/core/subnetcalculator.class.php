@@ -2,7 +2,7 @@
 
 //Source-Class (Under GPL-License): http://sourceforge.net/projects/subntcalc/
 
-class subnetCalculator {
+class SubnetCalculator {
 function binnmtowm($binin){
 	$binin=rtrim($binin, "0");
 	if (!ereg("0",$binin) ){
@@ -70,7 +70,7 @@ function tr(){
 
 public function getSubnetClass($bin_net, $cdr_nmask) {
 	//Get Dotbin
-	$dotbin_net = subnetCalculator::dotbin($bin_net,$cdr_nmask);
+	$dotbin_net = SubnetCalculator::dotbin($bin_net,$cdr_nmask);
 	//Determine Class
 	if (ereg('^0',$bin_net)){
 		$class="A";
@@ -93,14 +93,14 @@ public function getSubnetClass($bin_net, $cdr_nmask) {
 }
 
 public function getBinHost($dq_host) {
-	return 	subnetCalculator::dqtobin($dq_host);
+	return 	SubnetCalculator::dqtobin($dq_host);
 }
 
 public function getBinBcast($dq_host, $cdr_nmask) {
 	//Takes care of 31 and 32 bit masks.
-	$bin_bcast = str_pad(substr(subnetCalculator::getBinHost($dq_host),0,$cdr_nmask),32,1);
+	$bin_bcast = str_pad(substr(SubnetCalculator::getBinHost($dq_host),0,$cdr_nmask),32,1);
 
-	if (subnetCalculator::getHostsTotal($cdr_nmask)<=0 AND subnetCalculator::getBinNet($dq_host, $cdr_nmask)===$bin_bcast) {
+	if (SubnetCalculator::getHostsTotal($cdr_nmask)<=0 AND SubnetCalculator::getBinNet($dq_host, $cdr_nmask)===$bin_bcast) {
 		return 0;
 	} else {
 		return $bin_bcast;
@@ -108,13 +108,13 @@ public function getBinBcast($dq_host, $cdr_nmask) {
 }
 
 public function getBinNet($dq_host, $cdr_nmask) {
-	return str_pad(substr(subnetCalculator::getBinHost($dq_host),0,$cdr_nmask),32,0);
+	return str_pad(substr(SubnetCalculator::getBinHost($dq_host),0,$cdr_nmask),32,0);
 }
 
 public function getBinFirstIP($dq_host, $cdr_nmask) {
 	//Takes care of 31 and 32 bit masks.
-	if (subnetCalculator::getHostsTotal($cdr_nmask)>0) {
-		return str_pad(substr(subnetCalculator::getBinNet($dq_host, $cdr_nmask),0,31),32,1);
+	if (SubnetCalculator::getHostsTotal($cdr_nmask)>0) {
+		return str_pad(substr(SubnetCalculator::getBinNet($dq_host, $cdr_nmask),0,31),32,1);
 	} else {
 		return 0;
 	}
@@ -122,8 +122,8 @@ public function getBinFirstIP($dq_host, $cdr_nmask) {
 
 public function getBinLastIP($dq_host, $cdr_nmask) {
 	//Takes care of 31 and 32 bit masks.
-	if (subnetCalculator::getHostsTotal($cdr_nmask)>0) {
-		return $bin_last=(str_pad(substr(subnetCalculator::getBinBcast($dq_host, $cdr_nmask),0,31),32,0));
+	if (SubnetCalculator::getHostsTotal($cdr_nmask)>0) {
+		return $bin_last=(str_pad(substr(SubnetCalculator::getBinBcast($dq_host, $cdr_nmask),0,31),32,0));
 	} else {
 		return 0;
 	}
@@ -131,7 +131,7 @@ public function getBinLastIP($dq_host, $cdr_nmask) {
 
 
 public function getDqLastIp($dq_host, $cdr_nmask) {
-	$binin = subnetCalculator::getBinLastIP($dq_host, $cdr_nmask);
+	$binin = SubnetCalculator::getBinLastIP($dq_host, $cdr_nmask);
 	if ($binin==0) return $binin;
 		$binin=explode(".", chunk_split($binin,8,"."));
 		for ($i=0; $i<4 ; $i++) {
@@ -141,7 +141,7 @@ public function getDqLastIp($dq_host, $cdr_nmask) {
 }
 
 public function getDqFirstIp($dq_host, $cdr_nmask) {
-	$binin = subnetCalculator::getBinFirstIP($dq_host, $cdr_nmask);
+	$binin = SubnetCalculator::getBinFirstIP($dq_host, $cdr_nmask);
 	if ($binin==0) return $binin;
 		$binin=explode(".", chunk_split($binin,8,"."));
 		for ($i=0; $i<4 ; $i++) {
