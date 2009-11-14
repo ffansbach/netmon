@@ -31,7 +31,7 @@ require_once("./lib/classes/core/subnet.class.php");
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class subneteditor {
+class SubnetEditor {
 	public function createNewSubnet($data) {
 		$result = DB::getInstance()->exec("INSERT INTO subnets (host, netmask, allows_dhcp, user_id, title, description, longitude, latitude, radius, vpn_server, vpn_server_port, vpn_server_device, vpn_server_proto, vpn_server_ca, vpn_server_cert, vpn_server_key, vpn_server_pass, create_date)
 										   VALUES ('$data[host]', '$data[netmask]', '$data[allows_dhcp]', '$_SESSION[user_id]', '$data[title]', '$data[description]', '$data[longitude]', '$data[latitude]', '$data[radius]', '$data[vpn_server]','$data[vpn_server_port]', '$data[vpn_server_device]', '$data[vpn_server_proto]', '$data[vpn_server_ca]', '$data[vpn_server_cert]', '$data[vpn_server_key]', '$data[vpn_server_pass]', NOW());");

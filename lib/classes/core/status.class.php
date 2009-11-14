@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class status {
+class Status {
   public function getNewestUser() {
 		try {
 			$sql = "SELECT id, nickname, create_date

@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class serviceeditor {
+class ServiceEditor {
 	public function insertEditService($service_id, $typ, $crawler, $title, $description, $visible, $notify, $notification_wait) {
 		DB::getInstance()->exec("UPDATE services SET
 										title = '$title',

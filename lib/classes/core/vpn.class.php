@@ -30,7 +30,7 @@
 
   require_once('./lib/classes/extern/archive.class.php');
 
-class vpn {
+class Vpn {
 	public function generateKeys($ip_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $privkeypass_chk, $expiration) {
 		try {
 			$sql = "SELECT subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass
@@ -104,7 +104,7 @@ class vpn {
     
     if (!empty($keys['vpn_server_ca']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
 		//Get Config Datei
-		$config = vpn::getVpnConfig($ip_id);
+		$config = Vpn::getVpnConfig($ip_id);
 
       $tmpdir = "./tmp/";
       
@@ -180,7 +180,7 @@ class vpn {
   public function writeCCD($ip_id) {
     $ip_data = Helper::getIpDataByIpId($ip_id);
     
-    $cert_info = vpn::getCertificateInfo($ip_id);
+    $cert_info = Vpn::getCertificateInfo($ip_id);
     $CN = $cert_info['ip']['subject']['CN'];
     if (!empty($CN)) {
       $ccd = "./ccd/";
@@ -199,7 +199,7 @@ class vpn {
   
 	public function deleteCCD($ip_id) {
 		$ip = Helper::getIpDataByIpId($ip_id);
-		$cert_info = vpn::getCertificateInfo($ip_id);
+		$cert_info = Vpn::getCertificateInfo($ip_id);
 		$ccd = "./ccd/";
 		if (empty($cert_info['ip']['subject']['CN'])) {
 			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] kann nicht gelöscht werden, da kein CN eingetragen ist.", 2);
@@ -248,7 +248,7 @@ class vpn {
 		}
 		
 		foreach ($ip_ids as $ip_id) {
-			vpn::writeCCD($ip_id);
+			Vpn::writeCCD($ip_id);
 		}
 		
 		return true;

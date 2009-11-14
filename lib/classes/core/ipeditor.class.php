@@ -31,7 +31,7 @@ require_once("./lib/classes/core/vpn.class.php");
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class ipeditor {
+class Ipeditor {
   public function insertNewIp($subnet_id, $ips) {
     $ip = editingHelper::getAFreeIP($subnet_id);
 

@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class login {
+class Login {
 	public function user_login ($nickname, $password) {
 		if (empty($nickname) or empty($password)) {
 			$messages[] = array("Sie müssen einen Nickname und ein Passwort angeben um sich einzuloggen", 2);
