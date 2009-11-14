@@ -48,7 +48,7 @@ class status {
 		try {
 			$sql = "SELECT ips.id, ips.user_id, ips.ip, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
 						   users.nickname,
-						   subnets.title, subnets.subnet_ip
+						   subnets.title
 					FROM ips
 					LEFT JOIN users ON (users.id=ips.user_id)
 					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
@@ -66,11 +66,9 @@ class status {
   public function getNewestService() {
 		try {
 			$sql = "SELECT services.ip_id, services.title,
-					  ips.ip,
-					  subnets.subnet_ip
+					  ips.ip
 				  FROM services
 				  LEFT JOIN ips ON (ips.id = services.ip_id)
-				   LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
 				  WHERE services.typ LIKE 'service'
 			       ORDER BY services.id DESC LIMIT 1;";
 			$result = DB::getInstance()->query($sql); 

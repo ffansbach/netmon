@@ -78,7 +78,7 @@ class ipeditor {
 	vpn::deleteCCD($ip_id);
 	$ip_data = Helper::getIpInfo($ip_id);
 	DB::getInstance()->exec("DELETE FROM ips WHERE id='$ip_id';");
-	$message[] = array("Die IP $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip] wurde gelöscht.",1);
+	$message[] = array("Die IP $GLOBALS[net_prefix].$ip_data[ip] wurde gelöscht.",1);
 	message::setMessage($message);
   }
   

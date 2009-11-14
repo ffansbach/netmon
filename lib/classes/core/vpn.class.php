@@ -125,7 +125,7 @@ class vpn {
       fclose($handle);      
 
       // Objekt erzeugen. Das Argument bezeichnet den Dateinamen
-      $zipfile= new zip_file("VpnKeys_".$GLOBALS['net_prefix'].".".$keys['subnet_ip'].".".$keys['ip'].".zip");
+      $zipfile= new zip_file("VpnKeys_".$GLOBALS['net_prefix'].".".$keys['ip'].".zip");
 
       // Die Optionen
       $zipfile->set_options(array (
@@ -185,12 +185,12 @@ class vpn {
     if (!empty($CN)) {
       $ccd = "./ccd/";
       $handle = fopen($ccd."$CN", "w+");
-      fwrite($handle, "ifconfig-push $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip] 255.255.255.0");
+      fwrite($handle, "ifconfig-push $GLOBALS[net_prefix].$ip_data[ip] 255.255.255.0");
       fclose($handle);
 
-      $message[] = array("CCD wurde für die IP $GLOBALS[net_prefix].$ip_data[subnet_ip].$ip_data[ip] erstellt.", 1);
+      $message[] = array("CCD wurde für die IP $GLOBALS[net_prefix].$ip_data[ip] erstellt.", 1);
     } else {
-      $message[] = array("CCD für die IP $GLOBALS[net_prefix].$ip_data[ip].$ip_data[subnet_ip] konnte nicht erstellt, da der CN leer ist.", 2);
+      $message[] = array("CCD für die IP $GLOBALS[net_prefix].$ip_data[ip] konnte nicht erstellt, da der CN leer ist.", 2);
       $message[] = array("Sie müssen erst ein VPN-Zertifikat erstellen!", 2);
     }
     message::setMessage($message);
@@ -202,17 +202,17 @@ class vpn {
 		$cert_info = vpn::getCertificateInfo($ip_id);
 		$ccd = "./ccd/";
 		if (empty($cert_info['ip']['subject']['CN'])) {
-			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip].$ip[subnet_ip] kann nicht gelöscht werden, da kein CN eingetragen ist.", 2);
+			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] kann nicht gelöscht werden, da kein CN eingetragen ist.", 2);
 			message::setMessage($message);
 			return false;
 		} elseif (file_exists($ccd.$cert_info['ip']['subject']['CN'])) {
 			if (@unlink($ccd."$ip_id")) {
-				$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip].$ip[subnet_ip] wurde gelöscht.", 1);
+				$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] wurde gelöscht.", 1);
 				message::setMessage($message);
 				return true;
 			}
 		} else {
-			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip].$ip[subnet_ip] kann nicht gelöscht werden, da er nicht existiert.", 2);
+			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] kann nicht gelöscht werden, da er nicht existiert.", 2);
 			message::setMessage($message);
 			return false;
 		}
