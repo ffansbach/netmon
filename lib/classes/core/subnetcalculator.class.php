@@ -206,6 +206,11 @@ public function getCdrNmask($my_net_info) {
 	}
 }
 
+public function getNmask($cdr_nmask) {
+	$bin_nmask=SubnetCalculator::cdrtobin($cdr_nmask);
+	return SubnetCalculator::bintodq($bin_nmask);
+}
+
 }
 
 ?>

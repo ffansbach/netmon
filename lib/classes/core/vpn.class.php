@@ -178,14 +178,16 @@ class Vpn {
   }
 
   public function writeCCD($ip_id) {
-    $ip_data = Helper::getIpDataByIpId($ip_id);
+	$ip_data = Helper::getIpDataByIpId($ip_id);
+	$subnet_data = Helper::getSubnetDataBySubnetID($ip_data['subnet_id']);
+	$netmask = SubnetCalculator::getNmask($subnet_data['netmask']);
     
     $cert_info = Vpn::getCertificateInfo($ip_id);
     $CN = $cert_info['ip']['subject']['CN'];
     if (!empty($CN)) {
       $ccd = "./ccd/";
       $handle = fopen($ccd."$CN", "w+");
-      fwrite($handle, "ifconfig-push $GLOBALS[net_prefix].$ip_data[ip] 255.255.255.0");
+      fwrite($handle, "ifconfig-push $GLOBALS[net_prefix].$ip_data[ip] $netmask");
       fclose($handle);
 
       $message[] = array("CCD wurde für die IP $GLOBALS[net_prefix].$ip_data[ip] erstellt.", 1);
