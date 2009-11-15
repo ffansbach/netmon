@@ -35,12 +35,7 @@ class Ipeditor {
   public function insertNewIp($subnet_id, $ips) {
     $ip = editingHelper::getAFreeIP($subnet_id);
 
-    if ($ips > 0) {
-      $range = editingHelper::getFreeIpZone($subnet_id, $ips, $ip);
-    } else {
-      $range['start'] = "NULL";
-      $range['end'] = "NULL";
-    }
+    $range = editingHelper::getFreeIpZone($subnet_id, $ips, $ip);
 
     if ($range) {
       if ($ip != false) {
@@ -51,10 +46,10 @@ class Ipeditor {
 
 	$subnet = Helper::getSubnetById($subnet_id);
 	if ($ips > 0) {
-	  $message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$subnet.".".$ip." wurde erfolgreich im Subnetz $GLOBALS[net_prefix].$subnet.0/24 angelegt.", 1);
-	  $message[] = array("Der IP-Bereich ".$GLOBALS['net_prefix'].".".$subnet.".".$range['start']." - ".$GLOBALS['net_prefix'].".".$subnet.".".$range['end']." wurde zur Vergabe über DHCP reserviert", 1);
+	  $message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$ip." wurde erfolgreich im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask] angelegt.", 1);
+	  $message[] = array("Der IP-Bereich ".$GLOBALS['net_prefix'].".".$range['start']." - ".$GLOBALS['net_prefix'].".".$range['end']." wurde zur Vergabe über DHCP reserviert", 1);
 	} else {
-	  $message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$subnet.".".$ip." wurde erfolgreich im Subnetz $GLOBALS[net_prefix].$subnet.0/24 angelegt.", 1);
+	  $message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$ip." wurde erfolgreich im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask] angelegt.", 1);
 	}
 	message::setMessage($message);
 	return array("result"=>true, "ip_id"=>$ip_id, "service_id"=>$service['service_id']);
@@ -64,7 +59,7 @@ class Ipeditor {
 	return false;
       }
     } else {
-      $message[] = array("Der Ip konnte nicht im Subnetz $subnet angelegt werden. Für den Ip ist kein IP Bereich mehr frei!<br>Bitte wählen Sie einen kleineren Bereich oder benutzen Sie ein anderes Subnetz.", 2);
+      $message[] = array("Der Ip konnte nicht im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask] angelegt werden. Für den Ip ist kein IP Bereich mehr frei!<br>Bitte wählen Sie einen kleineren Bereich oder benutzen Sie ein anderes Subnetz.", 2);
       message::setMessage($message);
       return false;
     }

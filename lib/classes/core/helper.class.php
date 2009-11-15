@@ -475,7 +475,7 @@ class Helper {
 			for ($i=$exploded_zone_start[0]; $i<=$exploded_zone_end[0]; $i++) {
 				for ($ii=$exploded_zone_start[1]; $ii<=$exploded_zone_end[1]; $ii++) {
 					$key_ip = $GLOBALS['net_prefix'].".".$i.".".$ii;
-					$rangelist[$key_ip]['range_ip'] = $GLOBALS['net_prefix'].".".$i.".".$ii;
+					$rangelist[$key_ip]['range_ip'] = $i.".".$ii;
 					$rangelist[$key_ip]['ip_id'] = $ip['id'];
 				}
 			}
