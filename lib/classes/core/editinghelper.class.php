@@ -28,25 +28,35 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+  require_once('./lib/classes/core/subnet.class.php');
+
 class EditingHelper {
 	public function getAFreeIP($subnet_id, $zone_start=false, $zone_end=false) {
-		//Alle irgendwie im Subnet existierende IP's holen
-		$existingips = EditingHelper::getExistingIps($subnet_id);
-		
-		//Für den Ip bestimmte Range den Existierenden IP's hinzufügen
+		//Get all IP´s which already exist in subnet (ips and dhcp-zones!)
+		$existingips = EditingHelper::getExistingIpsAndRanges($subnet_id);
+
+//Delete only of edit subnet is working
+/*		//Für den Ip bestimmte Range den Existierenden IP's hinzufügen
 		if ($zone_start AND $zone_end) {
 			for ($i=$zone_start; $i<=$zone_end; $i++) {
 				array_push($existingips, $i);
 			}
-		}
-		
-		//Erste freie IP nehmen
-		for ($i=1; ($i<=254 AND !isset($available_ip)); $i++) {
-			if(!in_array($i, $existingips)) {
-				$available_ip = $i;
+		}*/
+
+		//Get first free IP in subnet
+		$subnet_data = Subnet::getSubnet($subnet_id);
+		$first_ip = explode(".", $subnet_data['first_ip']);
+		$last_ip = explode(".", $subnet_data['last_ip']);
+
+		for($i=$first_ip[2]; $i<=$last_ip[2]; $i++) {
+			for($ii=$first_ip[3]; $ii<=$last_ip[3]; $ii++) {
+				if(!in_array("$i.$ii", $existingips, TRUE)) {
+					$available_ip = "$i.$ii";
+					break;
+				}
 			}
 		}
-		
+
 		if (isset($available_ip)) {
 			return $available_ip;
 		} else {
@@ -94,63 +104,92 @@ class EditingHelper {
 		return $zones;
 	}
 
-	public function getExistingRealIps($subnet_id) {
-		return array_merge(EditingHelper::getExistingIps($subnet_id), EditingHelper::getExistingRanges($subnet_id));
+	public function getExistingIpsAndRanges($subnet_id) {
+		$ips = array();
+		foreach (Helper::getExistingIpsBySubnetId($subnet_id) as $key=>$ip) {
+			$ips[] = $ip['ip'];
+		}
+		
+		foreach (Helper::getExistingRangesBySubnetId($subnet_id) as $range) {
+			$ips[] = $range['range_ip'];
+		}
+
+		//Sort IP´s ascending
+		$first = array();
+		$second = array();
+		foreach($ips as $key=>$ip) {
+			$exploded = explode(".", $ip);
+			$first[$key] = $exploded[0];
+			$second[$key] = $exploded[1];
+		}
+		array_multisort($first, SORT_ASC, $second, SORT_ASC, $ips);
+
+		return $ips;
 	}
+
+	public function getFreeIpsInSubnet($subnet_id) {
+		//Get all IP´s which already exist in subnet (ips and dhcp-zones!)
+		$existingips = EditingHelper::getExistingIpsAndRanges($subnet_id);
+
+		//Delete existing IP´s from array
+		$subnet_data = Subnet::getSubnet($subnet_id);
+		$first_ip = explode(".", $subnet_data['first_ip']);
+		$last_ip = explode(".", $subnet_data['last_ip']);
+
+		for($i=$first_ip[2]; $i<=$last_ip[2]; $i++) {
+			for($ii=$first_ip[3]; $ii<=$last_ip[3]; $ii++) {
+				$exist = in_array("$i.$ii", $existingips, TRUE);
+				if(!$exist) {
+					$free_ips[] = "$i.$ii";
+				}
+			}
+		}
+
+	return $free_ips;
+	}
+
 	
 	public function getFreeIpZone($subnet_id, $range, $ip) {
-		//Anzahl der zu reservierenden IP's
-		$range = $range-1;
-		$used_zones = array();
-		$zones = array();
-		
-		$existing_ips = EditingHelper::getExistingIps($subnet_id);
-		
-		//Array aller nicht mit Zonen oder Ips belegter IPs erstellen
-		for ($i=1; $i<=254; $i++) {
-			if (!in_array($i, $existing_ips) AND $i!=$ip) {
-				$zonestrahl[] = $i;	
-			}
-		}
-		
-		//Nach freier Zone suchen
-		$stop = false;
-		for ($i=0; ($i<(count($zonestrahl)-$range) AND !$stop); $i++ ) {
-			//Hol den ersten freien Raum der irgendwie erreichbar ist
-			if ($range==($zonestrahl[$i+$range]-$zonestrahl[$i])) {
-				$zone_start_first = $zonestrahl[$i];
-				$zone_end_first = $zonestrahl[$i+$range];
-				$stop = true;
-			}
-		}
-		
-		$stop = false;
-		for ($i=0; ($i<(count($zonestrahl)-$range) AND !$stop); $i++ ) {
-			//Hol einen freien Raum der genau zwischen zwei andere belegte Räume passt
-			if (($range==($zonestrahl[$i+$range]-$zonestrahl[$i])) AND ($zonestrahl[$i-1]!=($zonestrahl[$i]-1)) AND (($zonestrahl[$i+$range+1])!=$zonestrahl[$i]+$range+1)) {
-				$zone_start_between = $zonestrahl[$i];
-				$zone_end_between = $zonestrahl[$i+$range];
-				$stop = true;
-			}
-		}
-		
-		if (isset($zone_start_between) AND isset($zone_end_between)) {
-			$zone_start = $zone_start_between;
-			$zone_end = $zone_end_between;
-			$return = true;
-		} elseif (isset($zone_start_first) AND isset($zone_end_first)) {
-			$zone_start = $zone_start_first;
-			$zone_end = $zone_end_first;
-			$return = true;
-		} else {
-			$return = false;
-		}
-		
 		if ($range > 0) {
-			return array('return'=>$return, 'start'=>$zone_start, 'end'=>$zone_end);
+			$free_ips = EditingHelper::getFreeIpsInSubnet($subnet_id);
+			$ip_key = array_search($ip, $free_ips, TRUE);
+			unset($free_ips[$ip_key]);
+			
+			$subnet_data = Subnet::getSubnet($subnet_id);
+			$first_ip = explode(".", $subnet_data['first_ip']);
+			$last_ip = explode(".", $subnet_data['last_ip']);
+			
+			$first_dhcp_ip = 0;
+			$last_dhcp_ip = 0;
+			$count = 0;
+			for($i=$first_ip[2]; $i<=$last_ip[2]; $i++) {
+				for($ii=$first_ip[3]; $ii<=$last_ip[3]; $ii++) {
+					$exist = in_array("$i.$ii", $free_ips, TRUE);
+					if(!$exist) {
+						$count = 0;
+						$first_dhcp_ip = 0;
+						$last_dhcp_ip = 0;
+					} else {
+						if($first_dhcp_ip==0) {
+							$first_dhcp_ip = "$i.$ii";
+						}
+						if($count==$range-1) {
+							$last_dhcp_ip = "$i.$ii";
+							break 2;
+						}
+						$count++;
+					}
+				}
+			}
+
+			if($first_dhcp_ip!=0 AND $last_dhcp_ip!=0) {
+				return array('start'=>$first_dhcp_ip, 'end'=>$last_dhcp_ip);
+			} else {
+				return false;
+			}
 		} else {
 			//NULL Gibt Probleme beim ändern wenn Range vorher auch NULL ist! (Clemens)
-			return array('return'=>$return, 'start'=>"NULL", 'end'=>"NULL");
+			return array('start'=>"NULL", 'end'=>"NULL");
 		}
 	}
 	

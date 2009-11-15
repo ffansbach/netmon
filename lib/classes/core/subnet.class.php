@@ -107,7 +107,8 @@ class Subnet {
 		}
 		
 		foreach (Helper::getExistingRangesBySubnetId($subnet_id) as $range) {
-			$iplist[$range['range_ip']] = array('range_ip'=>$range['range_ip'],
+			$key_ip = $GLOBALS['net_prefix'].".".$range['range_ip'];
+			$iplist[$key_ip] = array('range_ip'=>$key_ip,
 											 'ip_id'=>$range['ip_id'],
 											 'type'=>"range");
 		}
