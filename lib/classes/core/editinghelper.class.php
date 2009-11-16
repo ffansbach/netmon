@@ -194,6 +194,12 @@ class EditingHelper {
 	}
 	
 	public function addIpTyp($ip_id, $title, $description, $typ, $crawler, $port, $visible, $notify, $notification_wait) {
+		if ($typ="false" OR $crawler="false") {
+			$message[] = array("Bitte wählen sie Servicetyp und Crawler aus.", 2);
+			message::setMessage($message);
+			return array("result"=>false, "service_id"=>$service_id);
+		}
+
 		if (!empty($port)) {
 			$crawler = $port;
 		}
