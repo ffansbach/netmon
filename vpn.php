@@ -50,9 +50,10 @@
       usermanagement::isOwner($smarty, $ip['user_id']);
     	if (!empty($ip['vpn_server_ca']) AND !empty($ip['vpn_client_cert']) AND !empty($ip['vpn_client_key'])) {
 		$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-    	  	$smarty->assign('vpn_config', $vpn->getVpnConfig($_GET['ip_id']));
-      		$smarty->assign('certificate_data', $vpn->getCertificateInfo($_GET['ip_id']));
-       		$smarty->display("header.tpl.php");
+		$smarty->assign('vpn_config', $vpn->getVpnConfig($_GET['ip_id']));
+		$smarty->assign('certificate_data', $vpn->getCertificateInfo($_GET['ip_id']));
+		$smarty->assign('ccd', $vpn->getCCD($_GET['ip_id']));
+		$smarty->display("header.tpl.php");
 		$smarty->display("sslcertificate_info.tpl.php");
 		$smarty->display("footer.tpl.php");
 	    } else {

@@ -284,5 +284,10 @@ option verb 3";
   	return $config;
   }
 
+	public function getCCD($ip_id) {
+		$ccd = "./ccd/";
+		return file_get_contents($ccd.$ip_id);
+	}
+
 }
 ?>
