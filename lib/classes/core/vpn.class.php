@@ -204,7 +204,7 @@ class Vpn {
 		$cert_info = Vpn::getCertificateInfo($ip_id);
 		$ccd = "./ccd/";
 		if (empty($cert_info['ip']['subject']['CN'])) {
-			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] kann nicht gelöscht werden, da kein CN eingetragen ist.", 2);
+			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] kann nicht gelöscht werden, da kein CN eingetragen ist.", 0);
 			message::setMessage($message);
 			return false;
 		} elseif (file_exists($ccd.$cert_info['ip']['subject']['CN'])) {
@@ -214,7 +214,7 @@ class Vpn {
 				return true;
 			}
 		} else {
-			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] kann nicht gelöscht werden, da er nicht existiert.", 2);
+			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] kann nicht gelöscht werden, da er nicht existiert.", 0);
 			message::setMessage($message);
 			return false;
 		}

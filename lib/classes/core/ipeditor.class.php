@@ -33,6 +33,7 @@ require_once("./lib/classes/core/vpn.class.php");
 
 class Ipeditor {
   public function insertNewIp($subnet_id, $ips) {
+	$subnet = Helper::getSubnetById($subnet_id);
     $ip = editingHelper::getAFreeIP($subnet_id);
 
     $range = editingHelper::getFreeIpZone($subnet_id, $ips, $ip);
@@ -42,9 +43,6 @@ class Ipeditor {
 	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip, zone_start, zone_end, radius, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$ip', '$range[start]', '$range[end]', '$_POST[radius]', NOW());");
 	$ip_id = DB::getInstance()->lastInsertId();
 
-	$service = editingHelper::addIpTyp($ip_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
-
-	$subnet = Helper::getSubnetById($subnet_id);
 	if ($ips > 0) {
 	  $message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$ip." wurde erfolgreich im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask] angelegt.", 1);
 	  $message[] = array("Der IP-Bereich ".$GLOBALS['net_prefix'].".".$range['start']." - ".$GLOBALS['net_prefix'].".".$range['end']." wurde zur Vergabe über DHCP reserviert", 1);
@@ -52,6 +50,13 @@ class Ipeditor {
 	  $message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$ip." wurde erfolgreich im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask] angelegt.", 1);
 	}
 	message::setMessage($message);
+
+	$service = editingHelper::addIpTyp($ip_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
+	if(!$service['result']) {
+		Ipeditor::deleteIp($ip_id);
+		return false;
+	}
+
 	return array("result"=>true, "ip_id"=>$ip_id, "service_id"=>$service['service_id']);
       } else {
 	$message[] = array("Der Ip konnte nicht im Subnetz $subnet angelegt werden. Das Netz ist voll!", 2);

@@ -90,9 +90,9 @@ function LinkedSelection( inputSelects, data )
 		// wenn keine neuen Optionen übergeben wurden, default-Option setzen
 		// andernfalls "Bitte wählen" voranstellen
 		if( newOptions.length == 0)
-			this.addOption( '--', '------' );
+			this.addOption( 'false', 'erst Service auswählen' );
 		else
-			this.addOption( '--', 'Bitte wählen:' );
+			this.addOption( 'false', 'Bitte wählen:' );
 
 		// neue Optionen in die Auswahlliste schreiben
 		for( var i = 0; i < newOptions.length; i++ )

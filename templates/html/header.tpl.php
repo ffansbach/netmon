@@ -85,7 +85,7 @@
     <!--Systemmeldungen-->
     {foreach item=output from=$message}
       {if $output.1==0}
-	<div style="background-color: #ffffff">{$output.0}</div>
+	<div style="background-color: #f7ce3e">{$output.0}</div>
       {/if}
       {if $output.1==1}
 	<div style="background-color: #97ff5f">{$output.0}</div>
