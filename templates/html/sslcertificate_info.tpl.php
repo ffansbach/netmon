@@ -26,3 +26,8 @@ Gültig bis: {$certificate_data.subnet.validTo_time_t}<br></p>
 <pre>
 {$vpn_config}
 </pre>
+
+<h2>CCD des VPN-Servers</h2>
+<pre>
+{$ccd}
+</pre>
