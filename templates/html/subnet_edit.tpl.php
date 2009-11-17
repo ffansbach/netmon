@@ -1,4 +1,4 @@
-<form action="./subneteditor.php?section=update&id={$subnet_data.id}" method="POST">
+<form action="./subneteditor.php?section=insert_edit&id={$subnet_data.id}" method="POST">
 	<h1>Subnetz editieren:</h1>
 	<h2>Subnetz Bereich</h2>
 	<p>
@@ -82,7 +82,7 @@
 		</div>
 		
 		<div style="float:left; width: 45%;">
-		<input  id="polygon_location" name="polygons" type="hidden" value="{$subnet_data.polygons}">
+		<input  id="polygon_location" name="polygons" type="hidden" value='{$subnet_data.polygons}'>
 		Klicken sie auf die Karte und markieren sie ein Polygon über dem ort des Subnetzes.<br>Ein Doppelklick beendet die Bearbeitung.
         </div>
 	</div>
