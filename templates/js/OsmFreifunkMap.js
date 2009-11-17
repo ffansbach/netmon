@@ -38,7 +38,7 @@ function AddKmlLayer(name, url) {
 	selectControl.activate();
 }
 
-function SubnetLayer(name, lon, lat, radius) {
+/*function SubnetLayer(name, lon, lat, radius) {
 	polygonLayer = new OpenLayers.Layer.Vector(name);
 
 	var lonlat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
@@ -48,7 +48,7 @@ function SubnetLayer(name, lon, lat, radius) {
 	polygonLayer.addFeatures([circle]);
 
 	map.addLayer(polygonLayer);
-}
+}*/
 
 function init() {
 	// Handle image load errors
@@ -64,7 +64,6 @@ function init() {
 
                 maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
                                                  20037508.34, 20037508.34)
-
 	} );
 
 /*        map = new OpenLayers.Map('map', {
@@ -106,6 +105,50 @@ function init() {
 
   	map.addLayers([layerMapnik, layerCycleMap, gsat]);
 
+	// Set map center
+	point = new OpenLayers.LonLat(lon, lat);
+	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+	map.setCenter(point, zoom);
+}
+
+function newsubnet_map() {
+
+	// Handle image load errors
+	OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+	OpenLayers.Util.onImageLoadErrorColor = "transparent";
+
+	// Initialize the map
+	map = new OpenLayers.Map ("map", {
+		controls:[new OpenLayers.Control.ScaleLine(), new OpenLayers.Control.Navigation()],
+
+		displayProjection: new OpenLayers.Projection("EPSG:4326"),
+		units: "m",
+
+                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+                                                 20037508.34, 20037508.34)
+	} );
+
+
+	// Add the map layer(s)
+	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+//	layerOsmarender = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
+	layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
+
+         var gsat = new OpenLayers.Layer.Google(
+                "Google Satellite",
+                {sphericalMercator:true, type: G_SATELLITE_MAP, numZoomLevels: 20}
+            );
+
+/*fpshelves = new OpenLayers.Layer.Vector( "FP Shelves" );
+	fpshelves.addFeatures([
+	new OpenLayers.Feature.Vector(OpenLayers.Geometry.fromWKT('POLYGON((915295.1950733978 7011778.805450861,910479.6622922943 7008721.3243200015,918658.4243173432 7007383.67632525,915295.1950733978 7011778.805450861))'))
+	]);
+*/
+
+
+	var vectors = new OpenLayers.Layer.Vector("Vector Layer");
+
+  	map.addLayers([layerMapnik, layerCycleMap, gsat, vectors]);
 
 	// Set map center
 	point = new OpenLayers.LonLat(lon, lat);
@@ -113,6 +156,83 @@ function init() {
 	map.setCenter(point, zoom);
 
 
+                map.addControl(new OpenLayers.Control.LayerSwitcher());
+                map.addControl(new OpenLayers.Control.MousePosition());
+
+
+
+
+polycontrol = new OpenLayers.Control.DrawFeature(vectors,
+OpenLayers.Handler.Polygon, {'featureAdded': setPolygonLocation});
+
+map.addControl(polycontrol);
+
+polycontrol.activate();
+
+}
+
+function setPolygonLocation(obj){
+
+/*            var points = obj.geometry.toString();
+
+            document.getElementById("polygon_location").value=points;
+   //Save this point
+
+            polycontrol.deactivate();*/
+
+            var type = 'kml';
+            // second argument for pretty printing (geojson only)
+			var pretty;
+
+            var in_options = {
+                'internalProjection': map.baseLayer.projection,
+                'externalProjection': new OpenLayers.Projection("EPSG:4326")
+            };   
+            var out_options = {
+                'internalProjection': map.baseLayer.projection,
+                'externalProjection': new OpenLayers.Projection("EPSG:4326")
+            };
+
+            var gmlOptions = {
+                featureType: "feature",
+                featureNS: "http://example.com/feature"
+            };
+            var gmlOptionsIn = OpenLayers.Util.extend(
+                OpenLayers.Util.extend({}, gmlOptions),
+                in_options
+            );
+            var gmlOptionsOut = OpenLayers.Util.extend(
+                OpenLayers.Util.extend({}, gmlOptions),
+                out_options
+            );
+            var kmlOptionsIn = OpenLayers.Util.extend(
+                {extractStyles: true}, in_options)
+
+
+
+            var formats = {
+              'in': {
+                wkt: new OpenLayers.Format.WKT(in_options),
+                geojson: new OpenLayers.Format.GeoJSON(in_options),
+                georss: new OpenLayers.Format.GeoRSS(in_options),
+                gml2: new OpenLayers.Format.GML.v2(gmlOptionsIn),
+                gml3: new OpenLayers.Format.GML.v3(gmlOptionsIn),
+                kml: new OpenLayers.Format.KML(kmlOptionsIn)
+              }, 
+              'out': {
+                wkt: new OpenLayers.Format.WKT(out_options),
+                geojson: new OpenLayers.Format.GeoJSON(out_options),
+                georss: new OpenLayers.Format.GeoRSS(out_options),
+                gml2: new OpenLayers.Format.GML.v2(gmlOptionsOut),
+                gml3: new OpenLayers.Format.GML.v3(gmlOptionsOut),
+                kml: new OpenLayers.Format.KML(out_options)
+              } 
+            };
+
+
+            var str = formats['out'][type].write(obj, pretty);
+
+            document.getElementById('polygon_location').value = str;
 }
 
 function MiniMapControls() {
@@ -126,6 +246,12 @@ function MapControls() {
 	map.addControl(new OpenLayers.Control.MousePosition());
 	map.addControl(new OpenLayers.Control.Permalink());
 	map.addControl(new OpenLayers.Control.Attribution());
+}
+
+function subnetmap() {
+	init();
+	MapControls();
+
 }
 
 function fullmap() {
@@ -144,6 +270,5 @@ function fullmap() {
 }
 
 function new_subnet() {
-	init();
-	map.addControl(new OpenLayers.Control.MousePosition());
+	newsubnet_map();
 }

@@ -69,24 +69,23 @@
 
 	<h2>Ort (ungefähre Lage des Subnetzes)</h2>
 	<div style="width: 100%; overflow: hidden;">
-		<div style="float:left; width: 45%;">
-			<p>Länge:<br><input name="longitude" type="text" size="30"></p>
-			<p>Breite:<br><input name="latitude" type="text" size="30"></p>
-			<p>Radius (in Metern):<br><input name="radius" type="text" size="30"></p>
-		</div>
-		
 		<div style="float:left; width: 55%;">
 			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
-			<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
+			<script type="text/javascript" src="./templates/js/openlayers/OpenLayers.js"></script>
 			<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 			
 			<div id="map" style="height:200px; width:400px; border:solid 1px black;font-size:9pt;">
 				<script type="text/javascript">
-					new_subnet();
+					newsubnet_map();
 				</script>
 			</div>
 		</div>
+		
+		<div style="float:left; width: 45%;">
+		<input  id="polygon_location" name="polygons" type="hidden" size="30">
+		Klicken sie auf die Karte und markieren sie ein Polygon über dem ort des Subnetzes.<br>Ein Doppelklick beendet die Bearbeitung.
+        </div>
 	</div>
 	
 	

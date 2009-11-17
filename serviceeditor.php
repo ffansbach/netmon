@@ -21,21 +21,20 @@
 	}
     if ($_GET['section'] == "insert_service") {
 		if (usermanagement::checkPermission(4)) {
-			if ($_POST['ips'] > 0) {
-				$ip_info = Helper::getIpInfo($_GET['ip_id']);
-				$range = editingHelper::getFreeIpZone($ip_info['subnet_id'], $_POST['ips'], 0);
-			} else {
-				$range['start'] = "NULL";
-				$range['end'] = "NULL";
-			}
 			$add_result = editingHelper::addIpTyp($_GET['ip_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
-			header('Location: ./service.php?service_id='.$add_result['service_id']);
+			if(!$add_result['result']) {
+				header('Location: ./serviceeditor.php?section=new&ip_id='.$_GET['ip_id']);
+			} else {
+				header('Location: ./service.php?service_id='.$add_result['service_id']);
+			}
+
 		} else {
 			$message[] = array("Nur eingeloggte Benutzer dürfen einen Service anlegen!", 2);
 			message::setMessage($message);
 			header('Location: ./login.php');
 		}
     }
+
     if ($_GET['section'] == "edit") {
 	$service_data = Helper::getServiceDataByServiceId($_GET['service_id']);
     usermanagement::isOwner($smarty, $service_data['user_id']);
