@@ -1,7 +1,6 @@
 <form action="./subneteditor.php?section=insert" method="POST">
 
 	<h1>Ein neues Subnetz erstellen:</h1>
-
 	<h2>Subnetz Bereich</h2>
 	<p>
 		<input type="radio" name="subnet_kind" value="extend" checked="checked" onchange="document.getElementById('simple').style.display = 'none'; document.getElementById('extend').style.display = 'block';">Extend<br>
@@ -71,7 +70,7 @@
 	<div style="width: 100%; overflow: hidden;">
 		<div style="float:left; width: 55%;">
 			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
-			<script type="text/javascript" src="./templates/js/openlayers/OpenLayers.js"></script>
+			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 			<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 			

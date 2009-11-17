@@ -1,5 +1,5 @@
 		<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
-		<script type="text/javascript" src="./templates/js/OpenLayers.js"></script>
+		<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 <!--		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>-->
@@ -130,10 +130,7 @@
 
 			{literal}
 				/* Initialize Map */
-				init();
-
-				/* Controls for the small map */
-				MiniMapControls();
+				fullmap();
 
 				/* Zoom to the subnet's center */
 				point = new OpenLayers.LonLat(lon, lat);
