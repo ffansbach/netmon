@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 3.2.2deb1
+-- version 3.2.3
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 30, 2009 at 02:27 PM
+-- Generation Time: Nov 17, 2009 at 05:43 PM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.11-1
 
@@ -87,8 +87,10 @@ CREATE TABLE IF NOT EXISTS `ips` (
   `user_id` int(11) NOT NULL,
   `subnet_id` int(3) NOT NULL,
   `ip` varchar(7) NOT NULL,
-  `zone_start` int(11) NOT NULL,
-  `zone_end` int(11) NOT NULL,
+  `zone_start` varchar(7) NOT NULL,
+  `zone_end` varchar(7) NOT NULL,
+  `dhcp_host` varchar(15) NOT NULL,
+  `dhcp_netmask` int(11) NOT NULL,
   `radius` int(11) NOT NULL,
   `vpn_client_cert` text NOT NULL,
   `vpn_client_key` text NOT NULL,
@@ -128,16 +130,13 @@ CREATE TABLE IF NOT EXISTS `services` (
 DROP TABLE IF EXISTS `subnets`;
 CREATE TABLE IF NOT EXISTS `subnets` (
   `id` int(11) NOT NULL auto_increment,
-  `subnet_ip` int(11) NOT NULL,
   `host` varchar(15) NOT NULL,
   `netmask` int(11) NOT NULL,
   `allows_dhcp` tinyint(1) NOT NULL,
   `user_id` int(11) NOT NULL,
   `title` varchar(255) default NULL,
   `description` text,
-  `longitude` varchar(50) default NULL,
-  `latitude` varchar(50) default NULL,
-  `radius` int(11) default NULL,
+  `polygons` text NOT NULL,
   `vpn_server` varchar(100) default NULL,
   `vpn_server_port` int(11) NOT NULL,
   `vpn_server_device` varchar(10) NOT NULL,
