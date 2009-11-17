@@ -469,14 +469,16 @@ class Helper {
 		$ips = Helper::getIpsBySubnetId($subnet_id);
 		
 		foreach ($ips as $ip) {
-			$exploded_zone_start = explode(".", $ip['zone_start']);
-			$exploded_zone_end = explode(".", $ip['zone_end']);
-
-			for ($i=$exploded_zone_start[0]; $i<=$exploded_zone_end[0]; $i++) {
-				for ($ii=$exploded_zone_start[1]; $ii<=$exploded_zone_end[1]; $ii++) {
-					$key_ip = $GLOBALS['net_prefix'].".".$i.".".$ii;
-					$rangelist[$key_ip]['range_ip'] = $i.".".$ii;
-					$rangelist[$key_ip]['ip_id'] = $ip['id'];
+			if((!empty($ip['zone_start']) AND $ip['zone_start']!='NULL' AND $ip['zone_start']!=0) AND (!empty($ip['zone_end']) AND $ip['zone_end']!='NULL' AND $ip['zone_end']!=0)) {
+				$exploded_zone_start = explode(".", $ip['zone_start']);
+				$exploded_zone_end = explode(".", $ip['zone_end']);
+				
+				for ($i=$exploded_zone_start[0]; $i<=$exploded_zone_end[0]; $i++) {
+					for ($ii=$exploded_zone_start[1]; $ii<=$exploded_zone_end[1]; $ii++) {
+						$key_ip = $GLOBALS['net_prefix'].".".$i.".".$ii;
+						$rangelist[$key_ip]['range_ip'] = $i.".".$ii;
+						$rangelist[$key_ip]['ip_id'] = $ip['id'];
+					}
 				}
 			}
 		}

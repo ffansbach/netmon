@@ -90,7 +90,7 @@ subnetCalculator::tr('HostMax:', '<font color="blue">'.subnetCalculator::bintodq
 			header('Location: ./login.php');
 		}
     }
-    if ($_GET['section'] == "insert") {
+    if ($_GET['section'] == "insert_new") {
 		if (usermanagement::checkPermission(32)) {
 			$checkdata = $subneteditor->checkSubnetData();
 			if ($checkdata) {
@@ -105,6 +105,49 @@ subnetCalculator::tr('HostMax:', '<font color="blue">'.subnetCalculator::bintodq
 			header('Location: ./login.php');
 		}
     }
+
+    if ($_GET['section'] == "insert_edit") {
+		if (usermanagement::checkPermission(32)) {
+			$checkdata = $subneteditor->checkSubnetData();
+			if ($checkdata) {
+				$subnet_result = $subneteditor->updateSubnet($checkdata);
+				header('Location: ./subnet.php?id='.$_GET['id']);
+			} else {
+				header('Location: ./subneteditor.php?section=edit&id='.$_GET['id']);
+			}
+
+/*			if ($subneteditor->checkSubnetData($_POST['subnet'], $_POST['vpnserver'], $_POST['vpnserver_from_project'], $_POST['vpnserver_from_project_check'], $_POST['no_vpnserver_check'], $_POST['vpn_cacrt'])) {
+				$subneteditor->updateSubnet($_POST['subnet'],  $_POST['vpnserver'], $_POST['vpnserver_from_project'], $_POST['vpnserver_from_project_check'], $_POST['no_vpnserver_check'], $_POST['title'], $_POST['description'], $_POST['longitude'], $_POST['latitude'], $_POST['radius'], $POST['vpn_cacrt']);
+				header('Location: ./subnet.php?id='.$_GET['id']);
+			} else {
+				header('Location: ./subneteditor.php?section=edit&id='.$_GET['id']);
+			}*/
+		} else {
+			$message[] = array("Nur Administratoren dürfen Subnetze editieren!", 2);
+			message::setMessage($message);
+			header('Location: ./login.php');
+		}
+	}
+
+    if ($_GET['section'] == "delete") {
+		if (usermanagement::checkPermission(32)) {
+			if ($_POST['delete'] == "true") {
+				$subneteditor->deleteSubnet($_GET['subnet_id']);
+				header('Location: ./user.php?id='.$_SESSION['user_id']);
+			} else {
+				$message[] = array("Sie müssen \"Ja\" anklicken um das Subnets zu löschen.", 2);
+				message::setMessage($message);
+				header('Location: ./subneteditor.php?section=edit&id='.$_GET['id']);
+			}
+		} else {
+			$message[] = array("Nur Administratoren dürfen Subnetze editieren!", 2);
+			message::setMessage($message);
+			header('Location: ./login.php');
+		}
+    }
+
+
+
     if ($_GET['section'] == "edit") {
 		if (usermanagement::checkPermission(32)) {
 			$smarty->assign('message', message::getMessage());
@@ -123,34 +166,5 @@ subnetCalculator::tr('HostMax:', '<font color="blue">'.subnetCalculator::bintodq
 			header('Location: ./login.php');
 		}
     }
-    if ($_GET['section'] == "update") {
-		if (usermanagement::checkPermission(32)) {
-			if ($subneteditor->checkSubnetData($_POST['subnet'], $_POST['vpnserver'], $_POST['vpnserver_from_project'], $_POST['vpnserver_from_project_check'], $_POST['no_vpnserver_check'], $_POST['vpn_cacrt'])) {
-				$subneteditor->updateSubnet($_POST['subnet'],  $_POST['vpnserver'], $_POST['vpnserver_from_project'], $_POST['vpnserver_from_project_check'], $_POST['no_vpnserver_check'], $_POST['title'], $_POST['description'], $_POST['longitude'], $_POST['latitude'], $_POST['radius'], $POST['vpn_cacrt']);
-				header('Location: ./subnet.php?id='.$_GET['id']);
-			} else {
-				header('Location: ./subneteditor.php?section=edit&id='.$_GET['id']);
-			}
-		} else {
-			$message[] = array("Nur Administratoren dürfen Subnetze editieren!", 2);
-			message::setMessage($message);
-			header('Location: ./login.php');
-		}
-	}
-    if ($_GET['section'] == "delete") {
-		if (usermanagement::checkPermission(32)) {
-			if ($_POST['delete'] == "true") {
-				$subneteditor->deleteSubnet($_GET['subnet_id']);
-				header('Location: ./user.php?id='.$_SESSION['user_id']);
-			} else {
-				$message[] = array("Sie müssen \"Ja\" anklicken um das Subnets zu löschen.", 2);
-				message::setMessage($message);
-				header('Location: ./subneteditor.php?section=edit&id='.$_GET['id']);
-			}
-		} else {
-			$message[] = array("Nur Administratoren dürfen Subnetze editieren!", 2);
-			message::setMessage($message);
-			header('Location: ./login.php');
-		}
-    }
+
 ?>

@@ -1,4 +1,4 @@
-<form action="./subneteditor.php?section=insert" method="POST">
+<form action="./subneteditor.php?section=insert_new" method="POST">
 
 	<h1>Ein neues Subnetz erstellen:</h1>
 	<h2>Subnetz Bereich</h2>

@@ -46,41 +46,26 @@ class SubnetEditor {
 			return false;
 		}
 	}
-	
-	public function updateSubnet($subnet, $vpnserver, $vpnserver_from_project, $vpnserver_from_project_check, $no_vpnserver_check, $title, $description, $longitude, $latitude, $radius, $vpn_cacrt) {
-		//Set optional values to standart if not set.
-		if (!isset($title) OR $title == "") {
-			$title = "Subnetz ".$subnet;
-		}
-		if (!isset($description) OR $description == "") {
-			$description = "Ein Unterprojekt des Freifunknetzes";
-		}
-		if (!isset($longitude) OR $longitude == "") {
-			$longitude = $GLOBALS['geographical_center_of_net_longitude'];
-		}
-		if (!isset($latitude) OR $latitude == "") {
-			$latitude = $GLOBALS['geographical_center_of_net_latitute'];
-		}
-		if (!isset($radius) OR $radius == "") {
-			$radius = $GLOBALS['geographical_radius_of_net'];
-		}
 
-		$this->createUpdateSubnet($subnet, $vpnserver, $title, $description, $longitude, $latitude, $radius, $_POST['vpn_cacrt']);
-	}
-
-	public function createUpdateSubnet($subnet, $vpnserver, $title, $description, $longitude, $latitude, $radius, $vpn_cacrt) {
+	public function updateSubnet($data) {
 		$result = DB::getInstance()->exec("UPDATE subnets
-										   SET subnet_ip= '$subnet',
-											   title = '$title',
-											   description = '$description',
-											   longitude = '$longitude',
-											   latitude = '$latitude',
-											   radius = '$radius',
-											   vpn_server ='$vpnserver',
-											   vpn_server_ca = '$vpn_cacrt'
+										   SET host = '$data[host]',
+											   netmask = '$data[netmask]',
+											   allows_dhcp = '$data[allows_dhcp]',
+											   title = '$data[title]',
+											   description = '$data[description]',
+											   polygons = '$data[polygons]',
+											   vpn_server ='$data[vpn_server]',
+											   vpn_server_port = '$data[vpn_server_port]',
+											   vpn_server_device = '$data[vpn_server_device]',
+											   vpn_server_proto = '$data[vpn_server_proto]',
+											   vpn_server_ca = '$data[vpn_server_ca]',
+											   vpn_server_cert = '$data[vpn_server_cert]',
+											   vpn_server_key = '$data[vpn_server_key]',
+											   vpn_server_pass = '$data[vpn_server_pass]'
 										   WHERE id = '$_GET[id]'");
 		if ($result>0) {
-			$message[] = array("Das Subnetz ".$subnet." wurde geändet eingetragen.", 1);
+			$message[] = array("Das Subnetz ".$subnet." wurde geändert.", 1);
 			message::setMessage($message);
 			return true;
 		} else {
