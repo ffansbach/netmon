@@ -109,6 +109,7 @@ subnetCalculator::tr('HostMax:', '<font color="blue">'.subnetCalculator::bintodq
 		if (usermanagement::checkPermission(32)) {
 			$smarty->assign('message', message::getMessage());
 			$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+			$smarty->assign('existing_subnets', editingHelper::getExistingSubnets());
 			$smarty->assign('subnets_with_defined_vpnserver', $subneteditor->getSubnetsWithDefinedVpnserver());
 			$subnetdata = Helper::getSubnetDataBySubnetID($_GET['id']);
 			$smarty->assign('subnet_data', $subnetdata);

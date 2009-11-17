@@ -29,7 +29,7 @@
 	<!--<small style="font-size: 9pt;">Map Data from <a href="http://openstreetmap.org">OpenStreetMap</a></small>-->
 
 		<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
-		<script type="text/javascript" src="./templates/js/openlayers/OpenLayers.js"></script>
+		<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 		<div id="map" style="height:300px; width:300px; border:solid 1px black;font-size:9pt;">
