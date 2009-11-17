@@ -20,7 +20,7 @@ window.onload = function()
 <p>
 <label id="typLabel" for="typ">Service:</label>
 <select id="typ" name="typ">
-  <option value="--">Bitte wählen:</option>
+  <option value="false">Bitte wählen:</option>
   <option value="node">node</option>
   <option value="vpn">vpn</option>
   <option value="client">client</option>
@@ -30,7 +30,7 @@ window.onload = function()
 <label id="crawlLabel" for="crawl">Crawlart:</label>
 
 <select id="crawl" name="crawler">
-  <option value="--">------</option>
+  <option value="false">erst Service auswählen</option>
 </select>
 
 <span id="portInput" style="visibility:hidden; margin-left: 5px;">
