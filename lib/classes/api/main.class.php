@@ -13,6 +13,9 @@ class Main {
 		return(Helper::getProjectInfo());
 	}
 
+	public function subnet_info() {
+		return(Helper::getSubnetDataBySubnetID($subnet_id));
+	}
 
 	public function getAllServiceIDsByServiceType($type) {
 		return(Helper::getAllServiceIDsByServiceType($type));

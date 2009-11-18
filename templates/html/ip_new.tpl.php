@@ -12,17 +12,24 @@
 	
 	<h2>IP</h2>
 	<p>
-		<input type="radio" name="ip_kind" value="simple" checked="checked" onchange="document.getElementById('extend').style.display = 'none';">IP vom System generieren lassen<br>
-		<input type="radio" name="ip_kind" value="extend" onchange="document.getElementById('extend').style.display = 'block';">IP selber angeben<br>
+		<input type="radio" name="ip_kind" value="simple" checked="checked" onchange="document.getElementById('ip_extend').style.display = 'none';">IP vom System generieren lassen<br>
+		<input type="radio" name="ip_kind" value="extend" onchange="document.getElementById('ip_extend').style.display = 'block';">IP selber angeben<br>
 	</p>
-	<div id="extend" style="display: none;">
+	<div id="ip_extend" style="display: none;">
 		<b>IP:</b>  {$net_prefix}.<input name="ip" type="text" size="7">
 	</div>
 
 	<h2>DHCP</h2>
 	<p>
-		<p>Für Clients zu reservierende IP's: <input name="ips" type="text" size="1" maxlength="3" value="5"><br>Für Vergabe per DHCP (Wenn keine IP´s vergeben werden sollen bitte 0 eintragen!)</p>
+		<input type="radio" name="dhcp_kind" value="simple" checked="checked" onchange="document.getElementById('dhcp_extend').style.display = 'none'; document.getElementById('dhcp_simple').style.display = 'block';">IP vom System generieren lassen<br>
+		<input type="radio" name="dhcp_kind" value="extend" onchange="document.getElementById('dhcp_simple').style.display = 'none'; document.getElementById('dhcp_extend').style.display = 'block';">IP selber angeben<br>
 	</p>
+	<div id="dhcp_simple" style="display: block;">
+		<p>Für Clients zu reservierende IP's: <input name="ips" type="text" size="1" maxlength="3" value="5"><br>Für Vergabe per DHCP (Wenn keine IP´s vergeben werden sollen bitte 0 eintragen!)</p>
+	</div>
+	<div id="dhcp_extend" style="display: none;">
+		<b>IP-Bereich:</b>  {$net_prefix}.<input name="dhcp_first" type="text" size="7"> bis {$net_prefix}.<input name="dhcp_last" type="text" size="7">
+	</div>
 
 	<h2>Reichweite</h2>
 
