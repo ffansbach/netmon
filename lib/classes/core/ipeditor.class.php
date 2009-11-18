@@ -32,11 +32,28 @@ require_once("./lib/classes/core/vpn.class.php");
  */
 
 class Ipeditor {
-  public function insertNewIp($subnet_id, $ips) {
+  public function insertNewIp($subnet_id, $ips, $ip_kind, $ip, $dhcp_kind, $dhcp_first, $dhcp_last) {
 	$subnet = Helper::getSubnetById($subnet_id);
-    $ip = editingHelper::getAFreeIP($subnet_id);
+	if($ip_kind=='simple') {
+		$ip = editingHelper::getAFreeIP($subnet_id);
+	} elseif($ip_kind=='extend' AND !EditingHelper::checkIfIpIsFree($ip, $subnet_id)) {
+		$message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$ip." existiert bereits oder gehört nicht zm Subnetz Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask].", 2);
+		message::setMessage($message);
+		return false;
+	}
 
-    $range = editingHelper::getFreeIpZone($subnet_id, $ips, $ip);
+	if($dhcp_kind=='simple') {
+		$range = editingHelper::getFreeIpZone($subnet_id, $ips, $ip);
+	} elseif($dhcp_kind=='extend') {
+		if(EditingHelper::checkIfRangeIsFree($subnet_id, $ip, $dhcp_first, $dhcp_last)) {
+			$range['start'] = $dhcp_first;
+			$range['end'] = $dhcp_last;
+		} else {
+			$message[] = array("Die DHCP-Zone existiert bereits im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask].", 2);
+			message::setMessage($message);
+			return false;
+		}
+	}
 
     if ($range) {
       if ($ip != false) {
@@ -64,7 +81,7 @@ class Ipeditor {
 	return false;
       }
     } else {
-      $message[] = array("Der Ip konnte nicht im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask] angelegt werden. Für den Ip ist kein IP Bereich mehr frei!<br>Bitte wählen Sie einen kleineren Bereich oder benutzen Sie ein anderes Subnetz.", 2);
+      $message[] = array("Die Ip konnte nicht im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask] angelegt werden. Für die Ip ist kein IP Bereich mehr frei!<br>Bitte wählen Sie einen kleineren Bereich oder benutzen Sie ein anderes Subnetz.", 2);
       message::setMessage($message);
       return false;
     }

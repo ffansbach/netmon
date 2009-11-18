@@ -47,7 +47,7 @@ class Register {
 				echo $e->getMessage();
 			}
 			
-			DB::getInstance()->exec("INSERT INTO users (nickname, password, email, permission, create_date, activated) VALUES ('$nickname', '$password', '$email', '$permission', NOW(), '$activation');");
+			DB::getInstance()->exec("INSERT INTO users (nickname, password, email, notification_method, permission, create_date, activated) VALUES ('$nickname', '$password', '$email', 'email', '$permission', NOW(), '$activation');");
 			$id = DB::getInstance()->lastInsertId();
 			
 			if($this->sendRegistrationEmail($email, $nickname, $passwordchk, $activation, time())) {

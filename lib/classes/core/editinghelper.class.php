@@ -148,6 +148,34 @@ class EditingHelper {
 	return $free_ips;
 	}
 
+	public function checkIfIpIsFree($ip, $subnet_id) {
+		$free_ips = EditingHelper::getFreeIpsInSubnet($subnet_id);
+		if(in_array($ip, $free_ips, TRUE)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function checkIfRangeIsFree($subnet_id, $ip, $dhcp_first, $dhcp_last) {
+		$free_ips = EditingHelper::getFreeIpsInSubnet($subnet_id);
+		$ip_key = array_search($ip, $free_ips, TRUE);
+		unset($free_ips[$ip_key]);
+
+		$dhcp_first = explode(".", $dhcp_first);
+		$dhcp_last = explode(".", $dhcp_last);
+
+		for($i=$dhcp_first[0]; $i<=$dhcp_last[0]; $i++) {
+			for($ii=$dhcp_first[1]; $ii<=$dhcp_last[1]; $ii++) {
+				if(!in_array("$i.$ii", $free_ips, TRUE)) {
+					die();
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
 	
 	public function getFreeIpZone($subnet_id, $range, $ip) {
 		if ($range > 0) {

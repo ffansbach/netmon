@@ -500,6 +500,8 @@ class ApiMap {
 					$xw->endElement();
 						
 					$services = Helper::getServicesByType("node");
+//-------------
+
 					foreach ($services as $service) {
 						$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
 						if ($data['status']=='online') {
@@ -566,29 +568,18 @@ class ApiMap {
 					}
 //-----------------------------------------------------------------
 						unset($iplist);
-unset($services);
-unset($data);
-unset($crawl);
-unset($entry);
+						unset($data);
+						unset($crawl);
+						unset($entry);
 
-						try {
-							$sql = "SELECT id FROM services WHERE typ='node' ORDER BY id";
-							$result = DB::getInstance()->query($sql);
-							foreach($result as $row) {
-								$services[] = $row['id'];
-							}
-						}
-						catch(PDOException $e) {
-							echo $e->getMessage();
-						}
 						foreach ($services as $service) {
-							$data = Helper::getCurrentCrawlDataByServiceId($service);
+							$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
 							if ($data['status']=='offline') {
-								$crawl = Helper::getLastOnlineCrawlDataByServiceId($service);
+								$crawl = Helper::getLastOnlineCrawlDataByServiceId($service['service_id']);
 								if (!is_array($crawl)) {
 									$crawl = array();
 								} 
-								$data = Helper::getServiceDataByServiceId($service);
+								$data = Helper::getServiceDataByServiceId($service['service_id']);
 								$iplist[] = array_merge($crawl, $data);
 							}
 						}
@@ -640,6 +631,20 @@ unset($entry);
 		
 		print $xw->outputMemory(true);
 		return true;
+	}
+
+	public function getSubnetPolygons() {
+		try {
+			$sql = "select polygons FROM subnets WHERE id='$_GET[subnet_id]';";
+			$result = DB::getInstance()->query($sql);
+			$poligons = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		
+		echo $poligons['polygons'];
+
 	}
 }
 ?>
