@@ -190,6 +190,7 @@ class Vpn {
 		if(!$ccd_content) {
 			$ccd_content = "ifconfig-push $GLOBALS[net_prefix].$ip_data[ip] $netmask";
 		}
+
       fwrite($handle, $ccd_content);
       fclose($handle);
 
@@ -224,6 +225,7 @@ class Vpn {
 	}
 
 	public function regenerateCCD($subnet_id) {
+
 		try {
 			$sql = "SELECT ips.id
 					FROM ips
@@ -251,7 +253,6 @@ class Vpn {
 				echo $e->getMessage();
 			}
 		}
-		
 		foreach ($ip_ids as $ip_id) {
 			Vpn::writeCCD($ip_id);
 		}
@@ -288,8 +289,11 @@ option verb 3";
   }
 
 	public function getCCD($ip_id) {
+    $cert_info = Vpn::getCertificateInfo($ip_id);
+    $CN = $cert_info['ip']['subject']['CN'];
+
 		$ccd = "./ccd/";
-		$file = @file_get_contents($ccd.$ip_id);
+		$file = @file_get_contents($ccd.$CN);
 		if($file)
 			return $file;
 		else
