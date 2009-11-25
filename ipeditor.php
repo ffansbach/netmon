@@ -2,6 +2,7 @@
   require_once('./config/runtime.inc.php');
   require_once('./lib/classes/core/ipeditor.class.php');
   require_once('./lib/classes/core/editinghelper.class.php');
+  require_once('./lib/classes/core/vpn.class.php');
   
   $ipeditor = new ipeditor;
   
@@ -42,11 +43,19 @@
 		$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
 		$ip_data = Helper::getIpDataByIpId($_GET['id']);
 		$smarty->assign('ip_data', $ip_data);
+		$smarty->assign('ccd', Vpn::getCCD($_GET['id']));
+		
 
 		$smarty->display("header.tpl.php");
 		$smarty->display("ip_edit.tpl.php");
 		$smarty->display("footer.tpl.php");
     }
+    if ($_GET['section'] == "insert_edit") {
+		Vpn::writeCCD($_GET['id'], $_POST['ccd']);
+		Ipeditor::insertEditIp($_GET['id'], $_POST['radius']);
+		header('Location: ./ip.php?id='.$_GET['id']);
+    }
+
     if ($_GET['section'] == "delete") {
 		$ip_data = Helper::getIpDataByIpId($_GET['id']);
 		usermanagement::isOwner($smarty, $ip_data['user_id']);

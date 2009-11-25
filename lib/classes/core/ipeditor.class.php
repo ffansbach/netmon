@@ -87,6 +87,16 @@ class Ipeditor {
     }
   }
 
+	public function insertEditIp($ip_id, $radius) {
+		DB::getInstance()->exec("UPDATE ips SET
+										radius = '$radius'
+								WHERE id = '$ip_id'");
+		
+		$message[] = array("Die Ip mit der ID ".$ip_id." wurde geändert.", 1);
+		message::setMessage($message);
+		return true;
+	}
+
   public function deleteIp($ip_id) {
 	foreach (Helper::getServicesByIpId($ip_id) as $services) {
 		serviceeditor::deleteService($services['service_id'], true);
