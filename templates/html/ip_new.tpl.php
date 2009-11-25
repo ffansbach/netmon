@@ -21,8 +21,8 @@
 
 	<h2>DHCP</h2>
 	<p>
-		<input type="radio" name="dhcp_kind" value="simple" checked="checked" onchange="document.getElementById('dhcp_extend').style.display = 'none'; document.getElementById('dhcp_simple').style.display = 'block';">IP vom System generieren lassen<br>
-		<input type="radio" name="dhcp_kind" value="extend" onchange="document.getElementById('dhcp_simple').style.display = 'none'; document.getElementById('dhcp_extend').style.display = 'block';">IP selber angeben<br>
+		<input type="radio" name="dhcp_kind" value="simple" checked="checked" onchange="document.getElementById('dhcp_extend').style.display = 'none'; document.getElementById('dhcp_simple').style.display = 'block';">Zahl der benötigten IP´s angeben<br>
+		<input type="radio" name="dhcp_kind" value="extend" onchange="document.getElementById('dhcp_simple').style.display = 'none'; document.getElementById('dhcp_extend').style.display = 'block';">DHCP-Bereich selber angeben<br>
 	</p>
 	<div id="dhcp_simple" style="display: block;">
 		<p>Für Clients zu reservierende IP's: <input name="ips" type="text" size="1" maxlength="3" value="5"><br>Für Vergabe per DHCP (Wenn keine IP´s vergeben werden sollen bitte 0 eintragen!)</p>
