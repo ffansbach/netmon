@@ -177,7 +177,7 @@ class Vpn {
     } else return false;
   }
 
-  public function writeCCD($ip_id) {
+  public function writeCCD($ip_id, $ccd_content=false) {
 	$ip_data = Helper::getIpDataByIpId($ip_id);
 	$subnet_data = Helper::getSubnetDataBySubnetID($ip_data['subnet_id']);
 	$netmask = SubnetCalculator::getNmask($subnet_data['netmask']);
@@ -187,7 +187,10 @@ class Vpn {
     if (!empty($CN)) {
       $ccd = "./ccd/";
       $handle = fopen($ccd."$CN", "w+");
-      fwrite($handle, "ifconfig-push $GLOBALS[net_prefix].$ip_data[ip] $netmask");
+		if(!$ccd_content) {
+			$ccd_content = "ifconfig-push $GLOBALS[net_prefix].$ip_data[ip] $netmask";
+		}
+      fwrite($handle, $ccd_content);
       fclose($handle);
 
       $message[] = array("CCD wurde für die IP $GLOBALS[net_prefix].$ip_data[ip] erstellt.", 1);
@@ -286,7 +289,11 @@ option verb 3";
 
 	public function getCCD($ip_id) {
 		$ccd = "./ccd/";
-		return file_get_contents($ccd.$ip_id);
+		$file = @file_get_contents($ccd.$ip_id);
+		if($file)
+			return $file;
+		else
+			return false;
 	}
 
 }
