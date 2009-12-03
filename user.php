@@ -2,7 +2,7 @@
   require_once('./config/runtime.inc.php');
   require_once('./lib/classes/core/helper.class.php');
   
-  $smarty->assign('message', message::getMessage());
+  $smarty->assign('message', Message::getMessage());
   
   $smarty->assign('user', Helper::getUserByID($_GET['id']));
   $smarty->assign('iplist', Helper::getIplistByUserID($_GET['id']));

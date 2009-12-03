@@ -52,12 +52,12 @@ class Register {
 			
 			if($this->sendRegistrationEmail($email, $nickname, $passwordchk, $activation, time())) {
 				$message[] = array("Der Benutzer ".$nickname." wurde erfolgreich angelegt.", 1);
-				message::setMessage($message);
+				Message::setMessage($message);
 				return true;
 			} else {
 				$message[] = array("Die Email mit dem Link zum aktivieren des Nutzerkontos konnte nicht an ".$email." verschickt werden.", 2);
 				$message[] = array("Der neu angelegte User mit der ID ".$id." wird wieder gelöscht.", 2);
-				message::setMessage($message);
+				Message::setMessage($message);
 				$this->deleteUser($id);
 				return false;
 			}
@@ -73,16 +73,16 @@ class Register {
 			if ($result>0) {
 				$message[] = array("Der Benutzer ".$user_data['nickname']." wurde erfolgreich aktiviert.", 1);
 				$message[] = array("Sie können sich jetzt mit Ihrem Benutzernamen und Ihrem Passwort einloggen", 1);
-				message::setMessage($message);
+				Message::setMessage($message);
 				return true;
 			} else {
 				$message[] = array("Ein Benutzer mit dem Aktivationcode ".$activation." existiert nicht!", 2);
-				message::setMessage($message);
+				Message::setMessage($message);
 				return false;
 			}
 		} else {
 			$message[] = array("Es wurde kein Aktivierungscode übergeben!", 2);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		}
 	}
@@ -136,7 +136,7 @@ class Register {
 		
 		//Rückgabe
 		if (isset($message) AND count($message)>0) {
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		} else {
 			return true;
@@ -146,7 +146,7 @@ class Register {
 	public function deleteUser($id) {
 		DB::getInstance()->exec("DELETE FROM users WHERE id='$id';");
 		$message[] = array("Der Benutzer mit der ID ".$id." wurde gelöscht.",1);
-		message::setMessage($message);
+		Message::setMessage($message);
 		return true;
 	}
 	
@@ -165,7 +165,7 @@ http://$GLOBALS[domain]/$GLOBALS[subfolder]/account_activate.php?activation_hash
 Dein Freifunkteam $GLOBALS[city_name]";
 		$ergebniss = mail($email, "Anmeldung Freifunk Oldenburg", $text, "From: $GLOBALS[mail_sender]");
 		$message[] = array("Eine Email mit einem Link zum aktivieren des Nutzerkontos wurde an ".$email." verschickt.", 1);
-		message::setMessage($message);
+		Message::setMessage($message);
 		return true;
 	}
   
@@ -175,17 +175,17 @@ Dein Freifunkteam $GLOBALS[city_name]";
 			$result = DB::getInstance()->exec("UPDATE users SET password = '$new_password_hash' WHERE id = '$user_id'");
 			if ($result>0) {
 				$message[] = array("Dem Benutzer mit der ID $user_id wurde ein neues Passwort gesetzt", 1);
-				message::setMessage($message);
+				Message::setMessage($message);
 				return true;
 			} else {
 				$message[] = array("Dem Benutzer mit der ID ".$user_id." konnte keine neues Passwort gesetzt werden.", 2);
-				message::setMessage($message);
+				Message::setMessage($message);
 				return false;
 			}
 		} else {
 			$message[] = array("Der übergebene Passwordhash der User-ID ".$user_id." stimmt nicht mit dem gespeicherten Hash überein.", 2);
 			$message[] = array("Es wurde kein neues Passwort gesetzt!.", 2);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		}
 	}
@@ -203,7 +203,7 @@ http://$GLOBALS[domain]/$GLOBALS[subfolder]/set_new_password.php?user_id=$user_i
 Dein Freifunkteam $GLOBALS[city_name]";
 		$ergebniss = mail($email, "Neues Password (Freifunk Oldenburg)", $text, "From: Freifunk Oldenburg Portal <portal@freifunk-ol.de>");
 		$message[] = array("Dir wurde ein neues Passwort zugesendet.", 1);
-		message::setMessage($message);
+		Message::setMessage($message);
 		return true;
 	}
 }

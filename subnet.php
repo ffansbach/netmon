@@ -5,12 +5,12 @@
 
   $subnet = new subnet;
   
-  $smarty->assign('message', message::getMessage());
+  $smarty->assign('message', Message::getMessage());
   $subnet_data = $subnet->getSubnet($_GET['id']);
   $subnet_data['create_date'] = Helper::makeSmoothIplistTime(strtotime($subnet_data['create_date']));
   $smarty->assign('subnet', $subnet_data);
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-  $smarty->assign('isOwner', usermanagement::isThisUserOwner($subnet_data['user_id']));
+  $smarty->assign('isOwner', UserManagement::isThisUserOwner($subnet_data['user_id']));
 
   $smarty->assign('ipstatus', subnet::getIPStatus($_GET['id']));
   

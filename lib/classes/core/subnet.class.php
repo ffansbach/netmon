@@ -41,9 +41,9 @@ class Subnet {
 			$result = DB::getInstance()->query($sql); 
 			$subnet = $result->fetch(PDO::FETCH_ASSOC); 
 
-			$subnet['last_ip'] = subnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
-			$subnet['first_ip'] = subnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
-			$subnet['hosts_total'] = subnetCalculator::getHostsTotal($subnet['netmask']);
+			$subnet['last_ip'] = SubnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet['first_ip'] = SubnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet['hosts_total'] = SubnetCalculator::getHostsTotal($subnet['netmask']);
 
 		}
 		catch(PDOException $e) { 
@@ -73,9 +73,9 @@ class Subnet {
 			$result = DB::getInstance()->query($sql); 
 			$subnet = $result->fetch(PDO::FETCH_ASSOC);
 			
-			$subnet['last_ip'] = subnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
-			$subnet['first_ip'] = subnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
-			$subnet['hosts_total'] = subnetCalculator::getHostsTotal($subnet['netmask']);
+			$subnet['last_ip'] = SubnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet['first_ip'] = SubnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet['hosts_total'] = SubnetCalculator::getHostsTotal($subnet['netmask']);
 
 			$exploded_last_ip = explode(".", $subnet['last_ip']);
 			$exploded_first_ip = explode(".", $subnet['first_ip']);

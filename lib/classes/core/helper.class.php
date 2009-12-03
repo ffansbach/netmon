@@ -44,7 +44,7 @@ class Helper {
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		$ip['is_ip_owner'] = usermanagement::isThisUserOwner($ip['user_id']);
+		$ip['is_ip_owner'] = UserManagement::isThisUserOwner($ip['user_id']);
 		return $ip;
 	}
   
@@ -64,7 +64,7 @@ class Helper {
       echo $e->getMessage();
     }
 
-    $ip['is_ip_owner'] = usermanagement::isThisUserOwner($ip['user_id']);
+    $ip['is_ip_owner'] = UserManagement::isThisUserOwner($ip['user_id']);
     return $ip;
   }
 
@@ -130,7 +130,7 @@ class Helper {
 
   public function getServicesByType($type) {
     //Nur Services zurückgeben die der Benutzer sehen darf
-    if (!usermanagement::checkPermission(4))
+    if (!UserManagement::checkPermission(4))
       $visible = "AND visible = 1";
     else
       $visible = "";
@@ -186,7 +186,7 @@ class Helper {
 
   public function getServicesByUserId($user_id) {
     //Nur Services zurückgeben die der Benutzer sehen darf
-    if (!usermanagement::checkPermission(4))
+    if (!UserManagement::checkPermission(4))
       $visible = "AND visible = 1";
     else
       $visible = "";
@@ -218,7 +218,7 @@ class Helper {
 
   public function getServicesByTypeAndIpId($type, $ipId) {
     //Nur Services zurückgeben die der Benutzer sehen darf
-    if (!usermanagement::checkPermission(4))
+    if (!UserManagement::checkPermission(4))
       $visible = "AND visible = 1";
     else
       $visible = "";
@@ -250,7 +250,7 @@ class Helper {
   public function getServicesByIpId($ip_id) {
 	$services = array();
     //Nur Services zurückgeben die der Benutzer sehen darf
-    if (!usermanagement::checkPermission(4))
+    if (!UserManagement::checkPermission(4))
       $visible = "AND visible = 1";
     else
       $visible = "";
@@ -368,7 +368,7 @@ class Helper {
 					ORDER BY subnets.host, ips.ip";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
-				$row['is_ip_owner'] = usermanagement::isThisUserOwner($row['user_id']);
+				$row['is_ip_owner'] = UserManagement::isThisUserOwner($row['user_id']);
 				$iplist[] = $row;
 			}
 		}

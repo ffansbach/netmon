@@ -119,7 +119,7 @@ if ($service_status['online']!=0 OR $service_status['offline']!=0 OR $service_st
 			echo $e->getMessage(); 
 		}*/
 
-$smarty->assign('message', message::getMessage());
+$smarty->assign('message', Message::getMessage());
 $smarty->display("header.tpl.php");
 $smarty->display("portal.tpl.php");
 $smarty->display("footer.tpl.php");

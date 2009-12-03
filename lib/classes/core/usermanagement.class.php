@@ -37,10 +37,10 @@ class UserManagement {
   }
   
   public function act(&$smarty, $sitepermission) {
-    if (!usermanagement::checkPermission($sitepermission)) {
+    if (!UserManagement::checkPermission($sitepermission)) {
       $message[] = array("Sie haben nicht das Recht auf diesen Bereich zuzugreifen!",2);
-      message::setMessage($message);
-      $smarty->assign('message', message::getMessage());
+      Message::setMessage($message);
+      $smarty->assign('message', Message::getMessage());
 //      $smarty->assign('get_content', "portal");
       $smarty->display("design.tpl.php");
       die();
@@ -50,7 +50,7 @@ class UserManagement {
   public function isOwner(&$smarty, $owning_user_id) {
     if($owning_user_id!=$_SESSION['user_id'] OR !isset($owning_user_id)) {
       $message[] = array("Sie haben nicht das Recht auf diesen Bereich zuzugreifen, da Sie nicht der Eigentümer des Objekts sind!",2);
-      message::setMessage($message);
+      Message::setMessage($message);
 	  $_SESSION['redirect_url'] = ".".$_SERVER['REQUEST_URI'];
 	  header('Location: ./login.php?section=login');
       die();
@@ -72,7 +72,7 @@ class UserManagement {
   }
 
   public function checkPermission($sitepermission) {
-    $userpermission = usermanagement::getUserPermission();
+    $userpermission = UserManagement::getUserPermission();
     //Rechte ins Binärsystem wandeln
     $sitepermission = decbin($sitepermission);
     $userpermission = decbin($userpermission);
@@ -80,7 +80,7 @@ class UserManagement {
     $userpermission_len = strlen($userpermission);
  
     //Alle verfügbaren Rechte-Optionen holen
-    $permission = usermanagement::getAllPermissions();
+    $permission = UserManagement::getAllPermissions();
 
     $return = false;
     for ($i=count($permission)-1; $i>=0; $i--) {

@@ -31,26 +31,26 @@ require_once("./lib/classes/core/vpn.class.php");
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class Ipeditor {
+class IpEditor {
   public function insertNewIp($subnet_id, $ips, $ip_kind, $ip, $dhcp_kind, $dhcp_first, $dhcp_last) {
 	$subnet = Helper::getSubnetById($subnet_id);
 	if($ip_kind=='simple') {
-		$ip = editingHelper::getAFreeIP($subnet_id);
+		$ip = EditingHelper::getAFreeIP($subnet_id);
 	} elseif($ip_kind=='extend' AND !EditingHelper::checkIfIpIsFree($ip, $subnet_id)) {
 		$message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$ip." existiert bereits oder gehört nicht zm Subnetz Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask].", 2);
-		message::setMessage($message);
+		Message::setMessage($message);
 		return false;
 	}
 
 	if($dhcp_kind=='simple') {
-		$range = editingHelper::getFreeIpZone($subnet_id, $ips, $ip);
+		$range = EditingHelper::getFreeIpZone($subnet_id, $ips, $ip);
 	} elseif($dhcp_kind=='extend') {
 		if(EditingHelper::checkIfRangeIsFree($subnet_id, $ip, $dhcp_first, $dhcp_last)) {
 			$range['start'] = $dhcp_first;
 			$range['end'] = $dhcp_last;
 		} else {
 			$message[] = array("Die DHCP-Zone existiert bereits im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask].", 2);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		}
 	}
@@ -66,23 +66,23 @@ class Ipeditor {
 	} else {
 	  $message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$ip." wurde erfolgreich im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask] angelegt.", 1);
 	}
-	message::setMessage($message);
+	Message::setMessage($message);
 
-	$service = editingHelper::addIpTyp($ip_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
+	$service = EditingHelper::addIpTyp($ip_id, $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
 	if(!$service['result']) {
-		Ipeditor::deleteIp($ip_id);
+		IpEditor::deleteIp($ip_id);
 		return false;
 	}
 
 	return array("result"=>true, "ip_id"=>$ip_id, "service_id"=>$service['service_id']);
       } else {
 	$message[] = array("Der Ip konnte nicht im Subnetz $subnet angelegt werden. Das Netz ist voll!", 2);
-	message::setMessage($message);
+	Message::setMessage($message);
 	return false;
       }
     } else {
       $message[] = array("Die Ip konnte nicht im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask] angelegt werden. Für die Ip ist kein IP Bereich mehr frei!<br>Bitte wählen Sie einen kleineren Bereich oder benutzen Sie ein anderes Subnetz.", 2);
-      message::setMessage($message);
+      Message::setMessage($message);
       return false;
     }
   }
@@ -93,7 +93,7 @@ class Ipeditor {
 								WHERE id = '$ip_id'");
 		
 		$message[] = array("Die Ip mit der ID ".$ip_id." wurde geändert.", 1);
-		message::setMessage($message);
+		Message::setMessage($message);
 		return true;
 	}
 
@@ -102,11 +102,11 @@ class Ipeditor {
 		serviceeditor::deleteService($services['service_id'], true);
 	}
 
-	vpn::deleteCCD($ip_id);
+	Vpn::deleteCCD($ip_id);
 	$ip_data = Helper::getIpInfo($ip_id);
 	DB::getInstance()->exec("DELETE FROM ips WHERE id='$ip_id';");
 	$message[] = array("Die IP $GLOBALS[net_prefix].$ip_data[ip] wurde gelöscht.",1);
-	message::setMessage($message);
+	Message::setMessage($message);
   }
   
 }
