@@ -224,7 +224,7 @@ class EditingHelper {
 	public function addIpTyp($ip_id, $title, $description, $typ, $crawler, $port, $visible, $notify, $notification_wait) {
 		if ($typ=="false" OR $crawler=="false") {
 			$message[] = array("Bitte wählen sie Servicetyp und Crawler aus.", 2);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return array("result"=>false, "service_id"=>$service_id);
 		}
 
@@ -244,7 +244,7 @@ class EditingHelper {
 			echo $e->getMessage();
 		}
 		$message[] = array("Ein Service vom Typ ".$typ." wurde der Ip $GLOBALS[net_prefix].$ip_data[ip] hinzugefügt.",1);
-		message::setMessage($message);
+		Message::setMessage($message);
 		
 		return array("result"=>true, "service_id"=>$service_id);
 	}

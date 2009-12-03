@@ -6,7 +6,7 @@
   $register = new register;
 
   if (empty($_POST['email'])) {
-    $smarty->assign('message', message::getMessage());
+    $smarty->assign('message', Message::getMessage());
     $smarty->display("header.tpl.php");
     $smarty->display("resend_activation_mail.tpl.php");
     $smarty->display("footer.tpl.php");
@@ -19,7 +19,7 @@
       header('Location: ./login.php');
     } else {
       $message[] = array("Der Benutzer mit der Emailadresse $_POST[email] wurde bereits freigeschaltet!", 2);
-      message::setMessage($message);
+      Message::setMessage($message);
       header('Location: ./login.php');
     }
   }

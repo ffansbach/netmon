@@ -2,9 +2,9 @@
   require_once('./config/runtime.inc.php');
   require_once('./lib/classes/core/service.class.php');
 
-  $service = new service;
+  $Service = new service;
 
-  $smarty->assign('message', message::getMessage());
+  $smarty->assign('message', Message::getMessage());
 
   $service_data = Helper::getServiceDataByServiceId($_GET['service_id']);
   $service_data['create_date'] = Helper::makeSmoothIplistTime(strtotime($service_data['create_date']));
@@ -22,7 +22,7 @@
 
 
   $smarty->assign('last_online_crawl', Helper::getLastOnlineCrawlDataByServiceId($_GET['service_id']));
-  $crawl_history = $service->getCrawlHistory($_GET['service_id'], 35);
+  $crawl_history = $Service->getCrawlHistory($_GET['service_id'], 35);
   $smarty->assign('crawl_history', $crawl_history);
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
   $smarty->assign('isOwner', usermanagement::isThisUserOwner($service_data['user_id']));
@@ -84,14 +84,6 @@ if(!empty($memory_free_array)) {
  $graph->data['Machine 1']->symbol = ezcGraph::BULLET;
  $graph->render( 400, 150, './tmp/memory_free_history.png' ); 
 }
-
-
-
-
-
-
-
-
 
 
   $smarty->display("header.tpl.php");

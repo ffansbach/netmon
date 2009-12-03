@@ -38,11 +38,11 @@ class SubnetEditor {
 		$subnet_id = DB::getInstance()->lastInsertId();
 		if ($result>0) {
 			$message[] = array("Das Subnetz ".$GLOBALS['net_prefix'].".".$data['host']."/".$data['netmask']." wurde in die Datenbank eingetragen.", 1);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return array("result"=>true, "subnet_id"=>$subnet_id);
 		} else {
 			$message[] = array("Das Subnetz ".$GLOBALS['net_prefix'].".".$data['host']."/".$data['netmask']." konnte nicht in die Datenbank eingetragen werden.", 2);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		}
 	}
@@ -66,11 +66,11 @@ class SubnetEditor {
 										   WHERE id = '$_GET[id]'");
 		if ($result>0) {
 			$message[] = array("Das Subnetz ".$subnet." wurde geändert.", 1);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return true;
 		} else {
 			$message[] = array("Die Änderungen im Subnetz ".$subnet." konnten nicht in die Datenbank eingetragen werden.", 2);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		}
 	}
@@ -109,7 +109,7 @@ class SubnetEditor {
 		if($_POST['subnet_kind'] == "simple") {
 //			$_POST['ip_count']
 
-			foreach(editinghelper::getExistingSubnets() as $subnet) {
+			foreach(EditingHelper::getExistingSubnets() as $subnet) {
 				subnet::getPosibleIpsBySubnetId();
 			}
 
@@ -122,13 +122,13 @@ class SubnetEditor {
 
 			//Check if the chosen subnet IP is still free
 			//-->!!!checktIfSubnetExists
-			/*$existing_subnets = editingHelper::getExistingSubnets();
+			/*$existing_subnets = EditingHelper::getExistingSubnets();
 			foreach($existing_subnets as $subnet) {
 				$first_ip = 
 				$last_ip = 
 			}
 		
-			if (!in_array($_POST['subnet_ip'], editingHelper::getExistingSubnets())) {
+			if (!in_array($_POST['subnet_ip'], EditingHelper::getExistingSubnets())) {
 				$message[] = array("Das gewählte Subnetz ist nicht mehr frei, bitte wählen Sie ein anderes.",2);
 			} else {
 				$subnet_ip = $_POST['subnet_ip'];
@@ -197,7 +197,7 @@ class SubnetEditor {
 			$polygons = $_POST['polygons'];
 
 		if (isset($message) AND count($message)>0) {
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		} else {
 			return array('host'=>$host, 'netmask'=>$netmask, 'allows_dhcp'=>$allows_dhcp, 'title'=>$title, 'description'=>$description, 'polygons'=>$polygons, 'vpn_server'=>$vpn_server, 'vpn_server_port'=> $vpn_server_port, 'vpn_server_device'=> $vpn_server_device, 'vpn_server_proto'=> $vpn_server_proto, 'vpn_server_ca'=> $vpn_server_ca, 'vpn_server_cert'=> $vpn_server_cert, 'vpn_server_key'=> $vpn_server_key, 'vpn_server_pass'=>$vpn_server_pass);
@@ -206,13 +206,13 @@ class SubnetEditor {
 	
 	public function deleteSubnet($subnet_id) {
 		foreach (Helper::getIpsBySubnetId($subnet_id) as $ip) {
-			ipeditor::deleteIp($ip['id']);
+			IpEditor::deleteIp($ip['id']);
 		}
 		
 		$subnet_data = Helper::getSubnetDataBySubnetID($subnet_id);
 		DB::getInstance()->exec("DELETE FROM subnets WHERE id='$subnet_id';");
 		$message[] = array("Das Subnetz $GLOBALS[net_prefix].$subnet_data[host]/$subnet_data[netmask] wurde gelöscht.",1);
-		message::setMessage($message);
+		Message::setMessage($message);
 		return true;
 	}
 }

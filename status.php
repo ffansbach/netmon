@@ -2,13 +2,13 @@
   require_once('./config/runtime.inc.php');
   require_once('./lib/classes/core/status.class.php');
   
-  $status = new status;
+  $Status = new Status;
   
 //Deprecated
-//  $smarty->assign('status', $status->getCrawlerStatus());
-  $smarty->assign('newest_user', $status->getNewestUser());
-  $smarty->assign('newest_ip', $status->getNewestIp());
-  $smarty->assign('newest_service', $status->getNewestService());
+//  $smarty->assign('status', $Status->getCrawlerStatus());
+  $smarty->assign('newest_user', $Status->getNewestUser());
+  $smarty->assign('newest_ip', $Status->getNewestIp());
+  $smarty->assign('newest_service', $Status->getNewestService());
 
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
 

@@ -50,7 +50,7 @@
   require_once($path.'lib/classes/core/message.class.php');
   //Allgemeine Helper-Klasse
   require_once($path.'lib/classes/core/helper.class.php');
-  //Klasse für Usermanagement
+  //Klasse für UserManagement
   require_once($path.'lib/classes/core/usermanagement.class.php');  
   //Klasse fürs Logging
   require_once($path.'lib/classes/core/logsystem.class.php');
@@ -59,8 +59,8 @@
   //Helper-Klasse fürs Editing
   require_once($path.'lib/classes/core/editinghelper.class.php');
 
-  $usermanagement =  new usermanagement;
-  $menus =  new menus;
+  $UserManagement =  new UserManagement;
+  $Menus =  new Menus;
 
   /**
   * PEAR EZC LIBRARY FOR GRAPHS
@@ -89,11 +89,11 @@
   $smarty->compile_dir = 'smarty/templates_c';
 
 
-  $smarty->assign('top_menu', $menus->topMenu());
-  $smarty->assign('loginOutMenu', $menus->loginOutMenu());
-  $smarty->assign('normal_menu', $menus->normalMenu());
-  $smarty->assign('user_menu', $menus->userMenu());
-  $smarty->assign('admin_menu', $menus->adminMenu());
+  $smarty->assign('top_menu', $Menus->topMenu());
+  $smarty->assign('loginOutMenu', $Menus->loginOutMenu());
+  $smarty->assign('normal_menu', $Menus->normalMenu());
+  $smarty->assign('user_menu', $Menus->userMenu());
+  $smarty->assign('admin_menu', $Menus->adminMenu());
 
   //Wichtige Config-Variablen an Smarty übergeben
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);

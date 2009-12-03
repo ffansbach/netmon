@@ -41,7 +41,7 @@ class ServiceEditor {
 								WHERE id = '$service_id'");
 		
 		$message[] = array("Der Service mit der ID ".$service_id." wurde geändert.", 1);
-		message::setMessage($message);
+		Message::setMessage($message);
 		return array("result"=>true, "service_id"=>$service_id);
 	}
 
@@ -55,7 +55,7 @@ class ServiceEditor {
 				$message[] = array("Sie können diesen Service nicht löschen da eine IP durch mindestens einen Service spezifiziert werden muss.<br>"
 									."Um einen 2. Service zu erstellen klicken Sie bitte $link1<br>"
 									."Um die IP zu komplett zu löschen, klicken Sie bitte $link2", 2);
-				message::setMessage($message);
+				Message::setMessage($message);
 				return false;
 			} else {
 				DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
@@ -64,13 +64,13 @@ class ServiceEditor {
 				DB::getInstance()->exec("DELETE FROM crawl_data WHERE service_id='$service_id';");
 				$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurde gelöscht.",1);
 				
-				message::setMessage($message);
+				Message::setMessage($message);
 				return true;
 			}
 		} else {
 			$message[] = array("Zum löschen des Services bitte das Häckchen bei \"Ja\" setzen.",2);
 
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		}
 	}
