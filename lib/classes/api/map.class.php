@@ -502,6 +502,64 @@ class ApiMap {
 					$services = Helper::getServicesByType("node");
 //-------------
 
+
+						foreach ($services as $service) {
+							$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+							if ($data['status']=='offline') {
+								$crawl = Helper::getLastOnlineCrawlDataByServiceId($service['service_id']);
+								if (!is_array($crawl)) {
+									$crawl = array();
+								} 
+								$data = Helper::getServiceDataByServiceId($service['service_id']);
+								$iplist[] = array_merge($crawl, $data);
+							}
+						}
+						
+						foreach($iplist as $entry) {
+							$entry['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($entry['crawl_time']));
+							if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
+								if(!empty($entry['title']))
+									$title =  "($entry[title])";
+								else
+									$title = "";
+								$xw->startElement('Placemark');
+									$xw->startElement('name');
+										$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
+									$xw->endElement();
+									$xw->startElement('description');
+									$box_inhalt = "<b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end]<br>
+												   <b>SSID:</b> $entry[ssid]<br>
+												   <b>Standortbeschreibung:</b> $entry[location]<br>
+													<b>Diese Ip ist offline!</b><br>
+												   <b>Letztes Mal online:</b> $entry[crawl_time]<br>";
+/*										$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+													   DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
+													   <br><b>Dieser Ip ist offline</b><br>
+													   Letztes mal online: $entry[crawl_time]<br>";*/
+										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
+									$xw->endElement();
+									$xw->startElement('styleUrl');
+									if(isset($_GET['highlighted_service']) AND $_GET['highlighted_service']==$entry['service_id'])
+										$xw->writeRaw('#sh_blue-pushpin');
+									else
+										$xw->writeRaw('#sh_red-pushpin');
+									$xw->endElement();
+									$xw->startElement('Point');
+										$xw->startElement('coordinates');
+											$xw->writeRaw("$entry[longitude],$entry[latitude],0");
+										$xw->endElement();
+									$xw->endElement();
+								$xw->endElement();
+							}
+						}
+
+//-----------------------------------------------------------------
+						unset($iplist);
+						unset($data);
+						unset($crawl);
+						unset($entry);
+
 					foreach ($services as $service) {
 						$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
 						if ($data['status']=='online') {
@@ -566,62 +624,8 @@ class ApiMap {
 							$xw->endElement();
 						}
 					}
-//-----------------------------------------------------------------
-						unset($iplist);
-						unset($data);
-						unset($crawl);
-						unset($entry);
+//-----------------
 
-						foreach ($services as $service) {
-							$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-							if ($data['status']=='offline') {
-								$crawl = Helper::getLastOnlineCrawlDataByServiceId($service['service_id']);
-								if (!is_array($crawl)) {
-									$crawl = array();
-								} 
-								$data = Helper::getServiceDataByServiceId($service['service_id']);
-								$iplist[] = array_merge($crawl, $data);
-							}
-						}
-						
-						foreach($iplist as $entry) {
-							$entry['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($entry['crawl_time']));
-							if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
-								if(!empty($entry['title']))
-									$title =  "($entry[title])";
-								else
-									$title = "";
-								$xw->startElement('Placemark');
-									$xw->startElement('name');
-										$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
-									$xw->endElement();
-									$xw->startElement('description');
-									$box_inhalt = "<b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
-												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end]<br>
-												   <b>SSID:</b> $entry[ssid]<br>
-												   <b>Standortbeschreibung:</b> $entry[location]<br>
-													<b>Diese Ip ist offline!</b><br>
-												   <b>Letztes Mal online:</b> $entry[crawl_time]<br>";
-/*										$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
-													   DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
-													   <br><b>Dieser Ip ist offline</b><br>
-													   Letztes mal online: $entry[crawl_time]<br>";*/
-										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
-									$xw->endElement();
-									$xw->startElement('styleUrl');
-									if(isset($_GET['highlighted_service']) AND $_GET['highlighted_service']==$entry['service_id'])
-										$xw->writeRaw('#sh_blue-pushpin');
-									else
-										$xw->writeRaw('#sh_red-pushpin');
-									$xw->endElement();
-									$xw->startElement('Point');
-										$xw->startElement('coordinates');
-											$xw->writeRaw("$entry[longitude],$entry[latitude],0");
-										$xw->endElement();
-									$xw->endElement();
-								$xw->endElement();
-							}
-						}
 
 
 
