@@ -187,7 +187,7 @@ class User {
 		if ($_POST['delete'] == "true") {
 			//Ips mit Services löschen
 			foreach(Helper::getIpsByUserId($id) as $ip) {
-				ipeditor::deleteIp($ip['id']);
+				IpEditor::deleteIp($ip['id']);
 			}
 			
 			//Subnets, Ips und Services löschen

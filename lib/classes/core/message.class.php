@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-class message {
+class Message {
   public function getMessage() {
     $messages = $_SESSION['system_messages'];
     unset($_SESSION['system_messages']);

@@ -6,7 +6,7 @@
   require_once('./lib/classes/api/crawl.class.php');
   require_once('./lib/classes/core/login.class.php');
 
-class api {
+class Api {
   function __construct() {
 	if (isset($_GET['class']) AND isset($_GET['section']))
 		eval($_GET['class']."::".$_GET['section']."();");

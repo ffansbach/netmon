@@ -32,7 +32,7 @@ class Login {
 	public function user_login ($nickname, $password) {
 		if (empty($nickname) or empty($password)) {
 			$messages[] = array("Sie müssen einen Nickname und ein Passwort angeben um sich einzuloggen", 2);
-			message::setMessage($messages);
+			Message::setMessage($messages);
 			return false;
 		} else {
 			$password = usermanagement::encryptPassword($password);
@@ -44,11 +44,11 @@ class Login {
 				$login = $result->rowCount();
 				if ($login<1) {
 					$messages[] = array("Der Benutzername existiert nicht oder das Passwort ist falsch!", 2);
-					message::setMessage($messages);
+					Message::setMessage($messages);
 					return false;
 				} elseif ($user_data['activated'] != '0') {
 					$messages[] = array("Der Benutzername wurde noch nicht aktiviert!", 2);
-					message::setMessage($messages);
+					Message::setMessage($messages);
 					return false;
 				} else {
 					$session_id = session_id();
@@ -59,7 +59,7 @@ class Login {
 					}
 					
 					$messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'].$last_login, 1);
-					message::setMessage($messages);
+					Message::setMessage($messages);
 					return array('result'=>true, 'user_id'=>$user_data['id'], 'permission'=>$user_data['permission'], 'session_id'=>$session_id);
 				}
 			}
@@ -72,12 +72,12 @@ class Login {
 	public function user_logout() {
 		if (!isset($_SESSION['user_id'])) {
 			$messages[] = array("Sie können sich nicht ausloggen, wenn Sie nicht eingeloggt sind", 2);
-			message::setMessage($messages);
+			Message::setMessage($messages);
 			return false;
 		} else {
 			$_SESSION = array();;
 			$messages[] = array("Sie wurden ausgeloggt und ihre Benutzersession wurde gelöscht!", 1);
-			message::setMessage($messages);
+			Message::setMessage($messages);
 			return true;
 		}
 	}

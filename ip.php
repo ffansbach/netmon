@@ -2,9 +2,9 @@
   require_once('./config/runtime.inc.php');
   require_once('./lib/classes/core/ip.class.php');
   
-  $ip = new ip;
+  $Ip = new Ip;
 
-  $smarty->assign('message', message::getMessage());
+  $smarty->assign('message', Message::getMessage());
   
   $ip_data = Helper::getIpInfo($_GET['id']);
   $smarty->assign('ip', $ip_data);
@@ -18,8 +18,8 @@
   $smarty->assign('ping', $ping);
 
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-  $smarty->assign('is_ip_owner', $ip->is_ip_owner);
-  $smarty->assign('servicelist', $ip->getServiceList($_GET['id']));
+  $smarty->assign('is_ip_owner', $Ip->is_ip_owner);
+  $smarty->assign('servicelist', $Ip->getServiceList($_GET['id']));
   $smarty->display("header.tpl.php");
   $smarty->display("ip.tpl.php");
   $smarty->display("footer.tpl.php");

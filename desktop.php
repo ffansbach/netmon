@@ -2,10 +2,10 @@
   require_once('./config/runtime.inc.php');
   require_once('./lib/classes/core/iplist.class.php');
 
-	if (usermanagement::checkPermission(4)) {
+	if (UserManagement::checkPermission(4)) {
 		$iplist = new iplist;
 		
-		$smarty->assign('message', message::getMessage());
+		$smarty->assign('message', Message::getMessage());
 		$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
 		$smarty->assign('essid', $GLOBALS['project_essid']);
 		$smarty->assign('bssid', $GLOBALS['project_bssid']);
@@ -19,7 +19,7 @@
 		$smarty->display("footer.tpl.php");
 	} else {
 		$message[] = array("Nur eingeloggte Benutzer dürfen den Desktop sehen!", 2);
-		message::setMessage($message);
+		Message::setMessage($message);
 		header('Location: ./login.php');
 	}
 ?>

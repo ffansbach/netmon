@@ -9,7 +9,7 @@ class Crawl {
 		
 		$service_data = Helper::getServiceDataByServiceId($service_id);
 		//If is owning user or if root
-		if(usermanagement::isThisUserOwner($service_data['user_id'], $session['user_id']) OR $session['permission']==120) {
+		if(UserManagement::isThisUserOwner($service_data['user_id'], $session['user_id']) OR $session['permission']==120) {
 			service::insertStatus($crawl_data, $service_id);
 			service::clearCrawlDatabase($service_id);
 

@@ -3,7 +3,7 @@
 	require_once './lib/classes/extern/jsonRPCServer.php';
 	require_once('./lib/classes/api/main.class.php');
 	
-	$myExample = new main();
+	$myExample = new Main();
 	jsonRPCServer::handle($myExample)
 		or print 'no request';
 ?>

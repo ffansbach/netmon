@@ -46,7 +46,7 @@ class Vpn {
 		if (empty($vpn['vpn_server_ca']) OR empty($vpn['vpn_server_cert']) OR empty($vpn['vpn_server_key'])) {
 			$message[] = array("Die Zertifikate konnten nicht generiert werden.", 2);
 			$message[] = array("Der Subnetverwalter muss erst ein Masterzertifikat für das Subnetz erstellen.", 2);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		} elseif (!empty($organizationalunitname) AND !empty($commonname) AND !empty($emailaddress)) {
 			//SSL-Errors lehren
@@ -60,7 +60,7 @@ class Vpn {
 				$privkeypass == null;
 			} elseif ($privkeypass != $privkeypass_chk) {
 				$message[] = array("Die beiden Passwörter stimmen nicht überein.", 2);
-				message::setMessage($message);
+				Message::setMessage($message);
 				return false;
 			}
 			
@@ -77,7 +77,7 @@ class Vpn {
 			return array("return" => true, "vpn_client_cert" => $out_cert, "vpn_client_key" => $out_key);
 		} else {
 			$message[] = array("Die Daten von Ihnen einzugebenen Daten sind unvollständig", 2);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		}
 	}
@@ -90,11 +90,11 @@ class Vpn {
 		
 		if ($result>0) {
 			$message[] = array("Die Keys wurden in der Datenbank gespeichert und werden Ihnen jetzt zum Download angeboten.", 1);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return true;
 		} else {
 			$message[] = array("Die Keys konnten nicht in der Datenbank gespeichert werden.", 2);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		}
 	}
@@ -154,7 +154,7 @@ class Vpn {
  } else {
       $message[] = array("Es sind nicht genügen Informationen vorhanden um die Keys bereit zu stellen.", 2);
       $message[] = array("Warscheinlich müssen haben sie die Keys noch nicht erstellt.", 2);
-      message::setMessage($message);
+      Message::setMessage($message);
       return false;
     }
   }
@@ -199,7 +199,7 @@ class Vpn {
       $message[] = array("CCD für die IP $GLOBALS[net_prefix].$ip_data[ip] konnte nicht erstellt, da der CN leer ist.", 2);
       $message[] = array("Sie müssen erst ein VPN-Zertifikat erstellen!", 2);
     }
-    message::setMessage($message);
+    Message::setMessage($message);
     return true;
   }
   
@@ -209,17 +209,17 @@ class Vpn {
 		$ccd = "./ccd/";
 		if (empty($cert_info['ip']['subject']['CN'])) {
 			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] kann nicht gelöscht werden, da kein CN eingetragen ist.", 0);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		} elseif (file_exists($ccd.$cert_info['ip']['subject']['CN'])) {
 			if (@unlink($ccd."$ip_id")) {
 				$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] wurde gelöscht.", 1);
-				message::setMessage($message);
+				Message::setMessage($message);
 				return true;
 			}
 		} else {
 			$message[] = array("CCD der IP $GLOBALS[net_prefix].$ip[ip] kann nicht gelöscht werden, da er nicht existiert.", 0);
-			message::setMessage($message);
+			Message::setMessage($message);
 			return false;
 		}
 	}
