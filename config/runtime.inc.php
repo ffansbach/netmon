@@ -76,7 +76,7 @@
   */
 
   //Smarty-Klasse einbinden
-  require_once ($path.'smarty/libs/Smarty.class.php');
+  require_once ($path.'lib/classes/extern/smarty/Smarty.class.php');
 
   //Smarty Objekt initialisieren
   $smarty = new Smarty;
@@ -86,7 +86,7 @@
   //Templateordner festlegen
   $smarty->template_dir = "templates/html";
   //Template-Compile-Ordner festlegen
-  $smarty->compile_dir = 'smarty/templates_c';
+  $smarty->compile_dir = 'templates_c';
 
 
   $smarty->assign('top_menu', $Menus->topMenu());
