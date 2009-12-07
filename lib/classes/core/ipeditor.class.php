@@ -89,7 +89,7 @@ class IpEditor {
 
 	public function insertEditIp($ip_id, $radius) {
 		DB::getInstance()->exec("UPDATE ips SET
-										radius = '$radius'
+										radius = '$radius',
 								WHERE id = '$ip_id'");
 		
 		$message[] = array("Die Ip mit der ID ".$ip_id." wurde geändert.", 1);

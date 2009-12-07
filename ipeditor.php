@@ -51,7 +51,6 @@
 		$smarty->display("footer.tpl.php");
     }
     if ($_GET['section'] == "insert_edit") {
-		Vpn::writeCCD($_GET['id'], $_POST['ccd']);
 		Ipeditor::insertEditIp($_GET['id'], $_POST['radius']);
 		header('Location: ./ip.php?id='.$_GET['id']);
     }
