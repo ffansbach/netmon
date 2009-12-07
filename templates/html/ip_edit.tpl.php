@@ -9,7 +9,19 @@
 
 	{if $ccd}
 	<h2>VPN-CCD</h2>
-		CCD-Eintrag: <input name="ccd" type="text" size="50" value="{$ccd}"><br>
+	<div style="width: 100%; overflow: hidden;">
+		<div style="float:left; width: 55%;">
+			<h3>CCD-Eintrag (mehrzeilige Einträge möglich)</h3>
+			<textarea name="ccd" cols="50" rows="5">{$ccd}</textarea>
+		</div>
+		
+		<div style="float:left; width: 45%;">
+			<h3>Mögliche Optionen</h3>
+			<input type="checkbox" name="ccd_redirect_gateway" value="true" {if $ip_data.ccd_redirect_gateway==1}checked{/if}> VPN-Server als Default-Gateway nutzen
+        </div>
+	</div>
+
+
 	{/if}
 	<p><input type="submit" value="Ändern"></p>
 </form>
