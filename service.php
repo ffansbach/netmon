@@ -21,6 +21,8 @@
   $smarty->assign('current_crawl', $current_crawl);
 
 
+
+
   $smarty->assign('last_online_crawl', Helper::getLastOnlineCrawlDataByServiceId($_GET['service_id']));
   $crawl_history = $Service->getCrawlHistory($_GET['service_id'], 35);
   $smarty->assign('crawl_history', $crawl_history);

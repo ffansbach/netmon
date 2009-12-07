@@ -257,7 +257,7 @@ class Helper {
 
     try {
       /*** query the database ***/
-      $sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
+      $sql = "SELECT services.id as service_id, services.title as services_title, services.description, services.typ, services.crawler, services.create_date,
 				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
 				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
 				      users.nickname

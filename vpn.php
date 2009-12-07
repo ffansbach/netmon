@@ -18,6 +18,7 @@
 		$smarty->display("sslcertificate_new.tpl.php");
 		$smarty->display("footer.tpl.php");
     }
+
 	if ($_GET['section'] == "generate") {
 		$ip = Helper::getIpDataByIpId($_GET['ip_id']);
 		UserManagement::isOwner($smarty, $ip['user_id']);
@@ -44,6 +45,20 @@
 			header('Location: ./ip.php?id='.$_GET['ip_id']);
     	}
 	}
+
+/*    if ($_GET['section'] == "edit") {
+		$ip_data = Helper::getIpDataByIpId($_GET['ip_id']);
+		UserManagement::isOwner($smarty, $ip_data['user_id']);
+
+		$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+		$ip_data = Helper::getIpDataByIpId($_GET['ip_id']);
+		$smarty->assign('ip_data', $ip_data);
+		$smarty->assign('ccd', Vpn::getCCD($_GET['ip_id']));
+
+     	$smarty->display("header.tpl.php");
+		$smarty->display("vpn_edit.tpl.php");
+		$smarty->display("footer.tpl.php");
+    }*/
 
     if ($_GET['section'] == "info") {
       $ip = Helper::getIpDataByIpId($_GET['ip_id']);
