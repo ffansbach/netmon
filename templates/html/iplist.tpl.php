@@ -20,7 +20,7 @@
 {foreach key=count item=iplist from=$iplist}
 <div id="ipitem" style="width: 745px; overflow: hidden;">
   <div style="white-space: nowrap;">
-    <div style="float:left; width: 85px;"><a href="./service.php?service_id={$iplist.service_id}">{$net_prefix}.{$iplist.ip}</a></div>
+    <div style="float:left; width: 85px;"><a href="./ip.php?id={$iplist.ip_id}">{$net_prefix}.{$iplist.ip}</a></div>
     <div style="float:left; width: 50px;">{$iplist.crawler}</div>
 
     <div style="float:left; width: 100px;"><a href="./user.php?id={$iplist.user_id}">{$iplist.nickname}</a></div>
@@ -61,7 +61,7 @@
 {foreach key=count item=iplist from=$vpnlist}
 <div id="ipitem" style="width: 745px; overflow: hidden;">
   <div style="white-space: nowrap;">
-    <div style="float:left; width: 85px;"><a href="./service.php?service_id={$iplist.service_id}">{$net_prefix}.{$iplist.ip}</a></div>
+    <div style="float:left; width: 85px;"><a href="./ip.php?id={$iplist.ip_id}">{$net_prefix}.{$iplist.ip}</a></div>
     <div style="float:left; width: 50px;">{$iplist.crawler}</div>
 
     <div style="float:left; width: 100px;"><a href="./user.php?id={$iplist.user_id}">{$iplist.nickname}</a></div>
@@ -102,7 +102,7 @@
 {foreach key=count item=iplist from=$clientlist}
 <div id="ipitem" style="width: 745px; overflow: hidden;">
   <div style="white-space: nowrap;">
-    <div style="float:left; width: 85px;"><a href="./service.php?service_id={$iplist.service_id}">{$net_prefix}.{$iplist.ip}</a></div>
+    <div style="float:left; width: 85px;"><a href="./ip.php?id={$iplist.ip_id}">{$net_prefix}.{$iplist.ip}</a></div>
     <div style="float:left; width: 50px;">{$iplist.crawler}</div>
 
     <div style="float:left; width: 100px;"><a href="./user.php?id={$iplist.user_id}">{$iplist.nickname}</a></div>
@@ -143,7 +143,7 @@
 {foreach key=count item=iplist from=$servicelist}
 <div id="ipitem" style="width: 745px; overflow: hidden;">
   <div style="white-space: nowrap;">
-    <div style="float:left; width: 85px;"><a href="./service.php?service_id={$iplist.service_id}">{$net_prefix}.{$iplist.ip}</a></div>
+    <div style="float:left; width: 85px;"><a href="./ip.php?id={$iplist.ip_id}">{$net_prefix}.{$iplist.ip}</a></div>
     <div style="float:left; width: 50px;">{$iplist.crawler}</div>
 
     <div style="float:left; width: 100px;"><a href="./user.php?id={$iplist.user_id}">{$iplist.nickname}</a></div>
