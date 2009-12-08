@@ -36,16 +36,13 @@ class UserManagement {
     return md5($password);
   }
   
-  public function act(&$smarty, $sitepermission) {
-    if (!UserManagement::checkPermission($sitepermission)) {
+	public function denyAccess() {
       $message[] = array("Sie haben nicht das Recht auf diesen Bereich zuzugreifen!",2);
       Message::setMessage($message);
-      $smarty->assign('message', Message::getMessage());
-//      $smarty->assign('get_content', "portal");
-      $smarty->display("design.tpl.php");
+	  $_SESSION['redirect_url'] = ".".$_SERVER['REQUEST_URI'];
+	  header('Location: ./login.php?section=login');
       die();
-    }
-  }
+	}
 
   public function isOwner(&$smarty, $owning_user_id) {
     if($owning_user_id!=$_SESSION['user_id'] OR !isset($owning_user_id)) {
@@ -59,6 +56,17 @@ class UserManagement {
     }
   }
 
+	//Checks if a user is owner or has the permission to access the site
+	public function checkIfUserIsOwnerOrPermitted($site_permission, $owning_user_id) {
+		if($owning_user_id==$_SESSION['user_id']) {
+			return true;
+		} elseif(UserManagement::checkPermission($site_permission, $_SESSION['user_id'])) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
   public function isThisUserOwner($owning_user_id, $user_id=false) {
 	if(!$user_id) {
 		$user_id = $_SESSION['user_id'];
@@ -71,31 +79,48 @@ class UserManagement {
     }
   }
 
-  public function checkPermission($sitepermission) {
-    $userpermission = UserManagement::getUserPermission();
-    //Rechte ins Binärsystem wandeln
-    $sitepermission = decbin($sitepermission);
-    $userpermission = decbin($userpermission);
-    $sitepermission_len = strlen($sitepermission);
-    $userpermission_len = strlen($userpermission);
- 
-    //Alle verfügbaren Rechte-Optionen holen
-    $permission = UserManagement::getAllPermissions();
-
-    $return = false;
-    for ($i=count($permission)-1; $i>=0; $i--) {
-      $exponent = $permission[$i];
-      if ($sitepermission[$sitepermission_len-($exponent+1)]==1) {
-	if ($sitepermission[$sitepermission_len-($exponent+1)]==$userpermission[$userpermission_len-($exponent+1)]) {
-	  $return = true;
+	public function checkPermission($sitepermission, $user_id=false) {
+		$userpermission = UserManagement::getUserPermission($user_id);
+		
+		//Rechte ins Binärsystem wandeln
+		$sitepermission = decbin($sitepermission);
+		$userpermission = decbin($userpermission);
+		$sitepermission_len = strlen($sitepermission);
+		$userpermission_len = strlen($userpermission);
+		
+		//Alle verfügbaren Rechte-Optionen holen
+		$permission = UserManagement::getAllPermissions();
+		
+		$return = false;
+		for ($i=count($permission)-1; $i>=0; $i--) {
+			$exponent = $permission[$i];
+			if ($sitepermission[$sitepermission_len-($exponent+1)]==1) {
+				if ($sitepermission[$sitepermission_len-($exponent+1)]==$userpermission[$userpermission_len-($exponent+1)]) {
+					$return = true;
+				}
+			}
+		}
+		return $return;
 	}
-      }
-    }
-    return $return;
-  }
 
-	public function getUserPermission() {
-		if (!isset($_SESSION['user_id'])) {
+	public function getUserPermission($user_id=false) {
+		if($user_id) {
+			//Jeder Benutzer bekommt das recht 0
+			$userpermission = pow(2,0);
+			//Jeder eingeloggte Benutzer bekommt das recht "eingeloggt"
+			$userpermission = $userpermission + pow(2,2);
+			try {
+				$sql = "select permission from users WHERE id=$user_id";
+				$result = DB::getInstance()->query($sql);
+				$user_data = $result->fetch(PDO::FETCH_ASSOC);
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+			
+			//Jeder Benutzer bekommt das recht aus der Datenbank
+			$userpermission = $userpermission + $user_data['permission'];
+		}elseif (!isset($_SESSION['user_id'])) {
 			//Jeder Benutzer bekommt das recht 0
 			$userpermission = pow(2,0);
 			//Jder nicht eingeloggte Benutzer bekommt das recht 1
@@ -131,6 +156,25 @@ class UserManagement {
 		6 = root, Recht in DB
 		*/
 		return array(0,1,2,3,4,5,6);
+	}
+	public function getEditablePermissionsWithNames() {
+		//Uncomment all permissions which are automatically set by Netmon
+		/*$permissions[0]['permission'] = 0;
+		$permissions[0]['name'] = 'Alle';
+		$permissions[1]['permission'] = 1;
+		$permissions[1]['name'] = 'Nicht eingeloggt';
+		$permissions[2]['permission'] = 2;
+		$permissions[2]['name'] = 'Eingeloggt';*/
+		$permissions[3]['permission'] = 3;
+		$permissions[3]['name'] = 'Benutzer';
+		$permissions[4]['permission'] = 4;
+		$permissions[4]['name'] = 'Moderator';
+		$permissions[5]['permission'] = 5;
+		$permissions[5]['name'] = 'Administrator';
+		$permissions[6]['permission'] = 6;
+		$permissions[6]['name'] = 'Root';
+
+		return $permissions;
 	}
 }
 

@@ -8,8 +8,22 @@
   $User = new User;
 
   if ($_GET['section'] == "edit") {
-    UserManagement::isOwner($smarty, $_SESSION['user_id']);
     $smarty->assign('user', Helper::getUserByID($_GET['id']));
+
+	//Only owner and Root can access this site.
+	if (!UserManagement::checkIfUserIsOwnerOrPermitted(64, $_GET['id']))
+		UserManagement::denyAccess();
+
+    $smarty->assign('is_root', UserManagement::checkPermission(64, $_SESSION['user_id']));
+
+	$permissions = UserManagement::getEditablePermissionsWithNames();
+	foreach ($permissions as $key=>$permission) {
+		$permission['dual'] = pow(2,$permission['permission']);
+		$permissions[$key]['check'] = UserManagement::checkPermission($permission['dual'], $_GET['id']);
+		$permissions[$key]['dual'] = $permission['dual'];
+	}
+    $smarty->assign('permissions', $permissions);
+
     $smarty->assign('message', Message::getMessage());
     $smarty->display("header.tpl.php");
     $smarty->display("user_edit.tpl.php");

@@ -35,53 +35,41 @@ require_once("./lib/classes/core/login.class.php");
 class User {
 	function userInsertEdit() {
 		if ($this->checkUserEditData($_GET['id'], $_POST['changepassword'], $_POST['oldpassword'], $_POST['newpassword'], $_POST['newpasswordchk'], $_POST['email'])) {
-			$password = usermanagement::encryptPassword($_POST['newpassword']);
-			if ($_POST['changepassword']) {
-				$sqlinsert = "UPDATE users
-							  SET password = '$password',
-								  vorname = '$_POST[vorname]',
-								  nachname = '$_POST[nachname]',
-								  strasse = '$_POST[strasse]',
-								  plz = '$_POST[plz]',
-								  ort = '$_POST[ort]',
-								  telefon = '$_POST[telefon]',
-								  email = '$_POST[email]',
-								  jabber = '$_POST[jabber]',
-								  icq = '$_POST[icq]',
-								  website = '$_POST[website]',
-								  about = '$_POST[about]',
-								  notification_method = '$_POST[notification_method]'
-								  WHERE id = '$_GET[id]'";	  	
+			$user = Helper::getUserByID($_GET['id']);
+			if (!$_POST['changepassword']) {
+				$password = $user['password'];
 			} else {
-				$sqlinsert = "UPDATE users
-							  SET vorname = '$_POST[vorname]',
-								  nachname = '$_POST[nachname]',
-								  strasse = '$_POST[strasse]',
-								  plz = '$_POST[plz]',
-								  ort = '$_POST[ort]',
-								  telefon = '$_POST[telefon]',
-								  email = '$_POST[email]',
-								  jabber = '$_POST[jabber]',
-								  icq = '$_POST[icq]',
-								  website = '$_POST[website]',
-								  about = '$_POST[about]',
-								  notification_method = '$_POST[notification_method]'
-								  WHERE id = '$_GET[id]'";
-			}
-			
-			DB::getInstance()->exec($sqlinsert);
-			
-			try {
-				$sql = "SELECT nickname
-						FROM users
-						WHERE id = $_GET[id]";
-				$result = DB::getInstance()->query($sql);
-				$user = $result->fetch(PDO::FETCH_ASSOC);
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
+				$password = usermanagement::encryptPassword($_POST['newpassword']);
 			}
 
+			if (!$_POST['permission']) {
+				$permission = $user['permission'];
+			} else {
+				$permission=0;
+				foreach($_POST['permission'] as $dual) {
+					$permission = $permission+$dual;
+				}
+			}
+
+			$sqlinsert = "UPDATE users
+						  SET 
+							  permission = '$permission',
+							  password = '$password',
+							  vorname = '$_POST[vorname]',
+							  nachname = '$_POST[nachname]',
+							  strasse = '$_POST[strasse]',
+							  plz = '$_POST[plz]',
+							  ort = '$_POST[ort]',
+							  telefon = '$_POST[telefon]',
+							  email = '$_POST[email]',
+							  jabber = '$_POST[jabber]',
+							  icq = '$_POST[icq]',
+							  website = '$_POST[website]',
+							  about = '$_POST[about]',
+							  notification_method = '$_POST[notification_method]'
+							  WHERE id = '$_GET[id]'";
+			DB::getInstance()->exec($sqlinsert);
+			
 			$message[] = array("Die Daten von $user[nickname] wurden geändert", 1);
 			message::setMessage($message);
 			return true;
