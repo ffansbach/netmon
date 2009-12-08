@@ -39,7 +39,7 @@ $GLOBALS['project_homepage'] = "http://www.freifunk-ol.de/";
 $GLOBALS['project_name'] = "Freifunk Oldenburg";
 $GLOBALS['project_essid'] = "oldenburg.freifunk.net";
 $GLOBALS['project_bssid'] = "02:ca:ff:ee:ba:be";
-$GLOBALS['project_kanal'] = "1";
+$GLOBALS['project_kanal'] = "6";
 
 //Logsystem
 //Logge bei Querrys die länge brauchen als X sekunden

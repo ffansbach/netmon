@@ -13,6 +13,17 @@
 
   <hr>
 
+	{if $is_root}
+		<h2>Administrative Einstellungen</h2>
+		<h3>Rechtevergabe</h3>
+		<p>
+			{foreach item=permission from=$permissions}
+				<input type="checkbox" name="permission[]" value="{$permission.dual}" {if $permission.check}checked{/if}> {$permission.name}<br>
+			{/foreach}
+		</p>
+		<hr>
+	{/if}
+
   <h2>Grunddaten</h2>
 
   <p>Email:<br><input name="email" type="text" size="30" value="{$user.email}"></p>
