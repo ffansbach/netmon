@@ -52,6 +52,7 @@
     }
     if ($_GET['section'] == "insert_edit") {
 		Ipeditor::insertEditIp($_GET['id'], $_POST['radius']);
+		Vpn::writeCCD($_GET['id'], $_POST['ccd']);
 		header('Location: ./ip.php?id='.$_GET['id']);
     }
 
