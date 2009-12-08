@@ -17,7 +17,11 @@
 		
 		<div style="float:left; width: 45%;">
 			<h3>Mögliche Optionen</h3>
-			<input type="checkbox" name="ccd_redirect_gateway" value="true" {if $ip_data.ccd_redirect_gateway==1}checked{/if}> VPN-Server als Default-Gateway nutzen
+			<ul>
+				<li>
+					push redirect-gateway
+				</li>
+			</ul>
         </div>
 	</div>
 
