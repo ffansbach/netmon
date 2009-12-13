@@ -3,6 +3,8 @@
   require_once('./lib/classes/core/subnet.class.php');
   require_once('./lib/classes/core/subnetcalculator.class.php');
 
+  require_once './lib/classes/extern/jsonRPCClient.php';
+
   $subnet = new subnet;
   
   $smarty->assign('message', Message::getMessage());

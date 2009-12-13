@@ -253,6 +253,7 @@ class Vpn {
 				echo $e->getMessage();
 			}
 		}
+
 		foreach ($ip_ids as $ip_id) {
 			Vpn::writeCCD($ip_id);
 		}
