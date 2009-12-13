@@ -20,19 +20,6 @@ class Main {
 	public function getAllServiceIDsByServiceType($type) {
 		return(Helper::getAllServiceIDsByServiceType($type));
 	}
-	
-	public function add($a, $b) {
-		return($a+$b);
-	}
-
-	public function bla($string) {
-		return($string);
-	}
-
-	public function writeSomething($something) {
-		throw new Exception('writeSomething method is not available for RPC');
-	}
-
 }
 
 ?>
