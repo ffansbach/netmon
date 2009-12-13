@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if [ "$#" != "8" ]
+then   
+	echo "$0 type ip dhcp-start dhcp-limit nickname fullname mail target-path"
+	echo "type: dir or fon"
+	echo "ip: z.B. 10.18.1.15"
+	echo "dhcp-start: z.B. 50"
+	echo "dhcp-limit: z.B. 4 (50-54)"
+	echo "nickname: RedDog"
+	echo "fullname: \"Tim Niemeyer\""
+	echo "mail: tim@freifunk-ol.de"
+	echo "target-path: /home/.."
+	exit 0
+fi
+
+
+test -d dest || mkdir dest
+
+#IMGPATH=cl$RANDOM
+IMGPATH=$8
+
+mkdir dest/$IMGPATH
+
+cp -al root-atheros dest/$IMGPATH/root-atheros
+
+./mkconfig "$1" "$2" "$3" "$4" "$5" "$6" "$7" dest/$IMGPATH/root-atheros
+./mkimg dest/$IMGPATH
+
+cp -al src/openwrt-atheros-vmlinux.lzma dest/$IMGPATH/
+
+echo "Fertig"
+#/bin/rm -rf dest/$IMGPATH

@@ -13,8 +13,8 @@
       $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
       $smarty->assign('data', Helper::getIpDataByIpId($_GET['ip_id']));
       $smarty->assign('expiration', $GLOBALS['expiration']);
-      $smarty->assign('get_content', "sslcertificate_new");
-     	$smarty->display("header.tpl.php");
+
+		$smarty->display("header.tpl.php");
 		$smarty->display("sslcertificate_new.tpl.php");
 		$smarty->display("footer.tpl.php");
     }

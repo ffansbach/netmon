@@ -1,0 +1,228 @@
+#!/bin/bash
+
+STARTPWD=`pwd`
+
+if [ "$#" != "8" ]
+then
+	echo "$0 type ip dhcp-start dhcp-limit nickname fullname mail dest"
+	echo "type: dir or fon"
+	echo "ip: z.B. 10.18.1.15"
+	echo "dhcp-start: z.B. 50"
+	echo "dhcp-limit: z.B. 4 (50-54)"
+	echo "nickname: RedDog"
+	echo "fullname: \"Tim Niemeyer\""
+	echo "mail: tim@freifunk-ol.de"
+	echo "dest: build_path"
+	exit 0
+fi
+
+TYPE=${1^^}
+IP=$2
+DHCPS=$3
+DHCPL=$4
+NICKNAME=$5
+FULLNAME=$6
+MAIL=$7
+DEST=$8/etc
+
+if [ "$TYPE" = "FON" ]
+then
+WANDEV=eth0
+else
+WANDEV=eth0.1
+fi 
+
+cat > $DEST/firewall.user <<EOF
+# This file is interpreted as shell script.
+# Put your custom iptables rules here, they will
+# be executed with each firewall (re-)start.
+
+iptables -A OUTPUT -o $WANDEV -p udp -d 80.255.7.201 --dport 1194 -j ACCEPT
+iptables -A INPUT -i $WANDEV -p udp -s 80.255.7.201 -j ACCEPT
+iptables -A INPUT -i $WANDEV -j REJECT
+iptables -A OUTPUT -o $WANDEV -j REJECT
+iptables -A FORWARD -i $WANDEV -j REJECT
+iptables -A FORWARD -o $WANDEV -j REJECT
+EOF
+
+cp src/init.d/freifunk $DEST/init.d/freifunk
+cp src/config/* $DEST/config/
+
+cat > $DEST/config/dhcp <<EOF
+config dnsmasq
+        option domainneeded     1
+        option boguspriv        1
+        option filterwin2k      '0'  #enable for dial on demand
+        option localise_queries 1
+        option local    '/freifunk/'
+        option domain   'freifunk'
+        option expandhosts      1
+        option nonegcache       0
+        option authoritative    1
+        option readethers       1
+        option leasefile        '/tmp/dhcp.leases'
+        option resolvfile       '/tmp/resolv.conf.auto'
+        #list server            '/mycompany.local/1.2.3.4'
+        #option nonwildcard     0
+        #list interface         br-lan
+
+config dhcp freifunk
+        option interface        freifunk
+        option start    $DHCPS
+        option limit    $DHCPL
+        option leasetime        30m
+EOF
+
+cat > $DEST/config/freifunk <<EOF
+config settings wizard
+config public contact
+        option nickname '$NICKNAME'
+        option name '$FULLNAME'
+        option mail '$MAIL'
+        option phone ''
+        option location ''
+        option note ''
+
+config public community
+        option name 'Freifunk Oldenburg'
+        option homepage 'http://www.freifunk-ol.de'
+
+config fw_rule icmp
+        option src freifunk
+        option target ACCEPT
+        option proto  icmp
+
+config fw_rule http
+        option src freifunk
+        option target ACCEPT
+        option proto  tcp
+        option dest_port 80
+
+config fw_rule https
+        option src freifunk
+        option target ACCEPT
+        option proto  tcp
+        option dest_port 443
+
+config fw_rule ssh
+        option src freifunk
+        option target ACCEPT
+        option proto  tcp
+        option dest_port 22
+
+config fw_rule olsr
+        option src freifunk
+        option target ACCEPT
+        option proto  udp
+        option dest_port 698
+
+config fw_forwarding lan
+        option src lan
+        option dest freifunk
+
+config fw_forwarding fffwd
+        option src freifunk
+        option dest freifunk
+
+
+config defaults wifi_device
+    option channel   1
+    option diversity 1
+    option disabled  0
+    option txpower   17
+
+config defaults wifi_iface
+    option mode         adhoc
+    option bssid    02:CA:FF:EE:BA:BE
+    option sw_merge 1
+
+config defaults interface
+    option netmask  255.0.0.0
+    option dns      "88.198.178.18 141.54.1.1 212.204.49.83 208.67.220.220 208.67.222.222"
+
+config defaults alias
+        option netmask  255.255.255.0
+
+config defaults dhcp
+        option leasetime 30m
+
+config defaults olsr_interface
+        option Ip4Broadcast 255.255.255.255
+
+config defaults time
+        option rdate_servers "128.138.140.44 171.64.7.77 171.64.7.99 81.169.154.44 130.133.1.10"
+
+config community oldenburg
+        option name "Freifunk Oldenburg"
+        option homepage http://www.freifunk-ol.de
+        option ssid "oldenburg.freifunk.net"
+        option prefix "10.18"
+EOF
+
+cat > $DEST/config/network <<EOF
+config interface loopback
+        option ifname   lo
+        option proto    static
+        option ipaddr   127.0.0.1
+        option netmask  255.0.0.0
+
+EOF
+
+if [ "$TYPE" = "FON" ]
+then
+cat >> $DEST/config/network <<EOF
+config interface freifunk
+        option ifname   'ath0'
+EOF
+else
+cat >> $DEST/config/network <<EOF
+config 'switch' '0'
+        option 'vlan1' '4 5t'     # WAN   and CPU
+        option 'vlan2' '3 2 1 0 5t' # PORT1-3 and CPU
+
+config interface freifunk
+        option ifname   'ath0 eth0.2'
+EOF
+fi
+cat >> $DEST/config/network <<EOF
+        option type     bridge
+        option proto    static
+        option ipaddr   $IP
+        option gateway  0.0.0.0
+        option netmask  255.255.255.0
+        option dns      "88.198.178.18 141.54.1.1 212.204.49.83 208.67.220.220 208.67.222.222"
+
+config interface wan
+        option ifname   $WANDEV
+        option proto    dhcp
+
+config interface tunnel
+        option ifname   tap0
+        option proto 'none'
+
+config 'route'                         
+        option 'interface' 'wan'
+        option 'target' '80.255.7.201'
+EOF
+
+cat > $DEST/config/system <<EOF
+config system
+        option hostname `echo $IP | sed 's/\./-/g'`
+        option timezone UTC
+
+config button
+        option button   reset
+        option action   released
+        option handler  "logger reboot"
+        option min              0
+        option max              4
+
+config button
+        option button   reset
+        option action   released
+        option handler  "logger factory default"
+        option min              5
+        option max              30
+EOF
+
+

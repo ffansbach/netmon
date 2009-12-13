@@ -24,4 +24,15 @@ catch(PDOException $e) {
 	echo $e->getMessage();
 }
 
+//Remove old generated images
+$files = scandir("scripts/imgbuild/dest/");
+foreach($files as $file) {
+	if ($file!=".." AND $file!=".") {
+		$exploded_name = explode("_", $file);
+		if(!empty($exploded_name[1]) AND $exploded_name[1]<(time()-1800)) {
+			exec("rm -Rf $_SERVER[DOCUMENT_ROOT]/scripts/imgbuild/dest/$file");
+		}
+	}
+}
+
 ?>

@@ -85,27 +85,29 @@ Dein Freifunkteam $GLOBALS[city_name]";
 		if($service_data['notify']==1) {
 			$user_data = Helper::getUserByID($service_data['user_id']);
 			$history = Service::getCrawlHistory($service_id, $service_data['notification_wait']);
-			if(count($history)>=$service_data['notifiaction_wait']) {
-				//Wenn der Serivice in der notification_wait einmal online gecrawlt wurde, beende.
-				$online = false;
-				foreach($history as $hist) {
-					if ($hist['status']=="online") {
-						$online = true;
-						break;
+			if (!empty($history)) {
+				if(count($history)>=$service_data['notifiaction_wait']) {
+					//Wenn der Serivice in der notification_wait einmal online gecrawlt wurde, beende.
+					$online = false;
+					foreach($history as $hist) {
+						if ($hist['status']=="online") {
+							$online = true;
+							break;
+						}
 					}
-				}
-				
-				//Wenn offline 
-				if (!$online AND $service_data['notified']!=1) {
-					if($user_data['notification_method']=="email") {
-						Service::emailIfDown($service_data, $user_data, $history);
-					} elseif ($user_data['notification_method']=="jabber") {
-						Service::jabberIfDown($service_data, $user_data, $history);
+					
+					//Wenn offline 
+					if (!$online AND $service_data['notified']!=1) {
+						if($user_data['notification_method']=="email") {
+							Service::emailIfDown($service_data, $user_data, $history);
+						} elseif ($user_data['notification_method']=="jabber") {
+							Service::jabberIfDown($service_data, $user_data, $history);
+						}
+						DB::getInstance()->exec("UPDATE services SET
+														notified = 1,
+														last_notification = NOW()
+												WHERE id = '$service_id'");
 					}
-					DB::getInstance()->exec("UPDATE services SET
-													notified = 1,
-													last_notification = NOW()
-											 WHERE id = '$service_id'");
 				}
 			}
 		}
