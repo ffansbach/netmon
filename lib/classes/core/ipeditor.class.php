@@ -42,17 +42,22 @@ class IpEditor {
 		return false;
 	}
 
-	if($dhcp_kind=='simple') {
-		$range = EditingHelper::getFreeIpZone($subnet_id, $ips, $ip);
-	} elseif($dhcp_kind=='extend') {
-		if(EditingHelper::checkIfRangeIsFree($subnet_id, $ip, $dhcp_first, $dhcp_last)) {
-			$range['start'] = $dhcp_first;
-			$range['end'] = $dhcp_last;
-		} else {
-			$message[] = array("Die DHCP-Zone existiert bereits im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask].", 2);
-			Message::setMessage($message);
-			return false;
+	if($subnet['allows_dhcp']) {
+		if($dhcp_kind=='simple') {
+			$range = EditingHelper::getFreeIpZone($subnet_id, $ips, $ip);
+		} elseif($dhcp_kind=='extend') {
+			if(EditingHelper::checkIfRangeIsFree($subnet_id, $ip, $dhcp_first, $dhcp_last)) {
+				$range['start'] = $dhcp_first;
+				$range['end'] = $dhcp_last;
+			} else {
+				$message[] = array("Die DHCP-Zone existiert bereits im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask].", 2);
+				Message::setMessage($message);
+				return false;
+			}
 		}
+	} else {
+		$range['start'] = 'NULL';
+		$range['start'] = 'NULL';
 	}
 
     if ($range) {
@@ -60,7 +65,7 @@ class IpEditor {
 	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip, zone_start, zone_end, radius, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$ip', '$range[start]', '$range[end]', '$_POST[radius]', NOW());");
 	$ip_id = DB::getInstance()->lastInsertId();
 
-	if ($ips > 0) {
+	if ($range['start']!='NULL') {
 	  $message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$ip." wurde erfolgreich im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask] angelegt.", 1);
 	  $message[] = array("Der IP-Bereich ".$GLOBALS['net_prefix'].".".$range['start']." - ".$GLOBALS['net_prefix'].".".$range['end']." wurde zur Vergabe über DHCP reserviert", 1);
 	} else {
