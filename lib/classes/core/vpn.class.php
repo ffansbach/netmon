@@ -225,11 +225,10 @@ class Vpn {
 	}
 
 	public function regenerateCCD($subnet_id) {
-
 		try {
-			$sql = "SELECT ips.id
+			$sql = "SELECT id
 					FROM ips
-					WHERE ips.subnet_id='$subnet_id'";
+					WHERE subnet_id='$subnet_id' AND vpn_client_cert !='' AND vpn_client_key!='';";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$ip_ids[] = $row['id'];
@@ -237,21 +236,6 @@ class Vpn {
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
-		}
-		
-		foreach ($ip_ids as $ip_id) {
-			try {
-				$sql = "SELECT id
-						FROM ips
-						WHERE id='$ip_id' AND vpn_client_cert !='' AND vpn_client_key!='';";
-				$result = DB::getInstance()->query($sql);
-				foreach($result as $row) {
-					$ip_ids[] = $row['id'];
-				}
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
 		}
 
 		foreach ($ip_ids as $ip_id) {
