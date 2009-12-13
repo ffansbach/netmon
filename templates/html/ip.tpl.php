@@ -179,6 +179,8 @@
 
 <p>
   <a href="./ipeditor.php?section=edit&id={$ip.ip_id}">Ip Editieren</a><br>
+  <a href="./imagemaker.php?section=new&ip_id={$ip.ip_id}">Image Downloaden</a><br>
+
 <!--  <a href="./vpn.php?section=edit&ip_id={$ip.ip_id}">VPN-Optionen</a>-->
 </p>
 
