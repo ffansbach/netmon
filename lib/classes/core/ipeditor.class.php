@@ -91,8 +91,8 @@ class IpEditor {
 		DB::getInstance()->exec("UPDATE ips SET
 										radius = '$radius'
 								WHERE id = '$ip_id'");
-		
-		$message[] = array("Die Ip mit der ID ".$ip_id." wurde geändert.", 1);
+		$ip_data = Helper::getIpInfo($ip_id);
+		$message[] = array("Die Ip $GLOBALS[net_prefix].$ip_data[ip]. wurde geändert.", 1);
 		Message::setMessage($message);
 		return true;
 	}

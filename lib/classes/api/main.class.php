@@ -13,12 +13,20 @@ class Main {
 		return(Helper::getProjectInfo());
 	}
 
-	public function subnet_info() {
+	public function subnet_info($subnet_id) {
 		return(Helper::getSubnetDataBySubnetID($subnet_id));
 	}
 
 	public function getAllServiceIDsByServiceType($type) {
 		return(Helper::getAllServiceIDsByServiceType($type));
+	}
+	
+	public function add($a, $b) {
+		return($a+$b);
+	}
+
+	public function bla($string) {
+		return($string);
 	}
 
 	public function writeSomething($something) {
