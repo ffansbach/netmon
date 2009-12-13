@@ -1,9 +1,36 @@
+{literal}
+
+<!--
+http://plugins.jquery.com/project/zendjsonrpc
+-->
+
+<SCRIPT LANGUAGE="javascript" SRC="lib/classes/extern/jquery/jquery.min.js"></SCRIPT>
+<SCRIPT LANGUAGE="javascript" SRC="lib/classes/extern/zend_framework_json-rpc/json2.js"></SCRIPT>
+<SCRIPT LANGUAGE="javascript" SRC="lib/classes/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></SCRIPT>
+<SCRIPT>
+	function getSubnetInfo(subnet_id) {
+		$(document).ready(function(){
+			test = jQuery.Zend.jsonrpc({url: 'api_main.php'});
+			subnet = test.subnet_info(subnet_id);
+			if(subnet.allows_dhcp==0) {
+				document.getElementById('section_dhcp').style.display = 'none';
+			} else {
+				document.getElementById('section_dhcp').style.display = 'block';
+			}
+			//alert(subnet.allows_dhcp);
+		});
+	}
+</SCRIPT>
+
+{/literal}
+
 <h1>IP anlegen:</h1>
 <form action="./ipeditor.php?section=insert" method="POST">
 	<h2>Subnetz</h2>
 	<p>
 		IP im Subnetz:
-		<select name="subnet_id">
+		<select name="subnet_id" onChange="getSubnetInfo(this.options[this.selectedIndex].value)">
+				<option value="false" selected>Bitte wählen</option>
 			{foreach item=subnet from=$existing_subnets}
 				<option value="{$subnet.id}">{$net_prefix}.{$subnet.host}/{$subnet.netmask} ({$subnet.title})</option>
 			{/foreach}
@@ -19,6 +46,7 @@
 		<b>IP:</b>  {$net_prefix}.<input name="ip" type="text" size="7">
 	</div>
 
+	<div id="section_dhcp" style="display: none;">
 	<h2>DHCP</h2>
 	<p>
 		<input type="radio" name="dhcp_kind" value="simple" checked="checked" onchange="document.getElementById('dhcp_extend').style.display = 'none'; document.getElementById('dhcp_simple').style.display = 'block';">Zahl der benötigten IP´s angeben<br>
@@ -29,6 +57,7 @@
 	</div>
 	<div id="dhcp_extend" style="display: none;">
 		<b>IP-Bereich:</b>  {$net_prefix}.<input name="dhcp_first" type="text" size="7"> bis {$net_prefix}.<input name="dhcp_last" type="text" size="7">
+	</div>
 	</div>
 
 	<h2>Reichweite</h2>

@@ -70,7 +70,7 @@ class Helper {
 
 	public function getSubnetById($subnet_id) {
 		try {
-			$sql = "select host, netmask FROM subnets WHERE id='$subnet_id'";
+			$sql = "select * FROM subnets WHERE id='$subnet_id'";
 			$result = DB::getInstance()->query($sql);
 			$subnet = $result->fetch(PDO::FETCH_ASSOC);
 		}
@@ -282,7 +282,7 @@ class Helper {
   public function getSubnetsByUserId($user_id) {
     $subnets = array();
 	try {
-		$sql = "select id, subnets.host, subnets.netmask FROM subnets WHERE user_id='$user_id';";
+		$sql = "select * FROM subnets WHERE user_id='$user_id';";
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
 			$subnets[] = $row;

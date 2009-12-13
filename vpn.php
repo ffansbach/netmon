@@ -80,12 +80,22 @@
     }
 
     if ($_GET['section'] == "regenerate_ccd_subnet") {
+	//Only owner and Root can access this site.
+	if (!UserManagement::checkPermission(32, $_SESSION['user_id']))
+		UserManagement::denyAccess();
+	  $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
       $smarty->assign('subnets', Helper::getSubnetsByUserId($_SESSION['user_id']));
       $smarty->display("header.tpl.php");
       $smarty->display("regenerate_ccd_subnet.tpl.php");
       $smarty->display("footer.tpl.php");
-    } 
+    }
     if ($_GET['section'] == "insert_regenerate_ccd_subnet") {
+		$subnet = Helper::getSubnetById($_POST['subnet_id']);
+
+	//Only owner and Root can access this site.
+	if (!UserManagement::checkIfUserIsOwnerOrPermitted(64, $subnet['user_id']))
+		UserManagement::denyAccess();
+
       Vpn::regenerateCCD($_POST['subnet_id']);
       header('Location: subnet.php?id='.$_POST['subnet_id']);
     }
