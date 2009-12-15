@@ -4,6 +4,7 @@
 		<h2>Daten:</h2>
 		<p>
 			<b>Subnet:</b> {$net_prefix}.{$subnet.host}/{$subnet.netmask}<br>
+			{if !empty($subnet.real_host)}<b>Real Subnet:</b> {$net_prefix}.{$subnet.real_host}/{$subnet.real_netmask}<br>{/if}
 			<b>Erste IP:</b> {$subnet.first_ip}<br>
 			<b>Letzte IP:</b> {$subnet.last_ip}<br>
 			<b>IP´s belegt/möglich</b> ka/{$subnet.hosts_total}<br>
