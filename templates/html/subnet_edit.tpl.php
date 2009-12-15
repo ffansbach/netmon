@@ -1,3 +1,19 @@
+{literal}
+<script language="javascript">
+	function check(){
+		if(document.getElementById('use_real_network').checked == false){
+			document.getElementById('real_net').style.display = 'none';
+		} else {
+			document.getElementById('real_net').style.display = 'block';
+		}
+	}
+
+	function writeSame() {
+			document.getElementById('real_host').value = document.getElementById('host').value;
+	}
+</script>
+{/literal}
+
 <form action="./subneteditor.php?section=insert_edit&id={$subnet_data.id}" method="POST">
 	<h1>Subnetz editieren:</h1>
 	<h2>Subnetz Bereich</h2>
@@ -30,15 +46,28 @@
 	<div id="extend" style="display: block;">
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 50%;">
-				<h3>Netz</h2>
+				<h3>neues Netz</h2>
+				<input id="use_real_network" name="use_real_network" type="checkbox" onchange="check()" value="true" {if !empty($subnet_data.real_host)}checked{/if}> Logisches Netz != Realnetz
 				<div style="width: 100%; overflow: hidden;">
+					<h4>Logisches Netz</h4>
 					<div style="float:left;">
 						Host:<br>
-						<input name="host" type="text" size="15" value="{$net_prefix}.{$subnet_data.host}"> /
+						10.18. <input id="host" name="host" type="text" size="7" maxlength="7" onchange="writeSame()" value="{$subnet_data.host}"> /
 					</div>
-					<div style="float:left; margin-left:3px;">
+					<div style="margin-left:3px;">
 						Netmask:<br>
-						<input name="netmask" type="text" size="5" value="{$subnet_data.netmask}">
+						<input name="netmask" type="text" size="2" maxlength="2" value="{$subnet_data.netmask}">
+					</div>
+					<div id="real_net" style="{if empty($subnet_data.real_host)}display: none;{else}display: block;{/if}">
+						<h4>Reales Netz</h4>
+						<div style="float:left;">
+							Host:<br>
+							10.18. <input id="real_host" name="real_host" type="text" maxlength="7" size="7" value="{if empty($subnet_data.real_host)}{$subnet_data.host}{else}{$subnet_data.real_host}{/if}" readonly> /
+						</div>
+						<div style="margin-left:3px;">
+							Netmask:<br>
+							<input name="real_netmask" type="text" size="2" maxlength="2" value="{if empty($subnet_data.real_host)}16{else}{$subnet_data.real_netmask}{/if}">
+						</div>
 					</div>
 				</div>
 			</div>
