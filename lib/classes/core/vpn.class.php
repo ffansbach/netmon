@@ -180,8 +180,12 @@ class Vpn {
   public function writeCCD($ip_id, $ccd_content=false) {
 	$ip_data = Helper::getIpDataByIpId($ip_id);
 	$subnet_data = Helper::getSubnetDataBySubnetID($ip_data['subnet_id']);
-	$netmask = SubnetCalculator::getNmask($subnet_data['netmask']);
-    
+	if (empty($subnet_data['real_netmask'])) {
+		$netmask = SubnetCalculator::getNmask($subnet_data['netmask']);
+	} else {
+		$netmask = SubnetCalculator::getNmask($subnet_data['real_netmask']);
+	}
+
     $cert_info = Vpn::getCertificateInfo($ip_id);
     $CN = $cert_info['ip']['subject']['CN'];
     if (!empty($CN)) {

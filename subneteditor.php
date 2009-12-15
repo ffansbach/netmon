@@ -10,7 +10,7 @@
 	IP Mask or CIDR: <input type=\"text\" name=\"my_net_info\" size=\"32\" maxlength=\"32\">
 </form>";
 */
-
+/*
 if(isset($_POST['my_net_info'])) {
 $my_net_info = SubnetCalculator::checkIfInputIsValidAndCIDR($_POST['my_net_info']);
 if(!$my_net_info){
@@ -72,7 +72,7 @@ SubnetCalculator::tr('HostMax:', '<font color="blue">'.SubnetCalculator::bintodq
 }
 
 
-
+*/
 
   $SubnetEditor = new SubnetEditor;
 

@@ -1,6 +1,22 @@
+{literal}
+<script language="javascript">
+	function check(){
+		if(document.getElementById('use_real_network').checked == false){
+			document.getElementById('real_net').style.display = 'none';
+		} else {
+			document.getElementById('real_net').style.display = 'block';
+		}
+	}
+
+	function writeSame() {
+			document.getElementById('real_host').value = document.getElementById('host').value;
+	}
+</script>
+{/literal}
+
 <form action="./subneteditor.php?section=insert_new" method="POST">
 
-	<h1>Ein neues Subnetz erstellen:</h1>
+	<h1>Ein neues logisches Subnetz erstellen:</h1>
 	<h2>Subnetz Bereich</h2>
 	<p>
 		<input type="radio" name="subnet_kind" value="extend" checked="checked" onchange="document.getElementById('simple').style.display = 'none'; document.getElementById('extend').style.display = 'block';">Extend<br>
@@ -32,14 +48,27 @@
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 50%;">
 				<h3>neues Netz</h2>
+				<input id="use_real_network" name="use_real_network" type="checkbox" onchange="check()" value="true"> Logisches Netz != Realnetz
 				<div style="width: 100%; overflow: hidden;">
+					<h4>Logisches Netz</h4>
 					<div style="float:left;">
 						Host:<br>
-						<input name="host" type="text" size="15"> /
+						10.18. <input id="host" name="host" type="text" size="7" maxlength="7" onchange="writeSame()"> /
 					</div>
-					<div style="float:left; margin-left:3px;">
+					<div style="margin-left:3px;">
 						Netmask:<br>
-						<input name="netmask" type="text" size="5">
+						<input name="netmask" type="text" size="2" maxlength="2">
+					</div>
+					<div id="real_net" style="display: none;">
+						<h4>Reales Netz</h4>
+						<div style="float:left;">
+							Host:<br>
+							10.18. <input id="real_host" name="real_host" type="text" maxlength="7" size="7" readonly> /
+						</div>
+						<div style="margin-left:3px;">
+							Netmask:<br>
+							<input name="real_netmask" type="text" size="2" maxlength="2" value="16">
+						</div>
 					</div>
 				</div>
 			</div>
