@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 17, 2009 at 05:43 PM
+-- Generation Time: Dec 15, 2009 at 07:43 PM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.11-1
 
@@ -132,6 +132,8 @@ CREATE TABLE IF NOT EXISTS `subnets` (
   `id` int(11) NOT NULL auto_increment,
   `host` varchar(15) NOT NULL,
   `netmask` int(11) NOT NULL,
+  `real_host` varchar(15) NOT NULL,
+  `real_netmask` int(11) NOT NULL,
   `allows_dhcp` tinyint(1) NOT NULL,
   `user_id` int(11) NOT NULL,
   `title` varchar(255) default NULL,
