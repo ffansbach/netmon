@@ -4,11 +4,25 @@
     <div style="float:left; width: 50%;">
 		<h2>Grunddaten</h2>
 		<b>IP:</b> {$net_prefix}.{$ip.ip}<br>
-		<b>DHCP:</b> {if $ip.zone_start==0 OR $ip.zone_end==0}
-						Kein DHCP-Bereich reserviert
-					 {else}
-						{$net_prefix}.{$ip.zone_start} bis {$net_prefix}.{$ip.zone_end}
-					 {/if}<br>
+		{if $subnet_data.dhcp_kind=='ips'}
+			<b>DHCP:</b> {if $ip.zone_start==0 OR $ip.zone_end==0}
+							Kein DHCP-Bereich reserviert
+						{else}
+							{$net_prefix}.{$ip.zone_start} bis {$net_prefix}.{$ip.zone_end}
+						{/if}
+		{elseif $subnet_data.dhcp_kind=='subnet'}
+			<b>DHCP-Subnetz:</b> {$net_prefix}.{$ip.dhcp_host}/{$ip.dhcp_netmask}
+		{elseif $subnet_data.dhcp_kind=='nat'}
+			<b>DHCP-NAT:</b> 
+			{if $ip.dhcp_host==0 OR $ip.dhcp_netmask==0}
+				Kein NAT-Netzwerk angegeben
+			{else}
+				{$net_prefix}.{$ip.dhcp_host}/{$ip.dhcp_netmask}
+			{/if}
+		{elseif $subnet_data.dhcp_kind=='no'}		
+			Subnetz verbietet DHCP
+		{/if}
+		<br>
 		<b>Subnetz:</b>  <a href="./subnet.php?id={$ip.subnet_id}">{$net_prefix}.{$ip.subnet_host}/{$ip.subnet_netmask} ({$ip.title})</a><br>
 		<b>Benutzer:</b> <a href="./user.php?id={$ip.user_id}">{$ip.nickname}</a><br>
 		<b>Angelegt am:</b> {$ip.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>

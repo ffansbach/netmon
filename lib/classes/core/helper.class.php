@@ -31,7 +31,7 @@
 class Helper {
 	public function getIpInfo($id) {
 		try {
-			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.create_date,
+			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.dhcp_host, ips.dhcp_netmask, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.create_date,
 						   users.nickname,
 						   subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask
 					FROM ips

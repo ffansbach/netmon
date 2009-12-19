@@ -32,37 +32,56 @@ require_once("./lib/classes/core/vpn.class.php");
  */
 
 class IpEditor {
-  public function insertNewIp($subnet_id, $ips, $ip_kind, $ip, $dhcp_kind, $dhcp_first, $dhcp_last) {
-	$subnet = Helper::getSubnetById($subnet_id);
-	if($ip_kind=='simple') {
-		$ip = EditingHelper::getAFreeIP($subnet_id);
-	} elseif($ip_kind=='extend' AND !EditingHelper::checkIfIpIsFree($ip, $subnet_id)) {
-		$message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$ip." existiert bereits oder gehört nicht zm Subnetz Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask].", 2);
-		Message::setMessage($message);
-		return false;
+  public function insertNewIp() {
+	$subnet = Helper::getSubnetById($_POST['subnet_id']);
+
+	//Get an ip or check if ip is free
+	if($_POST['ip_kind']=='simple') {
+		$ip = EditingHelper::getAFreeIP($_POST['subnet_id']);
+	} elseif($_POST['ip_kind']=='extend') {
+		if(EditingHelper::checkIfIpIsFree($_POST['ip'], $_POST['subnet_id'])) {
+			$ip = $_POST['ip'];
+		} else {
+			$message[] = array("Die Ip ".$GLOBALS['net_prefix'].".".$_POST['ip']." existiert bereits oder gehört nicht zm Subnetz Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask].", 2);
+			Message::setMessage($message);
+			return false;
+		}
 	}
 
-	if($subnet['allows_dhcp']) {
-		if($dhcp_kind=='simple') {
-			$range = EditingHelper::getFreeIpZone($subnet_id, $ips, $ip);
-		} elseif($dhcp_kind=='extend') {
-			if(EditingHelper::checkIfRangeIsFree($subnet_id, $ip, $dhcp_first, $dhcp_last)) {
-				$range['start'] = $dhcp_first;
-				$range['end'] = $dhcp_last;
+	//predefine
+	$range['start'] = 'NULL';
+	$range['end'] = 'NULL';
+	$dhcp_host = 'NULL';
+	$dhcp_netmask = 'NULL';
+
+	if($subnet['dhcp_kind']=="ips") {
+		if($_POST['dhcp_ips_kind']=='simple') {
+			$range = EditingHelper::getFreeIpZone($_POST['subnet_id'], $_POST['ips'], $ip);
+		} elseif($_POST['dhcp_ips_kind']=='extend') {
+			if(EditingHelper::checkIfRangeIsFree($_POST['subnet_id'], $ip, $_POST['dhcp_first'], $_POST['dhcp_last'])) {
+				$range['start'] = $_POST['dhcp_first'];
+				$range['end'] = $_POST['dhcp_last'];
 			} else {
 				$message[] = array("Die DHCP-Zone existiert bereits im Subnetz $GLOBALS[net_prefix].$subnet[host]/$subnet[netmask].", 2);
 				Message::setMessage($message);
 				return false;
 			}
 		}
-	} else {
-		$range['start'] = 'NULL';
-		$range['start'] = 'NULL';
+	} elseif($subnet['dhcp_kind']=="subnet") {
+		//TODO: check if subnet is free
+
+		$dhcp_host = $_POST['dhcp_subnet_host'];
+		$dhcp_netmask = $_POST['dhcp_subnet_netmask'];
+	} elseif($subnet['dhcp_kind']=="nat") {
+		$dhcp_host = $_POST['dhcp_nat_host'];
+		$dhcp_netmask = $_POST['dhcp_nat_netmask'];
 	}
+
 
     if ($range) {
       if ($ip != false) {
-	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip, zone_start, zone_end, radius, create_date) VALUES ('$_SESSION[user_id]', '$subnet_id', '$ip', '$range[start]', '$range[end]', '$_POST[radius]', NOW());");
+	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip, zone_start, zone_end, dhcp_host, dhcp_netmask, radius, create_date)
+							VALUES ('$_SESSION[user_id]', '$_POST[subnet_id]', '$ip', '$range[start]', '$range[end]', '$dhcp_host', '$dhcp_netmask', '$_POST[radius]', NOW());");
 	$ip_id = DB::getInstance()->lastInsertId();
 
 	if ($range['start']!='NULL') {

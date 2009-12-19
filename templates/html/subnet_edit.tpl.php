@@ -84,7 +84,12 @@
 
 
 	<h2>DHCP</h2>
-	<p><input type="checkbox" name="allows_dhcp" value="true" {if $subnet_data.allows_dhcp}checked="checked"{/if}> IP´s dürfen einen bestimmten IP-Bereich zum verteilen per DHCP reservieren.</p>
+	<p>
+		<input type="radio" name="dhcp_kind" value="ips" {if $subnet_data.dhcp_kind=='ips'}checked{/if}>IP´s dürfen sich eine bestimmte Anzahl IP´s zum verteilen per DHCP reservieren.<br>
+		<input type="radio" name="dhcp_kind" value="subnet" {if $subnet_data.dhcp_kind=='subnet'}checked{/if}>IP´s dürfen sich ein Subnetz zum verteilen von IP´s reservieren<br>
+		<input type="radio" name="dhcp_kind" value="nat" {if $subnet_data.dhcp_kind=='nat'}checked{/if}>IP´s nutzen ein eigenes genattetes Subnetz zum verteilen von IP´s<br>
+		<input type="radio" name="dhcp_kind" value="no" {if $subnet_data.dhcp_kind=='no'}checked{/if}>IP´s dürfen keine IP´s per DHCP verteilen<br>
+	</p>
 	
 	<h2>Beschreibung</h2>
 	<p>Titel:<br>
