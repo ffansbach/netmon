@@ -33,8 +33,8 @@ require_once("./lib/classes/core/subnet.class.php");
 
 class SubnetEditor {
 	public function createNewSubnet($data) {
-		$result = DB::getInstance()->exec("INSERT INTO subnets (host, netmask, real_host, real_netmask, allows_dhcp, user_id, title, description, polygons, vpn_server, vpn_server_port, vpn_server_device, vpn_server_proto, vpn_server_ca, vpn_server_cert, vpn_server_key, vpn_server_pass, create_date)
-										   VALUES ('$data[host]', '$data[netmask]', '$data[real_host]', '$data[real_netmask]', '$data[allows_dhcp]', '$_SESSION[user_id]', '$data[title]', '$data[description]', '$data[polygons]', '$data[vpn_server]','$data[vpn_server_port]', '$data[vpn_server_device]', '$data[vpn_server_proto]', '$data[vpn_server_ca]', '$data[vpn_server_cert]', '$data[vpn_server_key]', '$data[vpn_server_pass]', NOW());");
+		$result = DB::getInstance()->exec("INSERT INTO subnets (host, netmask, real_host, real_netmask, dhcp_kind, user_id, title, description, polygons, vpn_server, vpn_server_port, vpn_server_device, vpn_server_proto, vpn_server_ca, vpn_server_cert, vpn_server_key, vpn_server_pass, create_date)
+										   VALUES ('$data[host]', '$data[netmask]', '$data[real_host]', '$data[real_netmask]', '$data[dhcp_kind]', '$_SESSION[user_id]', '$data[title]', '$data[description]', '$data[polygons]', '$data[vpn_server]','$data[vpn_server_port]', '$data[vpn_server_device]', '$data[vpn_server_proto]', '$data[vpn_server_ca]', '$data[vpn_server_cert]', '$data[vpn_server_key]', '$data[vpn_server_pass]', NOW());");
 		$subnet_id = DB::getInstance()->lastInsertId();
 		if ($result>0) {
 			$message[] = array("Das Subnetz ".$GLOBALS['net_prefix'].".".$data['host']."/".$data['netmask']." wurde in die Datenbank eingetragen.", 1);
@@ -53,7 +53,7 @@ class SubnetEditor {
 											   real_netmask = '$data[real_netmask]',
 											   real_host = '$data[real_host]',
 											   netmask = '$data[netmask]',
-											   allows_dhcp = '$data[allows_dhcp]',
+											   dhcp_kind = '$data[dhcp_kind]',
 											   title = '$data[title]',
 											   description = '$data[description]',
 											   polygons = '$data[polygons]',
@@ -140,19 +140,16 @@ class SubnetEditor {
 		$netmask = $_POST['netmask'];
 		//-------
 
+		$dhcp_kind = $_POST['dhcp_kind'];
+
 		if ($_POST['use_real_network']=='true') {
 			$real_host = $_POST['real_host'];
 			$real_netmask = $_POST['real_netmask'];
 		} else {
-			$real_host = 'NULL';
-			$real_netmask = 'NULL';
+			$real_host = '0';
+			$real_netmask = '0';
 		}
 
-		if (empty($_POST['allows_dhcp']))
-			$allows_dhcp = 0;
-		else
-			$allows_dhcp = 1;
-		
 		//Check if the data for the vpn server is complete
 		if ($_POST['vpn_kind']=='no') {
 			$vpn_server = "";
@@ -208,7 +205,7 @@ class SubnetEditor {
 			Message::setMessage($message);
 			return false;
 		} else {
-			return array('host'=>$host, 'netmask'=>$netmask, 'real_host'=>$real_host, 'real_netmask'=>$real_netmask, 'allows_dhcp'=>$allows_dhcp, 'title'=>$title, 'description'=>$description, 'polygons'=>$polygons, 'vpn_server'=>$vpn_server, 'vpn_server_port'=> $vpn_server_port, 'vpn_server_device'=> $vpn_server_device, 'vpn_server_proto'=> $vpn_server_proto, 'vpn_server_ca'=> $vpn_server_ca, 'vpn_server_cert'=> $vpn_server_cert, 'vpn_server_key'=> $vpn_server_key, 'vpn_server_pass'=>$vpn_server_pass);
+			return array('host'=>$host, 'netmask'=>$netmask, 'real_host'=>$real_host, 'real_netmask'=>$real_netmask, 'dhcp_kind'=>$dhcp_kind, 'title'=>$title, 'description'=>$description, 'polygons'=>$polygons, 'vpn_server'=>$vpn_server, 'vpn_server_port'=> $vpn_server_port, 'vpn_server_device'=> $vpn_server_device, 'vpn_server_proto'=> $vpn_server_proto, 'vpn_server_ca'=> $vpn_server_ca, 'vpn_server_cert'=> $vpn_server_cert, 'vpn_server_key'=> $vpn_server_key, 'vpn_server_pass'=>$vpn_server_pass);
 		}
 	}
 	

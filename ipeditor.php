@@ -23,7 +23,7 @@
     }
     if ($_GET['section'] == "insert") {
 		if (UserManagement::checkPermission(4)) {
-			$insert_result = $IpEditor->insertNewIp($_POST['subnet_id'], $_POST['ips'], $_POST['ip_kind'], $_POST['ip'], $_POST['dhcp_kind'], $_POST['dhcp_first'], $_POST['dhcp_last']);
+			$insert_result = $IpEditor->insertNewIp();
 			if ($insert_result['result']) {
 				header('Location: ./ip.php?id='.$insert_result['ip_id']);
 			} else {

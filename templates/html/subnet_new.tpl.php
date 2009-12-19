@@ -85,7 +85,12 @@
 
 
 	<h2>DHCP</h2>
-	<p><input type="checkbox" name="allows_dhcp" value="true" checked="checked"> IP´s dürfen einen bestimmten IP-Bereich zum verteilen per DHCP reservieren.</p>
+	<p>
+		<input type="radio" name="dhcp_kind" value="ips" checked="checked">IP´s dürfen sich eine bestimmte Anzahl IP´s zum verteilen per DHCP reservieren.<br>
+		<input type="radio" name="dhcp_kind" value="subnet">IP´s dürfen sich ein Subnetz zum verteilen von IP´s reservieren<br>
+		<input type="radio" name="dhcp_kind" value="nat">IP´s nutzen ein eigenes genattetes Subnetz zum verteilen von IP´s<br>
+		<input type="radio" name="dhcp_kind" value="no">IP´s dürfen keine IP´s per DHCP verteilen<br>
+	</p>
 	
 	<h2>Beschreibung</h2>
 	<p>Titel:<br>
