@@ -10,7 +10,11 @@
 			<b>IP´s belegt/möglich</b> ka/{$subnet.hosts_total}<br>
 		</p>
 		<p>
-			<b>DHCP erlaubt:</b> {if $subnet.allows_dhcp}Ja{else}Nein{/if}
+			<b>DHCP Methode:</b> {if $subnet.dhcp_kind=='ips'}Ip´s verteilen IP´s
+								 {elseif $subnet.dhcp_kind=='subnet'} IP´s verteilen IP´s per Subnet
+								 {elseif $subnet.dhcp_kind=='nat'} Genattetes Subnet
+								 {elseif $subnet.dhcp_kind=='no'} Kein DHCP erlaubt
+								 {/if}
 		<p>
 			<b>VPN-Server:</b> {if !empty($subnet.vpn_server)}{$subnet.vpn_server}:{$subnet.vpn_server_port}{else}Kein VPN-Server eingetragen{/if}<br>
 			<b>VPN-Device:</b> {if !empty($subnet.vpn_server)}{$subnet.vpn_server_device}{else}Kein VPN-Server eingetragen{/if}<br>

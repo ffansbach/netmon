@@ -168,8 +168,8 @@ class EditingHelper {
 		for($i=$dhcp_first[0]; $i<=$dhcp_last[0]; $i++) {
 			for($ii=$dhcp_first[1]; $ii<=$dhcp_last[1]; $ii++) {
 				if(!in_array("$i.$ii", $free_ips, TRUE)) {
-					die();
 					return false;
+					break(2);
 				}
 			}
 		}

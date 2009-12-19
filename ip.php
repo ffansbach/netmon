@@ -121,6 +121,8 @@ if(!empty($memory_free_array)) {
 
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
   $smarty->assign('is_ip_owner', $Ip->is_ip_owner);
+  $smarty->assign('subnet_data', Helper::getSubnetById($ip_data['subnet_id']));
+
   $smarty->assign('servicelist', $Ip->getServiceList($_GET['id']));
   $smarty->display("header.tpl.php");
   $smarty->display("ip.tpl.php");

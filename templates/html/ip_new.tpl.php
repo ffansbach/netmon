@@ -12,12 +12,25 @@ http://plugins.jquery.com/project/zendjsonrpc
 		$(document).ready(function(){
 			test = jQuery.Zend.jsonrpc({url: 'api_main.php'});
 			subnet = test.subnet_info(subnet_id);
-			if(subnet.allows_dhcp==0) {
-				document.getElementById('section_dhcp').style.display = 'none';
-			} else {
+			if(subnet.dhcp_kind!='no') {
 				document.getElementById('section_dhcp').style.display = 'block';
+				
+				if(subnet.dhcp_kind=='ips') {
+					document.getElementById('dhcp_kind_ips').style.display = 'block';
+					document.getElementById('dhcp_kind_subnet').style.display = 'none';
+					document.getElementById('dhcp_kind_nat').style.display = 'none';
+				} else if(subnet.dhcp_kind=='subnet') {
+					document.getElementById('dhcp_kind_subnet').style.display = 'block';
+					document.getElementById('dhcp_kind_ips').style.display = 'none';
+					document.getElementById('dhcp_kind_nat').style.display = 'none';
+				} else if(subnet.dhcp_kind=='nat') {
+					document.getElementById('dhcp_kind_nat').style.display = 'block';
+					document.getElementById('dhcp_kind_subnet').style.display = 'none';
+					document.getElementById('dhcp_kind_ips').style.display = 'none';
+				}
+			} else {
+				document.getElementById('section_dhcp').style.display = 'none';
 			}
-			//alert(subnet.allows_dhcp);
 		});
 	}
 </SCRIPT>
@@ -48,15 +61,59 @@ http://plugins.jquery.com/project/zendjsonrpc
 
 	<div id="section_dhcp" style="display: none;">
 		<h2>DHCP</h2>
-		<p>
-			<input type="radio" name="dhcp_kind" value="simple" checked="checked" onchange="document.getElementById('dhcp_extend').style.display = 'none'; document.getElementById('dhcp_simple').style.display = 'block';">Zahl der benötigten IP´s angeben<br>
-			<input type="radio" name="dhcp_kind" value="extend" onchange="document.getElementById('dhcp_simple').style.display = 'none'; document.getElementById('dhcp_extend').style.display = 'block';">DHCP-Bereich selber angeben<br>
-		</p>
-		<div id="dhcp_simple" style="display: block;">
-			<p>Für Clients zu reservierende IP's: <input name="ips" type="text" size="1" maxlength="3" value="5"><br>Für Vergabe per DHCP (Wenn keine IP´s vergeben werden sollen bitte 0 eintragen!)</p>
+		<div id="dhcp_kind_ips">
+			<p>
+				<input type="radio" name="dhcp_ips_kind" value="simple" checked="checked" onchange="document.getElementById('dhcp_ips_extend').style.display = 'none'; document.getElementById('dhcp_ips_simple').style.display = 'block';">Zahl der benötigten IP´s angeben<br>
+				<input type="radio" name="dhcp_ips_kind" value="extend" onchange="document.getElementById('dhcp_ips_simple').style.display = 'none'; document.getElementById('dhcp_ips_extend').style.display = 'block';">DHCP-Bereich selbst angeben<br>
+			</p>
+			<div id="dhcp_ips_simple" style="display: block;">
+				<p>Für Clients zu reservierende IP's: <input name="ips" type="text" size="1" maxlength="3" value="5"><br>Für Vergabe per DHCP (Wenn keine IP´s vergeben werden sollen bitte 0 eintragen!)</p>
+			</div>
+			<div id="dhcp_ips_extend" style="display: none;">
+				<b>IP-Bereich:</b>  {$net_prefix}.<input name="dhcp_first" type="text" size="7"> bis {$net_prefix}.<input name="dhcp_last" type="text" size="7">
+			</div>
 		</div>
-		<div id="dhcp_extend" style="display: none;">
-			<b>IP-Bereich:</b>  {$net_prefix}.<input name="dhcp_first" type="text" size="7"> bis {$net_prefix}.<input name="dhcp_last" type="text" size="7">
+		<div id="dhcp_kind_subnet">
+			<p>
+				<input type="radio" name="dhcp_kind_subnet" value="simple" checked="checked" onchange="document.getElementById('dhcp_subnet_extend').style.display = 'none'; document.getElementById('dhcp_subnet_simple').style.display = 'block';">Zahl der benötigten IP´s angeben<br>
+				<input type="radio" name="dhcp_kind_subnet" value="extend" checked onchange="document.getElementById('dhcp_subnet_simple').style.display = 'none'; document.getElementById('dhcp_subnet_extend').style.display = 'block';">Subnetz selbst angeben<br>
+			</p>
+			<div id="dhcp_subnet_simple" style="display: none;">
+				benötigte DHCP-IP´s: <select name="dhcp_subnet_ips">
+					<option value="2">2 (/30)</option>
+					<option value="6">6 (/29)</option>
+					<option value="14">14 (/28)</option>
+					<option value="30">30 (/27)</option>
+					<option value="62">62 (/26)</option>
+					<option value="126">126 (/25)</option>
+					<option value="254">254 (/24)</option>
+				</select>
+			</div>
+			<div id="dhcp_subnet_extend" style="display: block;">
+					<div style="float:left;">
+						Host:<br>
+						10.18. <input id="dhcp_subnet_host" name="dhcp_subnet_host" type="text" size="7" maxlength="7"> /
+					</div>
+					<div style="margin-left:3px;">
+						Netmask:<br>
+						<input name="dhcp_subnet_netmask" type="text" size="2" maxlength="2">
+					</div>
+			</div>
+		</div>
+		<div id="dhcp_kind_nat">
+			<p>Vergeben Sie IP´s aus einem selbst gewählten, genatteten Subnet.<br>
+			   Die per DHCP angebundenen Clients werden bei dieser Methode nicht direkt in das Freifunk Netz eingebunden.
+			</p>
+
+			<p>Sie sollten das Subnetz, das Sie vergeben zu informativen Zwecken hier eintragen:
+			<div style="float:left;">
+				Host:<br>
+				<input id="dhcp_nat_host" name="dhcp_nat_host" type="text" size="15" maxlength="15"> /
+			</div>
+			<div style="margin-left:3px;">
+				Netmask:<br>
+				<input name="dhcp_nat_netmask" type="text" size="2" maxlength="2">
+			</div>
 		</div>
 	</div>
 
