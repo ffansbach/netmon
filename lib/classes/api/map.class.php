@@ -475,22 +475,6 @@ class ApiMap {
 				$xw->startElement('ListStyle');
 				$xw->endElement();
 
-/*				$xw->startElement('Style');
-					$xw->writeAttribute( 'id', 'sh_red-pushpin');
-					$xw->startElement('IconStyle');
-						$xw->writeRaw('<scale>1.3</scale>');
-						$xw->startElement('Icon');
-							$xw->writeRaw('<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href>');
-						$xw->endElement();
-						$xw->startElement('hotSpot');
-							$xw->writeAttribute( 'x', '20');
-							$xw->writeAttribute( 'y', '2');
-							$xw->writeAttribute( 'xunits', 'pixels');
-							$xw->writeAttribute( 'yunits', 'pixels');
-						$xw->endElement();
-					$xw->endElement();
-				$xw->endElement();*/
-
 
 				$xw->startElement('ListStyle');
 				$xw->endElement();
@@ -524,10 +508,11 @@ class ApiMap {
 									$title = "";
 								$xw->startElement('Placemark');
 									$xw->startElement('name');
-										$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
+										$xw->writeRaw("<![CDATA[Ip <a href='./ip.php?id=$entry[ip_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
 									$xw->endElement();
 									$xw->startElement('description');
-									$box_inhalt = "<b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+									$box_inhalt = "<b>Position:</b> lat: $entry[latitude], lon: $entry[longitude]<br>
+												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end]<br>
 												   <b>SSID:</b> $entry[ssid]<br>
 												   <b>Standortbeschreibung:</b> $entry[location]<br>
@@ -589,7 +574,7 @@ class ApiMap {
 										$title =  "($entry[title])";
 									else
 										$title = "";
-									$xw->writeRaw("<![CDATA[Ip <a href='./service.php?service_id=$entry[service_id]'>$GLOBALS[net_prefix].$entry[ip]</a> $title]]>");
+									$xw->writeRaw("<![CDATA[Ip <a href='./ip.php?id=$entry[ip_id]'>$GLOBALS[net_prefix].$entry[ip]</a> $title]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 
@@ -603,7 +588,8 @@ class ApiMap {
 										}
 									}
 
-									$box_inhalt = "<b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+									$box_inhalt = "<b>Position:</b> lat: $entry[latitude], lon: $entry[longitude]<br>
+												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
 												   <b>SSID:</b> $entry[ssid]<br>
 												   <b>Standortbeschreibung:</b> $entry[location]<br>
@@ -625,10 +611,6 @@ class ApiMap {
 						}
 					}
 //-----------------
-
-
-
-
 				$xw->endElement();
 			$xw->endElement();
 		$xw->endDocument();
