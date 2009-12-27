@@ -145,6 +145,13 @@ class UserManagement {
 		return $userpermission;
 	}
 
+	public function isLoggedIn($user_id) {
+		if (UserManagement::checkPermission(4, $user_id))
+			return true;
+		else
+			return false;
+	}
+
 	public function getAllPermissions() {
 		/*
 		0 = Alle, Recht wird vom Script erstellt

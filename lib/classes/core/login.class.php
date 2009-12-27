@@ -29,14 +29,15 @@
  */
 
 class Login {
-	public function user_login ($nickname, $password) {
+	public function user_login ($nickname, $password, $remember=false, $remembered=false) {
 		if (empty($nickname) or empty($password)) {
 			$messages[] = array("Sie müssen einen Nickname und ein Passwort angeben um sich einzuloggen", 2);
 			Message::setMessage($messages);
 			return false;
 		} else {
-			$password = usermanagement::encryptPassword($password);
-			//Check if mailadress exists
+			if(!$remembered)
+				$password = usermanagement::encryptPassword($password);
+
 			try {
 				$sql = "select id , nickname, activated, permission, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE nickname='$nickname' and password='$password'";
 				$result = DB::getInstance()->query($sql);
@@ -60,6 +61,14 @@ class Login {
 					
 					$messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'].$last_login, 1);
 					Message::setMessage($messages);
+
+					//Autologin (remember me)
+					if($remember) {
+						// Setzen des Verfalls-Zeitpunktes auf 1 Stunde in der Vergangenheit
+						setcookie ("nickname", $nickname, time() + 3000000);
+						setcookie ("password_hash", $password, time() + 3000000);
+					}
+
 					return array('result'=>true, 'user_id'=>$user_data['id'], 'permission'=>$user_data['permission'], 'session_id'=>$session_id);
 				}
 			}
@@ -75,7 +84,10 @@ class Login {
 			Message::setMessage($messages);
 			return false;
 		} else {
-			$_SESSION = array();;
+			$_SESSION = array();
+			setcookie("nickname", "", time() - 3000000);
+			setcookie("password_hash", "", time() - 3000000);
+
 			$messages[] = array("Sie wurden ausgeloggt und ihre Benutzersession wurde gelöscht!", 1);
 			Message::setMessage($messages);
 			return true;

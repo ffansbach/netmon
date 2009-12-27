@@ -88,7 +88,6 @@ if(!ini_set('include_path',$include_path.PATH_SEPARATOR.LIB_DIR)) {
 }
 
 
-
   /**
   * SMARTY TEMPLATEENGINE
   */
@@ -106,6 +105,19 @@ if(!ini_set('include_path',$include_path.PATH_SEPARATOR.LIB_DIR)) {
   //Template-Compile-Ordner festlegen
   $smarty->compile_dir = 'templates_c';
 
+	/**
+	* Auto Login
+	*/
+
+	if (!UserManagement::isLoggedIn($_SESSION['user_id']) AND !empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
+		//Login Class
+		require_once($path.'lib/classes/core/login.class.php');
+		Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
+	}
+
+	/**
+	* Menus
+	*/
 
   $smarty->assign('top_menu', $Menus->topMenu());
   $smarty->assign('loginOutMenu', $Menus->loginOutMenu());
