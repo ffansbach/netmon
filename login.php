@@ -10,7 +10,7 @@
     $smarty->display("header.tpl.php");
     $smarty->display("login.tpl.php");
     $smarty->display("footer.tpl.php");
-  } elseif ($_GET['section']=="login_send" AND $Login->user_login($_POST['nickname'], $_POST['password'])) {
+  } elseif ($_GET['section']=="login_send" AND $Login->user_login($_POST['nickname'], $_POST['password'], $_POST['remember'])) {
 	if(isset($_SESSION['redirect_url']))
 		header('Location: '.$_SESSION['redirect_url']);
 	else
