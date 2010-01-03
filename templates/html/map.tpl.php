@@ -16,6 +16,8 @@
 		<div id="map" style="height:500px; width:100%; border:solid 1px black;font-size:9pt;">
 			<script type="text/javascript">
 				fullmap();
+				AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
+				AddKmlLayer("online and offline Nodes", "./api.php?class=apiMap&section=getOnlineAndOfflineServiceKML");
 			</script>
 		</div>
 	</div>

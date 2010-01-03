@@ -30,8 +30,8 @@
 		</div>
 		
 		<div style="float:left; width: 50%;">
-	<h2>Ort des Subnetzes<h2>
-	<!--<small style="font-size: 9pt;">Map Data from <a href="http://openstreetmap.org">OpenStreetMap</a></small>-->
+		<h2>Ort des Subnetzes<h2>
+		<!--<small style="font-size: 9pt;">Map Data from <a href="http://openstreetmap.org">OpenStreetMap</a></small>-->
 
 		<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
 		<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
@@ -39,8 +39,10 @@
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 		<div id="map" style="height:300px; width:300px; border:solid 1px black;font-size:9pt;">
 		<script type="text/javascript">
-				subnetmap();
-				AddKmlLayer("Netzwerklocation", "./api.php?class=apiMap&section=getSubnetPolygons&subnet_id={$subnet.id}");
+			subnetmap();
+			AddKmlLayer("Netzwerklocation", "./api.php?class=apiMap&section=getSubnetPolygons&subnet_id={$subnet.id}");
+			AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
+			AddKmlLayer("online and offline Nodes", "./api.php?class=apiMap&section=getOnlineAndOfflineServiceKML&highlighted_subnet={$subnet.id}");
 		</script>
 	</div>
 

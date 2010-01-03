@@ -29,8 +29,8 @@
  */
 
 class Login {
-	public function user_login ($nickname, $password, $remember=false, $remembered=false) {
-		if (empty($nickname) or empty($password)) {
+	public function user_login ($nickname, $password, $remember=false, $remembered=false, $openid=false) {
+		if ((empty($nickname) or empty($password)) AND $openid==false) {
 			$messages[] = array("Sie müssen einen Nickname und ein Passwort angeben um sich einzuloggen", 2);
 			Message::setMessage($messages);
 			return false;
@@ -39,7 +39,11 @@ class Login {
 				$password = usermanagement::encryptPassword($password);
 
 			try {
-				$sql = "select id , nickname, activated, permission, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE nickname='$nickname' and password='$password'";
+				if ($openid!=false) {
+					$sql = "select id , nickname, activated, permission, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE openid='$openid'";
+				} else {
+					$sql = "select id , nickname, activated, permission, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE nickname='$nickname' and password='$password'";
+				}
 				$result = DB::getInstance()->query($sql);
 				$user_data = $result->fetch(PDO::FETCH_ASSOC);
 				$login = $result->rowCount();

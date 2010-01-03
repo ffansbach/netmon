@@ -4,8 +4,8 @@
     <div style="float:left; width: 50%;">
 		<h2>Grunddaten</h2>
 		<b>IP:</b> {$net_prefix}.{$ip.ip}<br>
-		{if $subnet_data.dhcp_kind=='ips'}
-			<b>DHCP:</b> {if $ip.zone_start==0 OR $ip.zone_end==0}
+		<b>DHCP:</b> {if $subnet_data.dhcp_kind=='ips'}
+			{if $ip.zone_start==0 OR $ip.zone_end==0}
 							Kein DHCP-Bereich reserviert
 						{else}
 							{$net_prefix}.{$ip.zone_start} bis {$net_prefix}.{$ip.zone_end}
@@ -102,10 +102,8 @@
 						/* Create the Subnet Layer */
 						/* SubnetLayer("Subnet", lon, lat, radius);*/
 					{/literal}
-					
-					AddKmlLayer("offline Ips", "./api.php?class=apiMap&section=getgoogleearthkmlfile_offline&highlighted_service={$service_data.service_id}");
-					AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
-					AddKmlLayer("online Ips", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online&highlighted_service={$service_data.service_id}");
+					 AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
+					 AddKmlLayer("online and offline Nodes", "./api.php?class=apiMap&section=getOnlineAndOfflineServiceKML&highlighted_service={$service_data.service_id}");
 				</script>
 			</div>
 			{if !empty($last_online_crawl.location)}
