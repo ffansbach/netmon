@@ -129,7 +129,7 @@ class Helper {
   }
 
   public function getServicesByType($type) {
-    //Nur Services zurückgeben die der Benutzer sehen darf
+    //Get only services that the user is allowed to see
     if (!UserManagement::checkPermission(4))
       $visible = "AND visible = 1";
     else
@@ -185,7 +185,7 @@ class Helper {
   }
 
   public function getServicesByUserId($user_id) {
-    //Nur Services zurückgeben die der Benutzer sehen darf
+    //Get only services that the user is allowed to see
     if (!UserManagement::checkPermission(4))
       $visible = "AND visible = 1";
     else
@@ -217,7 +217,7 @@ class Helper {
   }
 
   public function getServicesByTypeAndIpId($type, $ipId) {
-    //Nur Services zurückgeben die der Benutzer sehen darf
+    //Get only services that the user is allowed to see
     if (!UserManagement::checkPermission(4))
       $visible = "AND visible = 1";
     else
@@ -249,14 +249,13 @@ class Helper {
 
   public function getServicesByIpId($ip_id) {
 	$services = array();
-    //Nur Services zurückgeben die der Benutzer sehen darf
+    //Get only services that the user is allowed to see
     if (!UserManagement::checkPermission(4))
       $visible = "AND visible = 1";
     else
       $visible = "";
 
     try {
-      /*** query the database ***/
       $sql = "SELECT services.id as service_id, services.title as services_title, services.description, services.typ, services.crawler, services.create_date,
 				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
 				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
@@ -516,7 +515,6 @@ class Helper {
 		$last_crawl['olsrd_routes'] = unserialize($last_crawl['olsrd_routes']);
 		$last_crawl['olsrd_topology'] = unserialize($last_crawl['olsrd_topology']);
 
-		//Belege vor, falls noch nich gecrawlt wurde
 		if(empty($last_crawl['status']))
 			$last_crawl['status'] = "unbekannt";
 

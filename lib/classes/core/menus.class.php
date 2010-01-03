@@ -32,7 +32,7 @@ class Menus extends UserManagement {
 
   function topMenu() {
     if (UserManagement::checkPermission(1)) {
-      //Links nach belieben anpassen.
+      //Please put your own links here
       $menu[] = array('name'=>'Wiki', 'href'=> 'http://wiki.freifunk-ol.de');
       $menu[] = array('name'=>'Blog', 'href'=>'http://blog.freifunk-ol.de'); 
       $menu[] = array('name'=>'Mailingliste', 'href'=>'http://lists.nord-west.net/mailman/listinfo/freifunk-ol');
@@ -71,7 +71,6 @@ class Menus extends UserManagement {
     if (UserManagement::checkPermission(8)) {
       $menu[] = array('name'=>'Desktop', 'href'=>'./desktop.php');
       $menu[] = array('name'=>'Neue Ip', 'href'=>'./ipeditor.php?section=new');
-//      $menu[] = array('name'=>'Service hinzufügen', 'href'=>'./index.php?get=ipeditor&section=add_service');
       $menu[] = array('name'=>'Mein Benutzer', 'href'=>'./user.php?id='.$_SESSION['user_id']);
       $menu[] = array('name'=>'Benutzer ändern', 'href'=>'./user_edit.php?section=edit&id='.$_SESSION['user_id']);
       $menu[] = array('name'=>'Benutzerliste', 'href'=>'./userlist.php');

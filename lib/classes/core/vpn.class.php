@@ -49,13 +49,13 @@ class Vpn {
 			Message::setMessage($message);
 			return false;
 		} elseif (!empty($organizationalunitname) AND !empty($commonname) AND !empty($emailaddress)) {
-			//SSL-Errors lehren
+			//Empty SSL-Errors
 			while ($err = openssl_error_string());
 
 			//Keydaten
 			$dn = array("countryName" => $GLOBALS['countryName'], "stateOrProvinceName" => $GLOBALS['stateOrProvinceName'], "localityName" => $GLOBALS['localityName'], "organizationName" => $GLOBALS['organizationName'], "organizationalUnitName" => $organizationalunitname, "commonName" => $commonname, "emailAddress" => $emailaddress);
 			
-			//Passphrase auf null setzen wenn kein Paswort übergeben wird.
+			//Set passphrase to null if no password is given
 			if (empty($privkeypass)) {
 				$privkeypass == null;
 			} elseif ($privkeypass != $privkeypass_chk) {
@@ -129,22 +129,20 @@ class Vpn {
 
       // Die Optionen
       $zipfile->set_options(array (
-        'basedir' => $tmpdir, // Das Basisverzeichnis. Sonst wird der ganze Pfad von / an im Zip gespeichert.
-        'followlinks' => 1, // Symlinks sollen berücksichtigt werden
-        'inmemory' => 1, // Die Datei nur im Speicher erstellen
-        'level' => 6, // Level 1 = schnell, Level 9 = gut
-        'recurse' => 1, // In Unterverzeichnisse wechseln
-        // Wenn zu grosse dateien verarbeitet werden, kannes zu einem php memory error kommen
-        // Man sollte nicht über das halbe memory_limit (php.ini) hinausgehen
-        'maxsize' => 12*1024*1024 // Nur Dateien die <= 12 MB gross sind zippen
+        'basedir' => $tmpdir,
+        'followlinks' => 1, // (Symlinks)
+        'inmemory' => 1, // Make the File in RAM
+        'level' => 6, // Level 1 = fast, Level 9 = good
+        'recurse' => 1, // Recursive
+        'maxsize' => 12*1024*1024 // Zip only data that is <= 12 MB big becuse og php memory limit
       ));
 
       $zipfile->add_files(array("ca.crt", "client.key", "client.crt", "openvpn"));
 
-      // Archiv erstellen
+      // Make zip
       $zipfile->create_archive();
 
-      // Archiv zum Download anbieten
+      // download zip
       $zipfile->download_file();
 
       unlink($tmpdir."ca.crt");

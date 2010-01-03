@@ -35,7 +35,7 @@
   * KONFIGURATION
   */
   
-  //Typ und Encoding Festlegen
+  //Content type and encoding
   header("Content-Type: text/html; charset=UTF-8");
 
   require_once($path.'config/config.local.inc.php');
@@ -46,17 +46,17 @@
 
   //PDO Class
   require_once($path.'lib/classes/core/db.class.php');
-  //Klasse für Nachrichten einbinden
+  //Class for Systemnotifications
   require_once($path.'lib/classes/core/message.class.php');
-  //Allgemeine Helper-Klasse
+  //Class hat conains many useull functions
   require_once($path.'lib/classes/core/helper.class.php');
-  //Klasse für UserManagement
+  //Usermanagement class
   require_once($path.'lib/classes/core/usermanagement.class.php');  
-  //Klasse fürs Logging
+  //Loging class
   require_once($path.'lib/classes/core/logsystem.class.php');
-  //Klasse fürs Menü
+  //Class to generate the menu
   require_once($path.'lib/classes/core/menus.class.php');
-  //Helper-Klasse fürs Editing
+  //Class to edit things
   require_once($path.'lib/classes/core/editinghelper.class.php');
 
   $UserManagement =  new UserManagement;
@@ -75,34 +75,30 @@
   * ZEND FRAMEWORK LIBRARYS
   */
 
-// load the zend Framework
-//http://blog.bananas-playground.net/archives/66-ZendFramework-Laden.html
-define("LIB_DIR","lib/classes/extern/");
-
-$include_path = get_include_path();
-
-if(!ini_set('include_path',$include_path.PATH_SEPARATOR.LIB_DIR)) {
-
-	die('Failed to set the include path. Check you php configuration.');
-
-}
-
+  // load the zend Framework
+  //http://blog.bananas-playground.net/archives/66-ZendFramework-Laden.html
+  define("LIB_DIR","lib/classes/extern/");
+  $include_path = get_include_path();
+  
+  if(!ini_set('include_path',$include_path.PATH_SEPARATOR.LIB_DIR)) {
+    die('Failed to set the include path. Check you php configuration.');
+  }
 
   /**
   * SMARTY TEMPLATEENGINE
   */
 
-  //Smarty-Klasse einbinden
+  //Smarty main class
   require_once ($path.'lib/classes/extern/smarty/Smarty.class.php');
 
-  //Smarty Objekt initialisieren
+  //Initialise Smarty
   $smarty = new Smarty;
   $smarty->compile_check = true;
-  //Volle Debuggingseite für Smarty bei true (Sehr nützlich, wenn man wissen will, was alles zugewiesen wird)
+  //Set debugging site off
   $smarty->debugging = false;
-  //Templateordner festlegen
+  //Templatefolder
   $smarty->template_dir = "templates/html";
-  //Template-Compile-Ordner festlegen
+  //Compilefolder
   $smarty->compile_dir = 'templates_c';
 
 	/**
@@ -125,7 +121,7 @@ if(!ini_set('include_path',$include_path.PATH_SEPARATOR.LIB_DIR)) {
   $smarty->assign('user_menu', $Menus->userMenu());
   $smarty->assign('admin_menu', $Menus->adminMenu());
 
-  //Wichtige Config-Variablen an Smarty übergeben
+  //Give often used variables to smarty
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
   $smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
 ?>

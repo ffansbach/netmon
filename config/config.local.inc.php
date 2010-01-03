@@ -9,9 +9,10 @@ $GLOBALS['netmon_codename'] = "Shake-up";
 
 //WEBSERVER
 $GLOBALS['subfolder'] = "netmon";
-$GLOBALS['domain'] = "freifunk-ol.de";
+$GLOBALS['domain'] = "netmon.freifunk-ol.de";
 $GLOBALS['monitor_root'] = $_SERVER["DOCUMENT_ROOT"].$GLOBALS['subfolder'];
-$GLOBALS['url_to_netmon'] = $GLOBALS['domain']."/".$GLOBALS['subfolder'];
+//$GLOBALS['url_to_netmon'] = $GLOBALS['domain']."/".$GLOBALS['subfolder'];
+$GLOBALS['url_to_netmon'] = $GLOBALS['domain'];
 
 //MYSQL
 $GLOBALS['mysql_host'] = "localhost";
@@ -42,7 +43,7 @@ $GLOBALS['project_bssid'] = "02:ca:ff:ee:ba:be";
 $GLOBALS['project_kanal'] = "6";
 
 //Logsystem
-//Logge bei Querrys die länge brauchen als X sekunden
+//Log querries that take longer than 5 sec.
 $GLOBALS['mysql_querry_log_time'] = 5;
 
 //OpenVPN Config
@@ -54,11 +55,11 @@ $GLOBALS['expiration'] = 3650;
 $GLOBALS['ccd_dir'] = $GLOBALS['monitor_root']."/ccd";
 
 //Crawl
-//Zeit zwischen einem Crawl bis zum nächsten in Minuten
+//Time between two crawls in minutes
 $GLOBALS['timeBetweenCrawls'] = 10;
 
 //Project
-$GLOBALS['networkPolicy'] = "http://wiki.freifunk-ol.de/index.php/Nutzungsvereinbarung";
+$GLOBALS['networkPolicy'] = "http://wiki.freifunk-ol.de/index.php?title=Nutzungsvereinbarung";
 $GLOBALS['portal_history_hours'] = 5;
 $GLOBALS['days_to_keep_portal_history'] = 1;
 
