@@ -216,7 +216,6 @@ class EditingHelper {
 				return false;
 			}
 		} else {
-			//NULL Gibt Probleme beim ändern wenn Range vorher auch NULL ist! (Clemens)
 			return array('start'=>"NULL", 'end'=>"NULL");
 		}
 	}

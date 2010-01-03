@@ -88,7 +88,7 @@ class Register {
 	}
 
 	public function checkUserData($nickname, $password, $passwordchk, $email, $agb, $openid) {
-		//Prüfen ob Nickname gesetzt ist
+		//Check if nickname is set
 		if (empty($nickname)) {
 			$message[] = array("Es wurde kein Nickname angegeben.",2);
 		} else {
@@ -150,7 +150,7 @@ class Register {
 		if (!$agb)
 			$message[] = array("Bitte lesen und akzeptieren Sie die Netzwerkpolicy!",2);
 		
-		//Rückgabe
+		//Return
 		if (isset($message) AND count($message)>0) {
 			Message::setMessage($message);
 			return false;

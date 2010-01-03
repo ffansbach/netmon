@@ -68,7 +68,6 @@ class Login {
 
 					//Autologin (remember me)
 					if($remember) {
-						// Setzen des Verfalls-Zeitpunktes auf 1 Stunde in der Vergangenheit
 						setcookie ("nickname", $nickname, time() + 3000000);
 						setcookie ("password_hash", $password, time() + 3000000);
 					}

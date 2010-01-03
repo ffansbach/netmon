@@ -174,17 +174,17 @@ class User {
 	*/
 	public function userDelete($id) {
 		if ($_POST['delete'] == "true") {
-			//Ips mit Services löschen
+			//Delete ip´s and services
 			foreach(Helper::getIpsByUserId($id) as $ip) {
 				IpEditor::deleteIp($ip['id']);
 			}
 			
-			//Subnets, Ips und Services löschen
+			//Delete ip´s, serices and subnets
 			foreach(Helper::getSubnetsByUserId($_SESSION['user_id']) as $subnet) {
 				subneteditor::deleteSubnet($subnet['id']);
 			}
 			
-			//Logout the user bevore deleting.
+			//Logout the user before deleting him
 			login::user_logout();
 			
 			DB::getInstance()->exec("DELETE FROM users WHERE id='$id';");
