@@ -24,6 +24,9 @@
 		<hr>
 	{/if}
 
+  <h2>Open-ID</h2>
+  <p>Open-ID (Login über Open-ID):<br><input name="openid" type="text" size="30" value="{$user.openid}"></p>
+
   <h2>Grunddaten</h2>
 
   <p>Email:<br><input name="email" type="text" size="30" value="{$user.email}"></p>

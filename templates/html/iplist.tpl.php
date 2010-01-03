@@ -158,7 +158,7 @@
     {/if}
     <div style="float:left; width: 150px;">{$iplist.crawl_time}</div>
     <div style="float:left; width: 150px;"><a href="./subnet.php?id={$iplist.subnet_id}">{$iplist.title}</a></div>
-    <div style="float:left; width: 150px;">{if is_numeric($iplist.crawler)}<a href="{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{elseif $iplist.crawler=='8888'}http://{/if}{$net_prefix}.{$iplist.ip}:{if $iplist.crawler=='80'}80{elseif $iplist.crawler=='21'}21{elseif $iplist.crawler=='8888'}8888{/if}">{$iplist.services_title|substr:0:20}...</a>{else}&nbsp;{/if}</div>
+    <div style="float:left; width: 150px;">{if is_numeric($iplist.crawler)}<a target="_blank" href="{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{elseif $iplist.crawler=='8888'}http://{/if}{$net_prefix}.{$iplist.ip}:{if $iplist.crawler=='80'}80{elseif $iplist.crawler=='21'}21{elseif $iplist.crawler=='8888'}8888{/if}">{$iplist.services_title|substr:0:20}...</a>{else}&nbsp;{/if}</div>
   </div>
 </div>
 {/foreach}

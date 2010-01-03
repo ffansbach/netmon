@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 19, 2009 at 06:19 PM
+-- Generation Time: Jan 03, 2010 at 04:12 AM
 -- Server version: 5.0.51
 -- PHP Version: 5.2.11-1
 
@@ -163,6 +163,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `session_id` varchar(32) NOT NULL,
   `nickname` varchar(30) NOT NULL,
   `password` varchar(32) NOT NULL,
+  `openid` varchar(100) NOT NULL,
   `vorname` varchar(50) NOT NULL,
   `nachname` varchar(50) NOT NULL,
   `strasse` varchar(50) NOT NULL,

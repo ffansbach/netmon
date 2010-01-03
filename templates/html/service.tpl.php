@@ -140,9 +140,8 @@
 				/* Create the Subnet Layer */
 /*				SubnetLayer("Subnet", lon, lat, radius);*/
 			{/literal}
-	AddKmlLayer("offline Ips", "./api.php?class=apiMap&section=getgoogleearthkmlfile_offline&highlighted_service={$service_data.service_id}");
-	AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
-	AddKmlLayer("online Ips", "./api.php?class=apiMap&section=getgoogleearthkmlfile_online&highlighted_service={$service_data.service_id}");
+			AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
+			AddKmlLayer("online and offline Nodes", "./api.php?class=apiMap&section=getOnlineAndOfflineServiceKML&highlighted_service={$service_data.service_id}");
 		</script>
 	</div>
 	{if !empty($last_online_crawl.location)}
