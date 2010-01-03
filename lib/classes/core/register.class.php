@@ -29,8 +29,8 @@
  */
 
 class Register {
-	public function insertNewUser($nickname, $password, $passwordchk, $email, $agb) {
-		if ($this->checkUserData($nickname, $password, $passwordchk, $email, $agb)) {
+	public function insertNewUser($nickname, $password, $passwordchk, $email, $agb, $openid) {
+		if ($this->checkUserData($nickname, $password, $passwordchk, $email, $agb, $openid)) {
 			$password = usermanagement::encryptPassword($password);
 			$activation = md5($nickname);
 			
@@ -47,10 +47,10 @@ class Register {
 				echo $e->getMessage();
 			}
 			
-			DB::getInstance()->exec("INSERT INTO users (nickname, password, email, notification_method, permission, create_date, activated) VALUES ('$nickname', '$password', '$email', 'email', '$permission', NOW(), '$activation');");
+			DB::getInstance()->exec("INSERT INTO users (nickname, password, openid, email, notification_method, permission, create_date, activated) VALUES ('$nickname', '$password', '$openid', '$email', 'email', '$permission', NOW(), '$activation');");
 			$id = DB::getInstance()->lastInsertId();
 			
-			if($this->sendRegistrationEmail($email, $nickname, $passwordchk, $activation, time())) {
+			if($this->sendRegistrationEmail($email, $nickname, $passwordchk, $activation, time(), $openid)) {
 				$message[] = array("Der Benutzer ".$nickname." wurde erfolgreich angelegt.", 1);
 				Message::setMessage($message);
 				return true;
@@ -87,7 +87,7 @@ class Register {
 		}
 	}
 
-	public function checkUserData($nickname, $password, $passwordchk, $email, $agb) {
+	public function checkUserData($nickname, $password, $passwordchk, $email, $agb, $openid) {
 		//Prüfen ob Nickname gesetzt ist
 		if (empty($nickname)) {
 			$message[] = array("Es wurde kein Nickname angegeben.",2);
@@ -123,12 +123,28 @@ class Register {
 			}
 		}
 		
-		if (empty($password)) {
+		if (!$openid) {
+		    if (empty($password)) {
 			$message[] = array("Es wurde kein Passwort angegeben.",2);
-		} elseif (empty($passwordchk)) {
+		    } elseif (empty($passwordchk)) {
 			$message[] = array("Das Passwort wurde kein zweites mal eingegeben.",2);
-		} elseif ($password != $passwordchk) {
+		    } elseif ($password != $passwordchk) {
 			$message[] = array("Die Passwörter stimmen nicht überein.",2);
+		    }
+		} else {
+		    if (empty($openid)) {
+			$message[] = array("Es wurde keine Open-ID angegeben.",2);
+		    } else {
+			//Check if nickname already exist
+			try {
+				$result = DB::getInstance()->query("select * from users WHERE openid='$openid'");
+				if ($result->rowCount()>0)
+					$message[] = array("Die Open-ID ".$openid." ist bereits mit einem Benutzer verknüpft.",2);
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+		    }
 		}
 		
 		if (!$agb)
@@ -150,17 +166,23 @@ class Register {
 		return true;
 	}
 	
-	public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum) {
+	public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum, $openid) {
 		$text = "Hallo $nickname,
 
 Du hast dich am ".date("d.m.Y H:i:s", $datum)." bei $GLOBALS[project_name] registriert.
 
-Deine Logindaten Sind:
-Nickname: $nickname
-Passwort: $password
+Deine Logindaten Sind:\n";
 
-Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalten.
-http://$GLOBALS[domain]/$GLOBALS[subfolder]/account_activate.php?activation_hash=$activation
+
+if($openid) {
+  $text .= "Open-ID: $openid\n\n";
+} else {
+  $text .= "Nickname: $nickname
+Passwort: $password\n\n";
+}
+
+$text .= "Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalten.
+http://$GLOBALS[url_to_netmon]/account_activate.php?activation_hash=$activation
 
 Dein Freifunkteam $GLOBALS[city_name]";
 		$ergebniss = mail($email, "Anmeldung Freifunk Oldenburg", $text, "From: $GLOBALS[mail_sender]");

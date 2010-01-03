@@ -55,6 +55,7 @@ class User {
 						  SET 
 							  permission = '$permission',
 							  password = '$password',
+							  openid = '$_POST[openid]',
 							  vorname = '$_POST[vorname]',
 							  nachname = '$_POST[nachname]',
 							  strasse = '$_POST[strasse]',
@@ -196,6 +197,20 @@ class User {
 			return false;
 		}
 	}
+
+	public function checkIfOpenIdHasUser($openid) {
+		$sql = "select openid FROM users WHERE openid='$openid'";
+		$result = DB::getInstance()->query($sql);
+		$user_data = $result->fetch(PDO::FETCH_ASSOC);
+		$login = $result->rowCount();
+		if ($login==1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
 }
 
 ?>
