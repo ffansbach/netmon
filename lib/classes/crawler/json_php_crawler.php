@@ -28,9 +28,9 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-/*Dieses Script muss unabhängig vom Monitoring-Framework funktionieren!!!*/
 
-//Informationen siehe: http://luci.freifunk-halle.net/Documentation/JsonRpcHowTo
+
+//For Informations take a look at: http://luci.freifunk-halle.net/Documentation/JsonRpcHowTo
 
   /**
   * KONFIGURATION
@@ -41,7 +41,7 @@
 
   //Login-Data
   $GLOBALS['nickname'] = "crawler";
-  $GLOBALS['password'] = "blabla";
+  $GLOBALS['password'] = "ff26ol";
   $GLOBALS['netmon_url'] = "http://netmon.freifunk-ol.de/";
 
 class JsonDataCollector {
