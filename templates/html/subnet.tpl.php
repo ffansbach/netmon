@@ -71,6 +71,9 @@
 			{elseif $status.type=="range"}
 				<div style="width:90px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./ip.php?id={$status.ip_id}">{$status.range_ip}</a></div>
 				<div style="width:90px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: #ff9448;">r</div>
+			{elseif $status.type=="subnet_ip"}
+				<div style="width:90px; text-align: center; border: 0px; border-right: 1px; border-style: solid;"><a href="./ip.php?id={$status.ip_id}">{$status.subnet_ip}</a></div>
+				<div style="width:90px; text-align: center; border: 0px; border-right: 1px; border-bottom: 1px; border-style: solid; background: yellow;">r</div>
 			{/if}
 
 	</div>

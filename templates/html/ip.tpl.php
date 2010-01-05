@@ -4,8 +4,8 @@
     <div style="float:left; width: 50%;">
 		<h2>Grunddaten</h2>
 		<b>IP:</b> {$net_prefix}.{$ip.ip}<br>
-		<b>DHCP:</b> {if $subnet_data.dhcp_kind=='ips'}
-			{if $ip.zone_start==0 OR $ip.zone_end==0}
+		 {if $subnet_data.dhcp_kind=='ips'}
+			<b>DHCP:</b> {if $ip.zone_start==0 OR $ip.zone_end==0}
 							Kein DHCP-Bereich reserviert
 						{else}
 							{$net_prefix}.{$ip.zone_start} bis {$net_prefix}.{$ip.zone_end}
@@ -65,16 +65,6 @@
 				<b>Processes:</b> {$service_data.current_crawl.processes}<br>
 			</p>
 		{/if}
-
-		{if !empty($service_data.current_crawl.olsrd_neighbors)}
-			<h2>Benachbarte IP´s</h2>
-			{assign var="tmp" value="2 Hop Neighbors"}
-			{assign var="tmp2" value="IP address"}
-
-			{foreach key=count item=olsrd_neighbors from=$service_data.current_crawl.olsrd_neighbors}
-				{if $olsrd_neighbors.$tmp eq '0'}<span style="background-color: yellow;">{/if}{if $olsrd_neighbors.netmon_ip_id}<a href="./ip.php?id={$olsrd_neighbors.netmon_ip_id}">{/if}{$olsrd_neighbors.$tmp2}{if $olsrd_neighbors.netmon_ip_id}</a>{/if} {if $olsrd_neighbors.$tmp eq '0'}(Direkter Client)</span>{/if}<br>
-			{/foreach}
-		{/if}
     </div>
 
     <div style="float:left; width: 50%;">
@@ -111,6 +101,7 @@
 			{/if}
 		{/if}
 
+<!--
 {if !empty($dont_show_indicator)}
 	<h2>Grafische Historie</h2>
 	<p>
@@ -123,6 +114,16 @@
 	<p><img src="./tmp/loadaverage_history.png"></p>
 	<p><img src="./tmp/memory_free_history.png"></p>
 {/if}
+-->
+		{if !empty($service_data.current_crawl.olsrd_neighbors)}
+			<h2>Benachbarte IP´s</h2>
+			{assign var="tmp" value="2 Hop Neighbors"}
+			{assign var="tmp2" value="IP address"}
+
+			{foreach key=count item=olsrd_neighbors from=$service_data.current_crawl.olsrd_neighbors}
+				{if $olsrd_neighbors.$tmp eq '0'}<span style="background-color: yellow;">{/if}{if $olsrd_neighbors.netmon_ip_id}<a href="./ip.php?id={$olsrd_neighbors.netmon_ip_id}">{/if}{$olsrd_neighbors.$tmp2}{if $olsrd_neighbors.netmon_ip_id}</a>{/if} {if $olsrd_neighbors.$tmp eq '0'}(Direkter Client)</span>{/if}<br>
+			{/foreach}
+		{/if}
 
 	</div>
 </div>

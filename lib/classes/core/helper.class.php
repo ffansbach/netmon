@@ -463,20 +463,48 @@ class Helper {
 		return $ips;
 	}
 
-  public function getExistingRangesBySubnetId($subnet_id) {
+	public function getExistingRangesBySubnetId($subnet_id) {
 		$rangelist = array();
-		$ips = Helper::getIpsBySubnetId($subnet_id);
-		
-		foreach ($ips as $ip) {
-			if((!empty($ip['zone_start']) AND $ip['zone_start']!='NULL' AND $ip['zone_start']!=0) AND (!empty($ip['zone_end']) AND $ip['zone_end']!='NULL' AND $ip['zone_end']!=0)) {
-				$exploded_zone_start = explode(".", $ip['zone_start']);
-				$exploded_zone_end = explode(".", $ip['zone_end']);
-				
-				for ($i=$exploded_zone_start[0]; $i<=$exploded_zone_end[0]; $i++) {
-					for ($ii=$exploded_zone_start[1]; $ii<=$exploded_zone_end[1]; $ii++) {
-						$key_ip = $GLOBALS['net_prefix'].".".$i.".".$ii;
-						$rangelist[$key_ip]['range_ip'] = $i.".".$ii;
-						$rangelist[$key_ip]['ip_id'] = $ip['id'];
+		$subnet_data = Helper::getSubnetById($subnet_id);
+		if ($subnet_data['dhcp_kind']=='ips') {
+			$ips = Helper::getIpsBySubnetId($subnet_id);
+			
+			foreach ($ips as $ip) {
+				if((!empty($ip['zone_start']) AND $ip['zone_start']!='NULL' AND $ip['zone_start']!=0) AND (!empty($ip['zone_end']) AND $ip['zone_end']!='NULL' AND $ip['zone_end']!=0)) {
+					$exploded_zone_start = explode(".", $ip['zone_start']);
+					$exploded_zone_end = explode(".", $ip['zone_end']);
+					
+					for ($i=$exploded_zone_start[0]; $i<=$exploded_zone_end[0]; $i++) {
+						for ($ii=$exploded_zone_start[1]; $ii<=$exploded_zone_end[1]; $ii++) {
+							$key_ip = $GLOBALS['net_prefix'].".".$i.".".$ii;
+							$rangelist[$key_ip]['range_ip'] = $i.".".$ii;
+							$rangelist[$key_ip]['ip_id'] = $ip['id'];
+						}
+					}
+				}
+			}
+		}
+		return $rangelist;
+	}
+
+	public function getExistingIpSubnetsBySubnetId($subnet_id) {
+		$rangelist = array();
+		$subnet_data = Helper::getSubnetById($subnet_id);
+		if ($subnet_data['dhcp_kind']=='subnet') {
+			$ips = Helper::getIpsBySubnetId($subnet_id);
+			
+			foreach ($ips as $ip) {
+				if(!empty($ip['dhcp_host']) AND !empty($ip['dhcp_netmask'])) {
+					$ip_subnet['first_ip'] = SubnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$ip['dhcp_host'], $ip['dhcp_netmask']);
+					$ip_subnet['last_ip'] = SubnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$ip['dhcp_host'], $ip['dhcp_netmask']);
+					$exploded_zone_start = explode(".", $ip_subnet['first_ip']);
+					$exploded_zone_end = explode(".", $ip_subnet['last_ip']);
+					for ($i=$exploded_zone_start[2]; $i<=$exploded_zone_end[2]; $i++) {
+						for ($ii=$exploded_zone_start[3]; $ii<=$exploded_zone_end[3]; $ii++) {
+							$key_ip = $GLOBALS['net_prefix'].".".$i.".".$ii;
+							$rangelist[$key_ip]['subnet_ip'] = $i.".".$ii;
+							$rangelist[$key_ip]['ip_id'] = $ip['id'];
+						}
 					}
 				}
 			}
