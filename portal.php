@@ -108,7 +108,7 @@ if ($service_status['online']!=0 OR $service_status['offline']!=0 OR $service_st
 
 	require_once('./lib/classes/core/history.class.php');
 	
-	$history = History::getServiceHistory($countlimit, $GLOBALS['portal_history_hours']);
+	$history = History::getServiceHistory(false, $GLOBALS['portal_history_hours']);
    $smarty->assign('portal_history_hours', $GLOBALS['portal_history_hours']);
 
 	$smarty->assign('history', $history);

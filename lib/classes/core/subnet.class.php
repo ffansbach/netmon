@@ -97,20 +97,29 @@ class Subnet {
 	
 	public function getIPStatus($subnet_id) {
 		$iplist = subnet::getPosibleIpsBySubnetId($subnet_id);
-
-		//Ips eintragen
-		foreach (Helper::getExistingIpsBySubnetId($subnet_id) as $key=>$ip) {
-			$key_ip = $GLOBALS['net_prefix'].".".$ip['ip'];
-
-			$iplist[$key_ip]['type'] = "ip";
-			$iplist[$key_ip]['ip_id']	= $ip['id'];
-		}
 		
+		//Get dhcp ips of an ip
 		foreach (Helper::getExistingRangesBySubnetId($subnet_id) as $range) {
 			$key_ip = $GLOBALS['net_prefix'].".".$range['range_ip'];
 			$iplist[$key_ip] = array('range_ip'=>$key_ip,
 											 'ip_id'=>$range['ip_id'],
 											 'type'=>"range");
+		}
+
+		//Get dhcp subnet ips of an ip
+		foreach (Helper::getExistingIpSubnetsBySubnetId($subnet_id) as $subnet_ip) {
+			$key_ip = $GLOBALS['net_prefix'].".".$subnet_ip['subnet_ip'];
+			$iplist[$key_ip] = array('subnet_ip'=>$key_ip,
+											 'ip_id'=>$subnet_ip['ip_id'],
+											 'type'=>"subnet_ip");
+		}
+
+		//Get ips
+		foreach (Helper::getExistingIpsBySubnetId($subnet_id) as $key=>$ip) {
+			$key_ip = $GLOBALS['net_prefix'].".".$ip['ip'];
+			$iplist[$key_ip] = array('ip'=>$key_ip,
+											 'ip_id'=>$subnet_ip['ip_id'],
+											 'type'=>"ip");
 		}
 
 		return $iplist;

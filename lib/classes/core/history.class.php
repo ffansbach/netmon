@@ -146,7 +146,32 @@ class History {
 		return $history;
 	}
 	
-	
+	public function getServiceHistoryByUser($countlimit, $hourlimit, $user_id) {
+		if($countlimit)
+			$range = "
+						WHERE history.object='service' AND ips.user_id=$user_id AND services.ip_id=ips.id AND services.id=history.object_id
+						ORDER BY history.create_date desc
+					  LIMIT 0, $limit";
+		elseif ($hourlimit)
+			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR AND history.object='service'  AND ips.user_id=$user_id AND services.ip_id=ips.id AND services.id=history.object_id
+					  ORDER BY history.create_date desc";
+		try {
+			$sql = "SELECT history.id, history.object, history.object_id, history.create_date, history.data
+			       FROM history, services, ips
+				   $range";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $key=>$row) {
+				$history[$key] = $row;
+				$history[$key]['data'] = unserialize($history[$key]['data']);
+				$history[$key]['additional_data'] = Helper::getServiceDataByServiceId($row['object_id']);
+				$history[$key]['create_date'] = Helper::makeSmoothIplistTime(strtotime($history[$key]['create_date']));
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $history;
+	}
 
 	
 }

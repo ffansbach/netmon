@@ -1,6 +1,6 @@
 <h1>Mein Desktop</h1>
 
-<h2>Projektdaten von {$project_name}</h2>
+<!--<h2>Projektdaten von {$project_name}</h2>
 
 <div style="width: 800px; overflow: hidden; padding-bottom: 15px; border-top: solid 0px grey;">
   <div nstyle="white-space: nowrap;">
@@ -21,7 +21,36 @@
       <div style="">{$kanal}</div>
     </div>
   </div>
+</div>-->
+
+<h2>Menü Schnellzugriff</h2>
+
+<div style="width: 800px; overflow: hidden; padding-bottom: 15px; border-top: solid 0px grey;">
+  <div nstyle="white-space: nowrap;">
+
+
+    <div style="float:left; padding: 5px; background: #ff6a5a; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
+      	<a href="./ipeditor.php?section=new">Neue IP</a>
+    </div>
+
+    <div style="float:left; padding: 5px; background: #ffac5b; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
+      	<a href="./ipeditor.php?section=new">IP-Liste</a>
+    </div>
+
+    <div style="float:left; padding: 5px; background: #fff55b; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
+      	<a href="./ipeditor.php?section=new">Netzwerkliste</a>
+    </div>
+
+    <div style="float:left; padding: 5px; background: #5abbff; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
+	<a href="./user_edit.php?section=edit&id=1">Benutzereinstellungen</a>
+    </div>
+
+    <div style="float:left; padding: 5px; background: #8bfa69; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
+	<a href="http://wiki.freifunk-ol.de/index.php?title=Netmon" target="_blank">Hilfe</a>
+    </div>
+  </div>
 </div>
+
 
 <h2>Meine Services</h2>
 
@@ -62,4 +91,28 @@
 {/foreach}
 {else}
 <p>Keine Ips vorhanden</p>
+{/if}
+
+<h2>Hostory der letzten 24 Stunden meiner Nodes</h2>
+
+{if !empty($history)}
+{foreach key=count item=hist from=$history}
+	{$hist.create_date}: 
+	{if $hist.type == 'user'}Der Benutzer <a href="./user.php?id={$hist.object_id}">{$hist.object_name_1}</a> hat sich registriert
+	{elseif $hist.type == 'subnet'} Das Subnets <a href="./subnet.php?id={$hist.object_id}">{$hist.object_name_1}</a> wurde angelgt
+	{elseif $hist.type == 'ip'} Die Ip <a href="./ip.php?id={$hist.object_id}">{$net_prefix}.{$hist.object_name_1}.{$hist.object_name_2}</a> wurde angelegt
+	{elseif $hist.type == 'service'} Ein <a href="./service.php?id={$hist.service_id}">Service</a> wurde auf der IP <a href="./ip.php?id={$hist.ip_id}">{$net_prefix}.{$hist.ip}</a> angelegt
+	{elseif $hist.data.action == 'status'}
+		{if $hist.data.action == 'status' AND $hist.data.from=='offline'}
+			<a href="./ip.php?id={$hist.additional_data.ip_id}"><b>{$net_prefix}.{$hist.additional_data.ip}</b></a>:<a href="./service.php?service_id={$hist.data.service_id}">{$hist.data.service_id}</a> geht <span style="background: green">online</span>.
+		{elseif $hist.data.action == 'status' AND $hist.data.from=='online'}
+			<a href="./ip.php?id={$hist.additional_data.ip_id}"><b>{$net_prefix}.{$hist.additional_data.ip}</b></a>:<a href="./service.php?service_id={$hist.data.service_id}">{$hist.data.service_id}</a> geht <span style="background: red">offline</span>.
+		{/if}
+	{elseif $hist.data.action == 'distversion'}
+		{$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) Distversion geändert ({$hist.data.from} -> {$hist.data.to}).
+	{/if}
+<br>
+{/foreach}
+{else}
+<p>In den letzten {$portal_history_hours} Stunden ist nichts passiert.</p>
 {/if}
