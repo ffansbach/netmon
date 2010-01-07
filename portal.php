@@ -23,15 +23,27 @@
 require_once('./config/runtime.inc.php');
 require_once("./lib/classes/extern/FeedParser.class.php");
 
-$Parser 	= new FeedParser();
-$Parser->parse('http://blog.freifunk-ol.de/feed/atom/');
+try {
+	$Parser = new FeedParser();
+	$Parser->parse('http://blog.freifunk-ol.de/feed/atom/');
+}
+catch(Exception $e) {
+	$smarty->assign('rss_exception', $e->getMessage());
+}
 $smarty->assign('feed_channels', $Parser->getChannels());
 $smarty->assign('feed_items', $Parser->getItems());
 
-$TracParser 	= new FeedParser();
-$TracParser->parse('https://trac.freifunk-ol.de/timeline?ticket=on&changeset=on&milestone=on&wiki=on&max=10&daysback=90&format=rss');
+try {
+	$TracParser = new FeedParser();
+	$TracParser->parse('https://trac.freifunk-ol.de/timeline?ticket=on&changeset=on&milestone=on&wiki=on&max=10&daysback=90&format=rss');
+}
+catch(Exception $e) {
+	$smarty->assign('trac_rss_exception', $e->getMessage());
+}
+
 $smarty->assign('trac_feed_channels', $TracParser->getChannels());
 $smarty->assign('trac_feed_items', $TracParser->getItems());
+
 
 class verfuegbarkeitsPalette extends ezcGraphPalette {
 	protected $dataSetColor = array('#00b308', '#c10000', '#fff600');

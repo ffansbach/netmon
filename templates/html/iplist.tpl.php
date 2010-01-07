@@ -35,7 +35,31 @@
     {/if}
     <div style="float:left; width: 150px;">{$iplist.crawl_time}</div>
     <div style="float:left; width: 150px;"><a href="./subnet.php?id={$iplist.subnet_id}">{$iplist.title}</a></div>
-    <div style="float:left; width: 150px;">{if is_numeric($iplist.crawler)}<a href="{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{elseif $iplist.crawler=='8888'}http://{/if}{$net_prefix}.{$iplist.ip}">{$iplist.services_title|substr:0:20}...</a>{else}&nbsp;{/if}</div>
+    <div style="float:left; width: 150px;">
+
+{if $iplist.use_netmons_url==1 OR !empty($iplist.url)}
+	<a target="_blank" href="
+{/if}
+
+{if $iplist.use_netmons_url==1}
+	{if is_numeric($iplist.crawler)}
+		{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{/if}{$net_prefix}.{$iplist.ip}:{if $iplist.crawler=='80'}80{elseif $iplist.crawler=='21'}21{/if}
+		{else}
+		http://{$net_prefix}.{$iplist.ip}
+	{/if}
+{elseif !empty($iplist.url)}
+	{$iplist.url}
+{/if}
+
+{if $iplist.use_netmons_url==1 OR !empty($iplist.url)}
+	">{$iplist.services_title|substr:0:20}...</a>
+{/if}
+
+{if $iplist.use_netmons_url!=1 AND empty($iplist.url) AND !empty($iplist.services_title)}
+	{$iplist.services_title|substr:0:20}...
+{/if}
+
+</div>
   </div>
 </div>
 {/foreach}
@@ -76,7 +100,31 @@
     {/if}
     <div style="float:left; width: 150px;">{$iplist.crawl_time}</div>
     <div style="float:left; width: 150px;"><a href="./subnet.php?id={$iplist.subnet_id}">{$iplist.title}</a></div>
-    <div style="float:left; width: 150px;">{if is_numeric($iplist.crawler)}<a href="{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{elseif $iplist.crawler=='8888'}http://{/if}{$net_prefix}.{$iplist.ip}">{$iplist.services_title|substr:0:20}...</a>{else}&nbsp;{/if}</div>
+    <div style="float:left; width: 150px;">
+
+{if $iplist.use_netmons_url==1 OR !empty($iplist.url)}
+	<a target="_blank" href="
+{/if}
+
+{if $iplist.use_netmons_url==1}
+	{if is_numeric($iplist.crawler)}
+		{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{/if}{$net_prefix}.{$iplist.ip}:{if $iplist.crawler=='80'}80{elseif $iplist.crawler=='21'}21{/if}
+		{else}
+		http://{$net_prefix}.{$iplist.ip}
+	{/if}
+{elseif !empty($iplist.url)}
+	{$iplist.url}
+{/if}
+
+{if $iplist.use_netmons_url==1 OR !empty($iplist.url)}
+	">{$iplist.services_title|substr:0:20}...</a>
+{/if}
+
+{if $iplist.use_netmons_url!=1 AND empty($iplist.url) AND !empty($iplist.services_title)}
+	{$iplist.services_title|substr:0:20}...
+{/if}
+
+</div>
   </div>
 </div>
 {/foreach}
@@ -117,7 +165,32 @@
     {/if}
     <div style="float:left; width: 150px;">{$iplist.crawl_time}</div>
     <div style="float:left; width: 150px;"><a href="./subnet.php?id={$iplist.subnet_id}">{$iplist.title}</a></div>
-    <div style="float:left; width: 150px;">{if is_numeric($iplist.crawler)}<a href="{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{elseif $iplist.crawler=='8888'}http://{/if}{$net_prefix}.{$iplist.ip}">{$iplist.services_title|substr:0:20}...</a>{else}&nbsp;{/if}</div>
+    <div style="float:left; width: 150px;">
+
+{if $iplist.use_netmons_url==1 OR !empty($iplist.url)}
+	<a target="_blank" href="
+{/if}
+
+{if $iplist.use_netmons_url==1}
+	{if is_numeric($iplist.crawler)}
+		{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{/if}{$net_prefix}.{$iplist.ip}:{if $iplist.crawler=='80'}80{elseif $iplist.crawler=='21'}21{/if}
+		{else}
+		http://{$net_prefix}.{$iplist.ip}
+	{/if}
+{elseif !empty($iplist.url)}
+	{$iplist.url}
+{/if}
+
+{if $iplist.use_netmons_url==1 OR !empty($iplist.url)}
+	">{$iplist.services_title|substr:0:20}...</a>
+{/if}
+
+{if $iplist.use_netmons_url!=1 AND empty($iplist.url) AND !empty($iplist.services_title)}
+	{$iplist.services_title|substr:0:20}...
+{/if}
+
+
+</div>
   </div>
 </div>
 {/foreach}
@@ -158,7 +231,31 @@
     {/if}
     <div style="float:left; width: 150px;">{$iplist.crawl_time}</div>
     <div style="float:left; width: 150px;"><a href="./subnet.php?id={$iplist.subnet_id}">{$iplist.title}</a></div>
-    <div style="float:left; width: 150px;">{if is_numeric($iplist.crawler)}<a target="_blank" href="{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{elseif $iplist.crawler=='8888'}http://{/if}{$net_prefix}.{$iplist.ip}:{if $iplist.crawler=='80'}80{elseif $iplist.crawler=='21'}21{elseif $iplist.crawler=='8888'}8888{/if}">{$iplist.services_title|substr:0:20}...</a>{else}&nbsp;{/if}</div>
+    <div style="float:left; width: 150px;">
+{if $iplist.use_netmons_url==1 OR !empty($iplist.url)}
+	<a target="_blank" href="
+{/if}
+
+{if $iplist.use_netmons_url==1}
+	{if is_numeric($iplist.crawler)}
+		{if $iplist.crawler=='80'}http://{elseif $iplist.crawler=='21'}ftp://{/if}{$net_prefix}.{$iplist.ip}:{if $iplist.crawler=='80'}80{elseif $iplist.crawler=='21'}21{/if}
+		{else}
+		http://{$net_prefix}.{$iplist.ip}
+	{/if}
+{elseif !empty($iplist.url)}
+	{$iplist.url}
+{/if}
+
+{if $iplist.use_netmons_url==1 OR !empty($iplist.url)}
+	">{$iplist.services_title|substr:0:20}...</a>
+{/if}
+
+{if $iplist.use_netmons_url!=1 AND empty($iplist.url) AND !empty($iplist.services_title)}
+	{$iplist.services_title|substr:0:20}...
+{/if}
+
+</div>
+
   </div>
 </div>
 {/foreach}

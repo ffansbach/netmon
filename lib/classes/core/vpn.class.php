@@ -29,6 +29,7 @@
  */
 
   require_once('./lib/classes/extern/archive.class.php');
+  require_once('./lib/classes/extern/FTPSync.class.php');
 
 class Vpn {
 	public function generateKeys($ip_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $privkeypass_chk, $expiration) {
@@ -193,8 +194,23 @@ class Vpn {
 			$ccd_content = "ifconfig-push $GLOBALS[net_prefix].$ip_data[ip] $netmask";
 		}
 
-      fwrite($handle, $ccd_content);
-      fclose($handle);
+	fwrite($handle, $ccd_content);
+	fclose($handle);
+
+	//Sncronize With external FTP-Source (VPN-Server)
+	set_time_limit(0);
+	
+	$sync = new FTPSync($subnet_data['vpn_server'], $subnet_data['ftp_ccd_username'], $subnet_data['ftp_ccd_password']);
+	$sync->setPassive(true);
+	//Uncomment the following line if you would like to get newer files from the remote host 
+	//$sync->allowDownload();
+	echo $sync->pwd()."<br />";	//get present working directory
+	$sync->setFilter(".svn");	//Don`t upload .svn directory and all of its childrens to the remote host
+//	$sync->setFilter("sample.txt");
+	$sync->saveLog("./log/ccd_ftp_sync.log");
+	$sync->sync("./ccd", $subnet_data['ftp_ccd_folder'], 0);
+      
+
 
       $message[] = array("CCD wurde für die IP $GLOBALS[net_prefix].$ip_data[ip] erstellt.", 1);
     } else {
