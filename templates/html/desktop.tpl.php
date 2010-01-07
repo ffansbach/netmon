@@ -54,6 +54,7 @@
 
 <h2>Meine Services</h2>
 
+{if !empty($servicelist)}
 <div id="ipitem" style="width: 745px; overflow: hidden;">
   <div nstyle="white-space: nowrap;">
     <div style="float:left; width: 85px;"><b>Service</b></div>
@@ -66,7 +67,7 @@
   </div>
 </div>
 
-{if !empty($servicelist)}
+
 {foreach key=count item=iplist from=$servicelist}
 <div id="ipitem" style="width: 745px; overflow: hidden;">
   <div style="white-space: nowrap;">
@@ -90,7 +91,7 @@
 </div>
 {/foreach}
 {else}
-<p>Keine Ips vorhanden</p>
+<div class="notice">Du hast noch keine IP´s und Services angelegt. Über den Link <a href="./ipeditor.php?section=new">Neue IP</a> eine neue IP mit Service anlegen.</div>
 {/if}
 
 <h2>Hostory der letzten 24 Stunden meiner Nodes</h2>
@@ -114,5 +115,5 @@
 <br>
 {/foreach}
 {else}
-<p>In den letzten {$portal_history_hours} Stunden ist nichts passiert.</p>
+<div class="notice">In den letzten 24 Stunden ist nichts passiert.</div>
 {/if}

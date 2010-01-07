@@ -169,6 +169,12 @@
 		<p>Server Key<br><textarea name="vpn_server_key" cols="50" rows="10">{$subnet_data.vpn_server_key}</textarea></p>
 		
 		<p>Passphrase:<br><input name="vpn_server_pass" type="password" size="30" value="{$subnet_data.vpn_server_pass}"></p>
+
+		<h3>Synchronisation der CCD Daten per FTP</h3>
+		<p>Ordner<br><input name="ftp_ccd_folder" type="text" size="30" value="{$subnet_data.ftp_ccd_folder}"></p>
+		<p>Benutzername<br><input name="ftp_ccd_username" type="text" size="20" value="{$subnet_data.ftp_ccd_username}"></p>
+		<p>Passwort<br><input name="ftp_ccd_password" type="password" size="20" value="{$subnet_data.ftp_ccd_password}"></p>
+
 	</div>
 
 	<p><input type="submit" value="Absenden"></p>

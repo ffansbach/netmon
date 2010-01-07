@@ -137,7 +137,7 @@ class Helper {
 
     $services = array();
 	try {
-		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
+		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler, services.use_netmons_url, services.url,
 				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
 				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
 				      users.nickname
@@ -414,7 +414,7 @@ class Helper {
 
 	public function getServiceDataByServiceId($service_id) {
 		try {
-			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.create_date,
+			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.use_netmons_url, services.url, services.create_date,
 			       ips.ip, ips.zone_start, ips.zone_end,
 			       subnets.id as subnet_id, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email

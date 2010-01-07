@@ -21,7 +21,7 @@
 	}
     if ($_GET['section'] == "insert_service") {
 		if (UserManagement::checkPermission(4)) {
-			$add_result = EditingHelper::addIpTyp($_GET['ip_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
+			$add_result = EditingHelper::addIpTyp($_GET['ip_id'], $_POST['title'], $_POST['description'], $_POST['typ'], $_POST['crawler'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait'], $_POST['use_netmons_url'], $_POST['url']);
 			if(!$add_result['result']) {
 				header('Location: ./serviceeditor.php?section=new&ip_id='.$_GET['ip_id']);
 			} else {
@@ -37,7 +37,9 @@
 
     if ($_GET['section'] == "edit") {
 	$service_data = Helper::getServiceDataByServiceId($_GET['service_id']);
-    UserManagement::isOwner($smarty, $service_data['user_id']);
+	if (!UserManagement::checkIfUserIsOwnerOrPermitted(64, $service_data['user_id']))
+		UserManagement::denyAccess();
+
 	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
 	$smarty->assign('servicedata', $service_data);
 	$smarty->assign('message', Message::getMessage());
@@ -46,7 +48,7 @@
 	$smarty->display("footer.tpl.php");
     }
     if ($_GET['section'] == "insert_edit") {
-	$edit_result = $ServiceEditor->insertEditService($_GET['service_id'], $_POST['typ'], $_POST['crawler'], $_POST['title'], $_POST['description'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait']);
+	$edit_result = $ServiceEditor->insertEditService($_GET['service_id'], $_POST['typ'], $_POST['crawler'], $_POST['title'], $_POST['description'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait'], $_POST['use_netmons_url'], $_POST['url']);
 	header('Location: ./service.php?service_id='.$edit_result['service_id']);
     }
     if ($_GET['section'] == "delete") {
