@@ -29,7 +29,7 @@
  */
 
 class ServiceEditor {
-	public function insertEditService($service_id, $typ, $crawler, $title, $description, $visible, $notify, $notification_wait) {
+	public function insertEditService($service_id, $typ, $crawler, $title, $description, $visible, $notify, $notification_wait, $use_netmons_url, $url) {
 		DB::getInstance()->exec("UPDATE services SET
 										title = '$title',
 										description = '$description',
@@ -37,7 +37,9 @@ class ServiceEditor {
 										crawler = '$crawler',
 										visible = '$visible',
 										notify = '$notify',
-										notification_wait = '$notification_wait'
+										notification_wait = '$notification_wait',
+										use_netmons_url = '$use_netmons_url',
+										url = '$url'
 								WHERE id = '$service_id'");
 		
 		$message[] = array("Der Service mit der ID ".$service_id." wurde geändert.", 1);

@@ -220,7 +220,7 @@ class EditingHelper {
 		}
 	}
 	
-	public function addIpTyp($ip_id, $title, $description, $typ, $crawler, $port, $visible, $notify, $notification_wait) {
+	public function addIpTyp($ip_id, $title, $description, $typ, $crawler, $port, $visible, $notify, $notification_wait, $use_netmons_url, $url) {
 		if ($typ=="false" OR $crawler=="false") {
 			$message[] = array("Bitte wählen sie Servicetyp und Crawler aus.", 2);
 			Message::setMessage($message);
@@ -231,7 +231,7 @@ class EditingHelper {
 			$crawler = $port;
 		}
 		
-		DB::getInstance()->exec("INSERT INTO services (ip_id, title, description, typ, crawler, visible, notify, notification_wait, create_date) VALUES ('$ip_id', '$title', '$description', '$typ', '$crawler', '$visible', '$notify', '$notification_wait', NOW());");
+		DB::getInstance()->exec("INSERT INTO services (ip_id, title, description, typ, crawler, visible, notify, notification_wait, use_netmons_url, url, create_date) VALUES ('$ip_id', '$title', '$description', '$typ', '$crawler', '$visible', '$notify', '$notification_wait', '$use_netmons_url', '$url', NOW());");
 		$service_id = DB::getInstance()->lastInsertId();
 		
 		try {

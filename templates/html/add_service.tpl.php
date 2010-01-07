@@ -7,6 +7,18 @@
 <script type="text/javascript">
 
 {literal}
+	function hideUrl(){
+		if(document.getElementById('use_netmons_url').checked == true){
+			document.getElementById('url').style.display = 'none';
+		} else {
+			document.getElementById('url').style.display = 'block';
+		}
+	}
+
+	function writeSame() {
+			document.getElementById('real_host').value = document.getElementById('host').value;
+	}
+
 
 window.onload = function()
 {
@@ -48,6 +60,13 @@ window.onload = function()
     Sinnvoll wenn Typ "service" sowie Port "80" ist und sich hinter der IP eine Website verbirgt. Oder ein VPN-Server, oder ein NFS-Downloadserver usw.</p>
   </p>
   
+  <input id="use_netmons_url" name="use_netmons_url" type="checkbox" onchange="hideUrl()" value="1"> Netmon soll versuchen eine URL zu generieren.
+
+  <div id="url">
+    <p>URL:<br><input name="url" type="text" size="50" maxlength="250"><br>
+    Gibt die URL an unter welcher die Seiten der Services ereichbar sind (optional).
+  </div>
+
   <h2>Privatsphäre:</h2>
   <p>
     <p>Diesen Service nicht angemeldeten Benutzer zeigen: 
