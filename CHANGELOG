@@ -16,6 +16,8 @@ Changelog für Netmon 0.1 zu Netmon 0.2 beta 1
 *SUBNETZE: Ort des Subnetzes kann nun per Openstreetmap definiert werden.
 +SUBNETZE: VPN-Subnetz kann unabhängig vom Netmonsubetz gewählt werden (reales Subnetz vs. logisches Subnetz)
 +SUBNETZE: Umfangreicher Subnetcalculator um Netzmasken und Anderes zu berechnen
++SUBNETZE: VPN CCD ist editierbar
++SUBNETZE: Netmons CCD Ordner wird per FTP mit dem CCD Ordner des VPN Servers synchronisiert
 *IP: Komplettes Redesign der IP-Übersicht
 +IP: Services und IP-Daten zusammengeführt
 +BENUTZER: Neue Datenfelder wie ICQ-Nummer, Name, Vorname, Wohnort, Website etc.

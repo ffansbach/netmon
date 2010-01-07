@@ -38,8 +38,9 @@
 		{foreach item=topmenu from=$top_menu}
 			<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}" target="_blank">{$topmenu.name}</a></span>
 		{/foreach}
+			<span class="topmenubox">|</span>
 		{foreach item=loginOutMenu from=$loginOutMenu}
-			<span class="topmenubox"><a style="color: #FFFFFF" href="{$loginOutMenu.href}">{$loginOutMenu.name}</a></span>
+			<span class="topmenubox">{$loginOutMenu.pretext} <a style="color: #FFFFFF" href="{$loginOutMenu.href}"><b>{$loginOutMenu.name}</b></a></span>
 		{/foreach}
 	</div>
 </div>

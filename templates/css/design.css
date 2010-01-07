@@ -37,6 +37,7 @@ margin: auto; max-width: 1024px; height: 182px; background-position: left; backg
 }
 
 .topmenubox {
+  font-weight:normal;
   vertical-align: top;
   float: left;
   margin-left: 10px;
