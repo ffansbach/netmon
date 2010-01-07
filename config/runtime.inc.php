@@ -105,10 +105,24 @@
 	* Auto Login
 	*/
 
-	if (!UserManagement::isLoggedIn($_SESSION['user_id']) AND !empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
+	if (!UserManagement::isLoggedIn($_SESSION['user_id'])) {
 		//Login Class
 		require_once($path.'lib/classes/core/login.class.php');
-		Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
+		if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
+			Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
+		} elseif (!empty($_COOKIE["openid"])) {
+			require_once('lib/classes/extern/class.openid.php');
+			// Get identity from user and redirect browser to OpenID Server
+			$openid = new SimpleOpenID;
+			$openid->SetIdentity($_COOKIE["openid"]);
+			$openid->SetTrustRoot('http://' . $_SERVER["HTTP_HOST"]);
+			$openid->SetRequiredFields(array('email','fullname'));
+			$openid->SetOptionalFields(array('dob','gender','postcode','country','language','timezone'));
+			if ($openid->GetOpenIDServer()){
+				$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].'/login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
+				$openid->Redirect(); 	// This will redirect user to OpenID Server
+			}
+		}
 	}
 
 	/**

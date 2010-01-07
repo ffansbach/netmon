@@ -50,6 +50,9 @@ class Menus extends UserManagement {
     }
     
     if (UserManagement::checkPermission(4)) {
+      $user_data = Helper::getUserByID($_SESSION['user_id']);
+
+      $menu[] = array('pretext'=>'Eingeloggt als:', 'name'=>$user_data['nickname'], 'href'=>"./user.php?id=$_SESSION[user_id]");
       $menu[] = array('name'=>'Logout', 'href'=>'./login.php?section=logout');
     }
     return $menu;

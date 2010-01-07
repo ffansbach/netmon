@@ -96,7 +96,7 @@
 					 AddKmlLayer("online and offline Nodes", "./api.php?class=apiMap&section=getOnlineAndOfflineServiceKML&highlighted_service={$service_data.service_id}");
 				</script>
 			</div>
-			{if !empty($last_online_crawl.location)}
+			{if !empty($service_data.last_online_crawl.location)}
 				<p><b>Standortbeschreibung:</b> {$service_data.last_online_crawl.location}<br></p>
 			{/if}
 		{/if}
