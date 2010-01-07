@@ -19,6 +19,9 @@
 		header('Location: desktop.php');
   }
   elseif ($_GET['section']=="openid_login_send"){
+    if($_POST['remember']) {
+		$_SESSION['openid_login_remember']=$_POST['openid_url'];
+    }
     // EXAMPLE
     if ($_POST['openid_action'] == "login"){ // Get identity from user and redirect browser to OpenID Server
 	$openid = new SimpleOpenID;
@@ -44,8 +47,8 @@
 	if ($openid_validation_result == true){ 		// OK HERE KEY IS VALID
 		$short_openid = substr($_GET['openid_identity'], 7);
 		if (User::checkIfOpenIdHasUser($short_openid)) {
-			 login::user_login (false, false, false, false, $short_openid);
-			  header('Location: desktop.php');
+			 login::user_login (false, false, $_SESSION['openid_login_remember'], false, $short_openid);
+			 header('Location: desktop.php');
 		} else {
 			$messages[] = array("Ihre Open-ID ist mit keinem Benutzerkonto verknüpft.", 0);
 			$messages[] = array("Wenn Sie möchten, können sie jetzt ein Benutzerkonto erstellen, dass mit Ihrer Open-ID verknüpft ist.", 0);
