@@ -9,6 +9,7 @@
     if ($_GET['section'] == "new") {
 		if (UserManagement::checkPermission(4)) {
 			$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+			$smarty->assign('imggen_supported_chipsets', $GLOBALS['imggen_supported_chipsets']);
 			$smarty->assign('existing_subnets', EditingHelper::getExistingSubnets());
 			$smarty->assign('message', Message::getMessage());
 			
@@ -41,6 +42,7 @@
 		UserManagement::isOwner($smarty, $ip_data['user_id']);
 
 		$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+		$smarty->assign('imggen_supported_chipsets', $GLOBALS['imggen_supported_chipsets']);
 		$ip_data = Helper::getIpDataByIpId($_GET['id']);
 		$smarty->assign('ip_data', $ip_data);
 		$smarty->assign('ccd', Vpn::getCCD($_GET['id']));

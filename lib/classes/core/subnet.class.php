@@ -118,7 +118,7 @@ class Subnet {
 		foreach (Helper::getExistingIpsBySubnetId($subnet_id) as $key=>$ip) {
 			$key_ip = $GLOBALS['net_prefix'].".".$ip['ip'];
 			$iplist[$key_ip] = array('ip'=>$key_ip,
-											 'ip_id'=>$subnet_ip['ip_id'],
+											 'ip_id'=>$ip['id'],
 											 'type'=>"ip");
 		}
 
