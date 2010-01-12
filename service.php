@@ -89,6 +89,7 @@ if(!empty($load_array)) {
 		$graph->data['Machine 1'] = new ezcGraphArrayDataSet( $load_array );
 		$graph->data['Machine 1']->symbol = ezcGraph::BULLET;
 		$graph->render( 400, 150, './tmp/loadaverage_history.png' ); 
+	}
 	catch(ezcGraphFontRenderingException $e) {
 		$smarty->assign('loadaverage_exception', $e->getMessage());
 	}
@@ -109,6 +110,7 @@ if(!empty($memory_free_array)) {
 		$graph->data['Machine 1'] = new ezcGraphArrayDataSet( $memory_free_array );
 		$graph->data['Machine 1']->symbol = ezcGraph::BULLET;
 		$graph->render( 400, 150, './tmp/memory_free_history.png' );
+	}
 	catch(ezcGraphFontRenderingException $e) {
 		$smarty->assign('memory_free_exception', $e->getMessage());
 	} 

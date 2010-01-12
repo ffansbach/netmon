@@ -13,7 +13,6 @@
   $smarty->assign('isOwner', UserManagement::isThisUserOwner($subnet_data['user_id']));
 
   $smarty->assign('ipstatus', subnet::getIPStatus($_GET['id']));
-
   $smarty->assign('iplist', subnet::getPosibleIpsBySubnetId($_GET['id']));
 
   $smarty->display("header.tpl.php");

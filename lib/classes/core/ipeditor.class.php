@@ -80,8 +80,8 @@ class IpEditor {
 
     if ($range) {
       if ($ip != false) {
-	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip, zone_start, zone_end, dhcp_host, dhcp_netmask, radius, create_date)
-							VALUES ('$_SESSION[user_id]', '$_POST[subnet_id]', '$ip', '$range[start]', '$range[end]', '$dhcp_host', '$dhcp_netmask', '$_POST[radius]', NOW());");
+	DB::getInstance()->exec("INSERT INTO ips (user_id, subnet_id, ip, zone_start, zone_end, dhcp_host, dhcp_netmask, radius, location, longitude, latitude, chipset, create_date)
+							VALUES ('$_SESSION[user_id]', '$_POST[subnet_id]', '$ip', '$range[start]', '$range[end]', '$dhcp_host', '$dhcp_netmask', '$_POST[radius]', '$_POST[location]', '$_POST[longitude]', '$_POST[latitude]', '$_POST[chipset]', NOW());");
 	$ip_id = DB::getInstance()->lastInsertId();
 
 	if ($range['start']!='NULL') {

@@ -50,7 +50,7 @@ class Helper {
   
   public function getIpDataByIpId($id) {
     try {
-      $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.radius, ips.vpn_client_cert, ips.vpn_client_key, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
+      $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.radius, ips.vpn_client_cert, ips.vpn_client_key, ips.location, ips.longitude, ips.latitude, ips.chipset, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
 				      users.nickname, users.email,
 				      subnets.title, subnets.host, subnets.netmask, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
 				   FROM ips
