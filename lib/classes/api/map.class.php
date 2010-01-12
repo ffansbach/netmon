@@ -28,7 +28,7 @@
  */
 
 class ApiMap {
-	//Funktion modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
+	//Function modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
 	//Prints a KML file that can be used with OpenStreetmap and the Modified freifunkmap.php
 	/**
 	* print a xml file to use with GoogleEarth
@@ -464,6 +464,28 @@ class ApiMap {
 				$xw->startElement('ListStyle');
 				$xw->endElement();
 				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_ip_highlighted_pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted_1.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_ip_offline_highlighted_pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_offline_hightlighted_1.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
 					$xw->writeAttribute( 'id', 'sh_red-pushpin');
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
@@ -511,12 +533,12 @@ class ApiMap {
 										$xw->writeRaw("<![CDATA[Ip <a href='./ip.php?id=$entry[ip_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
 									$xw->endElement();
 									$xw->startElement('description');
-									$box_inhalt = "<b>Position:</b> lat: $entry[latitude], lon: $entry[longitude]<br>
+									$box_inhalt = "<b>Position:</b> <span style=\"color: red;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
 												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end]<br>
 												   <b>SSID:</b> $entry[ssid]<br>
 												   <b>Standortbeschreibung:</b> $entry[location]<br>
-													<b>Diese Ip ist offline!</b><br>
+													<b style=\"color: red;\">Diese Ip ist offline!</b><br>
 												   <b>Letztes Mal online:</b> $entry[crawl_time]<br>";
 /*										$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 													   DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
@@ -527,6 +549,8 @@ class ApiMap {
 									$xw->startElement('styleUrl');
 									if(isset($_GET['highlighted_service']) AND $_GET['highlighted_service']==$entry['service_id'])
 										$xw->writeRaw('#sh_blue-pushpin');
+									elseif(isset($_GET['highlighted_subnet']) AND $_GET['highlighted_subnet']==$entry['subnet_id'])
+										$xw->writeRaw('#sh_ip_offline_highlighted_pushpin');
 									else
 										$xw->writeRaw('#sh_red-pushpin');
 									$xw->endElement();
@@ -588,7 +612,7 @@ class ApiMap {
 										}
 									}
 
-									$box_inhalt = "<b>Position:</b> lat: $entry[latitude], lon: $entry[longitude]<br>
+									$box_inhalt = "<b>Position:</b> <span style=\"color: green;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
 												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
 												   <b>SSID:</b> $entry[ssid]<br>
@@ -599,6 +623,8 @@ class ApiMap {
 								$xw->startElement('styleUrl');
 									if(isset($_GET['highlighted_service']) AND $_GET['highlighted_service']==$entry['service_id'])
 										$xw->writeRaw('#sh_blue-pushpin');
+									elseif(isset($_GET['highlighted_subnet']) AND $_GET['highlighted_subnet']==$entry['subnet_id'])
+										$xw->writeRaw('#sh_ip_highlighted_pushpin');
 									else
 										$xw->writeRaw('#sh_green-pushpin');
 								$xw->endElement();
