@@ -55,50 +55,63 @@ foreach ($crawl_history as $hist) {
   $smarty->assign('dont_show_indicator', $dont_show_indicator);
 
 if(!empty($ping_array)) {
- $graph = new ezcGraphLineChart();
- $graph->driver = new ezcGraphGdDriver(); 
- $graph->options->font = './templates/fonts/verdana.ttf';
- $graph->options->fillLines = 210;
- $graph->title = 'Ping';
- $graph->legend = false;
-
- $graph->xAxis = new ezcGraphChartElementDateAxis();
-
- // Add data
- $graph->data['Machine 1'] = new ezcGraphArrayDataSet( $ping_array );
- $graph->data['Machine 1']->symbol = ezcGraph::BULLET;
- $graph->render( 400, 150, './tmp/service_ping_history.png' ); 
+	try {
+		$graph = new ezcGraphLineChart();
+		$graph->driver = new ezcGraphGdDriver(); 
+		$graph->options->font = './templates/fonts/verdana.ttf';
+		$graph->options->fillLines = 210;
+		$graph->title = 'Ping';
+		$graph->legend = false;
+		
+		$graph->xAxis = new ezcGraphChartElementDateAxis();
+		
+		// Add data
+		$graph->data['Machine 1'] = new ezcGraphArrayDataSet( $ping_array );
+		$graph->data['Machine 1']->symbol = ezcGraph::BULLET;
+		$graph->render( 400, 150, './tmp/service_ping_history.png' ); 
+	}
+	catch(ezcGraphFontRenderingException $e) {
+		$smarty->assign('ping_exception', $e->getMessage());
+	}
 }
 
 if(!empty($load_array)) {
- $graph = new ezcGraphLineChart();
- $graph->driver = new ezcGraphGdDriver(); 
- $graph->options->font = './templates/fonts/verdana.ttf';
- $graph->options->fillLines = 210;
- $graph->title = 'Loadaverage';
- $graph->legend = false;
- $graph->xAxis = new ezcGraphChartElementDateAxis();
-
- // Add data
- $graph->data['Machine 1'] = new ezcGraphArrayDataSet( $load_array );
- $graph->data['Machine 1']->symbol = ezcGraph::BULLET;
- $graph->render( 400, 150, './tmp/loadaverage_history.png' ); 
+	try {
+		$graph = new ezcGraphLineChart();
+		$graph->driver = new ezcGraphGdDriver(); 
+		$graph->options->font = './templates/fonts/verdana.ttf';
+		$graph->options->fillLines = 210;
+		$graph->title = 'Loadaverage';
+		$graph->legend = false;
+		$graph->xAxis = new ezcGraphChartElementDateAxis();
+		
+		// Add data
+		$graph->data['Machine 1'] = new ezcGraphArrayDataSet( $load_array );
+		$graph->data['Machine 1']->symbol = ezcGraph::BULLET;
+		$graph->render( 400, 150, './tmp/loadaverage_history.png' ); 
+	catch(ezcGraphFontRenderingException $e) {
+		$smarty->assign('loadaverage_exception', $e->getMessage());
+	}
 }
 
 if(!empty($memory_free_array)) {
- $graph = new ezcGraphLineChart();
- $graph->driver = new ezcGraphGdDriver(); 
- $graph->options->font = './templates/fonts/verdana.ttf';
- $graph->options->fillLines = 210;
- $graph->title = 'Free Memory';
- $graph->legend = false;
-
- $graph->xAxis = new ezcGraphChartElementDateAxis();
-
- // Add data
- $graph->data['Machine 1'] = new ezcGraphArrayDataSet( $memory_free_array );
- $graph->data['Machine 1']->symbol = ezcGraph::BULLET;
- $graph->render( 400, 150, './tmp/memory_free_history.png' ); 
+	try {
+		$graph = new ezcGraphLineChart();
+		$graph->driver = new ezcGraphGdDriver(); 
+		$graph->options->font = './templates/fonts/verdana.ttf';
+		$graph->options->fillLines = 210;
+		$graph->title = 'Free Memory';
+		$graph->legend = false;
+		
+		$graph->xAxis = new ezcGraphChartElementDateAxis();
+		
+		// Add data
+		$graph->data['Machine 1'] = new ezcGraphArrayDataSet( $memory_free_array );
+		$graph->data['Machine 1']->symbol = ezcGraph::BULLET;
+		$graph->render( 400, 150, './tmp/memory_free_history.png' );
+	catch(ezcGraphFontRenderingException $e) {
+		$smarty->assign('memory_free_exception', $e->getMessage());
+	} 
 }
 
 
