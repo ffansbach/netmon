@@ -117,6 +117,40 @@ http://plugins.jquery.com/project/zendjsonrpc
 		</div>
 	</div>
 
+	<div>
+	<h2>Standort</h2>
+	<div style="width: 100%; overflow: hidden;">
+		<div style="float:left; width: 55%;">
+			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
+			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+			<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
+			<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+			
+			<div id="map" style="height:200px; width:400px; border:solid 1px black;font-size:9pt;">
+				{literal}<script type="text/javascript">
+					new_ip_map();
+				</script>{/literal}
+			</div>
+		</div>
+		
+		<div style="float:left; width: 45%;">
+		<p>Länge: <input id="longitude" name="longitude" size="15" maxlength="15" ><br>
+		Breite: <input id="latitude" name="latitude" size="15" maxlength="15" ></p>
+	</div>
+	</div>
+	
+	<h2>Beschreibung des Standorts</h2>
+	<p>
+   		Kurze Beschreibung des Standorts:<br><input name="location" type="text" size="60" maxlength="60" value="">
+	</p>
+
+	<h2>Routertyp</h2>
+	Chipset: <select name="chipset">
+			{foreach item=imggen_supported_chipset from=$imggen_supported_chipsets}
+			<option value="{$imggen_supported_chipset}">{$imggen_supported_chipset}</option>
+			{/foreach}
+		</select>
+
 	<h2>Reichweite</h2>
 
   <p>

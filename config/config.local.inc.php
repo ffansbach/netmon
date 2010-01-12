@@ -63,4 +63,7 @@ $GLOBALS['networkPolicy'] = "http://wiki.freifunk-ol.de/index.php?title=Nutzungs
 $GLOBALS['portal_history_hours'] = 5;
 $GLOBALS['days_to_keep_portal_history'] = 1;
 
+//Image Generator
+$GLOBALS['imggen_supported_chipsets'][] = "Atheros AR2317";
+
 ?>
