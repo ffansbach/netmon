@@ -112,6 +112,10 @@
 			Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
 		} elseif (!empty($_COOKIE["openid"])) {
 			require_once('lib/classes/extern/class.openid.php');
+			if (empty($_SESSION['redirect_url'])) {
+				$_SESSION['redirect_url'] = substr($_SERVER['REQUEST_URI'],1,strlen($_SERVER['REQUEST_URI']));
+			}
+
 			// Get identity from user and redirect browser to OpenID Server
 			$openid = new SimpleOpenID;
 			$openid->SetIdentity($_COOKIE["openid"]);
