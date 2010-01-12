@@ -19,6 +19,20 @@
 				$tmp2 = 'IP address';
 				$id = Helper::linkIp2IpId($olsrd_neighbors[$tmp2]);
 				$current_crawl['olsrd_neighbors'][$key]['netmon_ip_id'] = $id['id'];
+
+				$exploded_prefix = explode(".", $GLOBALS['net_prefix']);
+				$exploded_neighbour = explode(".", $olsrd_neighbors[$tmp2]);
+				$current_crawl['olsrd_neighbors'][$key]['netmon_is_client'] = false;
+				
+				if($exploded_prefix[0]==$exploded_neighbour[0] AND $exploded_prefix[1]==$exploded_neighbour[1]) {
+					$neighbour = Helper::checkIfIpIsRegisteredAndGetServices("$exploded_neighbour[2].$exploded_neighbour[3]");
+					foreach ($neighbour as $neight) {
+						if($neight['typ']=='client') {
+							$current_crawl['olsrd_neighbors'][$key]['netmon_is_client'] = true;
+							break;
+						}
+					}
+				}
 			}
 		}
 		$services[$index]['current_crawl'] = $current_crawl;
