@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 03, 2010 at 04:12 AM
+-- Generation Time: Jan 12, 2010 at 09:37 PM
 -- Server version: 5.0.51
--- PHP Version: 5.2.11-1
+-- PHP Version: 5.2.11-2
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -24,32 +24,32 @@ CREATE TABLE IF NOT EXISTS `crawl_data` (
   `id` int(11) NOT NULL auto_increment,
   `service_id` int(11) NOT NULL,
   `crawl_time` datetime NOT NULL,
-  `ping` varchar(10) NOT NULL,
-  `status` varchar(20) NOT NULL,
-  `nickname` varchar(30) NOT NULL,
-  `hostname` varchar(30) NOT NULL,
-  `email` varchar(50) default NULL,
-  `location` varchar(255) NOT NULL,
+  `ping` varchar(8) NOT NULL,
+  `status` varchar(8) NOT NULL,
+  `nickname` varchar(15) NOT NULL,
+  `hostname` varchar(15) NOT NULL,
+  `email` varchar(40) default NULL,
+  `location` varchar(60) NOT NULL,
   `prefix` varchar(7) default NULL,
-  `ssid` varchar(255) default NULL,
-  `longitude` varchar(50) default NULL,
-  `latitude` varchar(50) default NULL,
+  `ssid` varchar(30) default NULL,
+  `longitude` varchar(15) default NULL,
+  `latitude` varchar(15) default NULL,
   `luciname` varchar(40) default NULL,
-  `luciversion` varchar(30) default NULL,
-  `distname` varchar(40) default NULL,
+  `luciversion` varchar(10) default NULL,
+  `distname` varchar(20) default NULL,
   `distversion` varchar(30) default NULL,
-  `chipset` varchar(30) NOT NULL,
+  `chipset` varchar(20) NOT NULL,
   `cpu` varchar(15) default NULL,
   `network` text NOT NULL,
   `wireless_interfaces` text NOT NULL,
-  `uptime` varchar(20) NOT NULL,
-  `idletime` varchar(20) NOT NULL,
-  `memory_total` varchar(20) NOT NULL,
-  `memory_caching` varchar(20) NOT NULL,
-  `memory_buffering` varchar(20) NOT NULL,
-  `memory_free` varchar(20) NOT NULL,
-  `loadavg` varchar(20) NOT NULL,
-  `processes` varchar(20) NOT NULL,
+  `uptime` varchar(8) NOT NULL,
+  `idletime` varchar(8) NOT NULL,
+  `memory_total` varchar(8) NOT NULL,
+  `memory_caching` varchar(8) NOT NULL,
+  `memory_buffering` varchar(8) NOT NULL,
+  `memory_free` varchar(8) NOT NULL,
+  `loadavg` varchar(5) NOT NULL,
+  `processes` varchar(7) NOT NULL,
   `olsrd_hna` text NOT NULL,
   `olsrd_neighbors` text NOT NULL,
   `olsrd_links` text NOT NULL,
@@ -94,6 +94,10 @@ CREATE TABLE IF NOT EXISTS `ips` (
   `radius` int(11) NOT NULL,
   `vpn_client_cert` text NOT NULL,
   `vpn_client_key` text NOT NULL,
+  `location` varchar(60) NOT NULL,
+  `longitude` varchar(15) NOT NULL,
+  `latitude` varchar(15) NOT NULL,
+  `chipset` varchar(20) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
@@ -117,6 +121,8 @@ CREATE TABLE IF NOT EXISTS `services` (
   `notification_wait` int(11) NOT NULL,
   `notified` tinyint(1) NOT NULL,
   `last_notification` datetime NOT NULL,
+  `use_netmons_url` tinyint(1) NOT NULL,
+  `url` varchar(250) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
@@ -147,6 +153,9 @@ CREATE TABLE IF NOT EXISTS `subnets` (
   `vpn_server_cert` text NOT NULL,
   `vpn_server_key` text NOT NULL,
   `vpn_server_pass` varchar(255) NOT NULL,
+  `ftp_ccd_folder` varchar(200) NOT NULL,
+  `ftp_ccd_username` varchar(20) NOT NULL,
+  `ftp_ccd_password` varchar(30) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
