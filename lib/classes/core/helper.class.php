@@ -530,7 +530,8 @@ class Helper {
 
 	public function getCurrentCrawlDataByServiceId($service_id) {
 		try {
-			$sql = "SELECT id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, olsrd_hna, olsrd_neighbors, olsrd_links, olsrd_mid, olsrd_routes, olsrd_topology FROM crawl_data
+			$sql = "SELECT id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, olsrd_hna, olsrd_neighbors, olsrd_links, olsrd_mid, olsrd_routes, olsrd_topology 
+				FROM crawl_data
 			        WHERE service_id='$service_id'
 					ORDER BY id DESC LIMIT 1";
 			$result = DB::getInstance()->query($sql);
@@ -576,7 +577,6 @@ class Helper {
 		} else {
 			return false;
 		}
-
 	}
 	
 	public function getUserByEmail($email) {
@@ -680,6 +680,25 @@ class Helper {
 				$result['unbekannt']++;
 		}
 		return $result;
+	}
+
+	public function checkIfIpIsRegisteredAndGetServices($ip) {
+		try {
+			$sql = "SELECT ips.id as ip_id, ips.ip,
+				       services.id as service_id, services.typ 
+					FROM ips
+					LEFT JOIN services ON (services.ip_id=ips.id)
+					WHERE ips.ip='$ip'";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$checked_ip[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		return $checked_ip;
 	}
 }
 
