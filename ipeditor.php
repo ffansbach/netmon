@@ -25,7 +25,21 @@
     if ($_GET['section'] == "insert") {
 		if (UserManagement::checkPermission(4)) {
 			$insert_result = $IpEditor->insertNewIp();
+
+			$ip_data = Helper::getIpInfo($insert_result['ip_id']);
+			$user_data = Helper::getUserByID($ip_data['user_id']);
+			$subnet_data = Helper::getSubnetById($ip_data['subnet_id']);
 			if ($insert_result['result']) {
+				if(!empty($subnet_data['vpn_server_ca']) AND !empty($subnet_data['vpn_server_cert'])  AND !empty($subnet_data['vpn_server_key'])) {
+					$Vpn = new Vpn;
+
+					$keys = $Vpn->generateKeys($insert_result['ip_id'], $user_data['nickname'], $insert_result['ip_id'], $user_data['email'], '', '', 3650);
+					if ($keys['return']) {
+						$Vpn->saveKeysToDB($insert_result['ip_id'], $keys['vpn_client_cert'], $keys['vpn_client_key']);
+						$Vpn->writeCCD($insert_result['ip_id']);
+					}
+				}
+
 				header('Location: ./ip.php?id='.$insert_result['ip_id']);
 			} else {
 				header('Location: ./ipeditor.php?section=new');
