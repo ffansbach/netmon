@@ -220,7 +220,7 @@ class EditingHelper {
 		}
 	}
 	
-	public function addIpTyp($ip_id, $title, $description, $typ, $crawler, $port, $visible, $notify, $notification_wait, $use_netmons_url, $url) {
+	public function addIpTyp($ip_id, $title, $description, $typ, $crawler, $port, $visible, $notify, $notification_wait, $use_netmons_url=true, $url='') {
 		if ($typ=="false" OR $crawler=="false") {
 			$message[] = array("Bitte wählen sie Servicetyp und Crawler aus.", 2);
 			Message::setMessage($message);
