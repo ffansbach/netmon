@@ -48,7 +48,13 @@
 		$short_openid = substr($_GET['openid_identity'], 7);
 		if (User::checkIfOpenIdHasUser($short_openid)) {
 			 login::user_login (false, false, $_SESSION['openid_login_remember'], false, $short_openid);
-			 header('Location: desktop.php');
+			 if(!empty($_SESSION['redirect_url'])) {
+				$redirect = $_SESSION['redirect_url'];
+				unset($_SESSION['redirect_url']);
+				header("Location: $redirect");
+			 } else {
+				header('Location: desktop.php');
+			 }
 		} else {
 			$messages[] = array("Ihre Open-ID ist mit keinem Benutzerkonto verknüpft.", 0);
 			$messages[] = array("Wenn Sie möchten, können sie jetzt ein Benutzerkonto erstellen, dass mit Ihrer Open-ID verknüpft ist.", 0);

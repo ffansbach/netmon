@@ -155,9 +155,27 @@
 <h2>Grafische Historie</h2>
 
 {if !empty($dont_show_indicator)}
-	<img src="./tmp/service_ping_history.png"><br>
-	<img src="./tmp/loadaverage_history.png"><br>
-	<img src="./tmp/memory_free_history.png">
+	<p>
+		{if empty($ping_exception)}
+			<img src="./tmp/service_ping_history.png"><br>
+		{else}
+			Beim erstellen der Grafik <i>Ping History</i>ist ein Fehler aufgetreten.
+		{/if}
+	</p>
+	<p>
+		{if empty($loadaverage_exception)}
+			<img src="./tmp/loadaverage_history.png"><br>
+		{else}
+			Beim erstellen der Grafik <i>Loadaverage History</i>ist ein Fehler aufgetreten.
+		{/if}
+	</p>
+	<p>
+		{if empty($memory_free_exception)}
+			<img src="./tmp/memory_free_history.png">
+		{else}
+			Beim erstellen der Grafik <i>Memory Free History</i>ist ein Fehler aufgetreten.
+		{/if}
+	</p>
 {else}
 	Keine Daten vorhanden
 {/if}
