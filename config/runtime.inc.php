@@ -166,6 +166,7 @@
 
   $smarty->assign('top_menu', $Menus->topMenu());
   $smarty->assign('loginOutMenu', $Menus->loginOutMenu());
+  $smarty->assign('installation_menu', $Menus->installationMenu());
   $smarty->assign('normal_menu', $Menus->normalMenu());
   $smarty->assign('user_menu', $Menus->userMenu());
   $smarty->assign('admin_menu', $Menus->adminMenu());
