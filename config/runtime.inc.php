@@ -27,6 +27,13 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+  /**
+  * Do not display PHP errors on a real installation
+  */
+
+  if (ini_get('display_errors')) {
+    ini_set('display_errors', 0);
+  }
 
   //Session starten
   session_start();
@@ -43,7 +50,7 @@
   /**
   * Check if dirs a writable
   */
-  $dirs[] = 'template_c/';
+  $dirs[] = 'templates_c/';
   $dirs[] = 'ccd/';
   $dirs[] = 'config/';
   $dirs[] = 'log/';

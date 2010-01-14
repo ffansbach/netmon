@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 	FREE TO USE
         Under License: GPLv3
