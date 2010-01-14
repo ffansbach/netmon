@@ -35,13 +35,15 @@
 		Serverzeit: {$zeit}
 	</div>
 	<div id="topmenu">
-		{foreach item=topmenu from=$top_menu}
-			<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}" target="_blank">{$topmenu.name}</a></span>
-		{/foreach}
-			<span class="topmenubox">|</span>
-		{foreach item=loginOutMenu from=$loginOutMenu}
-			<span class="topmenubox">{$loginOutMenu.pretext} <a style="color: #FFFFFF" href="{$loginOutMenu.href}"><b>{$loginOutMenu.name}</b></a></span>
-		{/foreach}
+		{if !$installation_mode}
+			{foreach item=topmenu from=$top_menu}
+				<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}" target="_blank">{$topmenu.name}</a></span>
+			{/foreach}
+				<span class="topmenubox">|</span>
+			{foreach item=loginOutMenu from=$loginOutMenu}
+				<span class="topmenubox">{$loginOutMenu.pretext} <a style="color: #FFFFFF" href="{$loginOutMenu.href}"><b>{$loginOutMenu.name}</b></a></span>
+			{/foreach}
+		{/if}
 	</div>
 </div>
 
@@ -50,36 +52,53 @@
 <div id="main">
 	<!--Linkes Menü-->
 	<div id="left_menu">
-		<div class="user_menus">
-			&nbsp;&nbsp;&nbsp;&nbsp;<u>Navigation</u>
-			<ul>
-				{foreach item=normalmenu from=$normal_menu}
-					<li><a href="{$normalmenu.href}">{$normalmenu.name}</a></li>
-				{/foreach}
-			</ul>
-		</div>
-
-		<div class="user_menus">
-			{if isset($user_menu)}
-				&nbsp;&nbsp;&nbsp;&nbsp;<u>Benutzermenü</u>
+		{if $installation_mode}
+			<div class="user_menus">
+				{if isset($installation_menu)}
+					&nbsp;&nbsp;&nbsp;&nbsp;<u>Installationsmenü</u>
+					<ul>
+						{foreach item=menu from=$installation_menu}
+							</li><a href="{$menu.href}">{$menu.name}</a><li>
+						{/foreach}
+					</ul>
+				{/if}
+			</div>
+		{/if}
+		{if !$installation_mode}
+			<div class="user_menus">
+				&nbsp;&nbsp;&nbsp;&nbsp;<u>Navigation</u>
 				<ul>
-					{foreach item=usermenu from=$user_menu}
-						<li><a href="{$usermenu.href}">{$usermenu.name}</a></li>
+					{foreach item=normalmenu from=$normal_menu}
+						<li><a href="{$normalmenu.href}">{$normalmenu.name}</a></li>
 					{/foreach}
 				</ul>
-			{/if}
-		</div>
+			</div>
+		{/if}
 
-		<div class="user_menus">
-			{if isset($admin_menu)}
-				&nbsp;&nbsp;&nbsp;&nbsp;<u>Adminmenü</u>
-				<ul>
-					{foreach item=menu from=$admin_menu}
-						</li><a href="{$menu.href}">{$menu.name}</a><li>
-					{/foreach}
-				</ul>
-			{/if}
-		</div>
+		{if !$installation_mode}
+			<div class="user_menus">
+				{if isset($user_menu)}
+					&nbsp;&nbsp;&nbsp;&nbsp;<u>Benutzermenü</u>
+					<ul>
+						{foreach item=usermenu from=$user_menu}
+							<li><a href="{$usermenu.href}">{$usermenu.name}</a></li>
+						{/foreach}
+					</ul>
+				{/if}
+			</div>
+		{/if}
+		{if !$installation_mode}
+			<div class="user_menus">
+				{if isset($admin_menu)}
+					&nbsp;&nbsp;&nbsp;&nbsp;<u>Adminmenü</u>
+					<ul>
+						{foreach item=menu from=$admin_menu}
+							</li><a href="{$menu.href}">{$menu.name}</a><li>
+						{/foreach}
+					</ul>
+				{/if}
+			</div>
+		{/if}
 	</div>
 
   <div id="content">
