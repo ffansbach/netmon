@@ -2,6 +2,8 @@
 require_once('./config/runtime.inc.php');
 require_once('./lib/classes/core/install.class.php');
 
+$smarty->assign('installation_mode', true);
+
 if ($GLOBALS['installed']) {
 	$message[] = array("Die Intallation wurde per /config/config.local.inc.php gesperrt.", 2);
 	Message::setMessage($message);

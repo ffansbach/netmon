@@ -58,6 +58,12 @@ class Menus extends UserManagement {
     return $menu;
   }
 
+  function installationMenu() {
+      $menu[] = array('name'=>'Übersicht', 'href'=>'./install.php');
+      $menu[] = array('name'=>'Datenbank', 'href'=>'./install.php?section=db');
+    return $menu;
+  }
+
   function normalMenu() {
     if (UserManagement::checkPermission(1)) {
       $menu[] = array('name'=>'Portal', 'href'=>'./portal.php');
