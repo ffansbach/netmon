@@ -1,15 +1,17 @@
 <?php
 
 //INSTALLATION-LOCK
-$GLOBALS['installed'] = false;
+$GLOBALS['installed'] = true;
 
 //INSTALL-INFO
 $GLOBALS['netmon_version'] = "0.2 SVN";
 $GLOBALS['netmon_codename'] = "Shake-up";
 
 //WEBSERVER
-$GLOBALS['subfolder'] = "netmon";
-$GLOBALS['domain'] = "netmon.freifunk-ol.de";
+//$GLOBALS['subfolder'] = "netmon_trunk";
+$GLOBALS['subfolder'] = dirname($_SERVER['PHP_SELF']);
+//$GLOBALS['domain'] = "localhost";
+$GLOBALS['domain'] = $_SERVER["HTTP_HOST"];
 $GLOBALS['monitor_root'] = $_SERVER["DOCUMENT_ROOT"].$GLOBALS['subfolder'];
 //$GLOBALS['url_to_netmon'] = $GLOBALS['domain']."/".$GLOBALS['subfolder'];
 $GLOBALS['url_to_netmon'] = $GLOBALS['domain'];
