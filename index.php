@@ -28,7 +28,10 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-
-  header('Location: portal.php')
-
+  require_once('./config/config.local.inc.php');
+  if(!$GLOBALS['installed']) {
+    header('Location: ./install.php');
+  } else {
+    header('Location: portal.php');
+  }
 ?>
