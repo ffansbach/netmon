@@ -29,7 +29,7 @@
   <body>
 
 <!--Banner-->
-<div id="banner" style="background-image: url(./templates/img/header/hafen_oldenburg.jpg);">
+<div id="banner" style="background-image: url(./templates/img/header/hafen_oldenburg_nacht.jpg);">
 	<!--Top-Menü-->
 	<div id="time">
 		Serverzeit: {$zeit}
