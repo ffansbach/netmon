@@ -38,26 +38,50 @@
   //Content type and encoding
   header("Content-Type: text/html; charset=UTF-8");
 
-  require_once($path.'config/config.local.inc.php');
+  require_once('config/config.local.inc.php');
+
+  /**
+  * Check if dirs a writable
+  */
+  $dirs[] = 'template_c/';
+  $dirs[] = 'ccd/';
+  $dirs[] = 'config/';
+  $dirs[] = 'log/';
+  $dirs[] = 'tmp/';
+
+  $everything_is_writable = true;
+  foreach($dirs as $dir) {
+    if (!is_writable($dir))
+      $not_writable_dirs[] = $dir;
+  }
+
+  if(!empty($not_writable_dirs)) {
+    echo "The following directories has to be writable to run Netmon:<br><br>";
+    foreach($not_writable_dirs as $not_writable_dir) {
+      echo "$not_writable_dir<br>";
+    }
+    echo "<br>Please set writable permissions and reload the site.";
+    die();
+  }
 
   /**
   * WICHTIGE KLASSEN
   */
 
   //PDO Class
-  require_once($path.'lib/classes/core/db.class.php');
+  require_once('lib/classes/core/db.class.php');
   //Class for Systemnotifications
-  require_once($path.'lib/classes/core/message.class.php');
+  require_once('lib/classes/core/message.class.php');
   //Class hat conains many useull functions
-  require_once($path.'lib/classes/core/helper.class.php');
+  require_once('lib/classes/core/helper.class.php');
   //Usermanagement class
-  require_once($path.'lib/classes/core/usermanagement.class.php');  
+  require_once('lib/classes/core/usermanagement.class.php');  
   //Loging class
-  require_once($path.'lib/classes/core/logsystem.class.php');
+  require_once('lib/classes/core/logsystem.class.php');
   //Class to generate the menu
-  require_once($path.'lib/classes/core/menus.class.php');
+  require_once('lib/classes/core/menus.class.php');
   //Class to edit things
-  require_once($path.'lib/classes/core/editinghelper.class.php');
+  require_once('lib/classes/core/editinghelper.class.php');
 
   $UserManagement =  new UserManagement;
   $Menus =  new Menus;
@@ -89,7 +113,7 @@
   */
 
   //Smarty main class
-  require_once ($path.'lib/classes/extern/smarty/Smarty.class.php');
+  require_once ('lib/classes/extern/smarty/Smarty.class.php');
 
   //Initialise Smarty
   $smarty = new Smarty;
@@ -107,7 +131,7 @@
 
 	if (!UserManagement::isLoggedIn($_SESSION['user_id'])) {
 		//Login Class
-		require_once($path.'lib/classes/core/login.class.php');
+		require_once('lib/classes/core/login.class.php');
 		if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
 			Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
 		} elseif (!empty($_COOKIE["openid"])) {
