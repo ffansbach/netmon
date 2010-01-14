@@ -1,3 +1,8 @@
+{if empty($existing_subnets)}
+<div class="error">Es muss mindestens ein Subnetz angelegt sein, damit du eine IP erstellen kannst.<!--<br>
+Bist du nicht Administrator, bitte einen <a href="./userlist.php?permission=32">Administrator</a> darum ein Subnetz anzulegen.--></div>
+{else}
+
 {literal}
 
 <!--
@@ -229,3 +234,4 @@ window.onload = function()
 
   <p><input type="submit" value="Absenden"></p>
 </form>
+{/if}
