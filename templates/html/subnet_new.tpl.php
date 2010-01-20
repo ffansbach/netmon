@@ -19,32 +19,31 @@
 	<h1>Ein neues logisches Subnetz erstellen:</h1>
 	<h2>Subnetz Bereich</h2>
 	<p>
-		<input type="radio" name="subnet_kind" value="extend" checked="checked" onchange="document.getElementById('simple').style.display = 'none'; document.getElementById('extend').style.display = 'block';">Extend<br>
-		<input type="radio" name="subnet_kind" value="simple" onchange="document.getElementById('simple').style.display = 'block'; document.getElementById('extend').style.display = 'none';">Simple<br>
+		<input type="radio" name="subnet_kind" value="simple" checked="checked" onchange="document.getElementById('simple').style.display = 'block'; document.getElementById('extend').style.display = 'none';">Simple<br>
+		<input type="radio" name="subnet_kind" value="extend" onchange="document.getElementById('simple').style.display = 'none'; document.getElementById('extend').style.display = 'block';">Extend<br>
 	</p>
 
-	<div id="simple" style="display: none;">
+	<div id="simple" style="display: block;">
 		<h3>Einfache Bereichvergabe</h3>
-		IP´s im Subnetz: <select name="ip_count">
-			<option value="2">2 (/30)</option>
-			<option value="6">6 (/29)</option>
-			<option value="14">14 (/28)</option>
-			<option value="30">30 (/27)</option>
-			<option value="62">62 (/26)</option>
-			<option value="126">126 (/25)</option>
-			<option value="254">254 (/24)</option>
-			<option value="510">510 (/23)</option>
-			<option value="1022">1022 (/22)</option>
-			<option value="2046">2046 (/21)</option>
-			<option value="4094">4094 (/20)</option>
-			<option value="8190">8190 (/19)</option>
-			<option value="16382">16382 (/18)</option>
-			<option value="32766">32766 (/17)</option>
-			<option value="65534">65534 (/16)</option>
+		IP´s im Subnetz: <select name="only_netmask">
+			<option value="30">2 (/30)</option>
+			<option value="29">6 (/29)</option>
+			<option value="28">14 (/28)</option>
+			<option value="27">30 (/27)</option>
+			<option value="26">62 (/26)</option>
+			<option value="25">126 (/25)</option>
+			<option value="24">254 (/24)</option>
+			<option value="23">510 (/23)</option>
+			<option value="22">1022 (/22)</option>
+			<option value="21">2046 (/21)</option>
+			<option value="20">4094 (/20)</option>
+			<option value="19">8190 (/19)</option>
+			<option value="18">16382 (/18)</option>
+			<option value="17">32766 (/17)</option>
+			<option value="16">65534 (/16)</option>
 		</select>
-
 	</div>
-	<div id="extend" style="display: block;">
+	<div id="extend" style="display: none;">
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 50%;">
 				<h3>neues Netz</h2>
