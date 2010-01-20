@@ -126,8 +126,8 @@ class SubnetEditor {
 	public function checkIfSubnetIsFree($host, $netmask) {
 		$iplist = SubnetEditor::getSubnetIpRope();
 		
-		$new_subnet_host = SubnetCalculator::getDqNet($GLOBALS['net_prefix'].".".$host, $netmask);
-		$new_subnet_bcast = SubnetCalculator::getDqBcast($GLOBALS['net_prefix'].".".$host, $netmask);
+		$new_subnet_host = SubnetCalculator::getDqNet($host, $netmask);
+		$new_subnet_bcast = SubnetCalculator::getDqBcast($host, $netmask);
 		$new_subnet_host = explode(".", $new_subnet_host);
 		$new_subnet_bcast = explode(".", $new_subnet_bcast);
 
@@ -170,18 +170,45 @@ class SubnetEditor {
 		catch(PDOException $e) { 
 			echo $e->getMessage(); 
 		}
+	}
 
+	public function getFreeSubnet($netmask) {
+		$subnet_rope = SubnetEditor::getSubnetIpRope();
+
+		for ($i=0; $i<=254; $i++) {
+			for ($ii=0; $ii<=254; $ii++) {
+				$new_subnet_host = SubnetCalculator::getDqNet($GLOBALS['net_prefix'].".".$i.".".$ii, $netmask);
+				$new_subnet_bcast = SubnetCalculator::getDqBcast($GLOBALS['net_prefix'].".".$i.".".$ii, $netmask);
+//Debug
+/*if("$i.$ii"=="9.0") {
+echo "new_subnet_host: $new_subnet_host<br>";
+echo "new_subnet_bcast: $new_subnet_bcast<br>";
+echo "subnet_rope_host: ".$subnet_rope[$new_subnet_host]."<br>";
+echo "subnet_rope_bcast: ".$subnet_rope[$new_subnet_bcast]."<br>";
+}*/
+				//Shortcheck if bcast IP and host IP are free
+				if ($new_subnet_host!=$subnet_rope[$new_subnet_host] AND $new_subnet_bcast!=$subnet_rope[$new_subnet_bcast]) {
+					//Check if subnet is really free
+					if (SubnetEditor::checkIfSubnetIsFree($new_subnet_host, $netmask)) {
+						return $new_subnet_host;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public function checkSubnetData() {
 		if($_POST['subnet_kind'] == "simple") {
-//			$_POST['ip_count']
 
-			foreach(EditingHelper::getExistingSubnets() as $subnet) {
-				subnet::getPosibleIpsBySubnetId();
+			$netmask = $_POST['only_netmask'];
+			$host = SubnetEditor::getFreeSubnet($netmask);
+			if(!$host) {
+				$message[] = array("Es konnte kein Subnet mit der Netzmaske $netmask angelegt werden",2);
+			} else {
+				$host = explode(".", $host);
+				$host = $host[2].".".$host[3];
 			}
-
-			die('Not implemented yet!');
 		} elseif ($_POST['subnet_kind'] == "extend") {
 			if (empty($_POST['host']) OR empty($_POST['netmask']))
 				$message[] = array("Bitte geben Sie Subnethost und Netzmaske an",2);
@@ -193,15 +220,10 @@ class SubnetEditor {
 			 $netmask = $_POST['netmask'];
 
 			//Check if the chosen subnet is still free
-			if(!SubnetEditor::checkIfSubnetIsFree($host, $netmask)) {
+			if(!SubnetEditor::checkIfSubnetIsFree($GLOBALS['net_prefix'].".".$host, $netmask)) {
 				$message[] = array("Das Subnetz ist schon belegt, bitte wählen Sie ein anderes",2);
 			}
 		}
-
-		//Workaround!
-
-
-		//-------
 
 		$dhcp_kind = $_POST['dhcp_kind'];
 
