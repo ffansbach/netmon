@@ -74,11 +74,15 @@
 			</div>
 			<div style="float:left; width: 50%;">
 				<h3>Bereits existierende Subnetze</h3>
+				{if !empty($existing_subnets)}
 				<ul>
 					{foreach item=existing_subnet from=$existing_subnets}
 						<li>{$net_prefix}.{$existing_subnet.host}/{$existing_subnet.netmask}</li>
 					{/foreach}
 				</ul>
+				{else}
+					<p>Es existieren noch keine Subnetze</p>
+				{/if}
 			</div>
 		</div>
 	</div>

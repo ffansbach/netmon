@@ -106,9 +106,16 @@ public function getBinBcast($dq_host, $cdr_nmask) {
 		return $bin_bcast;
 	}
 }
+public function getDqBcast($dq_host, $cdr_nmask) {
+	return SubnetCalculator::bintodq(SubnetCalculator::getBinBcast($dq_host, $cdr_nmask));
+}
 
 public function getBinNet($dq_host, $cdr_nmask) {
 	return str_pad(substr(SubnetCalculator::getBinHost($dq_host),0,$cdr_nmask),32,0);
+}
+
+public function getDqNet($dq_host, $cdr_nmask) {
+	return SubnetCalculator::bintodq(SubnetCalculator::getBinNet($dq_host, $cdr_nmask));
 }
 
 public function getBinFirstIP($dq_host, $cdr_nmask) {
