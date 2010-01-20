@@ -38,7 +38,7 @@
     </div>
 
     <div style="float:left; padding: 5px; background: #fff55b; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
-      	<a href="./subnetlist.php">Netzwerkliste</a>
+      	<a href="./subnetlist.php">Projektliste</a>
     </div>
 
     <div style="float:left; padding: 5px; background: #5abbff; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">

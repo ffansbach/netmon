@@ -1,10 +1,10 @@
-<h1>Liste der vorhandenen Subnetze</h1>
+<h1>Projektliste</h1>
 
 {if !empty($subnetlist)}
 <table>
 	<tr>
 		<th>Subnet</th>
-		<th>Name</th>
+		<th>Projekt</th>
 		<th>Benutzer</th>
 		<th>Ips im Netz</th>
 	</tr>
@@ -19,5 +19,5 @@
 {/foreach}
 </table>
 {else}
-<p>Keine Subnetze vorhanden</p>
+<p>Keine Projekte vorhanden</p>
 {/if}
