@@ -11,7 +11,7 @@
     <div style="float:left; width: 100px;"><b>user</b></div>
     <div style="float:left; width: 60px;"><b>Status</b></div>
     <div style="float:left; width: 150px;"><b>Stand</b></div>
-    <div style="float:left; width: 150px;"><b>Subnet</b></div>
+    <div style="float:left; width: 150px;"><b>Projekt</b></div>
     <div style="float:left; width: 150px;"><b>Info/Link</b></div>
   </div>
 </div>
@@ -76,7 +76,7 @@
     <div style="float:left; width: 100px;"><b>user</b></div>
     <div style="float:left; width: 60px;"><b>Status</b></div>
     <div style="float:left; width: 150px;"><b>Stand</b></div>
-    <div style="float:left; width: 150px;"><b>Subnet</b></div>
+    <div style="float:left; width: 150px;"><b>Projekt</b></div>
     <div style="float:left; width: 150px;"><b>Info/Link</b></div>
   </div>
 </div>
@@ -141,7 +141,7 @@
     <div style="float:left; width: 100px;"><b>user</b></div>
     <div style="float:left; width: 60px;"><b>Status</b></div>
     <div style="float:left; width: 150px;"><b>Stand</b></div>
-    <div style="float:left; width: 150px;"><b>Subnet</b></div>
+    <div style="float:left; width: 150px;"><b>Projekt</b></div>
     <div style="float:left; width: 150px;"><b>Info/Link</b></div>
   </div>
 </div>
@@ -207,7 +207,7 @@
     <div style="float:left; width: 100px;"><b>user</b></div>
     <div style="float:left; width: 60px;"><b>Status</b></div>
     <div style="float:left; width: 150px;"><b>Stand</b></div>
-    <div style="float:left; width: 150px;"><b>Subnet</b></div>
+    <div style="float:left; width: 150px;"><b>Projekt</b></div>
     <div style="float:left; width: 150px;"><b>Info/Link</b></div>
   </div>
 </div>

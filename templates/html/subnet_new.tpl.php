@@ -16,16 +16,16 @@
 
 <form action="./subneteditor.php?section=insert_new" method="POST">
 
-	<h1>Ein neues logisches Subnetz erstellen:</h1>
-	<h2>Subnetz Bereich</h2>
+	<h1>Ein Projekt anlegen:</h1>
+	<h2>Vergabe eines IP-Bereichs</h2>
 	<p>
-		<input type="radio" name="subnet_kind" value="simple" checked="checked" onchange="document.getElementById('simple').style.display = 'block'; document.getElementById('extend').style.display = 'none';">Simple<br>
-		<input type="radio" name="subnet_kind" value="extend" onchange="document.getElementById('simple').style.display = 'none'; document.getElementById('extend').style.display = 'block';">Extend<br>
+		<input type="radio" name="subnet_kind" value="simple" checked="checked" onchange="document.getElementById('simple').style.display = 'block'; document.getElementById('extend').style.display = 'none';">einfache Bereichvergabe<br>
+		<input type="radio" name="subnet_kind" value="extend" onchange="document.getElementById('simple').style.display = 'none'; document.getElementById('extend').style.display = 'block';">erweiterte Bereichvergabe<br>
 	</p>
 
 	<div id="simple" style="display: block;">
 		<h3>Einfache Bereichvergabe</h3>
-		IP´s im Subnetz: <select name="only_netmask">
+		Mögliche IP´s im Bereich (/Netzmaske): <select name="only_netmask">
 			<option value="30">2 (/30)</option>
 			<option value="29">6 (/29)</option>
 			<option value="28">14 (/28)</option>
@@ -72,7 +72,7 @@
 				</div>
 			</div>
 			<div style="float:left; width: 50%;">
-				<h3>Bereits existierende Subnetze</h3>
+				<h3>Bereits existierende Projekte</h3>
 				{if !empty($existing_subnets)}
 				<ul>
 					{foreach item=existing_subnet from=$existing_subnets}
@@ -80,7 +80,7 @@
 					{/foreach}
 				</ul>
 				{else}
-					<p>Es existieren noch keine Subnetze</p>
+					<p>Es existieren noch keine Projekte</p>
 				{/if}
 			</div>
 		</div>
@@ -103,7 +103,7 @@
 		<textarea name="description" cols="50" rows="10"></textarea>
 	</p>
 
-	<h2>Ort (ungefähre Lage des Subnetzes)</h2>
+	<h2>Lokale Begrenzung des Projekts</h2>
 	<div style="width: 100%; overflow: hidden;">
 		<div style="float:left; width: 55%;">
 			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
@@ -120,22 +120,22 @@
 		
 		<div style="float:left; width: 45%;">
 		<input  id="polygon_location" name="polygons" type="hidden" size="30">
-		Klicken sie auf die Karte und markieren sie ein Polygon über dem ort des Subnetzes.<br>Ein Doppelklick beendet die Bearbeitung.
+		Sie können das Projekt lokal eingenzen indem Sie auf die Karte Klicken und den Bereich des Projektes abstecken.<br>Ein Doppelklick beendet die Bearbeitung.
         </div>
 	</div>
 	
 	
 	<h2>VPN</h2>
 	<p>
-		<input type="radio" name="vpn_kind" value="no" checked="checked" onchange="document.getElementById('other').style.display = 'none'; document.getElementById('own').style.display = 'none';">Kein VPN-Server.<br>
-		<input type="radio" name="vpn_kind" value="other" onchange="document.getElementById('other').style.display = 'block'; document.getElementById('own').style.display = 'none';">VPN-Server von anderem Subnetz nutzen.<br>
-		<input type="radio" name="vpn_kind" value="own" onchange="document.getElementById('own').style.display = 'block'; document.getElementById('other').style.display = 'none';">Eigenen VPN-Server definieren.
+		<input type="radio" name="vpn_kind" value="no" checked="checked" onchange="document.getElementById('other').style.display = 'none'; document.getElementById('own').style.display = 'none';">Kein VPN-Server<br>
+		<input type="radio" name="vpn_kind" value="other" onchange="document.getElementById('other').style.display = 'block'; document.getElementById('own').style.display = 'none';">VPN-Daten von anderem Projekt nutzen<br>
+		<input type="radio" name="vpn_kind" value="own" onchange="document.getElementById('own').style.display = 'block'; document.getElementById('other').style.display = 'none';">Eigener VPN-Server
 	</p>
 
 	<div id="other" style="display: none;">
 		<h3>Übernehme VPN-Daten</h3>
 		{if !empty($subnets_with_defined_vpnserver)}
-			<p>VPN-Daten von Subnetz 
+			<p>VPN-Daten vom Projekt 
 				<select name="vpnserver_from_project">
 					{foreach item=subnet from=$subnets_with_defined_vpnserver}
 						<option value="{$subnet.id}">{$net_prefix}.{$subnet.host}./{$subnet.netmask}</option>
@@ -143,7 +143,7 @@
 				</select> übernehmen.
 			</p>
 		{else}
-			<p>Keine Subnetze vorhanden, von denen Daten übernommen werden könnten</p>
+			<p>Keine Projekte vorhanden, von denen Daten übernommen werden könnten</p>
 		{/if}
 	</div>
 	

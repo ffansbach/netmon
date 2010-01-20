@@ -39,9 +39,9 @@ Ich bin seit dem {$user.create_date} dabei.<br>
 </table>
 {/if}
 
-<h2>Subnetze die von {$user.nickname} verwaltet werden</h2>
+<h2>Projekte die von {$user.nickname} verwaltet werden</h2>
 {if empty($subnetlist)}
-<p>Dieser Benutzer verwaltet keine Subnetze</p>
+<p>Dieser Benutzer verwaltet keine Projekte</p>
 {else}
 <table border="1">
 	<tr>

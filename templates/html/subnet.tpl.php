@@ -1,4 +1,4 @@
-<h1>Subnet {$net_prefix}.{$subnet.host}/{$subnet.netmask}, {$subnet.title}</h1>
+<h1>Projekt {$subnet.title}</h1>
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 50%;">
 		<h2>Daten:</h2>
@@ -31,7 +31,7 @@
 		</div>
 		
 		<div style="float:left; width: 50%;">
-		<h2>Ort des Subnetzes<h2>
+		<h2>Lokale Begrenzung des Projekts<h2>
 		<!--<small style="font-size: 9pt;">Map Data from <a href="http://openstreetmap.org">OpenStreetMap</a></small>-->
 
 		<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
@@ -50,7 +50,7 @@
 {if $isOwner}
 	<h2>Aktionen</h2>
 		<p>
-			<a href="./subneteditor.php?section=edit&id={$subnet.id}">Subnetz editieren</a><br>
+			<a href="./subneteditor.php?section=edit&id={$subnet.id}">Projekt editieren</a><br>
 		</p>
 {/if}
 
