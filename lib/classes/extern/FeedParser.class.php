@@ -282,6 +282,10 @@ class FeedParser{
 		{
 			$ch         = curl_init();
 			
+			//WARNING: this would prevent curl from detecting a 'man in the middle' attack
+			curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+			curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0); 
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 			curl_setopt($ch, CURLOPT_URL, $this->url);
 			curl_setopt($ch, CURLOPT_HEADER, false);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
