@@ -156,7 +156,6 @@ SubnetCalculator::tr('HostMax:', '<font color="blue">'.SubnetCalculator::bintodq
 			$smarty->assign('subnets_with_defined_vpnserver', $SubnetEditor->getSubnetsWithDefinedVpnserver());
 			$subnetdata = Helper::getSubnetDataBySubnetID($_GET['id']);
 			$smarty->assign('subnet_data', $subnetdata);
-//			$smarty->assign('avalailable_subnets', EditingHelper::getFreeSubnetsPlusPredefinedSubnet($subnetdata['subnet_ip']));
 			$smarty->display("header.tpl.php");
 			$smarty->display("subnet_edit.tpl.php");
 			$smarty->display("footer.tpl.php");
