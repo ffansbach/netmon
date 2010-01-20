@@ -71,7 +71,7 @@ class Menus extends UserManagement {
       $menu[] = array('name'=>'Topologie', 'href'=>'./topology.php');
 //      $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'./status.php');
       $menu[] = array('name'=>'Ipliste', 'href'=>'./iplist.php');
-      $menu[] = array('name'=>'Subnetliste', 'href'=>'./subnetlist.php');
+      $menu[] = array('name'=>'Projektliste', 'href'=>'./subnetlist.php');
 //      $menu[] = array('name'=>'Impressum', 'href'=>'./impressum.php');
     }
     return $menu;
@@ -90,7 +90,7 @@ class Menus extends UserManagement {
 
   function adminMenu() {
     if (UserManagement::checkPermission(32)) {
-      $menu[] = array('name'=>'Neues Subnetz', 'href'=>'./subneteditor.php?section=new');
+      $menu[] = array('name'=>'Neues Projekt', 'href'=>'./subneteditor.php?section=new');
       $menu[] = array('name'=>'CCD regenerieren', 'href'=>'./vpn.php?section=regenerate_ccd_subnet');
     }
     return $menu;

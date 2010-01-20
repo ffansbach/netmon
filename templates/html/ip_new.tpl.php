@@ -44,9 +44,9 @@ http://plugins.jquery.com/project/zendjsonrpc
 
 <h1>IP anlegen:</h1>
 <form action="./ipeditor.php?section=insert" method="POST">
-	<h2>Subnetz</h2>
+	<h2>Projekt</h2>
 	<p>
-		IP im Subnetz:
+		IP im Projekt:
 		<select name="subnet_id" onChange="getSubnetInfo(this.options[this.selectedIndex].value)">
 				<option value="false" selected>Bitte wählen</option>
 			{foreach item=subnet from=$existing_subnets}
@@ -57,8 +57,8 @@ http://plugins.jquery.com/project/zendjsonrpc
 	
 	<h2>IP</h2>
 	<p>
-		<input type="radio" name="ip_kind" value="simple" checked="checked" onchange="document.getElementById('ip_extend').style.display = 'none';">IP vom System generieren lassen<br>
-		<input type="radio" name="ip_kind" value="extend" onchange="document.getElementById('ip_extend').style.display = 'block';">IP selber angeben<br>
+		<input type="radio" name="ip_kind" value="simple" checked="checked" onchange="document.getElementById('ip_extend').style.display = 'none';">IP vom System vergeben lassen<br>
+		<input type="radio" name="ip_kind" value="extend" onchange="document.getElementById('ip_extend').style.display = 'block';">IP aussuchen<br>
 	</p>
 	<div id="ip_extend" style="display: none;">
 		<b>IP:</b>  {$net_prefix}.<input name="ip" type="text" size="7">
