@@ -32,7 +32,7 @@
   */
 
   if (ini_get('display_errors')) {
-    ini_set('display_errors', 0);
+    ini_set('display_errors', 1);
   }
 
   //Session starten
@@ -144,7 +144,9 @@
 		} elseif (!empty($_COOKIE["openid"])) {
 			require_once('lib/classes/extern/class.openid.php');
 			if (empty($_SESSION['redirect_url'])) {
-				$_SESSION['redirect_url'] = substr($_SERVER['REQUEST_URI'],1,strlen($_SERVER['REQUEST_URI']));
+				$_SESSION['redirect_url'] = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER['REQUEST_URI'];
+
+// = substr($_SERVER['REQUEST_URI'],1,strlen($_SERVER['REQUEST_URI']));
 			}
 
 			// Get identity from user and redirect browser to OpenID Server
@@ -154,7 +156,7 @@
 			$openid->SetRequiredFields(array('email','fullname'));
 			$openid->SetOptionalFields(array('dob','gender','postcode','country','language','timezone'));
 			if ($openid->GetOpenIDServer()){
-				$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].'/login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
+				$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].dirname($_SERVER['PHP_SELF']).'/login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
 				$openid->Redirect(); 	// This will redirect user to OpenID Server
 			}
 		}

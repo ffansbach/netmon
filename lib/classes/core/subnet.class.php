@@ -44,7 +44,8 @@ class Subnet {
 			$subnet['last_ip'] = SubnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
 			$subnet['first_ip'] = SubnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
 			$subnet['hosts_total'] = SubnetCalculator::getHostsTotal($subnet['netmask']);
-
+			$subnet['broadcast'] = SubnetCalculator::getDqBcast($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+		      
 		}
 		catch(PDOException $e) { 
 			echo $e->getMessage(); 

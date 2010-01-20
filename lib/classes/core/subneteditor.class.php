@@ -110,6 +110,69 @@ class SubnetEditor {
 		}
 	}
 
+	public function getSubnetIpRope() {
+		foreach(EditingHelper::getExistingSubnets() as $subnet) {
+			$subnet_host =  SubnetCalculator::getDqNet($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet_ips = SubnetEditor::getPosibleIpsBySubnetId($subnet['id']);
+			$subnet_broadcast =  SubnetCalculator::getDqBcast($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+
+			$iplist[$subnet_host] = $subnet_host;
+			$iplist = $iplist+$subnet_ips;
+			$iplist[$subnet_broadcast] = $subnet_broadcast;
+		}
+		return $iplist;
+	}
+
+	public function checkIfSubnetIsFree($host, $netmask) {
+		$iplist = SubnetEditor::getSubnetIpRope();
+		
+		$new_subnet_host = SubnetCalculator::getDqNet($GLOBALS['net_prefix'].".".$host, $netmask);
+		$new_subnet_bcast = SubnetCalculator::getDqBcast($GLOBALS['net_prefix'].".".$host, $netmask);
+		$new_subnet_host = explode(".", $new_subnet_host);
+		$new_subnet_bcast = explode(".", $new_subnet_bcast);
+
+		$subnet_is_free = true;
+		for($i=$new_subnet_host[2]; $i<=$new_subnet_bcast[2]; $i++) {
+			for($ii=$new_subnet_host[3]; $ii<=$new_subnet_bcast[3]; $ii++) {
+				if($iplist["$GLOBALS[net_prefix].$i.$ii"] == "$GLOBALS[net_prefix].$i.$ii") {
+					$subnet_is_free = false;
+					break 2;
+				}
+			}
+		}
+
+		return $subnet_is_free;
+	}
+
+	public function getPosibleIpsBySubnetId($subnet_id) {
+		try {
+			$sql = "SELECT host, netmask
+			       FROM subnets
+			       WHERE id=$subnet_id";
+			$result = DB::getInstance()->query($sql); 
+			$subnet = $result->fetch(PDO::FETCH_ASSOC);
+			
+			$subnet['last_ip'] = SubnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet['first_ip'] = SubnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+			$subnet['hosts_total'] = SubnetCalculator::getHostsTotal($subnet['netmask']);
+
+			$exploded_last_ip = explode(".", $subnet['last_ip']);
+			$exploded_first_ip = explode(".", $subnet['first_ip']);
+			
+			$iplist = array();			
+			for($i=$exploded_first_ip[2]; $i<=$exploded_last_ip[2]; $i++) {
+				for($ii=$exploded_first_ip[3]; $ii<=$exploded_last_ip[3]; $ii++) {
+					$iplist[$GLOBALS['net_prefix'].".".$i.".".$ii] = $GLOBALS['net_prefix'].".".$i.".".$ii;
+				}
+			}
+			return $iplist;
+		}
+		catch(PDOException $e) { 
+			echo $e->getMessage(); 
+		}
+
+	}
+
 	public function checkSubnetData() {
 		if($_POST['subnet_kind'] == "simple") {
 //			$_POST['ip_count']
@@ -123,24 +186,21 @@ class SubnetEditor {
 			if (empty($_POST['host']) OR empty($_POST['netmask']))
 				$message[] = array("Bitte geben Sie Subnethost und Netzmaske an",2);
 
-			//Check if the chosen subnet IP is still free
-			//-->!!!checktIfSubnetExists
-			/*$existing_subnets = EditingHelper::getExistingSubnets();
-			foreach($existing_subnets as $subnet) {
-				$first_ip = 
-				$last_ip = 
+			 $host = SubnetCalculator::getDqNet($GLOBALS['net_prefix'].".".$_POST['host'], $_POST['netmask']);
+			 $host = explode(".", $host);
+			 $host = $host[2].".".$host[3];
+
+			 $netmask = $_POST['netmask'];
+
+			//Check if the chosen subnet is still free
+			if(!SubnetEditor::checkIfSubnetIsFree($host, $netmask)) {
+				$message[] = array("Das Subnetz ist schon belegt, bitte wählen Sie ein anderes",2);
 			}
-		
-			if (!in_array($_POST['subnet_ip'], EditingHelper::getExistingSubnets())) {
-				$message[] = array("Das gewählte Subnetz ist nicht mehr frei, bitte wählen Sie ein anderes.",2);
-			} else {
-				$subnet_ip = $_POST['subnet_ip'];
-			}*/
 		}
 
 		//Workaround!
-		$host = $_POST['host'];		
-		$netmask = $_POST['netmask'];
+
+
 		//-------
 
 		$dhcp_kind = $_POST['dhcp_kind'];
