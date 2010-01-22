@@ -32,7 +32,7 @@ catch(Exception $e) {
 }
 $smarty->assign('feed_channels', $Parser->getChannels());
 $smarty->assign('feed_items', $Parser->getItems());
-
+/*
 try {
 	$TracParser = new FeedParser();
 	$TracParser->parse('https://trac.freifunk-ol.de/timeline?ticket=on&changeset=on&milestone=on&wiki=on&max=10&daysback=90&format=rss');
@@ -43,7 +43,7 @@ catch(Exception $e) {
 
 $smarty->assign('trac_feed_channels', $TracParser->getChannels());
 $smarty->assign('trac_feed_items', $TracParser->getItems());
-
+*/
 
 class verfuegbarkeitsPalette extends ezcGraphPalette {
 	protected $dataSetColor = array('#00b308', '#c10000', '#fff600');
