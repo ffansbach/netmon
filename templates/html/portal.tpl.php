@@ -52,7 +52,7 @@
 	<p>{$rss_exception}</p>
 {/if}
 
-{if empty($trac_rss_exception)}
+<!--{if empty($trac_rss_exception)}
 	<h1><a href="{$trac_feed_channels.LINK}" target="_blank">Freifunk Oldenburg Trac Timeline</a></h1>
 	<p>
 		{foreach item=trac_feed_item from=$trac_feed_items}
@@ -62,4 +62,4 @@
 {else}
 	<h1>Freifunk Oldenburg Trac Timeline</h1>
 	<p>{$trac_rss_exception}</p>
-{/if}
+{/if}-->
