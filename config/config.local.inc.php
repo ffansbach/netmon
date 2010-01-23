@@ -1,7 +1,7 @@
 <?php
 
 //INSTALLATION-LOCK
-$GLOBALS['installed'] = true;
+$GLOBALS['installed'] = false;
 
 //INSTALL-INFO
 $GLOBALS['netmon_version'] = "0.2 SVN";
