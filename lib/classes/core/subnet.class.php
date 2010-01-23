@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-  require_once('./lib/classes/core/subnetcalculator.class.php');
+  require_once($path.'lib/classes/core/subnetcalculator.class.php');
 
 class Subnet {
 	function getSubnet($subnet_id) {

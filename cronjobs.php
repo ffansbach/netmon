@@ -1,5 +1,7 @@
 <?php
-
+  /**
+  * IF Netmon is called by the server/cronjob
+  */
 	if (!empty($_SERVER["REQUEST_URI"]))
 		$path = "";
 	else
@@ -25,7 +27,7 @@ catch(PDOException $e) {
 }
 
 //Remove old generated images
-$files = scandir("scripts/imgbuild/dest/");
+$files = scandir($path."scripts/imgbuild/dest/");
 foreach($files as $file) {
 	if ($file!=".." AND $file!=".") {
 		$exploded_name = explode("_", $file);
