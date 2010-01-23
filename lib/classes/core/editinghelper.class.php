@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-  require_once('./lib/classes/core/subnet.class.php');
+  require_once($path.'lib/classes/core/subnet.class.php');
 
 class EditingHelper {
 	public function getAFreeIP($subnet_id, $zone_start=false, $zone_end=false) {

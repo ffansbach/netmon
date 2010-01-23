@@ -12,6 +12,8 @@
 		$smarty->assign('bssid', $GLOBALS['project_bssid']);
 		$smarty->assign('kanal', $GLOBALS['project_kanal']);
 		$smarty->assign('project_name', $GLOBALS['project_name']);
+		$smarty->assign('session_user_id', $_SESSION['user_id']);
+
 
 		$smarty->assign('servicelist', $iplist->getServiceListByUserId($_SESSION['user_id']));
 		$smarty->assign('history', History::getServiceHistoryByUser(false, 24, $_SESSION['user_id']));

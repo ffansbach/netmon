@@ -42,7 +42,7 @@
     </div>
 
     <div style="float:left; padding: 5px; background: #5abbff; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
-	<a href="./user_edit.php?section=edit&id=1">Benutzereinstellungen</a>
+	<a href="./user_edit.php?section=edit&id={$session_user_id}">Benutzereinstellungen</a>
     </div>
 
     <div style="float:left; padding: 5px; background: #8bfa69; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">

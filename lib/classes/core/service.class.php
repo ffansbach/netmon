@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once './lib/classes/extern/xmpphp/XMPP.php';
+require_once $path.'lib/classes/extern/xmpphp/XMPP.php';
 
 class Service {
 	public function getCrawlHistory($service_id, $count) {
