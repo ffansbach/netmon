@@ -1,6 +1,4 @@
-<h1>Netmon 0.2 TESTING, Codename "shake-up"</h1>
-
-<h2>Netmon-Schnellübersicht</h2>
+<h1>Netmon-Schnellübersicht</h1>
 
 {if $ip_status}
 <img src="./tmp/ip_status.png">
@@ -16,7 +14,7 @@
 <p>Schnellübersichtdiagramme können nicht generiert werden, da keine Daten vorhanden sind.</p>
 {/if}
 
-<h2>History der letzten {$portal_history_hours} Stunden</h2>
+<h1>History der letzten {$portal_history_hours} Stunden</h1>
 
 {if !empty($history)}
 {foreach key=count item=hist from=$history}

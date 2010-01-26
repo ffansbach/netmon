@@ -349,12 +349,6 @@ class Helper {
 		return $user;
 	}
 
-	function getProjectInfo() {
-		return array('net_prefix'=>$GLOBALS['net_prefix'],'city_name'=>$GLOBALS['city_name'],
-					 'project_homepage'=>$GLOBALS['project_homepage'], 'project_name'=>$GLOBALS['project_name'],
-					  'project_essid'=>$GLOBALS['project_essid']);
-	}
-
 	function getIplistByUserID($id) {
 		try {
 			$sql = "SELECT ips.id, ips.user_id, ips.ip, ips.subnet_id,

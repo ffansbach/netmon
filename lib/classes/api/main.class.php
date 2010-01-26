@@ -9,10 +9,6 @@ class Main {
 		return(Helper::getPlublicUserInfoByID($user_id));
 	}
 
-	public function project_info() {
-		return(Helper::getProjectInfo());
-	}
-
 	public function subnet_info($subnet_id) {
 		return(Helper::getSubnetDataBySubnetID($subnet_id));
 	}
