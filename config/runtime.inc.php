@@ -46,6 +46,7 @@
   header("Content-Type: text/html; charset=UTF-8");
 
   require_once('config/config.local.inc.php');
+  require_once('config/release.php');
 
   /**
   * Check if dirs a writable

@@ -8,7 +8,6 @@
   $smarty->assign('iplist', Helper::getIplistByUserID($_GET['id']));
   $smarty->assign('subnetlist', Helper::getSubnetlistByUserID($_GET['id']));
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-  $smarty->assign('timeBetweenCrawls', $GLOBALS['timeBetweenCrawls']);
 
   $smarty->display("header.tpl.php");
   $smarty->display("user.tpl.php");

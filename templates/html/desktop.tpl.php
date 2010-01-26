@@ -1,28 +1,5 @@
 <h1>Mein Desktop</h1>
 
-<!--<h2>Projektdaten von {$project_name}</h2>
-
-<div style="width: 800px; overflow: hidden; padding-bottom: 15px; border-top: solid 0px grey;">
-  <div nstyle="white-space: nowrap;">
-
-
-    <div style="float:left; width: 180px; margin-right: 20px;  border: solid 1px; black;">
-      <div style="width: 180px;">Projekt ESSID:</div>
-      <div style="width: 180px;">{$essid}</div>
-    </div>
-
-    <div style="float:left; width: 160px; border: solid 1px; black; margin-right: 20px;">
-      <div style="width: 160px;">Projekt BSSID</div>
-      <div style="width: 160px;">{$bssid}</div>
-    </div>
-
-    <div style="float:left; border: solid 1px; black;">
-      <div style="">kanal: </div>
-      <div style="">{$kanal}</div>
-    </div>
-  </div>
-</div>-->
-
 <h2>Menü Schnellzugriff</h2>
 
 <div style="width: 800px; overflow: hidden; padding-bottom: 15px; border-top: solid 0px grey;">
