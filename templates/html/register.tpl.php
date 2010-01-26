@@ -1,6 +1,6 @@
 <h1>Registrieren</h1>
 
-<p>Wenn du bei {$project_name} einen Freifunk Knoten betreiben willst, musst du dich auf unserem Verwaltungsportal registrieren.<br>
+<p>Wenn du einen Freifunk Knoten betreiben möchtest, musst du dich auf unserem Verwaltungsportal registrieren.<br>
 Nach Absenden deiner Daten bekommst du eine Bestätigungsmail mit deinem Benutzernamen, deinem Passwort und einem Bestätigungslink über den du deine Registration bestätigen musst.
 </p>
 

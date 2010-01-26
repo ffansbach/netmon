@@ -223,8 +223,7 @@ window.onload = function()
   </p>
 
 	<h2>Benachrichtigungen:</h2>
-	<p>Ein Crawldurchgang dauert {$timeBetweenCrawls} Minuten.<br>
-	Benachrichtige mich, wenn dieser Service länger als <input name="notification_wait" type="text" size="2" maxlength="2" value="6"> Crawldurchgänge nicht erreichbar ist
+	<p>Benachrichtige mich, wenn dieser Service länger als <input name="notification_wait" type="text" size="2" maxlength="2" value="6"> Crawldurchgänge nicht erreichbar ist
     <select name="notify" size="1">
       <option value="1" selected>Ja</option>
       <option value="0">Nein</option>

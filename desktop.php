@@ -8,10 +8,6 @@
 		
 		$smarty->assign('message', Message::getMessage());
 		$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-		$smarty->assign('essid', $GLOBALS['project_essid']);
-		$smarty->assign('bssid', $GLOBALS['project_bssid']);
-		$smarty->assign('kanal', $GLOBALS['project_kanal']);
-		$smarty->assign('project_name', $GLOBALS['project_name']);
 		$smarty->assign('session_user_id', $_SESSION['user_id']);
 
 
