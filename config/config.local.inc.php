@@ -1,7 +1,7 @@
 <?php
 
 //INSTALLATION-LOCK
-$GLOBALS['installed'] = false;
+$GLOBALS['installed'] = true;
 
 //WEBSERVER
 //$GLOBALS['subfolder'] = "netmon_trunk";
@@ -14,21 +14,21 @@ $GLOBALS['url_to_netmon'] = $GLOBALS['domain'];
 
 //MYSQL
 $GLOBALS['mysql_host'] = "localhost";
-$GLOBALS['mysql_db'] = "freifunksql5";
-$GLOBALS['mysql_user'] = "freifunksql5";
+$GLOBALS['mysql_db'] = "netmon_trunk";
+$GLOBALS['mysql_user'] = "bla";
 $GLOBALS['mysql_password'] = "blabla";
 
 //JABBER
-$GLOBALS['jabber_server'] = "jabber.nord-west.net";
-$GLOBALS['jabber_username'] = "netmon";
+$GLOBALS['jabber_server'] = "jabber.de";
+$GLOBALS['jabber_username'] = "blabla";
 $GLOBALS['jabber_password'] = "blabla";
 
 //MAIL
-$GLOBALS['mail_sender'] = "Freifunk Oldenburg Netmon <netmon@freifunk-ol.de>";
+$GLOBALS['mail_sender'] = "netmon@freifunk-ol.de";
 
-//FREIFUNKNETZ
+//NETWORK
 $GLOBALS['net_prefix'] = "10.18";
-$GLOBALS['city_name'] = "Oldenburg";
+$GLOBALS['networkPolicy'] = "http://wiki.freifunk-ol.de/index.php?title=Nutzungsvereinbarung";
 
 //Logsystem
 //Log querries that take longer than 5 sec.
@@ -37,8 +37,7 @@ $GLOBALS['mysql_querry_log_time'] = 5;
 //VPN-Keys
 $GLOBALS['expiration'] = 3650;
 
-//Project
-$GLOBALS['networkPolicy'] = "http://www.picopeer.net/";
+//PROJEKT
 $GLOBALS['portal_history_hours'] = 5;
 $GLOBALS['days_to_keep_portal_history'] = 1;
 
