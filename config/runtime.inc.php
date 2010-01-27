@@ -137,7 +137,7 @@
 	* Auto Login
 	*/
 
-	if (!UserManagement::isLoggedIn($_SESSION['user_id'])) {
+	if (!UserManagement::isLoggedIn($_SESSION['user_id']) AND !$GLOBALS['installation_mode']) {
 		//Login Class
 		require_once('lib/classes/core/login.class.php');
 		if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {

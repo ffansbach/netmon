@@ -27,15 +27,19 @@
 	<div style="float:left; width: 33%;">
 		<h3>PHP-Funktionen</h3>
 		exec(): {if $exec}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		mail(): {if $mail}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 		<h3>Pear Klassen</h3>
 		EZ-Components: {if $ezcomponents}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 	</div>
 	<div style="float:left; width: 33%;">
 		<h3>Ergebnis</h3>
-		{if !$pdo_loaded OR !$pdo_mysql_loaded OR !$json_loaded OR !$curl_loaded OR !$gd_loaded OR !$ezcomponents}
+		{if !$pdo_loaded OR !$pdo_mysql_loaded OR !$json_loaded OR !$zip_loaded OR !$curl_loaded OR !$gd_loaded OR !$ezcomponents OR !$exec}
 			<div class="error" style="margin: 0px;">Einige Funktionen sind inaktiv, es kann zu Problemen bei Installation und Betrieb kommen!</div>
 		{else}
 			<div class="notice" style="margin: 0px;">Alle Funktionen sind aktiv, Installation und Betrieb sollten ohne Probleme ablaufen.</div>
+			{if !$mail}
+				<div class="unknown" style="margin: 0px; margin-top: 10px;">Da kein Mailserver verfügbar ist, wird ein SMTP-Mailtransport genutzt.</div>
+			 {/if}
 		{/if}
 	</div>
 </div>

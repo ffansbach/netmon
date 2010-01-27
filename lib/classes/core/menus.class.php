@@ -61,6 +61,9 @@ class Menus extends UserManagement {
   function installationMenu() {
       $menu[] = array('name'=>'Übersicht', 'href'=>'./install.php');
       $menu[] = array('name'=>'Datenbank', 'href'=>'./install.php?section=db');
+      $menu[] = array('name'=>'Nachrichten', 'href'=>'./install.php?section=messages');
+      $menu[] = array('name'=>'Netzwerk', 'href'=>'./install.php?section=network');
+      $menu[] = array('name'=>'Beenden', 'href'=>'./install.php?section=finish');
     return $menu;
   }
 
