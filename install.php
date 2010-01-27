@@ -1,8 +1,11 @@
 <?php
+
+$GLOBALS['installation_mode'] = true;
+
 require_once('./config/runtime.inc.php');
 require_once('./lib/classes/core/install.class.php');
 
-$smarty->assign('installation_mode', true);
+$smarty->assign('installation_mode', $GLOBALS['installation_mode']);
 
 if ($GLOBALS['installed']) {
 	$message[] = array("Die Intallation wurde per /config/config.local.inc.php gesperrt.", 2);
@@ -24,6 +27,18 @@ if ($GLOBALS['installed']) {
     $smarty->assign('exec', function_exists('exec'));
 
     $smarty->assign('ezcomponents', class_exists('ezcBase'));
+
+    $to = "clemens@freifunk-ol.de";
+    $header = "From: {$to}";
+    $subject = "Netmon Mailtest";
+    $body = "This is a Mail that was send by netmon Mailtest";
+    if (mail($to, $subject, $body, $header)) {
+        $smarty->assign('mail', true);
+	$SESSION['mail'] = true;
+    } else {
+        $smarty->assign('mail', false);
+	$SESSION['mail'] = false;
+    }
 
     $smarty->display("header.tpl.php");
     $smarty->display("install_info.tpl.php");
@@ -58,6 +73,7 @@ if ($GLOBALS['installed']) {
 		$file = Install::changeConfigSection('//MYSQL', $file, $configs);
 
 		Install::writeEmptyFileLineByLine($config_path, $file);
+		unset($configs);
 		header('Location: ./install.php?section=db_insert_method');
 	}
 } elseif ($_GET['section']=="db_insert_method") {
@@ -70,6 +86,51 @@ if ($GLOBALS['installed']) {
 	}
 } elseif ($_GET['section']=="db_insert") {
 	Install::insertDB();
+	header('Location: ./install.php?section=messages');
+} elseif ($_GET['section']=="messages") {
+        $smarty->assign('mail', $SESSION['mail']);
+
+	$smarty->display("header.tpl.php");
+	$smarty->display("install_messages.tpl.php");
+	$smarty->display("footer.tpl.php");
+
+} elseif ($_GET['section']=="messages_insert") {
+	$config_path = "./config/config.local.inc.php";
+	$file = Install::getFileLineByLine($config_path);
+
+	$configs[0] = '$GLOBALS[\'jabber_server\'] = "'.$_POST['jabber_server'].'";';
+	$configs[1] = '$GLOBALS[\'jabber_username\'] = "'.$_POST['jabber_username'].'";';
+	$configs[2] = '$GLOBALS[\'jabber_password\'] = "'.$_POST['jabber_password'].'";';
+
+	$file = Install::changeConfigSection('//JABBER', $file, $configs);
+	Install::writeEmptyFileLineByLine($config_path, $file);
+	unset($configs);
+//----------
+	$file = Install::getFileLineByLine($config_path);
+
+	$configs[0] = '$GLOBALS[\'mail_sender\'] = "'.$_POST['mail_sender'].'";';
+
+	$file = Install::changeConfigSection('//MAIL', $file, $configs);
+	Install::writeEmptyFileLineByLine($config_path, $file);
+	unset($configs);
+//----------
+	header('Location: ./install.php?section=network');
+} elseif ($_GET['section']=="network") {
+	$smarty->display("header.tpl.php");
+	$smarty->display("install_network.tpl.php");
+	$smarty->display("footer.tpl.php");
+} elseif ($_GET['section']=="network_insert") {
+	$config_path = "./config/config.local.inc.php";
+	$file = Install::getFileLineByLine($config_path);
+
+	$configs[0] = '$GLOBALS[\'net_prefix\'] = "'.$_POST['net_prefix'].'";';
+	$configs[1] = '$GLOBALS[\'city_name\'] = "'.$_POST['city_name'].'";';
+	$configs[1] = '$GLOBALS[\'networkPolicy\'] = "'.$_POST['networkPolicy'].'";';
+
+
+	$file = Install::changeConfigSection('//NETWORK', $file, $configs);
+	Install::writeEmptyFileLineByLine($config_path, $file);
+	unset($configs);
 	header('Location: ./install.php?section=finish');
 } elseif ($_GET['section']=="finish") {
 	$config_path = "./config/config.local.inc.php";
