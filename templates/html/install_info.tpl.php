@@ -27,7 +27,7 @@
 	<div style="float:left; width: 33%;">
 		<h3>PHP-Funktionen</h3>
 		exec(): {if $exec}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		mail(): {if $mail}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		mail(): {if $mail}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_unknown_small.png" alt="nicht aktiviert">{/if}<br>
 		<h3>Pear Klassen</h3>
 		EZ-Components: {if $ezcomponents}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 	</div>

@@ -33,7 +33,7 @@
 class Subnet {
 	function getSubnet($subnet_id) {
 		try {
-			$sql = "SELECT subnets.id, subnets.host, subnets.netmask, subnets.real_host, subnets.real_netmask, subnets.dhcp_kind, subnets.user_id, subnets.create_date, subnets.title, subnets.description, subnets.polygons, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device,	subnets.vpn_server_proto,
+			$sql = "SELECT subnets.id, subnets.host, subnets.netmask, subnets.real_host, subnets.real_netmask, subnets.dhcp_kind, subnets.user_id, subnets.create_date, subnets.title, subnets.description, subnets.essid, subnets.bssid, subnets.channel, subnets.website, subnets.polygons, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device,	subnets.vpn_server_proto,
 				      users.nickname
 			       FROM subnets
 			       LEFT JOIN users ON (users.id=subnets.user_id)

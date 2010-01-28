@@ -150,8 +150,6 @@ if ($GLOBALS['installed']) {
 
 	$message[] = array('Netmon wurde erfolgreich installiert.', 1);
 	$message[] = array('Die Installationsroutine wurde für weitere Zugriffe gesperrt.', 1);
-	$message[] = array('Die Konfigurationsdatei wurde unter config/config.local.inc.php abgelegt.', 1);
-	$message[] = array('Bitte ergänzen sie zuerst die Konfigurationsdatei!', 1);
 	$message[] = array('Bitte registrieren Sie sich, der erste registrierte Benutzer bekommt automatisch volle Root-Rechte!', 1);
 
 	Message::setMessage($message);
