@@ -1,7 +1,11 @@
 <h1>Projekt {$subnet.title}</h1>
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 50%;">
-		<h2>Daten:</h2>
+		<h2>WLAN Daten:</h2>
+			<b>ESSID: </b>{$subnet.essid}<br>
+			<b>BSSID: </b>{$subnet.bssid}<br>
+			<b>Kanal: </b>{$subnet.channel}<br>
+		<h2>Netzwerk Daten:</h2>
 		<p>
 			<b>Subnet:</b> {$net_prefix}.{$subnet.host}/{$subnet.netmask}<br>
 			{if !empty($subnet.real_host)}<b>Real Subnet:</b> {$net_prefix}.{$subnet.real_host}/{$subnet.real_netmask}<br>{/if}
@@ -21,13 +25,15 @@
 			<b>VPN-Device:</b> {if !empty($subnet.vpn_server)}{$subnet.vpn_server_device}{else}Kein VPN-Server eingetragen{/if}<br>
 			<b>VPN-Protokoll:</b> {if !empty($subnet.vpn_server)}{$subnet.vpn_server_proto}{else}Kein VPN-Server eingetragen{/if}
 		</p>
+
+		<h2>Projektinformationen:</h2>
 		<p>
-			<b>Administrator:</b> <a href="./user.php?id={$subnet.user_id}">{$subnet.nickname}</a><br>
+			<b>Beschreibung: </b>{$subnet.description}<br>
+			<b>Website :</b> <a href="{$subnet.website}">{$subnet.website}</a><br>
+			<b>Administrator:</b> <a href="./user.php?id={$subnet.user_id}" target="_blank">{$subnet.nickname}</a><br>
 			<b>Angelegt am:</b> {$subnet.create_date}
 		</p>
 
-<h2>Beschreibung</h2>
-<p>{$subnet.description}</p>
 		</div>
 		
 		<div style="float:left; width: 50%;">
