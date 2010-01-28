@@ -176,7 +176,7 @@ class Register {
 	public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum, $openid) {
 		$text = "Hallo $nickname,
 
-Du hast dich am ".date("d.m.Y H:i:s", $datum)." Uhr bei Freifunk $GLOBALS[city_name] registriert.
+Du hast dich am ".date("d.m.Y H:i:s", $datum)." Uhr bei $GLOBALS[community_name] registriert.
 
 Deine Logindaten sind:\n";
 
@@ -196,7 +196,8 @@ Passwort: $password\n\n";
 $text .= "Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalten.
 http://$GLOBALS[url_to_netmon]/account_activate.php?activation_hash=$activation
 
-Dein Freifunkteam $GLOBALS[city_name]";
+Mit freundlichen Gruessen
+$GLOBALS[community_name]";
 
 if ($GLOBALS['mail_sending_type']=='smtp') {
 	$config = array('username' => $GLOBALS['mail_smtp_username'],
@@ -214,7 +215,7 @@ $mail = new Zend_Mail();
 
 $mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
 $mail->addTo($email);
-$mail->setSubject("Anmeldung Freifunk $GLOBALS[city_name]");
+$mail->setSubject("Anmeldung $GLOBALS[community_name]");
 $mail->setBodyText($text);
 
 $mail->send($transport);
@@ -256,7 +257,8 @@ Passwort: $password
 Bitte bestaetige die Aenderungen mit einem Klick auf diesen Link:
 http://$GLOBALS[url_to_netmon]/set_new_password.php?user_id=$user_id&new_passwordhash=$password_md5&oldpassword_hash=$oldpassword_hash
 
-Dein Freifunkteam $GLOBALS[city_name]";
+Mit freundlichen Gruessen
+$GLOBALS[community_name]";
 
 
 if ($GLOBALS['mail_sending_type']=='smtp') {
@@ -275,7 +277,7 @@ $mail = new Zend_Mail();
 
 $mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
 $mail->addTo($email);
-$mail->setSubject("Neues Passwort Freifunk $GLOBALS[city_name]");
+$mail->setSubject("Neues Passwort $GLOBALS[community_name]");
 $mail->setBodyText($text);
 
 $mail->send($transport);

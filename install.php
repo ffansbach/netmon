@@ -133,8 +133,9 @@ if ($GLOBALS['installed']) {
 	$file = Install::getFileLineByLine($config_path);
 
 	$configs[0] = '$GLOBALS[\'net_prefix\'] = "'.$_POST['net_prefix'].'";';
-	$configs[1] = '$GLOBALS[\'city_name\'] = "'.$_POST['city_name'].'";';
-	$configs[2] = '$GLOBALS[\'networkPolicy\'] = "'.$_POST['networkPolicy'].'";';
+	$configs[1] = '$GLOBALS[\'community_name\'] = "'.$_POST['community_name'].'";';
+	$configs[2] = '$GLOBALS[\'community_website\'] = "'.$_POST['community_website'].'";';
+	$configs[3] = '$GLOBALS[\'networkPolicy\'] = "'.$_POST['networkPolicy'].'";';
 
 
 	$file = Install::changeConfigSection('//NETWORK', $file, $configs);
