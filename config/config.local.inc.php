@@ -1,7 +1,7 @@
 <?php
 
 //INSTALLATION-LOCK
-$GLOBALS['installed'] = true;
+$GLOBALS['installed'] = false;
 
 //WEBSERVER
 $GLOBALS['subfolder'] = dirname($_SERVER['PHP_SELF']);
@@ -12,27 +12,27 @@ $GLOBALS['url_to_netmon'] = $GLOBALS['domain'].$GLOBALS['subfolder'];
 //MYSQL
 $GLOBALS['mysql_host'] = "localhost";
 $GLOBALS['mysql_db'] = "netmon_trunk";
-$GLOBALS['mysql_user'] = "root";
-$GLOBALS['mysql_password'] = "hs7812kxlsqjog";
+$GLOBALS['mysql_user'] = "username";
+$GLOBALS['mysql_password'] = "password";
 
 //JABBER
-$GLOBALS['jabber_server'] = "unixboard.de";
-$GLOBALS['jabber_username'] = "floh1111";
-$GLOBALS['jabber_password'] = "hs7812kxlsqjog";
+$GLOBALS['jabber_server'] = "server.tld";
+$GLOBALS['jabber_username'] = "username";
+$GLOBALS['jabber_password'] = "password";
 
 //MAIL
 $GLOBALS['mail_sending_type'] = "smtp";
-$GLOBALS['mail_sender_adress'] = "clemens-john@gmx.de";
-$GLOBALS['mail_sender_name'] = "Freifunk Oldenburg Testsystem";
-$GLOBALS['mail_smtp_server'] = "mail.gmx.net";
-$GLOBALS['mail_smtp_username'] = "clemens-john@gmx.de";
-$GLOBALS['mail_smtp_password'] = "hs7812kxlsqjog";
+$GLOBALS['mail_sender_adress'] = "emailadress";
+$GLOBALS['mail_sender_name'] = "Freifunk Cityname";
+$GLOBALS['mail_smtp_server'] = "smtp.server.tpd";
+$GLOBALS['mail_smtp_username'] = "loginadress";
+$GLOBALS['mail_smtp_password'] = "password";
 $GLOBALS['mail_smtp_login_auth'] = "login";
 $GLOBALS['mail_smtp_ssl'] = "";
 
 //NETWORK
 $GLOBALS['net_prefix'] = "10.18";
-$GLOBALS['city_name'] = "Oldenburg";
+$GLOBALS['city_name'] = "Yourcityname";
 $GLOBALS['networkPolicy'] = "http://www.picopeer.net/";
 
 //VPN-Keys
