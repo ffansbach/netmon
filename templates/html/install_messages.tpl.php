@@ -9,14 +9,17 @@
 
 
 	<h3>Email</h3>
-	<p>Mail Absender:<br><input name="mail_sender" type="text" size="50" value=""></p>
+	<p>Absenderadresse:<br><input name="mail_sender_adress" type="text" size="30"></p>
+	<p>Absendername:<br><input name="mail_sender_name" type="text" size="30"></p>
 
 	{if !$mail}
 	<h3>SMTP-Transport</h3>
-<!--	<p>Datenbank:<br><input name="database" type="text" size="30"></p>
-
-	<p>Benutzername:<br><input name="user" type="text" size="30"></p>
-	<p>Passwort:<br><input name="password" type="password" size="30"></p>-->
+	<p><input type="checkbox" name="mail_sending_type" value="true" checked> Benutze SMTP-Transport zum Senden von Emails</p>
+	<p>SMTP-Server:<br><input name="mail_smtp_server" type="text" size="30"></p>
+	<p>SMTP-Benutzername:<br><input name="mail_smtp_username" type="text" size="30"></p>
+	<p>SMTP-Passwort:<br><input name="mail_smtp_password" type="password" size="30"></p>
+	<p>SMTP-Login Methode: (Leer lassen wenn nicht benötigt)<br><input name="mail_smtp_login_auth" type="text" size="30"></p>
+	<p>SMTP-SSL Typ: (Leer lassen wenn nicht benötigt)<br><input name="mail_smtp_ssl" type="text" size="30"></p>
 	{/if}
   <p><input type="submit" value="Weiter"></p>
 </form>

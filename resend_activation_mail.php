@@ -13,9 +13,11 @@
   } else {
     $user = Helper::getUserByEmail($_POST['email']);
     if ($user['activated']!="0") {
-      $new_password = Helper::randomPassword(8);
-      $register->setNewPassword($new_password, $user['id']);
-      $register->sendRegistrationEmail($user['email'], $user['nickname'], $new_password, $user['activated'], strtotime($user['create_date']));
+      if(empty($user['openid'])) {
+		$new_password = Helper::randomPassword(8);
+		$register->setNewPassword($new_password, $user['id']);
+      }
+      $register->sendRegistrationEmail($user['email'], $user['nickname'], $new_password, $user['activated'], strtotime($user['create_date']), $user['openid']);
       header('Location: ./login.php');
     } else {
       $message[] = array("Der Benutzer mit der Emailadresse $_POST[email] wurde bereits freigeschaltet!", 2);

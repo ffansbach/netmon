@@ -56,7 +56,27 @@ Siehe http://$GLOBALS[domain]/$GLOBALS[subfolder]/service.php?service_id=$servic
 
 Bitte stelle den Service zur erhaltung des Meshnetzwerkes wieder zur Verfügung oder entferne den Service.
 Dein Freifunkteam $GLOBALS[city_name]";
-		$ergebniss = mail($user_data['email'], "Freifunk Oldenburg: Service Down", $text, "From: $GLOBALS[mail_sender]");
+
+if ($GLOBALS['mail_sending_type']=='smtp') {
+	$config = array('username' => $GLOBALS['mail_smtp_username'],
+			'password' => $GLOBALS['mail_smtp_password']);
+
+	if(!empty($GLOBALS['mail_smtp_ssl']))
+		$config['ssl'] = $GLOBALS['mail_smtp_ssl'];
+	if(!empty($GLOBALS['mail_smtp_login_auth']))
+		$config['auth'] = $GLOBALS['mail_smtp_login_auth'];
+
+	$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
+}
+
+$mail = new Zend_Mail();
+
+$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
+$mail->addTo($user_data['email']);
+$mail->setSubject("Service offline Freifunk $GLOBALS[city_name]");
+$mail->setBodyText($text);
+
+$mail->send($transport);
 	}
 
 	public function jabberIfDown($service_data, $user_data, $history) {
