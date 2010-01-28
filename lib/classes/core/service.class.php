@@ -55,7 +55,9 @@ der Service $GLOBALS[net_prefix].$service_data[ip]:$service_data[typ] ist seit d
 Siehe http://$GLOBALS[domain]/$GLOBALS[subfolder]/service.php?service_id=$service_data[service_id]
 
 Bitte stelle den Service zur erhaltung des Meshnetzwerkes wieder zur Verfügung oder entferne den Service.
-Dein Freifunkteam $GLOBALS[city_name]";
+
+Mit freundlichen Gruessen
+$GLOBALS[community_name]";
 
 if ($GLOBALS['mail_sending_type']=='smtp') {
 	$config = array('username' => $GLOBALS['mail_smtp_username'],
@@ -73,7 +75,7 @@ $mail = new Zend_Mail();
 
 $mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
 $mail->addTo($user_data['email']);
-$mail->setSubject("Service offline Freifunk $GLOBALS[city_name]");
+$mail->setSubject("Service offline $GLOBALS[community_name]");
 $mail->setBodyText($text);
 
 $mail->send($transport);
@@ -92,7 +94,9 @@ der Service $GLOBALS[net_prefix].$service_data[ip]:$service_data[typ] ist seit d
 Siehe http://$GLOBALS[url_to_netmon]/service.php?service_id=$service_data[service_id]
 
 Bitte stelle den Service zur Erhaltung des Meshnetzwerkes wieder zur Verfuegung oder entferne den Service.
-Dein Freifunkteam $GLOBALS[city_name]";
+
+Mit freundlichen Gruessen
+$GLOBALS[community_name]";
 			$conn->message($user_data['jabber'], $message);
 			$conn->disconnect();
 		} catch(XMPPHP_Exception $e) {

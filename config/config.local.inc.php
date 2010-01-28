@@ -32,7 +32,8 @@ $GLOBALS['mail_smtp_ssl'] = "";
 
 //NETWORK
 $GLOBALS['net_prefix'] = "10.18";
-$GLOBALS['city_name'] = "Yourcityname";
+$GLOBALS['community_name'] = "Yourcomunityname";
+$GLOBALS['community_website'] = "http://yourcommunitywebsite.tld";
 $GLOBALS['networkPolicy'] = "http://www.picopeer.net/";
 
 //VPN-Keys
