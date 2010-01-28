@@ -32,7 +32,7 @@
 			<option value="27">30 (/27)</option>
 			<option value="26">62 (/26)</option>
 			<option value="25">126 (/25)</option>
-			<option value="24">254 (/24)</option>
+			<option value="24" selected>254 (/24)</option>
 			<option value="23">510 (/23)</option>
 			<option value="22">1022 (/22)</option>
 			<option value="21">2046 (/21)</option>
@@ -96,12 +96,34 @@
 	</p>
 	
 	<h2>Beschreibung</h2>
-	<p>Titel:<br>
+	<p>Projektname:<br>
 		<input name="title" type="text" size="50">
 	</p>
-	<p>Beschreibung:<br>
-		<textarea name="description" cols="50" rows="10"></textarea>
+	<p>Projektbeschreibung:<br>
+		<textarea name="description" cols="57" rows="3"></textarea>
 	</p>
+
+	<p>Projekt SSID:<br>
+		<input name="essid" type="text" size="20">
+	<p>Projekt BSSID:<br>
+		<input name="bssid" type="text" size="20">
+	<p>Projekt Wlan-Kanal: <select name="channel">
+			<option value="30">1</option>
+			<option value="29">2</option>
+			<option value="28">3</option>
+			<option value="27">4</option>
+			<option value="26">5</option>
+			<option value="25" selected>6</option>
+			<option value="24">7</option>
+			<option value="23">8</option>
+			<option value="22">9</option>
+			<option value="21">10</option>
+			<option value="20">11</option>
+			<option value="19">12</option>
+		</select>
+	</p>
+	<p>Externe Projektseite:<br>
+		<input name="website" type="text" size="20">
 
 	<h2>Lokale Begrenzung des Projekts</h2>
 	<div style="width: 100%; overflow: hidden;">
