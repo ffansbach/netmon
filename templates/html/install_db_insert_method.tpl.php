@@ -15,7 +15,7 @@ Sie haben jetzt die folgenden Möglichkeiten:</p>
 	<div style="float:left; width: 50%;">
 		<h3>Vorhandene Tabellen benutzen</h3>
 		<p>Die Datenbank wird nicht verändert, es werden die vorhandenen Tabellen ohne Änderungen genutzt.</p>
-		<form action="./install.php?section=finish" method="POST">
+		<form action="./install.php?section=messages" method="POST">
 			<p><input type="submit" value="Vorhandene Tabellen benutzen"></p>
 		</form>
 	</div>
