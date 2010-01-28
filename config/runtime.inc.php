@@ -55,6 +55,7 @@
   $dirs[] = 'templates_c/';
   $dirs[] = 'ccd/';
   $dirs[] = 'config/';
+  $dirs[] = 'config/config.local.inc.php';
   $dirs[] = 'log/';
   $dirs[] = 'tmp/';
 
@@ -65,7 +66,7 @@
   }
 
   if(!empty($not_writable_dirs)) {
-    echo "The following directories has to be writable to run Netmon:<br><br>";
+    echo "The following files or directories have to be writable to run Netmon:<br><br>";
     foreach($not_writable_dirs as $not_writable_dir) {
       echo "$not_writable_dir<br>";
     }
@@ -138,29 +139,29 @@
 	* Auto Login
 	*/
 
-	if (!UserManagement::isLoggedIn($_SESSION['user_id']) AND !$GLOBALS['installation_mode']) {
-		//Login Class
-		require_once('lib/classes/core/login.class.php');
-		if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
-			Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
-		} elseif (!empty($_COOKIE["openid"]) AND !$_SESSION['openid_login']) {
-			$_SESSION['openid_login'] = true;
-			require_once('lib/classes/extern/class.openid.php');
-			if (empty($_SESSION['redirect_url'])) {
-				$_SESSION['redirect_url'] = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER['REQUEST_URI'];
-
-// = substr($_SERVER['REQUEST_URI'],1,strlen($_SERVER['REQUEST_URI']));
-			}
-
-			// Get identity from user and redirect browser to OpenID Server
-			$openid = new SimpleOpenID;
-			$openid->SetIdentity($_COOKIE["openid"]);
-			$openid->SetTrustRoot('http://' . $_SERVER["HTTP_HOST"]);
-			$openid->SetRequiredFields(array('email','fullname'));
-			$openid->SetOptionalFields(array('dob','gender','postcode','country','language','timezone'));
-			if ($openid->GetOpenIDServer()){
-				$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].dirname($_SERVER['PHP_SELF']).'/login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
-				$openid->Redirect(); 	// This will redirect user to OpenID Server
+	if (!$GLOBALS['installation_mode']) {
+		if (!UserManagement::isLoggedIn($_SESSION['user_id'])) {
+			//Login Class
+			require_once('lib/classes/core/login.class.php');
+			if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
+				Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
+			} elseif (!empty($_COOKIE["openid"]) AND !$_SESSION['openid_login']) {
+				$_SESSION['openid_login'] = true;
+				require_once('lib/classes/extern/class.openid.php');
+				if (empty($_SESSION['redirect_url'])) {
+					$_SESSION['redirect_url'] = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER['REQUEST_URI'];
+				}
+			
+				// Get identity from user and redirect browser to OpenID Server
+				$openid = new SimpleOpenID;
+				$openid->SetIdentity($_COOKIE["openid"]);
+				$openid->SetTrustRoot('http://' . $_SERVER["HTTP_HOST"]);
+				$openid->SetRequiredFields(array('email','fullname'));
+				$openid->SetOptionalFields(array('dob','gender','postcode','country','language','timezone'));
+				if ($openid->GetOpenIDServer()){
+					$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].dirname($_SERVER['PHP_SELF']).'/login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
+					$openid->Redirect(); 	// This will redirect user to OpenID Server
+				}
 			}
 		}
 	}
@@ -169,13 +170,15 @@
 	* Menus
 	*/
 
-  $smarty->assign('top_menu', $Menus->topMenu());
-  $smarty->assign('loginOutMenu', $Menus->loginOutMenu());
-  $smarty->assign('installation_menu', $Menus->installationMenu());
-  $smarty->assign('normal_menu', $Menus->normalMenu());
-  $smarty->assign('user_menu', $Menus->userMenu());
-  $smarty->assign('admin_menu', $Menus->adminMenu());
-
+	if (!$GLOBALS['installation_mode']) {
+		$smarty->assign('top_menu', $Menus->topMenu());
+		$smarty->assign('loginOutMenu', $Menus->loginOutMenu());
+		$smarty->assign('normal_menu', $Menus->normalMenu());
+		$smarty->assign('user_menu', $Menus->userMenu());
+		$smarty->assign('admin_menu', $Menus->adminMenu());
+	} else {
+		$smarty->assign('installation_menu', $Menus->installationMenu());
+ 	}
   //Give often used variables to smarty
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
   $smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
