@@ -89,7 +89,6 @@ if ($GLOBALS['installed']) {
 	header('Location: ./install.php?section=messages');
 } elseif ($_GET['section']=="messages") {
         $smarty->assign('mail', $SESSION['mail']);
-
 	$smarty->display("header.tpl.php");
 	$smarty->display("install_messages.tpl.php");
 	$smarty->display("footer.tpl.php");
@@ -107,8 +106,18 @@ if ($GLOBALS['installed']) {
 	unset($configs);
 //----------
 	$file = Install::getFileLineByLine($config_path);
+	if ($_POST['mail_sending_type'] == "true")
+		$configs[0] = '$GLOBALS[\'mail_sending_type\'] = "smtp";';
+	else
+		$configs[0] = '$GLOBALS[\'mail_sending_type\'] = "php_mail";';
 
-	$configs[0] = '$GLOBALS[\'mail_sender\'] = "'.$_POST['mail_sender'].'";';
+	$configs[1] = '$GLOBALS[\'mail_sender_adress\'] = "'.$_POST['mail_sender_adress'].'";';
+	$configs[2] = '$GLOBALS[\'mail_sender_name\'] = "'.$_POST['mail_sender_name'].'";';
+	$configs[3] = '$GLOBALS[\'mail_smtp_server\'] = "'.$_POST['mail_smtp_server'].'";';
+	$configs[4] = '$GLOBALS[\'mail_smtp_username\'] = "'.$_POST['mail_smtp_username'].'";';
+	$configs[5] = '$GLOBALS[\'mail_smtp_password\'] = "'.$_POST['mail_smtp_password'].'";';
+	$configs[6] = '$GLOBALS[\'mail_smtp_login_auth\'] = "'.$_POST['mail_smtp_login_auth'].'";';
+	$configs[7] = '$GLOBALS[\'mail_smtp_ssl\'] = "'.$_POST['mail_smtp_ssl'].'";';
 
 	$file = Install::changeConfigSection('//MAIL', $file, $configs);
 	Install::writeEmptyFileLineByLine($config_path, $file);
@@ -125,7 +134,7 @@ if ($GLOBALS['installed']) {
 
 	$configs[0] = '$GLOBALS[\'net_prefix\'] = "'.$_POST['net_prefix'].'";';
 	$configs[1] = '$GLOBALS[\'city_name\'] = "'.$_POST['city_name'].'";';
-	$configs[1] = '$GLOBALS[\'networkPolicy\'] = "'.$_POST['networkPolicy'].'";';
+	$configs[2] = '$GLOBALS[\'networkPolicy\'] = "'.$_POST['networkPolicy'].'";';
 
 
 	$file = Install::changeConfigSection('//NETWORK', $file, $configs);

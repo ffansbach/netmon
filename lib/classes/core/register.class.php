@@ -28,8 +28,15 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+require_once 'lib/classes/extern/Zend/Mail.php';
+require_once 'lib/classes/extern/Zend/Mail/Transport/Smtp.php';
+
 class Register {
 	public function insertNewUser($nickname, $password, $passwordchk, $email, $agb, $openid) {
+		if (!empty($openid))
+			$password = Helper::randomPassword(8);
+			$passwordchk = $password;
+
 		if ($this->checkUserData($nickname, $password, $passwordchk, $email, $agb, $openid)) {
 			$password = usermanagement::encryptPassword($password);
 			$activation = md5($nickname);
@@ -169,13 +176,18 @@ class Register {
 	public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum, $openid) {
 		$text = "Hallo $nickname,
 
-Du hast dich am ".date("d.m.Y H:i:s", $datum)." bei $GLOBALS[project_name] registriert.
+Du hast dich am ".date("d.m.Y H:i:s", $datum)." Uhr bei Freifunk $GLOBALS[city_name] registriert.
 
-Deine Logindaten Sind:\n";
+Deine Logindaten sind:\n";
 
 
 if($openid) {
-  $text .= "Open-ID: $openid\n\n";
+  $text .= "Open-ID: $openid
+
+Die Open-ID wurde mit folgendem Benutzer verknuepft: $nickname
+
+Aus technischen Gruenden wurde fuer diesen Benutzer auch ein Passwort generiert, dass auch den Login auf herkoemlichem Weg ermoeglicht.
+Das Passwort lautet: $password\n\n";
 } else {
   $text .= "Nickname: $nickname
 Passwort: $password\n\n";
@@ -185,7 +197,29 @@ $text .= "Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalt
 http://$GLOBALS[url_to_netmon]/account_activate.php?activation_hash=$activation
 
 Dein Freifunkteam $GLOBALS[city_name]";
-		$ergebniss = mail($email, "Anmeldung Freifunk Oldenburg", $text, "From: $GLOBALS[mail_sender]");
+
+if ($GLOBALS['mail_sending_type']=='smtp') {
+	$config = array('username' => $GLOBALS['mail_smtp_username'],
+			'password' => $GLOBALS['mail_smtp_password']);
+
+	if(!empty($GLOBALS['mail_smtp_ssl']))
+		$config['ssl'] = $GLOBALS['mail_smtp_ssl'];
+	if(!empty($GLOBALS['mail_smtp_login_auth']))
+		$config['auth'] = $GLOBALS['mail_smtp_login_auth'];
+
+	$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
+}
+
+$mail = new Zend_Mail();
+
+$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
+$mail->addTo($email);
+$mail->setSubject("Anmeldung Freifunk $GLOBALS[city_name]");
+$mail->setBodyText($text);
+
+$mail->send($transport);
+
+
 		$message[] = array("Eine Email mit einem Link zum aktivieren des Nutzerkontos wurde an ".$email." verschickt.", 1);
 		Message::setMessage($message);
 		return true;
@@ -196,7 +230,7 @@ Dein Freifunkteam $GLOBALS[city_name]";
 		if($old_password_hash==$user_data['password']) {
 			$result = DB::getInstance()->exec("UPDATE users SET password = '$new_password_hash' WHERE id = '$user_id'");
 			if ($result>0) {
-				$message[] = array("Dem Benutzer mit der ID $user_id wurde ein neues Passwort gesetzt", 1);
+				$message[] = array("Dem Benutzer $user_data[nickname] wurde ein neues Passwort gesetzt", 1);
 				Message::setMessage($message);
 				return true;
 			} else {
@@ -220,10 +254,32 @@ Nickname: $nickname
 Passwort: $password
 
 Bitte bestaetige die Aenderungen mit einem Klick auf diesen Link:
-http://$GLOBALS[domain]/$GLOBALS[subfolder]/set_new_password.php?user_id=$user_id&new_passwordhash=$password_md5&oldpassword_hash=$oldpassword_hash
+http://$GLOBALS[url_to_netmon]/set_new_password.php?user_id=$user_id&new_passwordhash=$password_md5&oldpassword_hash=$oldpassword_hash
 
 Dein Freifunkteam $GLOBALS[city_name]";
-		$ergebniss = mail($email, "Neues Password (Freifunk Oldenburg)", $text, "From: Freifunk Oldenburg Portal <portal@freifunk-ol.de>");
+
+
+if ($GLOBALS['mail_sending_type']=='smtp') {
+	$config = array('username' => $GLOBALS['mail_smtp_username'],
+			'password' => $GLOBALS['mail_smtp_password']);
+
+	if(!empty($GLOBALS['mail_smtp_ssl']))
+		$config['ssl'] = $GLOBALS['mail_smtp_ssl'];
+	if(!empty($GLOBALS['mail_smtp_login_auth']))
+		$config['auth'] = $GLOBALS['mail_smtp_login_auth'];
+
+	$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
+}
+
+$mail = new Zend_Mail();
+
+$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
+$mail->addTo($email);
+$mail->setSubject("Neues Passwort Freifunk $GLOBALS[city_name]");
+$mail->setBodyText($text);
+
+$mail->send($transport);
+
 		$message[] = array("Dir wurde ein neues Passwort zugesendet.", 1);
 		Message::setMessage($message);
 		return true;

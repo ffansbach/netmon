@@ -44,6 +44,7 @@
   
   //Content type and encoding
   header("Content-Type: text/html; charset=UTF-8");
+  date_default_timezone_set('Europe/Berlin');
 
   require_once('config/config.local.inc.php');
   require_once('config/release.php');
@@ -142,7 +143,8 @@
 		require_once('lib/classes/core/login.class.php');
 		if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
 			Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
-		} elseif (!empty($_COOKIE["openid"])) {
+		} elseif (!empty($_COOKIE["openid"]) AND !$_SESSION['openid_login']) {
+			$_SESSION['openid_login'] = true;
 			require_once('lib/classes/extern/class.openid.php');
 			if (empty($_SESSION['redirect_url'])) {
 				$_SESSION['redirect_url'] = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER['REQUEST_URI'];
