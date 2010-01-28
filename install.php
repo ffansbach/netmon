@@ -28,16 +28,16 @@ if ($GLOBALS['installed']) {
 
     $smarty->assign('ezcomponents', class_exists('ezcBase'));
 
-    $to = "clemens@freifunk-ol.de";
+    $to = "noreply@noreply.org";
     $header = "From: {$to}";
     $subject = "Netmon Mailtest";
     $body = "This is a Mail that was send by netmon Mailtest";
     if (mail($to, $subject, $body, $header)) {
         $smarty->assign('mail', true);
-	$SESSION['mail'] = true;
+	$_SESSION['mail'] = true;
     } else {
         $smarty->assign('mail', false);
-	$SESSION['mail'] = false;
+	$_SESSION['mail'] = false;
     }
 
     $smarty->display("header.tpl.php");
@@ -88,7 +88,7 @@ if ($GLOBALS['installed']) {
 	Install::insertDB();
 	header('Location: ./install.php?section=messages');
 } elseif ($_GET['section']=="messages") {
-        $smarty->assign('mail', $SESSION['mail']);
+        $smarty->assign('mail', $_SESSION['mail']);
 	$smarty->display("header.tpl.php");
 	$smarty->display("install_messages.tpl.php");
 	$smarty->display("footer.tpl.php");
