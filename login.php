@@ -51,6 +51,8 @@
 			 if(!empty($_SESSION['redirect_url'])) {
 				$redirect = $_SESSION['redirect_url'];
 				unset($_SESSION['redirect_url']);
+//				die('hallo');
+				unset($_SESSION['openid_login']);
 				header("Location: $redirect");
 			 } else {
 				header('Location: desktop.php');
