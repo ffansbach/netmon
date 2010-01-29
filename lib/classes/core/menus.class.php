@@ -85,7 +85,7 @@ class Menus extends UserManagement {
       $menu[] = array('name'=>'Desktop', 'href'=>'./desktop.php');
       $menu[] = array('name'=>'Neue Ip', 'href'=>'./ipeditor.php?section=new');
 //      $menu[] = array('name'=>'Mein Benutzer', 'href'=>'./user.php?id='.$_SESSION['user_id']);
-      $menu[] = array('name'=>'Benutzer ändern', 'href'=>'./user_edit.php?section=edit&id='.$_SESSION['user_id']);
+//      $menu[] = array('name'=>'Benutzer ändern', 'href'=>'./user_edit.php?section=edit&id='.$_SESSION['user_id']);
       $menu[] = array('name'=>'Benutzerliste', 'href'=>'./userlist.php');
     }
     return $menu;

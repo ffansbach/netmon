@@ -62,3 +62,7 @@ Ich bin seit dem {$user.create_date} dabei.<br>
 {/foreach}
 </table>
 {/if}
+
+{if $permitted}
+<p><a href="./user_edit.php?section=edit&id={$smarty.get.id}">Benutzer editieren</a></p>
+{/if}

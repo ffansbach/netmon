@@ -4,6 +4,9 @@
   
   $smarty->assign('message', Message::getMessage());
   
+  if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $_GET['id']))
+	$smarty->assign('permitted', true);
+
   $smarty->assign('user', Helper::getUserByID($_GET['id']));
   $smarty->assign('iplist', Helper::getIplistByUserID($_GET['id']));
   $smarty->assign('subnetlist', Helper::getSubnetlistByUserID($_GET['id']));
