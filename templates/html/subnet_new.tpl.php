@@ -17,6 +17,10 @@
 <form action="./subneteditor.php?section=insert_new" method="POST">
 
 	<h1>Ein Projekt anlegen:</h1>
+	<h2>Projekttyp</h2>
+		<input type="radio" name="subnet_type" value="wlan" checked="checked" onChange="document.getElementById('vpn').style.display = 'none'; document.getElementById('wlan').style.display = 'block'; document.getElementById('dhcp_kind_ips').checked = true;">WLAN<br>
+		<input type="radio" name="subnet_type" value="vpn" onChange="document.getElementById('vpn').style.display = 'block'; document.getElementById('wlan').style.display = 'none'; document.getElementById('dhcp_kind_no').checked = true;">VPN<br>
+
 	<h2>Vergabe eines IP-Bereichs</h2>
 	<p>
 		<input type="radio" name="subnet_kind" value="simple" checked="checked" onchange="document.getElementById('simple').style.display = 'block'; document.getElementById('extend').style.display = 'none';">einfache Bereichvergabe<br>
@@ -89,10 +93,10 @@
 
 	<h2>DHCP</h2>
 	<p>
-		<input type="radio" name="dhcp_kind" value="ips" checked="checked">IP´s dürfen sich eine bestimmte Anzahl IP´s zum verteilen per DHCP reservieren.<br>
-		<input type="radio" name="dhcp_kind" value="subnet">IP´s dürfen sich ein Subnetz zum verteilen von IP´s reservieren<br>
-		<input type="radio" name="dhcp_kind" value="nat">IP´s nutzen ein eigenes genattetes Subnetz zum verteilen von IP´s<br>
-		<input type="radio" name="dhcp_kind" value="no">IP´s dürfen keine IP´s per DHCP verteilen<br>
+		<input id="dhcp_kind_ips" type="radio" name="dhcp_kind" value="ips" checked="checked">IP´s dürfen sich eine bestimmte Anzahl IP´s zum verteilen per DHCP reservieren.<br>
+		<input id="dhcp_kind_subnet" type="radio" name="dhcp_kind" value="subnet">IP´s dürfen sich ein Subnetz zum verteilen von IP´s reservieren<br>
+		<input id="dhcp_kind_nat" type="radio" name="dhcp_kind" value="nat">IP´s nutzen ein eigenes genattetes Subnetz zum verteilen von IP´s<br>
+		<input id="dhcp_kind_no" type="radio" name="dhcp_kind" value="no">IP´s dürfen keine IP´s per DHCP verteilen<br>
 	</p>
 	
 	<h2>Beschreibung</h2>
@@ -103,25 +107,28 @@
 		<textarea name="description" cols="57" rows="3"></textarea>
 	</p>
 
+	<div id="wlan" style="display:block">
 	<p>Projekt SSID:<br>
 		<input name="essid" type="text" size="20">
 	<p>Projekt BSSID:<br>
 		<input name="bssid" type="text" size="20">
 	<p>Projekt Wlan-Kanal: <select name="channel">
-			<option value="30">1</option>
-			<option value="29">2</option>
-			<option value="28">3</option>
-			<option value="27">4</option>
-			<option value="26">5</option>
-			<option value="25" selected>6</option>
-			<option value="24">7</option>
-			<option value="23">8</option>
-			<option value="22">9</option>
-			<option value="21">10</option>
-			<option value="20">11</option>
-			<option value="19">12</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6" selected>6</option>
+			<option value="7">7</option>
+			<option value="8">8</option>
+			<option value="9">9</option>
+			<option value="10">10</option>
+			<option value="11">11</option>
+			<option value="12">12</option>
+			<option value="13">13</option>
 		</select>
 	</p>
+	</div>
 	<p>Externe Projektseite:<br>
 		<input name="website" type="text" size="20">
 
@@ -146,12 +153,11 @@
         </div>
 	</div>
 	
-	
+	<div id="vpn" style="display:none">
 	<h2>VPN</h2>
 	<p>
-		<input type="radio" name="vpn_kind" value="no" checked="checked" onchange="document.getElementById('other').style.display = 'none'; document.getElementById('own').style.display = 'none';">Kein VPN-Server<br>
-		<input type="radio" name="vpn_kind" value="other" onchange="document.getElementById('other').style.display = 'block'; document.getElementById('own').style.display = 'none';">VPN-Daten von anderem Projekt nutzen<br>
-		<input type="radio" name="vpn_kind" value="own" onchange="document.getElementById('own').style.display = 'block'; document.getElementById('other').style.display = 'none';">Eigener VPN-Server
+		<input type="radio" name="vpn_kind" value="own" onchange="document.getElementById('own').style.display = 'block'; document.getElementById('other').style.display = 'none';" checked>Eigener VPN-Server<br>
+		<input type="radio" name="vpn_kind" value="other" onchange="document.getElementById('other').style.display = 'block'; document.getElementById('own').style.display = 'none';">VPN-Daten von anderem Projekt nutzen
 	</p>
 
 	<div id="other" style="display: none;">
@@ -169,7 +175,7 @@
 		{/if}
 	</div>
 	
-	<div id="own" style="display: none;">
+	<div id="own" style="display: block;">
 		<h3>Daten zu eigenem VPN Server</h3>
 		
 		<div style="width: 100%; overflow: hidden;">
@@ -191,14 +197,19 @@
 		<h3>Daten zu eigenen VPN-Zertifikaten</h3>
 		<p>Server CA.CRT:<br><textarea name="vpn_server_ca" cols="50" rows="10">{$subnet_data.vpn_cacrt}</textarea></p>
 		<p>Server Cert:<br><textarea name="vpn_server_cert" cols="50" rows="10">{$subnet_data.vpn_cacrt}</textarea></p>
-		<p>Server Key<br><textarea name="vpn_server_key" cols="50" rows="10">{$subnet_data.vpn_cacrt}</textarea></p>
+		<p>Server Key:<br><textarea name="vpn_server_key" cols="50" rows="10">{$subnet_data.vpn_cacrt}</textarea></p>
 		
 		<p>Passphrase:<br><input name="vpn_server_pass" type="password" size="30"></p>
 
-		<h3>Synchronisation der CCD Daten per FTP</h3>
-		<p>Ordner<br><input name="ftp_ccd_folder" type="text" size="30"></p>
-		<p>Benutzername<br><input name="ftp_ccd_username" type="text" size="20"></p>
-		<p>Passwort<br><input name="ftp_ccd_password" type="password" size="20"></p>
+		<h3>Synchronisation der CCD Daten per FTP zum VPN-Server</h3>
+		<input type="radio" name="ftp_sync" value="0" checked="checked" onChange="document.getElementById('ftp_sync_data').style.display = 'none';">VPN-Server greift auf CCD-Verzeichnis von Netmon zu<br>
+		<input type="radio" name="ftp_sync" value="1" onChange="document.getElementById('ftp_sync_data').style.display = 'block';">Netmon Synchronisiert CCD Ordner per FTP mit einem Ordner auf dem VPN-Server<br>
+		<div id="ftp_sync_data" style="display:none">
+			<p>Ordner:<br><input name="ftp_ccd_folder" type="text" size="30"></p>
+			<p>Benutzername:<br><input name="ftp_ccd_username" type="text" size="20"></p>
+			<p>Passwort:<br><input name="ftp_ccd_password" type="password" size="20"></p>
+		</div>
+	</div>
 	</div>
 
 	<p><input type="submit" value="Absenden"></p>

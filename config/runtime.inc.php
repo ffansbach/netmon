@@ -94,7 +94,6 @@
   require_once('lib/classes/core/editinghelper.class.php');
 
   $UserManagement =  new UserManagement;
-  $Menus =  new Menus;
 
   /**
   * PEAR EZC LIBRARY FOR GRAPHS
@@ -171,13 +170,15 @@
 	*/
 
 	if (!$GLOBALS['installation_mode']) {
-		$smarty->assign('top_menu', $Menus->topMenu());
-		$smarty->assign('loginOutMenu', $Menus->loginOutMenu());
-		$smarty->assign('normal_menu', $Menus->normalMenu());
-		$smarty->assign('user_menu', $Menus->userMenu());
-		$smarty->assign('admin_menu', $Menus->adminMenu());
+		$smarty->assign('top_menu', Menus::topMenu());
+		$smarty->assign('loginOutMenu', Menus::loginOutMenu());
+		$smarty->assign('normal_menu', Menus::normalMenu());
+		$smarty->assign('user_menu', Menus::userMenu());
+		$smarty->assign('admin_menu', Menus::adminMenu());
+		$smarty->assign('root_menu', Menus::rootMenu());
+
 	} else {
-		$smarty->assign('installation_menu', $Menus->installationMenu());
+		$smarty->assign('installation_menu', Menus::installationMenu());
  	}
   //Give often used variables to smarty
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);

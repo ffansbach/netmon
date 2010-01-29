@@ -21,6 +21,14 @@ function LinkedSelection( inputSelects, data )
 	{
 		var value = this.selectedValue();
 
+
+if(value=='service') {
+document.getElementById('discription').style.display = 'block';
+} else if (value=='false' || value=='node' || value=='vpn' || value=='client') {
+document.getElementById('discription').style.display = 'none';
+}
+
+
 		//Eingabefeld für den port zeigen wenn die Port-option ausgewählt wurde
 		if( value == 'port' )
 		{
