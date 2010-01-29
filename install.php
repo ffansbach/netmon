@@ -25,6 +25,8 @@ if ($GLOBALS['installed']) {
     $smarty->assign('gd_loaded', extension_loaded('gd'));
     $smarty->assign('zip_loaded', extension_loaded('zip'));
     $smarty->assign('exec', function_exists('exec'));
+    $smarty->assign('openssl', function_exists('openssl'));
+    $smarty->assign('ftp', function_exists('ftp'));
 
     $smarty->assign('ezcomponents', class_exists('ezcBase'));
 

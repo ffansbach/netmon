@@ -99,6 +99,19 @@
 				{/if}
 			</div>
 		{/if}
+		{if !$installation_mode}
+			<div class="user_menus">
+				{if isset($root_menu)}
+					&nbsp;&nbsp;&nbsp;&nbsp;<u>Rootmenü</u>
+					<ul>
+						{foreach item=menu from=$root_menu}
+							</li><a href="{$menu.href}">{$menu.name}</a><li>
+						{/foreach}
+					</ul>
+				{/if}
+			</div>
+		{/if}
+
 	</div>
 
   <div id="content">

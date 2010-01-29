@@ -65,6 +65,7 @@ class EditingHelper {
 	}
 
 	public function getExistingSubnets() {
+		$subnets = array();
 		try {
 			$sql = "select * FROM subnets ORDER BY host ASC";
 			$result = DB::getInstance()->query($sql);

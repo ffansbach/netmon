@@ -98,6 +98,12 @@ class Menus extends UserManagement {
     }
     return $menu;
   }
+  function rootMenu() {
+    if (UserManagement::checkPermission(64)) {
+      $menu[] = array('name'=>'Konfiguration', 'href'=>'./config.php?section=edit');
+    }
+    return $menu;
+  }
 
 }
 
