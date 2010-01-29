@@ -12,6 +12,8 @@
 
 
 		$smarty->assign('servicelist', $iplist->getServiceListByUserId($_SESSION['user_id']));
+		$smarty->assign('subnetlist', Helper::getSubnetsByUserId($_SESSION['user_id']));
+
 		$smarty->assign('history', History::getServiceHistoryByUser(false, 24, $_SESSION['user_id']));
 
 		$smarty->display("header.tpl.php");

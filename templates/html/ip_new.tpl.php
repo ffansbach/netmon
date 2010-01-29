@@ -1,17 +1,15 @@
 {if empty($existing_subnets)}
-<div class="error">Es muss mindestens ein Subnetz angelegt sein, damit du eine IP erstellen kannst.<!--<br>
-Bist du nicht Administrator, bitte einen <a href="./userlist.php?permission=32">Administrator</a> darum ein Subnetz anzulegen.--></div>
+	<div class="error">Es muss mindestens ein Subnetz angelegt sein, damit du eine IP erstellen kannst.</div>
 {else}
 
 {literal}
-
 <!--
 http://plugins.jquery.com/project/zendjsonrpc
 -->
 
-<SCRIPT LANGUAGE="javascript" SRC="lib/classes/extern/jquery/jquery.min.js"></SCRIPT>
-<SCRIPT LANGUAGE="javascript" SRC="lib/classes/extern/zend_framework_json-rpc/json2.js"></SCRIPT>
-<SCRIPT LANGUAGE="javascript" SRC="lib/classes/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></SCRIPT>
+<SCRIPT language="javascript" src="lib/classes/extern/jquery/jquery.min.js"></SCRIPT>
+<SCRIPT language="javascript" src="lib/classes/extern/zend_framework_json-rpc/json2.js"></SCRIPT>
+<SCRIPT language="javascript" src="lib/classes/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></SCRIPT>
 <SCRIPT>
 	function getSubnetInfo(subnet_id) {
 		$(document).ready(function(){
@@ -41,7 +39,6 @@ http://plugins.jquery.com/project/zendjsonrpc
 
 
 </SCRIPT>
-
 {/literal}
 
 <h1>IP anlegen:</h1>
@@ -74,7 +71,7 @@ http://plugins.jquery.com/project/zendjsonrpc
 				<input type="radio" name="dhcp_ips_kind" value="extend" onchange="document.getElementById('dhcp_ips_simple').style.display = 'none'; document.getElementById('dhcp_ips_extend').style.display = 'block';">DHCP-Bereich selbst angeben<br>
 			</p>
 			<div id="dhcp_ips_simple" style="display: block;">
-				<p>Für Clients zu reservierende IP's: <input name="ips" type="text" size="1" maxlength="3" value="5"><br>Für Vergabe per DHCP (Wenn keine IP´s vergeben werden sollen bitte 0 eintragen!)</p>
+				<p>Für Clients zu reservierende IP's: <input name="ips" type="text" size="1" maxlength="3" value="5"></p>
 			</div>
 			<div id="dhcp_ips_extend" style="display: none;">
 				<b>IP-Bereich:</b>  {$net_prefix}.<input name="dhcp_first" type="text" size="7"> bis {$net_prefix}.<input name="dhcp_last" type="text" size="7">
@@ -146,7 +143,6 @@ http://plugins.jquery.com/project/zendjsonrpc
 	</div>
 	</div>
 	
-	<h2>Beschreibung des Standorts</h2>
 	<p>
    		Kurze Beschreibung des Standorts:<br><input name="location" type="text" size="60" maxlength="60" value="">
 	</p>
@@ -165,7 +161,7 @@ http://plugins.jquery.com/project/zendjsonrpc
     Sinnvoll wenn Typ "ip" ist und man die ungefähre Reichweite seines W-Lan-Netzes in metern weiß.</p>
   </p>-->
 
-	<h1>Service anlegen</h1>
+	<h1>Dienst anlegen</h1>
 
 <script type="text/javascript" src="./templates/js/servicesAuswahl.js"></script>
 <script type="text/javascript" src="./templates/js/LinkedSelection.js"></script>
@@ -183,7 +179,7 @@ window.onload = function()
 </script>
 
 <p>
-<label id="typLabel" for="typ">Service:</label>
+<label id="typLabel" for="typ">Dienst:</label>
 {literal}
 <select id="typ" name="typ">
   <option value="false">Bitte wählen:</option>
@@ -196,7 +192,7 @@ window.onload = function()
 <label id="crawlLabel" for="crawl">Crawlart:</label>
 
 <select id="crawl" name="crawler">
-  <option value="false">erst Service auswählen</option>
+  <option value="false">erst Dienst auswählen</option>
 </select>
 
 <span id="portInput" style="visibility:hidden; margin-left: 5px;">
@@ -206,8 +202,7 @@ window.onload = function()
 <div id="discription" style="display:none">
 <h2>Beschreibung</h2>
   <p>
-    <p>Titel:<br><input name="title" type="text" size="40" maxlength="40" value=""><br>
-    Sinnvoll wenn Typ "service" sowie Port "80" ist und sich hinter der IP eine Website verbirgt. Oder ein VPN-Server, oder ein NFS-Downloadserver usw.</p>
+      Titel:<br><input name="title" type="text" size="40" maxlength="40" value="">
   </p>
 
   <p>
@@ -216,17 +211,15 @@ window.onload = function()
 </div>
   <h2>Privatsphäre:</h2>
   <p>
-    <p>Diesen Service nicht angemeldeten Benutzer zeigen: 
+    Dienst für alle sichtbar:  
     <select name="visible" size="1">
       <option value="1" selected>Ja</option>
       <option value="0">Nein</option>
     </select>
-    <br>
-    Alle Services sollten Sichbar sein. Wenn du aber einen Service anbietest bei dem es unter Umständen kritisch sein kann ihn öffentlich anzuzeigen, kannst du hier einstellen, dass nur angemeldete Personen den Service sehen können.</p>
   </p>
 
 	<h2>Benachrichtigungen:</h2>
-	<p>Benachrichtige mich, wenn dieser Service länger als <input name="notification_wait" type="text" size="2" maxlength="2" value="6"> Crawldurchgänge nicht erreichbar ist
+	<p>Benachrichtige mich, wenn dieser Dienst länger als <input name="notification_wait" type="text" size="2" maxlength="2" value="6"> Crawldurchgänge nicht erreichbar ist
     <select name="notify" size="1">
       <option value="1" selected>Ja</option>
       <option value="0">Nein</option>
@@ -236,4 +229,5 @@ window.onload = function()
 
   <p><input type="submit" value="Absenden"></p>
 </form>
+</div>
 {/if}

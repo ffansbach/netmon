@@ -29,7 +29,7 @@
 </div>
 
 
-<h2>Meine Services</h2>
+<h2>Meine Dienste</h2>
 
 {if !empty($servicelist)}
 <div id="ipitem" style="width: 745px; overflow: hidden;">
@@ -48,7 +48,7 @@
 {foreach key=count item=iplist from=$servicelist}
 <div id="ipitem" style="width: 745px; overflow: hidden;">
   <div style="white-space: nowrap;">
-    <div style="float:left; width: 85px;"><a href="./service.php?service_id={$iplist.service_id}">{$net_prefix}.{$iplist.ip}</a></div>
+    <div style="float:left; width: 85px;"><a href="./ip.php?id={$iplist.ip_id}">{$net_prefix}.{$iplist.ip}</a></div>
     <div style="float:left; width: 50px;">{$iplist.crawler}</div>
 
     <div style="float:left; width: 100px;"><a href="./user.php?id={$iplist.user_id}">{$iplist.nickname}</a></div>
@@ -71,7 +71,32 @@
 <div class="notice">Du hast noch keine IP´s und Services angelegt. Über den Link <a href="./ipeditor.php?section=new">Neue IP</a> eine neue IP mit Service anlegen.</div>
 {/if}
 
-<h2>Hostory der letzten 24 Stunden meiner Nodes</h2>
+{if !empty($subnetlist)}
+<h2>Meine Projekte</h2>
+
+<div id="ipitem" style="width: 410px; overflow: hidden;">
+  <div nstyle="white-space: nowrap;">
+    <div style="float:left; width: 200px;"><b>Name</b></div>
+    <div style="float:left; width: 100px;"><b>Subnetz</b></div>
+    <div style="float:left; width: 50px;"><b>Typ</b></div>
+    <div style="float:left; width: 60px;"><b>Status</b></div>
+  </div>
+</div>
+
+
+{foreach key=count item=subnetlist from=$subnetlist}
+<div id="ipitem" style="width: 410px; overflow: hidden;">
+  <div style="white-space: nowrap;">
+    <div style="float:left; width: 200px;"><a href="./subnet.php?id={$subnetlist.id}">{$subnetlist.title}</a></div>
+    <div style="float:left; width: 100px;"><a href="./subnet.php?id={$subnetlist.id}">{$net_prefix}.{$subnetlist.host}/{$subnetlist.netmask}</a></div>
+    <div style="float:left; width: 50px;">{$subnetlist.subnet_type}</div>
+    <div style="float:left; width: 60px;">-/-</div>
+  </div>
+</div>
+{/foreach}
+{/if}
+
+<h2>Hostory der letzten 24 Stunden</h2>
 
 {if !empty($history)}
 {foreach key=count item=hist from=$history}

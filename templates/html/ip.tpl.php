@@ -4,7 +4,7 @@
     <div style="float:left; width: 50%;">
 		<h2>Grunddaten</h2>
 		<b>IP:</b> {$net_prefix}.{$ip.ip}<br>
-		<b>Subnetz:</b>  <a href="./subnet.php?id={$ip.subnet_id}">{$net_prefix}.{$ip.subnet_host}/{$ip.subnet_netmask} ({$ip.title})</a><br>
+		<b>Projekt:</b>  <a href="./subnet.php?id={$ip.subnet_id}">{$ip.title} ({$net_prefix}.{$ip.subnet_host}/{$ip.subnet_netmask})</a><br>
 		 {if $subnet_data.dhcp_kind=='ips'}
 			<b>DHCP:</b> {if $ip.zone_start==0 OR $ip.zone_end==0}
 							Kein DHCP-Bereich reserviert
@@ -21,7 +21,7 @@
 				{$net_prefix}.{$ip.dhcp_host}/{$ip.dhcp_netmask}
 			{/if}
 		{elseif $subnet_data.dhcp_kind=='no'}		
-			<b>DHCP:</b> Subnetz verbietet DHCP
+			<b>DHCP:</b> Projekt verbietet DHCP
 		{/if}
 		<br>
 		<b>Benutzer:</b> <a href="./user.php?id={$ip.user_id}">{$ip.nickname}</a><br>
@@ -129,7 +129,7 @@
 	</div>
 </div>
 
-<h2>Services auf dieser IP:</h2>
+<h2>Dienste auf dieser IP:</h2>
 {foreach item=service from=$services}
 <h3><a href="./service.php?service_id={$service.service_id}">{$service.services_title}</a> 
 
@@ -188,7 +188,7 @@
 <h2>Aktionen</h2>
 
 <p>
-  <a href="./serviceeditor.php?section=new&ip_id={$ip.ip_id}">Service hinzufügen</a>
+  <a href="./serviceeditor.php?section=new&ip_id={$ip.ip_id}">Dienst hinzufügen</a>
 </p>
 
 <p>
