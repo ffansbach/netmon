@@ -54,7 +54,7 @@ class Vpn {
 			while ($err = openssl_error_string());
 
 			//Keydaten
-			$dn = array("countryName" => 'Worldwide', "stateOrProvinceName" => $GLOBALS['community_name'], "localityName" => 'Netmon', "organizationName" => "$GLOBALS[community_name]", "organizationalUnitName" => $organizationalunitname, "commonName" => $commonname, "emailAddress" => $emailaddress);
+			$dn = array("countryName" => 'DE', "stateOrProvinceName" => $GLOBALS['community_name'], "localityName" => 'Netmon', "organizationName" => "$GLOBALS[community_name]", "organizationalUnitName" => $organizationalunitname, "commonName" => $commonname, "emailAddress" => $emailaddress);
 			
 			//Set passphrase to null if no password is given
 			if (empty($privkeypass)) {

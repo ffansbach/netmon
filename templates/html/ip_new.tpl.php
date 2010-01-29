@@ -38,6 +38,8 @@ http://plugins.jquery.com/project/zendjsonrpc
 			}
 		});
 	}
+
+
 </SCRIPT>
 
 {/literal}
@@ -156,12 +158,12 @@ http://plugins.jquery.com/project/zendjsonrpc
 			{/foreach}
 		</select>
 
-	<h2>Reichweite</h2>
+<!--	<h2>Reichweite</h2>
 
   <p>
 	Radius (optional): <input name="radius" type="text" size="5" maxlength="10" value="80"><br>
     Sinnvoll wenn Typ "ip" ist und man die ungefähre Reichweite seines W-Lan-Netzes in metern weiß.</p>
-  </p>
+  </p>-->
 
 	<h1>Service anlegen</h1>
 
@@ -182,14 +184,15 @@ window.onload = function()
 
 <p>
 <label id="typLabel" for="typ">Service:</label>
+{literal}
 <select id="typ" name="typ">
   <option value="false">Bitte wählen:</option>
-  <option value="node">node</option>
-  <option value="vpn">vpn</option>
-  <option value="client">client</option>
-  <option value="service">service</option>
+  <option value="node">Freifunk Knoten</option>
+  <option value="vpn">Vpn-Client</option>
+  <option value="client">Wlan-Client</option>
+  <option value="service">Server</option>
 </select>
-
+{/literal}
 <label id="crawlLabel" for="crawl">Crawlart:</label>
 
 <select id="crawl" name="crawler">
@@ -200,6 +203,7 @@ window.onload = function()
   Portnummer: <input name="port" type="text" size="5" maxlength="10" value="">
 </span> 
 </p>
+<div id="discription" style="display:none">
 <h2>Beschreibung</h2>
   <p>
     <p>Titel:<br><input name="title" type="text" size="40" maxlength="40" value=""><br>
@@ -207,10 +211,9 @@ window.onload = function()
   </p>
 
   <p>
-    <p>Beschreibung: <br><textarea name="description" cols="50" rows="10"></textarea><br>
-    Sinnvoll wenn Typ "service" sowie Port "80" ist und sich hinter der IP eine Website verbirgt. Oder ein VPN-Server, oder ein NFS-Downloadserver usw.</p>
+      Beschreibung: <br><textarea name="description" cols="50" rows="10"></textarea>
   </p>
-  
+</div>
   <h2>Privatsphäre:</h2>
   <p>
     <p>Diesen Service nicht angemeldeten Benutzer zeigen: 
