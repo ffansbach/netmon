@@ -2,10 +2,18 @@
 
 require_once('lib/classes/extern/jsonRPCClient.php');
 
-$ip = "10.18.1.1";
-$GLOBALS['netmon_url'] = "http://localhost/netmon_trunk/";
+if(!empty($_GET['ip']))
+	$ip = $_GET['ip'];
+else 
+	$ip = "10.18.1.1";
 
-$api_router_config = new jsonRPCClient($GLOBALS['netmon_url']."api_router_config.php");
+if(!empty($_GET['netmon_url']))
+	$netmon_url = $_GET['netmon_url'];
+else 
+	$netmon_url = "http://netmon.freifunk-ol.de/";
+
+
+$api_router_config = new jsonRPCClient($netmon_url."api_router_config.php");
 
 try {
 	$ip_id = $api_router_config->getIpIdByIp($ip);
@@ -18,7 +26,11 @@ try {
 	echo nl2br($e->getMessage());
 }
 
-echo "This is the dumped unformatted output of the PHP method print_r():<br><br>";
+echo "This is the dumped unformatted output of the PHP method print_r():<br>
+You can fetch the data of another ip from another installation with sample_get_api_router_config.php?ip=YourIP&netmon_url=YourURLToNetmon<br><br>";
+
+echo "Netmon-URL: $GLOBALS[netmon_url]<br>
+IP: $ip<br><br>";
 
 echo "<pre>";
 	echo "IP Informations:<br>";
