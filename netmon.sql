@@ -1,16 +1,16 @@
 -- phpMyAdmin SQL Dump
--- version 3.2.3
+-- version 3.2.5
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 26, 2010 at 09:42 PM
--- Server version: 5.1.41
--- PHP Version: 5.2.12-2
+-- Generation Time: Jan 30, 2010 at 01:56 AM
+-- Server version: 5.1.42
+-- PHP Version: 5.3.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Database: `freifunksql5`
+-- Database: `netmon_trunk`
 --
 
 -- --------------------------------------------------------
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `crawl_data` (
   `olsrd_routes` text NOT NULL,
   `olsrd_topology` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `history` (
   `create_date` datetime NOT NULL,
   `data` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -136,6 +136,7 @@ CREATE TABLE IF NOT EXISTS `services` (
 DROP TABLE IF EXISTS `subnets`;
 CREATE TABLE IF NOT EXISTS `subnets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subnet_type` varchar(10) NOT NULL,
   `host` varchar(15) NOT NULL,
   `netmask` int(11) NOT NULL,
   `real_host` varchar(15) NOT NULL,
@@ -157,6 +158,7 @@ CREATE TABLE IF NOT EXISTS `subnets` (
   `vpn_server_cert` text NOT NULL,
   `vpn_server_key` text NOT NULL,
   `vpn_server_pass` varchar(255) NOT NULL,
+  `ftp_sync` tinyint(4) NOT NULL,
   `ftp_ccd_folder` varchar(200) NOT NULL,
   `ftp_ccd_username` varchar(20) NOT NULL,
   `ftp_ccd_password` varchar(30) NOT NULL,
