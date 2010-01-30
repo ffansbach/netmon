@@ -21,7 +21,7 @@
 // +---------------------------------------------------------------------------+/
 
 /**
- * This file contains the class to crawl the IP's from the Database
+ * This file contains the class to crawl the IP's from the database
  *
  * @author	Clemens John <clemens-john@gmx.de>
  * @version	0.1
@@ -32,17 +32,21 @@
 
 //For Informations take a look at: http://luci.freifunk-halle.net/Documentation/JsonRpcHowTo
 
-  /**
-  * KONFIGURATION
-  */
+/**
+* Configuration
+*/
 
-  //FREIFUNKNETZ
-  $GLOBALS['net_prefix'] = "10.18";
+//The URL to your Netmon installation
+$GLOBALS['netmon_url'] = "http://netmon.freifunk-ol.de/";
 
-  //Login-Data
-  $GLOBALS['nickname'] = "crawler";
-  $GLOBALS['password'] = "ff26ol";
-  $GLOBALS['netmon_url'] = "http://netmon.freifunk-ol.de/";
+//Login-Data
+//This must be a Netmon user with root permissions!
+$GLOBALS['nickname'] = "crawler";
+$GLOBALS['password'] = "password";
+
+/**
+* Crawl class
+*/
 
 class JsonDataCollector {
   function file_get_contents_curl($url) {
@@ -71,7 +75,16 @@ class JsonDataCollector {
   }
 
 	public function crawl($service_typ) {
-		//Hole Services
+		//get communkty informations
+		$api_router_config = new jsonRPCClient($GLOBALS['netmon_url']."api_router_config.php");
+		try {
+			$community_info = $api_router_config->getCommunityInfo();
+			$GLOBALS['net_prefix'] = $community_info['net_prefix'];
+		} catch (Exception $e) {
+			echo nl2br($e->getMessage());
+		}
+
+		//get services
 		$api_main = new jsonRPCClient($GLOBALS['netmon_url']."api_main.php");
 		try {
 			$services = $api_main->getAllServiceIDsByServiceType($service_typ);
@@ -112,7 +125,7 @@ class JsonDataCollector {
 				}
 			}
 
-			//Send Data
+			//Send data
 			$api_crawl = new jsonRPCClient($GLOBALS['netmon_url']."api_crawl.php");
 			try {
 				$ergebnis = $api_crawl->receive($GLOBALS['nickname'], $GLOBALS['password'], $service['service_id'], $current_crawl_data);
