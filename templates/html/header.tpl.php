@@ -37,7 +37,7 @@
 	<div id="topmenu">
 		{if !$installation_mode}
 			{foreach item=topmenu from=$top_menu}
-				<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}" target="_blank">{$topmenu.name}</a></span>
+				<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}">{$topmenu.name}</a></span>
 			{/foreach}
 				<span class="topmenubox">|</span>
 			{foreach item=loginOutMenu from=$loginOutMenu}
@@ -55,10 +55,10 @@
 		{if $installation_mode}
 			<div class="user_menus">
 				{if isset($installation_menu)}
-					&nbsp;&nbsp;&nbsp;&nbsp;<u>Installationsmenü</u>
+					&nbsp;&nbsp;&nbsp;&nbsp;<b>Installationsmenü</b>
 					<ul>
 						{foreach item=menu from=$installation_menu}
-							</li><a href="{$menu.href}">{$menu.name}</a><li>
+							<li><a href="{$menu.href}">{$menu.name}</a></li>
 						{/foreach}
 					</ul>
 				{/if}
@@ -66,7 +66,7 @@
 		{/if}
 		{if !$installation_mode}
 			<div class="user_menus">
-				&nbsp;&nbsp;&nbsp;&nbsp;<u>Navigation</u>
+				&nbsp;&nbsp;&nbsp;&nbsp;<b>Navigation</b>
 				<ul>
 					{foreach item=normalmenu from=$normal_menu}
 						<li><a href="{$normalmenu.href}">{$normalmenu.name}</a></li>
@@ -78,7 +78,7 @@
 		{if !$installation_mode}
 			<div class="user_menus">
 				{if isset($user_menu)}
-					&nbsp;&nbsp;&nbsp;&nbsp;<u>Benutzermenü</u>
+					&nbsp;&nbsp;&nbsp;&nbsp;<b>Benutzermenü</b>
 					<ul>
 						{foreach item=usermenu from=$user_menu}
 							<li><a href="{$usermenu.href}">{$usermenu.name}</a></li>
@@ -90,10 +90,10 @@
 		{if !$installation_mode}
 			<div class="user_menus">
 				{if isset($admin_menu)}
-					&nbsp;&nbsp;&nbsp;&nbsp;<u>Adminmenü</u>
+					&nbsp;&nbsp;&nbsp;&nbsp;<b>Adminmenü</b>
 					<ul>
 						{foreach item=menu from=$admin_menu}
-							</li><a href="{$menu.href}">{$menu.name}</a><li>
+							<li><a href="{$menu.href}">{$menu.name}</a></li>
 						{/foreach}
 					</ul>
 				{/if}
@@ -102,10 +102,10 @@
 		{if !$installation_mode}
 			<div class="user_menus">
 				{if isset($root_menu)}
-					&nbsp;&nbsp;&nbsp;&nbsp;<u>Rootmenü</u>
+					&nbsp;&nbsp;&nbsp;&nbsp;<b>Rootmenü</b>
 					<ul>
 						{foreach item=menu from=$root_menu}
-							</li><a href="{$menu.href}">{$menu.name}</a><li>
+							<li><a href="{$menu.href}">{$menu.name}</a></li>
 						{/foreach}
 					</ul>
 				{/if}
