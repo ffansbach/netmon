@@ -219,3 +219,9 @@
 
 	<p><input type="submit" value="Absenden"></p>
 </form>
+
+<form action="./subneteditor.php?section=delete&subnet_id={$subnet_data.id}" method="POST">
+  <h2>Subnet Löschen?</h2>
+  Ja <input type="checkbox" name="delete" value="true">
+  <p><input type="submit" value="Löschen!"></p>
+</form>
