@@ -33,8 +33,8 @@ require_once("./lib/classes/core/subnet.class.php");
 
 class SubnetEditor {
 	public function createNewSubnet($data) {
-		$result = DB::getInstance()->exec("INSERT INTO subnets (subnet_type, host, netmask, real_host, real_netmask, dhcp_kind, user_id, title, description, essid, bssid, channel, website, polygons, vpn_server, vpn_server_port, vpn_server_device, vpn_server_proto, vpn_server_ca, vpn_server_cert, vpn_server_key, vpn_server_pass, ftp_sync, ftp_ccd_folder, ftp_ccd_username, ftp_ccd_password, create_date)
-										   VALUES ('$_POST[subnet_type]', '$data[host]', '$data[netmask]', '$data[real_host]', '$data[real_netmask]', '$data[dhcp_kind]', '$_SESSION[user_id]', '$data[title]', '$data[description]', '$_POST[essid]', '$_POST[bssid]', '$_POST[channel]', '$_POST[website]', '$data[polygons]', '$data[vpn_server]','$data[vpn_server_port]', '$data[vpn_server_device]', '$data[vpn_server_proto]', '$data[vpn_server_ca]', '$data[vpn_server_cert]', '$data[vpn_server_key]', '$data[vpn_server_pass]', '$data[ftp_sync]', '$data[ftp_ccd_folder]', '$data[ftp_ccd_username]', '$data[ftp_ccd_password]', NOW());");
+		$result = DB::getInstance()->exec("INSERT INTO subnets (subnet_type, host, netmask, real_host, real_netmask, dhcp_kind, user_id, title, description, dns_server, essid, bssid, channel, website, polygons, vpn_server, vpn_server_port, vpn_server_device, vpn_server_proto, vpn_server_ca, vpn_server_cert, vpn_server_key, vpn_server_pass, ftp_sync, ftp_ccd_folder, ftp_ccd_username, ftp_ccd_password, create_date)
+										   VALUES ('$_POST[subnet_type]', '$data[host]', '$data[netmask]', '$data[real_host]', '$data[real_netmask]', '$data[dhcp_kind]', '$_SESSION[user_id]', '$data[title]', '$data[description]', '$_POST[dns_server]', '$_POST[essid]', '$_POST[bssid]', '$_POST[channel]', '$_POST[website]', '$data[polygons]', '$data[vpn_server]','$data[vpn_server_port]', '$data[vpn_server_device]', '$data[vpn_server_proto]', '$data[vpn_server_ca]', '$data[vpn_server_cert]', '$data[vpn_server_key]', '$data[vpn_server_pass]', '$data[ftp_sync]', '$data[ftp_ccd_folder]', '$data[ftp_ccd_username]', '$data[ftp_ccd_password]', NOW());");
 		$subnet_id = DB::getInstance()->lastInsertId();
 		if ($result>0) {
 			$message[] = array("Das Subnetz ".$GLOBALS['net_prefix'].".".$data['host']."/".$data['netmask']." wurde in die Datenbank eingetragen.", 1);
@@ -48,27 +48,33 @@ class SubnetEditor {
 	}
 
 	public function updateSubnet($data) {
-		$result = DB::getInstance()->exec("UPDATE subnets
-										   SET host = '$data[host]',
-											   real_netmask = '$data[real_netmask]',
-											   real_host = '$data[real_host]',
-											   netmask = '$data[netmask]',
-											   dhcp_kind = '$data[dhcp_kind]',
-											   title = '$data[title]',
-											   description = '$data[description]',
-											   polygons = '$data[polygons]',
-											   vpn_server ='$data[vpn_server]',
-											   vpn_server_port = '$data[vpn_server_port]',
-											   vpn_server_device = '$data[vpn_server_device]',
-											   vpn_server_proto = '$data[vpn_server_proto]',
-											   vpn_server_ca = '$data[vpn_server_ca]',
-											   vpn_server_cert = '$data[vpn_server_cert]',
-											   vpn_server_key = '$data[vpn_server_key]',
-											   vpn_server_pass = '$data[vpn_server_pass]',
-											   ftp_ccd_folder = '$data[ftp_ccd_folder]',
-											   ftp_ccd_username = '$data[ftp_ccd_username]',
-											   ftp_ccd_password = '$data[ftp_ccd_password]'
-										   WHERE id = '$_GET[id]'");
+		$result = DB::getInstance()->exec("UPDATE subnets SET
+							subnet_type = '$_POST[subnet_type]',
+							host = '$data[host]',
+							netmask = '$data[netmask]',
+							real_host = '$data[real_host]',
+							real_netmask = '$data[real_netmask]',
+							dhcp_kind = '$data[dhcp_kind]',
+							title = '$data[title]',
+							description = '$data[description]',
+							dns_server = '$_POST[dns_server]',
+							essid = '$_POST[essid]',
+							bssid = '$_POST[bssid]',
+							channel = '$_POST[channel]',
+							website = '$_POST[website]',
+							polygons = '$data[polygons]',
+							vpn_server ='$data[vpn_server]',
+							vpn_server_port = '$data[vpn_server_port]',
+							vpn_server_device = '$data[vpn_server_device]',
+							vpn_server_proto = '$data[vpn_server_proto]',
+							vpn_server_ca = '$data[vpn_server_ca]',
+							vpn_server_cert = '$data[vpn_server_cert]',
+							vpn_server_key = '$data[vpn_server_key]',
+							vpn_server_pass = '$data[vpn_server_pass]',
+							ftp_ccd_folder = '$data[ftp_ccd_folder]',
+							ftp_ccd_username = '$data[ftp_ccd_username]',
+							ftp_ccd_password = '$data[ftp_ccd_password]'
+						WHERE id = '$_GET[id]'");
 		if ($result>0) {
 			$message[] = array("Das Subnetz ".$subnet." wurde geändert.", 1);
 			Message::setMessage($message);
@@ -250,7 +256,7 @@ echo "subnet_rope_bcast: ".$subnet_rope[$new_subnet_bcast]."<br>";
 			$ftp_ccd_username = "";
 			$ftp_ccd_password = "";
 		} elseif ($_POST['vpn_kind']=='other') {
-			$vpn_data = Helper::getSubnetDataBySubnetID($_POST['vpnserver_from_project']);
+			$vpn_data = Helper::getSubnetById($_POST['vpnserver_from_project']);
 			$vpn_server = $vpn_data['vpn_server'];
 			$vpn_server_port = $vpn_data['vpn_server_port'];
 			$vpn_server_device = $vpn_data['vpn_server_device'];
@@ -311,7 +317,7 @@ echo "subnet_rope_bcast: ".$subnet_rope[$new_subnet_bcast]."<br>";
 			IpEditor::deleteIp($ip['id']);
 		}
 		
-		$subnet_data = Helper::getSubnetDataBySubnetID($subnet_id);
+		$subnet_data = Helper::getSubnetById($subnet_id);
 		DB::getInstance()->exec("DELETE FROM subnets WHERE id='$subnet_id';");
 		$message[] = array("Das Subnetz $GLOBALS[net_prefix].$subnet_data[host]/$subnet_data[netmask] wurde gelöscht.",1);
 		Message::setMessage($message);

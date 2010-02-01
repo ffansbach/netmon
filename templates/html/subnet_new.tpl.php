@@ -107,6 +107,9 @@
 		<textarea name="description" cols="57" rows="3"></textarea>
 	</p>
 
+	<p>DNS Server (durch Leerzeichen getrennt):<br>
+		<input name="dns_server" type="text" size="50">
+
 	<div id="wlan" style="display:block">
 	<p>Projekt SSID:<br>
 		<input name="essid" type="text" size="20">
@@ -195,9 +198,9 @@
 		<p>Device:<br><input name="vpn_server_device" type="text" size="5"></p>
 		
 		<h3>Daten zu eigenen VPN-Zertifikaten</h3>
-		<p>Server CA.CRT:<br><textarea name="vpn_server_ca" cols="50" rows="10">{$subnet_data.vpn_cacrt}</textarea></p>
-		<p>Server Cert:<br><textarea name="vpn_server_cert" cols="50" rows="10">{$subnet_data.vpn_cacrt}</textarea></p>
-		<p>Server Key:<br><textarea name="vpn_server_key" cols="50" rows="10">{$subnet_data.vpn_cacrt}</textarea></p>
+		<p>Server CA.CRT:<br><textarea name="vpn_server_ca" cols="50" rows="10"></textarea></p>
+		<p>Server Cert:<br><textarea name="vpn_server_cert" cols="50" rows="10"></textarea></p>
+		<p>Server Key:<br><textarea name="vpn_server_key" cols="50" rows="10"></textarea></p>
 		
 		<p>Passphrase:<br><input name="vpn_server_pass" type="password" size="30"></p>
 

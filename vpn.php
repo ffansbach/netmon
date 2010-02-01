@@ -22,11 +22,12 @@
 	if ($_GET['section'] == "generate") {
 		$ip = Helper::getIpDataByIpId($_GET['ip_id']);
 		UserManagement::isOwner($smarty, $ip['user_id']);
-		$keys = $Vpn->generateKeys($_GET['ip_id'], $_POST['organizationalunitname'], $_POST['commonname'], $_POST['emailaddress'], $_POST['privkeypass'], $_POST['privkeypass_chk'], $_POST['numberofdays']);
+		$keys = Vpn::generateKeys($_GET['ip_id'], $_POST['organizationalunitname'], $_POST['commonname'], $_POST['emailaddress'], $_POST['privkeypass'], $_POST['privkeypass_chk'], $_POST['numberofdays']);
 		if ($keys['return']) {
-			$Vpn->saveKeysToDB($_GET['ip_id'], $keys['vpn_client_cert'], $keys['vpn_client_key']);
-			$Vpn->writeCCD($_GET['ip_id']);
-			$Vpn->downloadKeyBundle($_GET['ip_id']);
+			Vpn::saveKeysToDB($_GET['ip_id'], $keys['vpn_client_cert'], $keys['vpn_client_key']);
+			Vpn::writeCCD($_GET['ip_id']);
+//			Vpn::downloadKeyBundle($_GET['ip_id']);
+			header('Location: ./vpn.php?section=download&ip_id='.$_GET['ip_id']);
 		} else {
 			header('Location: ./vpn.php?section=new&ip_id='.$_GET['ip_id']);
 		}
@@ -43,7 +44,7 @@
 			$message[] = array("Warscheinlich müssen haben sie die Keys noch nicht erstellt.", 2);
 			Message::setMessage($message);
 			header('Location: ./ip.php?id='.$_GET['ip_id']);
-    	}
+		}
 	}
 
 /*    if ($_GET['section'] == "edit") {

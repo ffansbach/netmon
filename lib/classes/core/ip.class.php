@@ -39,6 +39,22 @@ class Ip {
     return $servicelist;
   }
 
+  public function insertStatus($current_crawl_data, $ip_id) {
+		$sql = "UPDATE ips SET ";
+		if (!empty($current_crawl_data['location'])) {
+			$sql .= "location = '$current_crawl_data[location]',";
+		}
+		if (!empty($current_crawl_data['location'])) {
+			$sql .= "longitude = '$current_crawl_data[longitude]',";
+		}
+		if (!empty($current_crawl_data['location'])) {
+			$sql .= "latitude = '$current_crawl_data[latitude]',";
+		}
+		$sql .= " WHERE id = '$ip_id';";
+		DB::getInstance()->exec($sql);
+    return true;
+  }
+
 }
 
 ?>

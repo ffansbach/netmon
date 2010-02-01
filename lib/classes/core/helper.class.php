@@ -31,9 +31,9 @@
 class Helper {
 	public function getIpInfo($id) {
 		try {
-			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.dhcp_host, ips.dhcp_netmask, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.create_date,
+			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.dhcp_host, ips.dhcp_netmask, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.location, ips.longitude, ips.latitude, ips.chipset, ips.create_date,
 						   users.nickname,
-						   subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask
+						   subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
 					FROM ips
 					LEFT JOIN users ON (users.id=ips.user_id)
 					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
@@ -46,6 +46,23 @@ class Helper {
 		}
 		$ip['is_ip_owner'] = UserManagement::isThisUserOwner($ip['user_id']);
 		return $ip;
+	}
+
+	public function getIpsByUserIDThatCanVPN($user_id) {
+		try {
+			$sql = "SELECT ips.id as ip_id, ips.ip, subnets.title as subnet_title
+					FROM ips
+					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
+					WHERE ips.user_id='$user_id' AND ips.vpn_client_cert!='' AND ips.vpn_client_key!='' AND subnets.vpn_server_ca!=''";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$ips[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $ips;
 	}
   
   public function getIpDataByIpId($id) {
@@ -77,6 +94,12 @@ class Helper {
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
+
+		$subnet['last_ip'] = SubnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+		$subnet['first_ip'] = SubnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+		$subnet['hosts_total'] = SubnetCalculator::getHostsTotal($subnet['netmask']);
+		$subnet['broadcast'] = SubnetCalculator::getDqBcast($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
+
 		return $subnet;
 	}
 
@@ -409,7 +432,7 @@ class Helper {
 	public function getServiceDataByServiceId($service_id) {
 		try {
 			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.use_netmons_url, services.url, services.create_date,
-			       ips.ip, ips.zone_start, ips.zone_end,
+			       ips.id as ip_id, ips.ip, ips.zone_start, ips.zone_end,
 			       subnets.id as subnet_id, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email
 			       FROM  services
@@ -425,20 +448,6 @@ class Helper {
 		catch(PDOException $e) {
 		  echo $e->getMessage();
 		}
-		return $service;
-	}
-
-	public function getSubnetDataBySubnetID($subnet_id) {
-		try {
-			$sql = "SELECT *
-			        FROM  subnets
-			        WHERE subnets.id=$subnet_id";
-			$result = DB::getInstance()->query($sql);
-			$service = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		};
 		return $service;
 	}
 
