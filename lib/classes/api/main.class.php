@@ -10,7 +10,7 @@ class Main {
 	}
 
 	public function subnet_info($subnet_id) {
-		return(Helper::getSubnetDataBySubnetID($subnet_id));
+		return(Helper::getSubnetById($subnet_id));
 	}
 
 	public function getAllServiceIDsByServiceType($type) {

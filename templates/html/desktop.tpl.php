@@ -74,23 +74,25 @@
 {if !empty($subnetlist)}
 <h2>Meine Projekte</h2>
 
-<div id="ipitem" style="width: 410px; overflow: hidden;">
+<div id="ipitem" style="width: 480px; overflow: hidden;">
   <div nstyle="white-space: nowrap;">
     <div style="float:left; width: 200px;"><b>Name</b></div>
     <div style="float:left; width: 100px;"><b>Subnetz</b></div>
     <div style="float:left; width: 50px;"><b>Typ</b></div>
     <div style="float:left; width: 60px;"><b>Status</b></div>
+    <div style="float:left; width: 70px;"><b>Aktionen</b></div>
   </div>
 </div>
 
 
 {foreach key=count item=subnetlist from=$subnetlist}
-<div id="ipitem" style="width: 410px; overflow: hidden;">
+<div id="ipitem" style="width: 480px; overflow: hidden;">
   <div style="white-space: nowrap;">
     <div style="float:left; width: 200px;"><a href="./subnet.php?id={$subnetlist.id}">{$subnetlist.title}</a></div>
     <div style="float:left; width: 100px;"><a href="./subnet.php?id={$subnetlist.id}">{$net_prefix}.{$subnetlist.host}/{$subnetlist.netmask}</a></div>
     <div style="float:left; width: 50px;">{$subnetlist.subnet_type}</div>
     <div style="float:left; width: 60px;">-/-</div>
+    <div style="float:left; width: 70px;"><a href="./subneteditor.php?section=edit&id={$subnetlist.id}">editieren</a></div>
   </div>
 </div>
 {/foreach}

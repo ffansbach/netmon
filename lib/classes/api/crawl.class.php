@@ -1,6 +1,7 @@
 <?php
 
 require_once("./lib/classes/core/service.class.php");
+require_once("./lib/classes/core/ip.class.php");
 require_once("./lib/classes/core/login.class.php");
 
 class Crawl {
@@ -12,6 +13,10 @@ class Crawl {
 		if(UserManagement::isThisUserOwner($service_data['user_id'], $session['user_id']) OR $session['permission']==120) {
 			service::insertStatus($crawl_data, $service_id);
 			service::clearCrawlDatabase($service_id);
+
+			if($service_data['crawler']=='json') {
+				Ip::insertStatus($current_crawl_data, $service_data['ip_id']);
+			}
 
 			service::makeHistoryEntry($crawl_data, $service_id);
 			service::clearHistory($service_id);

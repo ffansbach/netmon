@@ -1,16 +1,16 @@
 -- phpMyAdmin SQL Dump
--- version 3.2.5
+-- version 3.2.3
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 30, 2010 at 01:56 AM
--- Server version: 5.1.42
--- PHP Version: 5.3.1
+-- Generation Time: Feb 01, 2010 at 11:27 PM
+-- Server version: 5.1.41
+-- PHP Version: 5.2.12-2
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Database: `netmon_trunk`
+-- Database: `freifunksql5`
 --
 
 -- --------------------------------------------------------
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `crawl_data` (
   `olsrd_routes` text NOT NULL,
   `olsrd_topology` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `history` (
   `create_date` datetime NOT NULL,
   `data` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `ips` (
   `location` varchar(60) NOT NULL,
   `longitude` varchar(15) NOT NULL,
   `latitude` varchar(15) NOT NULL,
-  `chipset` varchar(20) NOT NULL,
+  `chipset` varchar(40) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
@@ -150,6 +150,7 @@ CREATE TABLE IF NOT EXISTS `subnets` (
   `channel` int(11) NOT NULL,
   `website` varchar(200) NOT NULL,
   `polygons` text NOT NULL,
+  `dns_server` varchar(200) NOT NULL,
   `vpn_server` varchar(100) DEFAULT NULL,
   `vpn_server_port` int(11) NOT NULL,
   `vpn_server_device` varchar(10) NOT NULL,
