@@ -147,7 +147,7 @@
 			<div id="map" style="height:200px; width:400px; border:solid 1px black;font-size:9pt;">
 				<script type="text/javascript">
 					newsubnet_map();
-					AddKmlLayer("Bisherige Netzwerklocation", "./api.php?class=apiMap&section=getSubnetPolygons&subnet_id={$subnet_data.id}");
+					AddKmlLayer("Netzwerklocation", "./api.php?class=apiMap&section=getSubnetPolygons&subnet_id={$subnet_data.id}");
 				</script>
 			</div>
 		</div>

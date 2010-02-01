@@ -310,8 +310,8 @@ function newsubnet_map() {
 
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
                 map.addControl(new OpenLayers.Control.MousePosition());
-				map.addControl(new OpenLayers.Control.PanZoomBar());
-
+				map.addControl(new OpenLayers.Control.PanPanel());
+				map.addControl(new OpenLayers.Control.ZoomPanel());
 
 
 
