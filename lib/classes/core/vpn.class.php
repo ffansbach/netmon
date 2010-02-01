@@ -178,7 +178,7 @@ class Vpn {
 
   public function writeCCD($ip_id, $ccd_content=false) {
 	$ip_data = Helper::getIpDataByIpId($ip_id);
-	$subnet_data = Helper::getSubnetDataBySubnetID($ip_data['subnet_id']);
+	$subnet_data = Helper::getSubnetById($ip_data['subnet_id']);
 	if (empty($subnet_data['real_netmask'])) {
 		$netmask = SubnetCalculator::getNmask($subnet_data['netmask']);
 	} else {

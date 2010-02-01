@@ -11,5 +11,5 @@
 </p>
 
 <h2>Download</h2>
-<a href="./scripts/imgbuild/dest/{$ip_data.ip_id}_{$time}/openwrt-atheros-root.squashfs" >openwrt-atheros-root.squashfs</a><br>
-<a href="./scripts/imgbuild/dest/{$ip_data.ip_id}_{$time}/openwrt-atheros-vmlinux.lzma" >openwrt-atheros-vmlinux.lzma</a>
+<a href="./scripts/imgbuild/dest/{$imagepath}/openwrt-atheros-root.squashfs" >openwrt-atheros-root.squashfs</a><br>
+<a href="./scripts/imgbuild/dest/{$imagepath}/openwrt-atheros-vmlinux.lzma" >openwrt-atheros-vmlinux.lzma</a>

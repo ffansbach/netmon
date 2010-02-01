@@ -1,5 +1,7 @@
 <?php
 
+require_once($path.'lib/classes/core/subnetcalculator.class.php');
+
 class RouterConfig {
 	public function getIpDataByIpId($ip_id){
 		return(Helper::getIpDataByIpId($ip_id));
@@ -21,8 +23,9 @@ class RouterConfig {
 		return array('net_prefix'=>$GLOBALS['net_prefix'], 'community_name'=>$GLOBALS['community_name'], 'community_website'=>$GLOBALS['community_website']);
 	}
 
-
-
+	public function getDqNetmaskByCdr($cdr_nmask) {
+		return SubnetCalculator::getNmask($cdr_nmask);
+	}
 }
 
 ?>
