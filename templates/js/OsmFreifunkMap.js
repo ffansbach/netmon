@@ -1,4 +1,5 @@
 var map;
+var layerNetwork;
 
 // default settings
 var lon = 8.214340209960938;
@@ -27,15 +28,36 @@ function onFeatureUnselect(feature) {
 }
 
 function AddKmlLayer(name, url) {
-	// Add KML layer containing the nodes
-	layerNodes = new OpenLayers.Layer.GML(name, url,
-		{format: OpenLayers.Format.KML, formatOptions: { extractStyles: true, extractAttributes: true } });
-	map.addLayer(layerNodes);
+	if(name == "Netzwerklocation") {
+		layerNetwork = new OpenLayers.Layer.Vector(name, {
+			protocol: new OpenLayers.Protocol.HTTP({
+				url: url,
+				format: new OpenLayers.Format.KML({extractStyles: true})
+			}),
+			strategies: [new OpenLayers.Strategy.Fixed()],
+			eventListeners: { 'loadend': NetworkLayerLoaded }
+		});
+		map.addLayer(layerNetwork);
+	} else {
+		var layerNodes = new OpenLayers.Layer.Vector(name, {
+			protocol: new OpenLayers.Protocol.HTTP({
+				url: url,
+				format: new OpenLayers.Format.KML({extractStyles: true})
+			}),
+			strategies: [new OpenLayers.Strategy.Fixed()]
+		});
 
-	// Define bubbles
-	selectControl = new OpenLayers.Control.SelectFeature(layerNodes, {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
-	map.addControl(selectControl);
-	selectControl.activate();
+		map.addLayer(layerNodes);
+
+		// Define bubbles
+		selectControl = new OpenLayers.Control.SelectFeature(layerNodes, {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
+		map.addControl(selectControl);
+		selectControl.activate();
+	}
+}
+
+function NetworkLayerLoaded(){
+	map.zoomToExtent(layerNetwork.getDataExtent());
 }
 
 /*function SubnetLayer(name, lon, lat, radius) {
@@ -237,8 +259,8 @@ function subnetmap() {
 	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
 	map.setCenter(point, zoom);
 
-                map.addControl(new OpenLayers.Control.LayerSwitcher());
-                map.addControl(new OpenLayers.Control.MousePosition());
+	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	map.addControl(new OpenLayers.Control.MousePosition());
 }
 
 function newsubnet_map() {
