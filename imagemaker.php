@@ -1,6 +1,8 @@
 <?php
 require_once('./config/runtime.inc.php');
 require_once('lib/classes/extern/jsonRPCClient.php');
+require_once('./lib/classes/extern/archive.class.php');
+
 require_once($path.'lib/classes/core/subnetcalculator.class.php');
 if ($_GET['section'] == "new") {
 	$netmon_url = "http://netmon.freifunk-ol.de/";
@@ -68,6 +70,29 @@ if ($_GET['section'] == "new") {
 		$smarty->display("header.tpl.php");
 		$smarty->display("image_generate.tpl.php");
 		$smarty->display("footer.tpl.php");
+}
+ elseif($_GET['section'] == "download_config") {
+      $ip_data = Helper::getIpDataByIpId($_GET['ip_id']);
+      // Objekt erzeugen. Das Argument bezeichnet den Dateinamen
+      $zipfile= new zip_file($GLOBALS['net_prefix'].".".$ip_data['ip']."_config.zip");
+
+      // Die Optionen
+      $zipfile->set_options(array (
+        'basedir' => "./scripts/imgbuild/dest/$_GET[imagepath]/root-atheros/etc/config/",
+        'followlinks' => 0, // (Symlinks)
+        'inmemory' => 1, // Make the File in RAM
+        'level' => 6, // Level 1 = fast, Level 9 = good
+        'recurse' => 1, // Recursive
+        'maxsize' => 12*1024*1024 // Zip only data that is <= 12 MB big becuse og php memory limit
+      ));
+
+      $zipfile->add_files(array("*"));
+
+      // Make zip
+      $zipfile->create_archive();
+
+      // download zip
+      $zipfile->download_file();
 }
 
 ?>

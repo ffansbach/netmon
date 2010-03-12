@@ -3,7 +3,7 @@
 
 <!--<a href="#">Online Ips</a>&nbsp|&nbsp<a href="#">Alle Ips</a>&nbsp|&nbsp<a href="#">Offline Ips</a>&nbsp|&nbsp<a href="#">Viel besuchte Ips</a>-->
 
-<h2>Ipstandorte auf einen Blick</h2>
+<h2>Freifunk Knoten auf einen Blick</h2>
 
 	<div style="margin-right: 10px;">
 		<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>

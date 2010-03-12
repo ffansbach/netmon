@@ -68,10 +68,10 @@ class Login {
 
 					//Autologin (remember me)
 					if($remember AND empty($openid)) {
-						setcookie ("nickname", $nickname, time() + 3000000);
-						setcookie ("password_hash", $password, time() + 3000000);
+						setcookie ("nickname", $nickname, time() + 60*60*24*14);
+						setcookie ("password_hash", $password, time() + 60*60*24*14);
 					} elseif($remember AND !empty($openid)) {
-						setcookie ("openid", $openid, time() + 3000000);
+						setcookie ("openid", $openid, time() + 60*60*24*14);
 					}
 
 					return array('result'=>true, 'user_id'=>$user_data['id'], 'permission'=>$user_data['permission'], 'session_id'=>$session_id);
@@ -90,9 +90,9 @@ class Login {
 			return false;
 		} else {
 			$_SESSION = array();
-			setcookie("nickname", "", time() - 3000000);
-			setcookie("password_hash", "", time() - 3000000);
-			setcookie("openid", "", time() - 3000000);
+			setcookie("nickname", "", time() - 60*60*24*14);
+			setcookie("password_hash", "", time() - 60*60*24*14);
+			setcookie("openid", "", time() - 60*60*24*14);
 
 			$messages[] = array("Sie wurden ausgeloggt und ihre Benutzersession wurde gelöscht!", 1);
 			Message::setMessage($messages);

@@ -15,7 +15,7 @@ class Crawl {
 			service::clearCrawlDatabase($service_id);
 
 			if($service_data['crawler']=='json') {
-				Ip::insertStatus($current_crawl_data, $service_data['ip_id']);
+				Ip::insertStatus($crawl_data, $service_data['ip_id']);
 			}
 
 			service::makeHistoryEntry($crawl_data, $service_id);

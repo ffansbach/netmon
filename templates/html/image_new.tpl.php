@@ -6,7 +6,7 @@
 <h2>Daten zur erstellung des Images:</h2>
 
 
-<form action="./imagemaker.php?section=generate&ip_id={$ip_data.ip_id}" method="POST">
+<form action="./imagemaker.php?section=generate&ip_id={$smarty.get.ip_id}" method="POST">
   <p>Chipset:<br><input name="chipset" type="text" size="30" maxlength="30"  value="{$configdata.chipset}"></p>
   <h2>Netzwerk</h2>
   <p>IP:<br><input name="ip" type="text" size="30" maxlength="30"  value="{$configdata.ip}"></p>

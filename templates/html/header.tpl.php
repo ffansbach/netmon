@@ -4,7 +4,7 @@
 <html>
   <head>
     <TITLE>
-      Freifunk Oldenburg Portal
+      {$site_title}
     </TITLE>
 
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
