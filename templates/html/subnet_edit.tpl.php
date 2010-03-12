@@ -134,7 +134,7 @@
 	</p>
 	</div>
 	<p>Externe Projektseite:<br>
-		<input name="website" type="text" size="20">
+		<input name="website" type="text" size="20" value='{$subnet_data.website}'>
 
 	<h2>Lokale Begrenzung des Projekts</h2>
 	<div style="width: 100%; overflow: hidden;">
@@ -153,7 +153,7 @@
 		</div>
 		
 		<div style="float:left; width: 45%;">
-		<input  id="polygon_location" name="polygons" type="hidden" size="30">
+		<input  id="polygon_location" name="polygons" type="hidden" size="30" value='{$subnet_data.polygons}'>
 		Sie können das Projekt lokal eingenzen indem Sie auf die Karte Klicken und den Bereich des Projektes abstecken.<br>Ein Doppelklick beendet die Bearbeitung.
         </div>
 	</div>

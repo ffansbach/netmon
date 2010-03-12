@@ -40,19 +40,26 @@ class Ip {
   }
 
   public function insertStatus($current_crawl_data, $ip_id) {
+	try {
 		$sql = "UPDATE ips SET ";
 		if (!empty($current_crawl_data['location'])) {
 			$sql .= "location = '$current_crawl_data[location]',";
 		}
-		if (!empty($current_crawl_data['location'])) {
+		if (!empty($current_crawl_data['longitude'])) {
 			$sql .= "longitude = '$current_crawl_data[longitude]',";
 		}
-		if (!empty($current_crawl_data['location'])) {
+		if (!empty($current_crawl_data['latitude'])) {
 			$sql .= "latitude = '$current_crawl_data[latitude]',";
 		}
+		$sql = substr($sql, 0, -1);
 		$sql .= " WHERE id = '$ip_id';";
 		DB::getInstance()->exec($sql);
-    return true;
+
+	}
+	catch(PDOException $e) {
+		$exception = $e->getMessage();
+	}
+	return true;
   }
 
 }
