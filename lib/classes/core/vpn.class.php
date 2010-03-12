@@ -191,7 +191,13 @@ class Vpn {
       $ccd = "./ccd/";
       $handle = fopen($ccd."$CN", "w+");
 		if(!$ccd_content) {
-			$ccd_content = "ifconfig-push $GLOBALS[net_prefix].$ip_data[ip] $netmask";
+			$ccd_content .= "ifconfig-push $GLOBALS[net_prefix].$ip_data[ip] $netmask\n";
+			if(!empty($subnet_data['dns_server'])) {
+				$dns_server = explode(" ", $subnet_data['dns_server']);
+				foreach($dns_server as $dns_serv) {
+					$ccd_content .= "push \"dhcp-option DNS $dns_serv\"\n";
+				}
+			}
 		}
 
 	fwrite($handle, $ccd_content);

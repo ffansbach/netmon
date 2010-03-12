@@ -22,10 +22,12 @@ function LinkedSelection( inputSelects, data )
 		var value = this.selectedValue();
 
 
-if(value=='service') {
-document.getElementById('discription').style.display = 'block';
-} else if (value=='false' || value=='node' || value=='vpn' || value=='client') {
-document.getElementById('discription').style.display = 'none';
+if (isNaN(document.getElementById('discription'))) {
+  if(value=='service') {
+    document.getElementById('discription').style.display = 'block';
+  } else if (value=='false' || value=='node' || value=='vpn' || value=='client') {
+    document.getElementById('discription').style.display = 'none';
+  }
 }
 
 

@@ -107,8 +107,8 @@ SubnetCalculator::tr('HostMax:', '<font color="blue">'.SubnetCalculator::bintodq
     }
 
     if ($_GET['section'] == "insert_edit") {
-/*		if (UserManagement::checkPermission(32)) {
-			$checkdata = $SubnetEditor->checkSubnetData();
+		if (UserManagement::checkPermission(32)) {
+			$checkdata = $SubnetEditor->checkSubnetData(true);
 			if ($checkdata) {
 				$subnet_result = $SubnetEditor->updateSubnet($checkdata);
 				header('Location: ./subnet.php?id='.$_GET['id']);
@@ -116,12 +116,17 @@ SubnetCalculator::tr('HostMax:', '<font color="blue">'.SubnetCalculator::bintodq
 				header('Location: ./subneteditor.php?section=edit&id='.$_GET['id']);
 			}
 
-
+/*			if ($SubnetEditor->checkSubnetData($_POST['subnet'], $_POST['vpnserver'], $_POST['vpnserver_from_project'], $_POST['vpnserver_from_project_check'], $_POST['no_vpnserver_check'], $_POST['vpn_cacrt'])) {
+				$SubnetEditor->updateSubnet($_POST['subnet'],  $_POST['vpnserver'], $_POST['vpnserver_from_project'], $_POST['vpnserver_from_project_check'], $_POST['no_vpnserver_check'], $_POST['title'], $_POST['description'], $_POST['longitude'], $_POST['latitude'], $_POST['radius'], $POST['vpn_cacrt']);
+				header('Location: ./subnet.php?id='.$_GET['id']);
+			} else {
+				header('Location: ./subneteditor.php?section=edit&id='.$_GET['id']);
+			}*/
 		} else {
 			$message[] = array("Nur Administratoren dürfen Subnetze editieren!", 2);
 			Message::setMessage($message);
 			header('Location: ./login.php');
-		}*/
+		}
 	}
 
     if ($_GET['section'] == "delete") {

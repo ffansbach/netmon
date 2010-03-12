@@ -82,7 +82,7 @@
 					var zoom = 15;
 					{literal}
 						/* Initialize Map */
-						fullmap();
+						ipmap();
 						
 						/* Zoom to the subnet's center */
 						point = new OpenLayers.LonLat(lon, lat);

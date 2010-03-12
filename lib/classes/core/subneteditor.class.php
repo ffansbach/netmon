@@ -204,7 +204,7 @@ echo "subnet_rope_bcast: ".$subnet_rope[$new_subnet_bcast]."<br>";
 		return false;
 	}
 
-	public function checkSubnetData() {
+	public function checkSubnetData($edit=false) {
 		if($_POST['subnet_kind'] == "simple") {
 
 			$netmask = $_POST['only_netmask'];
@@ -226,7 +226,7 @@ echo "subnet_rope_bcast: ".$subnet_rope[$new_subnet_bcast]."<br>";
 			 $netmask = $_POST['netmask'];
 
 			//Check if the chosen subnet is still free
-			if(!SubnetEditor::checkIfSubnetIsFree($GLOBALS['net_prefix'].".".$host, $netmask)) {
+			if(!SubnetEditor::checkIfSubnetIsFree($GLOBALS['net_prefix'].".".$host, $netmask) AND !$edit) {
 				$message[] = array("Das Subnetz ist schon belegt, bitte wählen Sie ein anderes",2);
 			}
 		}
