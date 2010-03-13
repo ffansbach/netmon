@@ -168,13 +168,7 @@ memory_caching,
 memory_buffering,
 memory_free,
 loadavg,
-processes,
-olsrd_hna,
-olsrd_neighbors,
-olsrd_links,
-olsrd_mid,
-olsrd_routes,
-olsrd_topology
+processes
 ) VALUES (
 '$service_id',
 NOW(),
@@ -203,15 +197,9 @@ NOW(),
 '$current_crawl_data[memory_buffering]',
 '$current_crawl_data[memory_free]',
 '$current_crawl_data[loadavg]',
-'$current_crawl_data[processes]',
-'$current_crawl_data[olsrd_hna]',
-'$current_crawl_data[olsrd_neighbors]',
-'$current_crawl_data[olsrd_links]',
-'$current_crawl_data[olsrd_mid]',
-'$current_crawl_data[olsrd_routes]',
-'$current_crawl_data[olsrd_topology]'
+'$current_crawl_data[processes]'
 );");
-    return true;
+    return DB::getInstance()->lastInsertId();
   }
 
 	public function clearCrawlDatabase($service_id) {

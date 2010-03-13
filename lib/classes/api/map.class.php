@@ -124,13 +124,13 @@ class ApiMap {
 							}
 							$data = Helper::getServiceDataByServiceId($service['service_id']);
 							$clients=0;
-							if (is_array($crawl['neightbors'])) {
+							/*if (is_array($crawl['neightbors'])) {
 								foreach ($crawl['neightbors'] as $neightbor) {
 									if ($neightbor['2HopNeightbors']) {
 										$clients++;
 									}
 								}
-							}
+							}*/
 							$iplist[] = array_merge($crawl, $data, array('clients'=>$clients));
 						}
 					}
@@ -148,7 +148,7 @@ class ApiMap {
 								$xw->startElement('description');
 									$entry['ips'] = $entry['zone_end']-$entry['zone_start']+1;
 									$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
-												   DHCP-Range: $entry[zone_start]-$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
+												   DHCP-Range: $entry[zone_start]-$entry[zone_end] ($entry[ips] IP's)<br>
 												   SSID: $entry[ssid]<br>
 												   Beschreibung: $entry[description]<br>
 												   Letzter Crawl: $entry[crawl_time]<br>";
@@ -345,8 +345,12 @@ class ApiMap {
 						//Hole Alle Services vom Typ ip die Online sind
 						$services = Helper::getServicesByType("node");
 						foreach ($services as $key1=>$service) {
-							$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+							$crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
+							$olsr_data = Olsr::getOlsrCrawlDataByCrawlId($crawl_data['id']);
+							$data = array_merge($crawl_data, $olsr_data);
+
 							if ($data['status']=='online') {
+								$data['olsrd_neighbors'] = unserialize($data['olsrd_neighbors']);
 								foreach($data['olsrd_neighbors'] as $key2=>$neighbours) {
 									//Hole die Service-ID der Nachbarips
 									$tmp1 = 'IP address';
@@ -394,44 +398,14 @@ class ApiMap {
 	}
 
 	public function getOnlineAndOfflineServiceKML() {
+		$time1 = microtime();
 		header('Content-type: text/xml');
 		$xw = new xmlWriter();
 		$xw->openMemory();
 		$xw->startDocument('1.0','UTF-8');
 			$xw->startElement ('kml'); 
 				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
-				$xw->startElement('Document');   
-					$xw->writeElement ('name', '200903170407-200903170408');
-					$xw->startElement('Style');
-					$xw->writeAttribute( 'id', 'lineStyleCreated');
-					$xw->startElement('PolyStyle');
-						$xw->writeRaw('<color>0000ffff</color>');
-					$xw->endElement();
-					$xw->startElement('LineStyle');
-						$xw->writeRaw('<color>cc00ffff</color>');
-						$xw->writeRaw('<width>2</width>');
-					$xw->endElement();
-				$xw->endElement();
-				$xw->startElement('Style');
-					$xw->writeAttribute( 'id', 'lineStyleModified');
-					$xw->startElement('PolyStyle');
-						$xw->writeRaw('<color>00ff0000</color>');
-					$xw->endElement();
-					$xw->startElement('LineStyle');
-						$xw->writeRaw('<color>ccff0000</color>');
-						$xw->writeRaw('<width>3</width>');
-					$xw->endElement();
-				$xw->endElement();
-				$xw->startElement('Style');
-					$xw->writeAttribute( 'id', 'lineStyleDeleted');
-					$xw->startElement('PolyStyle');
-						$xw->writeRaw('<color>000000ff</color>');
-					$xw->endElement();
-					$xw->startElement('LineStyle');
-						$xw->writeRaw('<color>cc0000ff</color>');
-						$xw->writeRaw('<width>4</width>');
-					$xw->endElement();
-				$xw->endElement();
+
 				$xw->startElement('Style');
 					$xw->writeAttribute( 'id', 'sh_green-pushpin');
 					$xw->startElement('IconStyle');
@@ -440,17 +414,6 @@ class ApiMap {
 							$xw->writeRaw('<href>./templates/img/ffmap/ip.png</href>');
 						$xw->endElement();
 					$xw->endElement();
-				$xw->endElement();
-				$xw->startElement('Style');
-					$xw->writeAttribute( 'id', 'sh_blue-pushpin');
-					$xw->startElement('IconStyle');
-						$xw->writeRaw('<scale>0.5</scale>');
-						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted.png</href>');
-						$xw->endElement();
-					$xw->endElement();
-				$xw->endElement();
-				$xw->startElement('ListStyle');
 				$xw->endElement();
 				$xw->startElement('Style');
 					$xw->writeAttribute( 'id', 'sh_blue-pushpin');
@@ -504,129 +467,86 @@ class ApiMap {
 					$xw->startElement('name');
 						$xw->writeRaw('create');
 					$xw->endElement();
-						
+
 					$services = Helper::getServicesByType("node");
-//-------------
 
-
-						foreach ($services as $service) {
-							$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-							if ($data['status']=='offline') {
-								$crawl = Helper::getLastOnlineCrawlDataByServiceId($service['service_id']);
-								if (!is_array($crawl)) {
-									$crawl = array();
-								} 
-								$data = Helper::getServiceDataByServiceId($service['service_id']);
-								$iplist[] = array_merge($crawl, $data);
-							}
+					foreach ($services as $service) {
+						//Get current crawl data
+						try {
+							$sql = "SELECT *
+								FROM crawl_data
+							        WHERE service_id='$service[service_id]'
+								ORDER BY id DESC LIMIT 1";
+							$result = DB::getInstance()->query($sql);
+							$current_crawl = $result->fetch(PDO::FETCH_ASSOC);
+							if(empty($current_crawl['status']))
+								$current_crawl['status'] = "unbekannt";
+						}
+						catch(PDOException $e) {
+							echo $e->getMessage();
 						}
 						
-						foreach($iplist as $entry) {
-							$entry['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($entry['crawl_time']));
-							if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
-								if(!empty($entry['title']))
-									$title =  "($entry[title])";
-								else
-									$title = "";
-								$xw->startElement('Placemark');
-									$xw->startElement('name');
-										$xw->writeRaw("<![CDATA[Ip <a href='./ip.php?id=$entry[ip_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
-									$xw->endElement();
-									$xw->startElement('description');
-									$box_inhalt = "<b>Position:</b> <span style=\"color: red;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
+						if ($current_crawl['status']=='online') {
+							$iplist[] = array_merge($current_crawl, $service);
+						} elseif ($current_crawl['status']=='offline') {
+							try {
+								$sql = "SELECT * FROM crawl_data
+									WHERE service_id='$service[service_id]' AND status='online' ORDER BY id DESC LIMIT 1";
+								$result = DB::getInstance()->query($sql);
+								$last_online_crawl = $result->fetch(PDO::FETCH_ASSOC);
+								$last_online_crawl['status'] = "offline";
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+							}
+							
+							$iplist[] = array_merge($last_online_crawl, $service);
+						}
+					}
+	
+					foreach($iplist as $entry) {
+						$entry['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($entry['crawl_time']));
+						if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
+							if(!empty($entry['title']))
+								$title =  "($entry[title])";
+							else
+								$title = "";
+							$xw->startElement('Placemark');
+								$xw->startElement('name');
+									$xw->writeRaw("<![CDATA[Ip <a href='./ip.php?id=$entry[ip_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
+								$xw->endElement();
+								$xw->startElement('description');
+									if ($entry['status']=='online') {
+										$box_inhalt = "<b>Position:</b> <span style=\"color: green;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
+												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end] ($entry[ips] IP's)<br>
+												   <b>SSID:</b> $entry[ssid]<br>
+												   <b>Standortbeschreibung:</b> $entry[location]<br>
+												   <b>Letzter Crawl:</b> $entry[crawl_time]<br>";
+										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
+									} elseif ($entry['status']=='offline') {
+										$box_inhalt = "<b>Position:</b> <span style=\"color: red;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
 												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end]<br>
 												   <b>SSID:</b> $entry[ssid]<br>
 												   <b>Standortbeschreibung:</b> $entry[location]<br>
 													<b style=\"color: red;\">Diese Ip ist offline!</b><br>
 												   <b>Letztes Mal online:</b> $entry[crawl_time]<br>";
-/*										$box_inhalt = "Benutzer: <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
-													   DHCP-Range: $entry[zone_start]-$entry[zone_end]<br>
-													   <br><b>Dieser Ip ist offline</b><br>
-													   Letztes mal online: $entry[crawl_time]<br>";*/
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
-									$xw->endElement();
-									$xw->startElement('styleUrl');
-									if(isset($_GET['highlighted_service']) AND $_GET['highlighted_service']==$entry['service_id'])
-										$xw->writeRaw('#sh_blue-pushpin');
-									elseif(isset($_GET['highlighted_subnet']) AND $_GET['highlighted_subnet']==$entry['subnet_id'])
-										$xw->writeRaw('#sh_ip_offline_highlighted_pushpin');
-									else
-										$xw->writeRaw('#sh_red-pushpin');
-									$xw->endElement();
-									$xw->startElement('Point');
-										$xw->startElement('coordinates');
-											$xw->writeRaw("$entry[longitude],$entry[latitude],0");
-										$xw->endElement();
-									$xw->endElement();
-								$xw->endElement();
-							}
-						}
-
-//-----------------------------------------------------------------
-						unset($iplist);
-						unset($data);
-						unset($crawl);
-						unset($entry);
-
-					foreach ($services as $service) {
-						$data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-						if ($data['status']=='online') {
-							$crawl = $data;
-							if(!is_array($crawl)) {
-								$crawl = array();
-							}
-							$data = Helper::getServiceDataByServiceId($service['service_id']);
-							$clients=0;
-							if (is_array($crawl['olsrd_neighbors'])) {
-								foreach ($crawl['olsrd_neighbors'] as $neightbor) {
-									$tmp = '2 Hop Neighbors';
-									if ($neightbor[$tmp]==0) {
-										$clients++;
 									}
-								}
-							}
-							$iplist[] = array_merge($crawl, $data, array('clients'=>$clients));
-						}
-					}
-					foreach($iplist as $entry) {
-						$entry['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($entry['crawl_time']));
-						if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
-							$xw->startElement('Placemark');
-								$xw->startElement('name');
-									if(!empty($entry['title']))
-										$title =  "($entry[title])";
-									else
-										$title = "";
-									$xw->writeRaw("<![CDATA[Ip <a href='./ip.php?id=$entry[ip_id]'>$GLOBALS[net_prefix].$entry[ip]</a> $title]]>");
-								$xw->endElement();
-								$xw->startElement('description');
-
-									$zone_start = explode(".", $entry['zone_start']);
-									$zone_end = explode(".", $entry['zone_end']);
-
-									$entry['ips'] = 0;
-									for($i = $zone_start[0]; $i<=$zone_end[0]; $i++) {
-										for($ii = $zone_start[1]; $ii<=$zone_end[1]; $ii++) {
-											$entry['ips']++;
-										}
-									}
-
-									$box_inhalt = "<b>Position:</b> <span style=\"color: green;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
-												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
-												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end] ($entry[ips] IP's, $entry[clients] davon belegt)<br>
-												   <b>SSID:</b> $entry[ssid]<br>
-												   <b>Standortbeschreibung:</b> $entry[location]<br>
-												   <b>Letzter Crawl:</b> $entry[crawl_time]<br>";
-									$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 								$xw->endElement();
 								$xw->startElement('styleUrl');
 									if(isset($_GET['highlighted_service']) AND $_GET['highlighted_service']==$entry['service_id'])
 										$xw->writeRaw('#sh_blue-pushpin');
 									elseif(isset($_GET['highlighted_subnet']) AND $_GET['highlighted_subnet']==$entry['subnet_id'])
-										$xw->writeRaw('#sh_ip_highlighted_pushpin');
-									else
-										$xw->writeRaw('#sh_green-pushpin');
+										$xw->writeRaw('#sh_ip_offline_highlighted_pushpin');
+									else {
+										if ($entry['status']=='online') {
+											$xw->writeRaw('#sh_green-pushpin');
+										} elseif ($entry['status']=='offline') {
+											$xw->writeRaw('#sh_red-pushpin');
+										}
+									}
 								$xw->endElement();
 								$xw->startElement('Point');
 									$xw->startElement('coordinates');
@@ -636,7 +556,323 @@ class ApiMap {
 							$xw->endElement();
 						}
 					}
-//-----------------
+				$xw->endElement();
+			$xw->endElement();
+		$xw->endDocument();
+		
+		print $xw->outputMemory(true);
+		return true;
+	}
+
+	public function getOnlineServiceKML() {
+		header('Content-type: text/xml');
+		$xw = new xmlWriter();
+		$xw->openMemory();
+		$xw->startDocument('1.0','UTF-8');
+			$xw->startElement ('kml'); 
+				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_green-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_blue-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_ip_highlighted_pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted_1.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_ip_offline_highlighted_pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_offline_hightlighted_1.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_red-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+								$xw->writeRaw('<href>./templates/img/ffmap/ip_offline.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+
+
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Folder');
+					$xw->startElement('name');
+						$xw->writeRaw('create');
+					$xw->endElement();
+
+					$services = Helper::getServicesByType("node");
+
+					foreach ($services as $service) {
+						//Get current crawl data
+						try {
+							$sql = "SELECT *
+								FROM crawl_data
+							        WHERE service_id='$service[service_id]'
+								ORDER BY id DESC LIMIT 1";
+							$result = DB::getInstance()->query($sql);
+							$current_crawl = $result->fetch(PDO::FETCH_ASSOC);
+							if(empty($current_crawl['status']))
+								$current_crawl['status'] = "unbekannt";
+						}
+						catch(PDOException $e) {
+							echo $e->getMessage();
+						}
+						
+						if ($current_crawl['status']=='online') {
+							$iplist[] = array_merge($current_crawl, $service);
+						}
+					}
+	
+					foreach($iplist as $entry) {
+						$entry['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($entry['crawl_time']));
+						if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
+							if(!empty($entry['title']))
+								$title =  "($entry[title])";
+							else
+								$title = "";
+							$xw->startElement('Placemark');
+								$xw->startElement('name');
+									$xw->writeRaw("<![CDATA[Ip <a href='./ip.php?id=$entry[ip_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
+								$xw->endElement();
+								$xw->startElement('description');
+									if ($entry['status']=='online') {
+										$box_inhalt = "<b>Position:</b> <span style=\"color: green;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
+												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end] ($entry[ips] IP's)<br>
+												   <b>SSID:</b> $entry[ssid]<br>
+												   <b>Standortbeschreibung:</b> $entry[location]<br>
+												   <b>Letzter Crawl:</b> $entry[crawl_time]<br>";
+										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
+									} elseif ($entry['status']=='offline') {
+										$box_inhalt = "<b>Position:</b> <span style=\"color: red;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
+												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end]<br>
+												   <b>SSID:</b> $entry[ssid]<br>
+												   <b>Standortbeschreibung:</b> $entry[location]<br>
+													<b style=\"color: red;\">Diese Ip ist offline!</b><br>
+												   <b>Letztes Mal online:</b> $entry[crawl_time]<br>";
+										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
+									}
+								$xw->endElement();
+								$xw->startElement('styleUrl');
+									if(isset($_GET['highlighted_service']) AND $_GET['highlighted_service']==$entry['service_id'])
+										$xw->writeRaw('#sh_blue-pushpin');
+									elseif(isset($_GET['highlighted_subnet']) AND $_GET['highlighted_subnet']==$entry['subnet_id'])
+										$xw->writeRaw('#sh_ip_offline_highlighted_pushpin');
+									else {
+										if ($entry['status']=='online') {
+											$xw->writeRaw('#sh_green-pushpin');
+										} elseif ($entry['status']=='offline') {
+											$xw->writeRaw('#sh_red-pushpin');
+										}
+									}
+								$xw->endElement();
+								$xw->startElement('Point');
+									$xw->startElement('coordinates');
+										$xw->writeRaw("$entry[longitude],$entry[latitude],0");
+									$xw->endElement();
+								$xw->endElement();
+							$xw->endElement();
+						}
+					}
+				$xw->endElement();
+			$xw->endElement();
+		$xw->endDocument();
+		
+		print $xw->outputMemory(true);
+		return true;
+	}
+
+	public function getOfflineServiceKML() {
+		header('Content-type: text/xml');
+		$xw = new xmlWriter();
+		$xw->openMemory();
+		$xw->startDocument('1.0','UTF-8');
+			$xw->startElement ('kml'); 
+				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_green-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_blue-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_ip_highlighted_pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted_1.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_ip_offline_highlighted_pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_offline_hightlighted_1.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_red-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+								$xw->writeRaw('<href>./templates/img/ffmap/ip_offline.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+
+
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Folder');
+					$xw->startElement('name');
+						$xw->writeRaw('create');
+					$xw->endElement();
+
+					$services = Helper::getServicesByType("node");
+
+					foreach ($services as $service) {
+						//Get current crawl data
+						try {
+							$sql = "SELECT *
+								FROM crawl_data
+							        WHERE service_id='$service[service_id]'
+								ORDER BY id DESC LIMIT 1";
+							$result = DB::getInstance()->query($sql);
+							$current_crawl = $result->fetch(PDO::FETCH_ASSOC);
+							if(empty($current_crawl['status']))
+								$current_crawl['status'] = "unbekannt";
+						}
+						catch(PDOException $e) {
+							echo $e->getMessage();
+						}
+						
+						 if ($current_crawl['status']=='offline') {
+							try {
+								$sql = "SELECT * FROM crawl_data
+									WHERE service_id='$service[service_id]' AND status='online' ORDER BY id DESC LIMIT 1";
+								$result = DB::getInstance()->query($sql);
+								$last_online_crawl = $result->fetch(PDO::FETCH_ASSOC);
+								$last_online_crawl['status'] = "offline";
+							}
+							catch(PDOException $e) {
+								echo $e->getMessage();
+							}
+							
+							$iplist[] = array_merge($last_online_crawl, $service);
+						}
+					}
+	
+					foreach($iplist as $entry) {
+						$entry['crawl_time'] = Helper::makeSmoothIplistTime(strtotime($entry['crawl_time']));
+						if (!empty($entry['longitude']) AND !empty($entry['latitude'])) {
+							if(!empty($entry['title']))
+								$title =  "($entry[title])";
+							else
+								$title = "";
+							$xw->startElement('Placemark');
+								$xw->startElement('name');
+									$xw->writeRaw("<![CDATA[Ip <a href='./ip.php?id=$entry[ip_id]'>$GLOBALS[net_prefix].$entry[ip]</a>]]>");
+								$xw->endElement();
+								$xw->startElement('description');
+									if ($entry['status']=='online') {
+										$box_inhalt = "<b>Position:</b> <span style=\"color: green;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
+												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end] ($entry[ips] IP's)<br>
+												   <b>SSID:</b> $entry[ssid]<br>
+												   <b>Standortbeschreibung:</b> $entry[location]<br>
+												   <b>Letzter Crawl:</b> $entry[crawl_time]<br>";
+										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
+									} elseif ($entry['status']=='offline') {
+										$box_inhalt = "<b>Position:</b> <span style=\"color: red;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
+												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
+												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end]<br>
+												   <b>SSID:</b> $entry[ssid]<br>
+												   <b>Standortbeschreibung:</b> $entry[location]<br>
+													<b style=\"color: red;\">Diese Ip ist offline!</b><br>
+												   <b>Letztes Mal online:</b> $entry[crawl_time]<br>";
+										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
+									}
+								$xw->endElement();
+								$xw->startElement('styleUrl');
+									if(isset($_GET['highlighted_service']) AND $_GET['highlighted_service']==$entry['service_id'])
+										$xw->writeRaw('#sh_blue-pushpin');
+									elseif(isset($_GET['highlighted_subnet']) AND $_GET['highlighted_subnet']==$entry['subnet_id'])
+										$xw->writeRaw('#sh_ip_offline_highlighted_pushpin');
+									else {
+										if ($entry['status']=='online') {
+											$xw->writeRaw('#sh_green-pushpin');
+										} elseif ($entry['status']=='offline') {
+											$xw->writeRaw('#sh_red-pushpin');
+										}
+									}
+								$xw->endElement();
+								$xw->startElement('Point');
+									$xw->startElement('coordinates');
+										$xw->writeRaw("$entry[longitude],$entry[latitude],0");
+									$xw->endElement();
+								$xw->endElement();
+							$xw->endElement();
+						}
+					}
 				$xw->endElement();
 			$xw->endElement();
 		$xw->endDocument();
