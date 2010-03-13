@@ -3,6 +3,7 @@
 require_once("./lib/classes/core/service.class.php");
 require_once("./lib/classes/core/ip.class.php");
 require_once("./lib/classes/core/login.class.php");
+require_once("./lib/classes/core/olsr.class.php");
 
 class Crawl {
 	public function receive($nickname, $password, $service_id, $crawl_data) {
@@ -11,7 +12,8 @@ class Crawl {
 		$service_data = Helper::getServiceDataByServiceId($service_id);
 		//If is owning user or if root
 		if(UserManagement::isThisUserOwner($service_data['user_id'], $session['user_id']) OR $session['permission']==120) {
-			service::insertStatus($crawl_data, $service_id);
+			$crawl_id = service::insertStatus($crawl_data, $service_id);
+			Olsr::insertOlsrData($crawl_id, $service_id, $crawl_data);
 			service::clearCrawlDatabase($service_id);
 
 			if($service_data['crawler']=='json') {

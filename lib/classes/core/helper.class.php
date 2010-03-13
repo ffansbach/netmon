@@ -160,15 +160,15 @@ class Helper {
 
     $services = array();
 	try {
-		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler, services.use_netmons_url, services.url,
-				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
-				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
-				      users.nickname
-			       FROM services
-			       LEFT JOIN ips ON (ips.id = services.ip_id)
-			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
-			       LEFT JOIN users ON (users.id = ips.user_id)
-			       WHERE services.typ='$type' $visible ORDER BY services.id";
+		$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.use_netmons_url, services.url, services.create_date,
+			       ips.id as ip_id, ips.ip, ips.zone_start, ips.zone_end,			       
+			       subnets.id as subnet_id, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
+			       users.id as user_id, users.nickname, users.email
+			FROM services
+			LEFT JOIN ips ON (ips.id = services.ip_id)
+			LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
+			LEFT JOIN users ON (users.id = ips.user_id)
+			WHERE services.typ='$type' $visible ORDER BY services.id";
 		$result = DB::getInstance()->query($sql);
 		
 		foreach($result as $row) {
@@ -441,9 +441,7 @@ class Helper {
 			       LEFT JOIN users ON (users.id=ips.user_id)
 			       WHERE services.id=$service_id";
 			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$service = $row;
-			}
+			$service = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
 		  echo $e->getMessage();
@@ -520,37 +518,31 @@ class Helper {
 			$sql = "SELECT * FROM crawl_data
 					WHERE service_id='$service_id' AND status='online' ORDER BY id DESC LIMIT 1";
 			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$row['olsrd_neighbors'] = unserialize($row['olsrd_neighbors']);
-				$last_online_crawl = $row;
-			}
+			$last_online_crawl = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
 		  echo $e->getMessage();
-		};
+		}
 		return $last_online_crawl;
 	}
 
 	public function getCurrentCrawlDataByServiceId($service_id) {
 		try {
-			$sql = "SELECT id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, olsrd_hna, olsrd_neighbors, olsrd_links, olsrd_mid, olsrd_routes, olsrd_topology 
+			$sql = "SELECT id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes 
 				FROM crawl_data
 			        WHERE service_id='$service_id'
 					ORDER BY id DESC LIMIT 1";
 			$result = DB::getInstance()->query($sql);
-			$last_crawl = $result->fetch(PDO::FETCH_ASSOC);
+			$current_crawl = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		$last_crawl['olsrd_neighbors'] = unserialize($last_crawl['olsrd_neighbors']);
-		$last_crawl['olsrd_routes'] = unserialize($last_crawl['olsrd_routes']);
-		$last_crawl['olsrd_topology'] = unserialize($last_crawl['olsrd_topology']);
 
-		if(empty($last_crawl['status']))
-			$last_crawl['status'] = "unbekannt";
+		if(empty($current_crawl['status']))
+			 $current_crawl['status'] = "unbekannt";
 
-		return $last_crawl;
+		return $current_crawl;
 	}
 	
 	function object2array($object) {

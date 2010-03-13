@@ -169,8 +169,8 @@ class JsonDataCollector {
 		$current_crawl_data['cpu'] = $json_obj['system']['sysinfo'][1];
 		$current_crawl_data['network'] = serialize($json_obj['network']);
 		$current_crawl_data['wireless_interfaces'] = serialize($json_obj['wireless']['interfaces']);
-		$current_crawl_data['uptime'] = round(($json_obj['system']['uptime'][0])/60/60, 2);
-		$current_crawl_data['idletime'] = round(($json_obj['system']['uptime'][1])/60/60, 2);
+		$current_crawl_data['uptime'] = $json_obj['system']['uptime'][0];
+		$current_crawl_data['idletime'] = $json_obj['system']['uptime'][1];
 		$current_crawl_data['memory_total'] = $json_obj['system']['sysinfo'][2];
 		$current_crawl_data['memory_caching'] = $json_obj['system']['sysinfo'][3];
 		$current_crawl_data['memory_buffering'] = $json_obj['system']['sysinfo'][4];

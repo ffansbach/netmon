@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 01, 2010 at 11:27 PM
+-- Generation Time: Mar 13, 2010 at 07:35 PM
 -- Server version: 5.1.41
 -- PHP Version: 5.2.12-2
 
@@ -42,20 +42,14 @@ CREATE TABLE IF NOT EXISTS `crawl_data` (
   `cpu` varchar(15) DEFAULT NULL,
   `network` text NOT NULL,
   `wireless_interfaces` text NOT NULL,
-  `uptime` varchar(8) NOT NULL,
-  `idletime` varchar(8) NOT NULL,
+  `uptime` varchar(15) NOT NULL,
+  `idletime` varchar(15) NOT NULL,
   `memory_total` varchar(8) NOT NULL,
   `memory_caching` varchar(8) NOT NULL,
   `memory_buffering` varchar(8) NOT NULL,
   `memory_free` varchar(8) NOT NULL,
   `loadavg` varchar(5) NOT NULL,
   `processes` varchar(7) NOT NULL,
-  `olsrd_hna` text NOT NULL,
-  `olsrd_neighbors` text NOT NULL,
-  `olsrd_links` text NOT NULL,
-  `olsrd_mid` text NOT NULL,
-  `olsrd_routes` text NOT NULL,
-  `olsrd_topology` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
@@ -94,11 +88,30 @@ CREATE TABLE IF NOT EXISTS `ips` (
   `radius` int(11) NOT NULL,
   `vpn_client_cert` text NOT NULL,
   `vpn_client_key` text NOT NULL,
-  `location` varchar(60) NOT NULL,
-  `longitude` varchar(15) NOT NULL,
-  `latitude` varchar(15) NOT NULL,
+  `location` varchar(200) NOT NULL,
+  `longitude` varchar(30) NOT NULL,
+  `latitude` varchar(30) NOT NULL,
   `chipset` varchar(40) NOT NULL,
   `create_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `olsr_crawl_data`
+--
+
+DROP TABLE IF EXISTS `olsr_crawl_data`;
+CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `crawl_id` int(11) NOT NULL,
+  `olsrd_hna` text NOT NULL,
+  `olsrd_neighbors` text NOT NULL,
+  `olsrd_links` text NOT NULL,
+  `olsrd_mid` text NOT NULL,
+  `olsrd_routes` text NOT NULL,
+  `olsrd_topology` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
