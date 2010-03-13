@@ -63,6 +63,8 @@
 				<b>Free memory:</b> {$service_data.current_crawl.memory_free}/{$service_data.last_online_crawl.memory_total} Kb<br>
 				<b>Loadaverage:</b> {$service_data.service_data.current_crawl.loadavg}<br>
 				<b>Processes:</b> {$service_data.current_crawl.processes}<br>
+				<b>Uptime:</b> {$service_data.current_crawl.uptime/60/60} Stunden<br>
+				<b>Idletime:</b> {$service_data.current_crawl.idletime/60/60} Stunden<br>
 			</p>
 		{/if}
     </div>
@@ -115,16 +117,16 @@
 	<p><img src="./tmp/memory_free_history.png"></p>
 {/if}
 -->
-		{if !empty($service_data.current_crawl.olsrd_neighbors)}
+<!--		{if !empty($service_data.current_crawl.olsrd_neighbors)}
 			<h2>Benachbarte IP´s</h2>
 			{assign var="tmp" value="2 Hop Neighbors"}
 			{assign var="tmp2" value="IP address"}
 
 			{foreach key=count item=olsrd_neighbors from=$service_data.current_crawl.olsrd_neighbors}
 <!--		{if $olsrd_neighbors.$tmp eq '0'}<span style="background-color: yellow;">{/if}{if $olsrd_neighbors.netmon_ip_id}<a href="./ip.php?id={$olsrd_neighbors.netmon_ip_id}">{/if}{$olsrd_neighbors.$tmp2}{if $olsrd_neighbors.netmon_ip_id}</a>{/if} {if $olsrd_neighbors.$tmp eq '0'}(Direkter Client)</span>{/if}<br>-->
-		{if $olsrd_neighbors.netmon_is_client==true}<span style="background-color: yellow;">{/if}{if $olsrd_neighbors.netmon_ip_id}<a href="./ip.php?id={$olsrd_neighbors.netmon_ip_id}">{/if}{$olsrd_neighbors.$tmp2}{if $olsrd_neighbors.netmon_ip_id}</a>{/if} {if $olsrd_neighbors.netmon_is_client==true}(Direkter Client)</span>{/if}<br>
+<!--		{if $olsrd_neighbors.netmon_is_client==true}<span style="background-color: yellow;">{/if}{if $olsrd_neighbors.netmon_ip_id}<a href="./ip.php?id={$olsrd_neighbors.netmon_ip_id}">{/if}{$olsrd_neighbors.$tmp2}{if $olsrd_neighbors.netmon_ip_id}</a>{/if} {if $olsrd_neighbors.netmon_is_client==true}(Direkter Client)</span>{/if}<br>
 			{/foreach}
-		{/if}
+		{/if}-->
 
 	</div>
 </div>
