@@ -4,8 +4,54 @@ require_once('lib/classes/extern/jsonRPCClient.php');
 require_once('./lib/classes/extern/archive.class.php');
 
 require_once($path.'lib/classes/core/subnetcalculator.class.php');
-if ($_GET['section'] == "new") {
+if (!$_GET['section']) {
+	$smarty->assign('images', Helper::getImages());
+	$smarty->assign('memory_limit', (ini_get('memory_limit')+0));
+	$smarty->assign('post_max_size', (ini_get('post_max_size')+0));
+	$smarty->assign('upload_max_filesize', (ini_get('upload_max_filesize')+0));
+
+	$smarty->assign('user_ips', Helper::getIpsByUserId($_SESSION['user_id']));
+
+	$smarty->display("header.tpl.php");
+	$smarty->display("imagemaker.tpl.php");
+	$smarty->display("footer.tpl.php");
+} elseif ($_GET['section'] == 'upload_image') {
+	$tmp_name = time();
+
+	move_uploaded_file($_FILES['file']['tmp_name'], "tmp/".$tmp_name."_".$_FILES['file']['name']);
+
+	DB::getInstance()->exec("INSERT INTO imagemaker_images (user_id, title, description, create_date)
+							VALUES ('$_SESSION[user_id]', '$_POST[title]', '$_POST[description]', NOW());");
+	$image_id = DB::getInstance()->lastInsertId();
+
+	mkdir("scripts/imagemaker/images/$image_id", 0777);
+	mkdir("scripts/imagemaker/images/$image_id/preimage", 0777);
+	mkdir("scripts/imagemaker/images/$image_id/configurations", 0777);
+
+	exec("tar -C $_SERVER[DOCUMENT_ROOT]scripts/imagemaker/images/$image_id/preimage/ -xvfz $_SERVER[DOCUMENT_ROOT]tmp/$tmp_name"."_".$_FILES['file']['name']);
+
+//	unlink("tmp/".$tmp_name."_".$_FILES['file']['name']);
+
+} elseif ($_GET['section'] == 'upload_config') {
+	DB::getInstance()->exec("INSERT INTO imagemaker_configs (image_id, user_id, title, description, create_date)
+							VALUES ('$_POST[image_id]', '$_SESSION[user_id]', '$_POST[title]', '$_POST[description]', NOW());");
+	$config_id = DB::getInstance()->lastInsertId();
+
+	$tmp_name = time();
+	move_uploaded_file($_FILES['file']['tmp_name'], "scripts/imagemaker/images/$_POST[image_id]/configurations/$config_id");
+
+} elseif ($_GET['section'] == "new") {
 	$netmon_url = "http://netmon.freifunk-ol.de/";
+
+	$api_main = new jsonRPCClient($netmon_url."api_main.php");
+	try {
+		$images = $api_main->getImages();
+	} catch (Exception $e) {
+		echo nl2br($e->getMessage());
+	}
+
+	$smarty->assign('images', $images);
+
 	$api_router_config = new jsonRPCClient($netmon_url."api_router_config.php");
 	try {
 		$ip_data = $api_router_config->getIpDataByIpId($_GET['ip_id']);
@@ -60,7 +106,18 @@ if ($_GET['section'] == "new") {
 
 		$vpn_ip_data = Helper::getIpDataByIpId($_POST['vpn_ip_id']);
 
-		$build_command = "cd $_SERVER[DOCUMENT_ROOT]/scripts/imgbuild/ && $_SERVER[DOCUMENT_ROOT]/scripts/imgbuild/mkall '$_POST[chipset]' '$_POST[ip]' '$_POST[subnetmask]' '$_POST[dhcp_start]' '$_POST[dhcp_limit]' '$_POST[location]' '$_POST[longitude]' '$_POST[latitude]' '$_POST[essid]' '$_POST[bssid]' '$_POST[channel]' '$_POST[nickname]' '$_POST[vorname] $_POST[nachname]' '$_POST[email]' '$_POST[prefix]' '$_POST[community_name]' '$_POST[community_website]' '$_POST[vpn_ip_id]' '$vpn_ip_data[vpn_server]' '$vpn_ip_data[vpn_server_port]' '$vpn_ip_data[vpn_server_device]' '$vpn_ip_data[vpn_server_proto]' '$vpn_ip_data[vpn_server_ca]' '$vpn_ip_data[vpn_client_cert]' '$vpn_ip_data[vpn_client_key]' '$_POST[imagepath]'";
+		$build_time = time();
+		$build_dir = "imagemaker_$_SESSION[user_id]_$build_time";
+echo "<pre>";
+//		mkdir("tmp/$build_dir", 0777);
+echo "tmp/$build_dir\n";
+//		exec("cp -al $_SERVER[DOCUMENT_ROOT]scripts/imagemaker/images/$image_id/preimage/ $_SERVER[DOCUMENT_ROOT]/tmp/$build_dir/preimage");
+echo "cp -al $_SERVER[DOCUMENT_ROOT]scripts/imagemaker/images/$_POST[image_id]/preimage/ $_SERVER[DOCUMENT_ROOT]tmp/$build_dir/preimage\n";
+//		exec("$_SERVER[DOCUMENT_ROOT]scripts/imagemaker/images/$image_id/configurations/$config_id '$1' '$2' '$3' '$4' '$5' '$6' '$7' '$8' '$9' '${10}' '${11}' '${12}' '${13}' '${14}' '${15}' '${16}' '${17}' '${18}' '${19}' '${20}' '${21}' '${22}' '${23}' '${24}' '${25}' $_SERVER[DOCUMENT_ROOT]/tmp/$build_dir/preimage");
+echo "$_SERVER[DOCUMENT_ROOT]scripts/imagemaker/images/$_POST[image_id]/configurations/$_POST[config_id] '$1' '$2' '$3' '$4' '$5' '$6' '$7' '$8' '$9' '${10}' '${11}' '${12}' '${13}' '${14}' '${15}' '${16}' '${17}' '${18}' '${19}' '${20}' '${21}' '${22}' '${23}' '${24}' '${25}' $_SERVER[DOCUMENT_ROOT]tmp/$build_dir/preimage\n";
+
+echo "</pre>";
+/*		$build_command = "cd $_SERVER[DOCUMENT_ROOT]/scripts/imgbuild/ && $_SERVER[DOCUMENT_ROOT]/scripts/imgbuild/mkall '$_POST[chipset]' '$_POST[ip]' '$_POST[subnetmask]' '$_POST[dhcp_start]' '$_POST[dhcp_limit]' '$_POST[location]' '$_POST[longitude]' '$_POST[latitude]' '$_POST[essid]' '$_POST[bssid]' '$_POST[channel]' '$_POST[nickname]' '$_POST[vorname] $_POST[nachname]' '$_POST[email]' '$_POST[prefix]' '$_POST[community_name]' '$_POST[community_website]' '$_POST[vpn_ip_id]' '$vpn_ip_data[vpn_server]' '$vpn_ip_data[vpn_server_port]' '$vpn_ip_data[vpn_server_device]' '$vpn_ip_data[vpn_server_proto]' '$vpn_ip_data[vpn_server_ca]' '$vpn_ip_data[vpn_client_cert]' '$vpn_ip_data[vpn_client_key]' '$_POST[imagepath]'";
 
 		$last_line = exec($build_command, $retval);
 		
@@ -69,7 +126,7 @@ if ($_GET['section'] == "new") {
 		
 		$smarty->display("header.tpl.php");
 		$smarty->display("image_generate.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("footer.tpl.php");*/
 }
  elseif($_GET['section'] == "download_config") {
       $ip_data = Helper::getIpDataByIpId($_GET['ip_id']);

@@ -1,0 +1,2 @@
+config 'include'
+  option 'path' '/etc/firewall.user'

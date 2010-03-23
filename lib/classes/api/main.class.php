@@ -16,6 +16,22 @@ class Main {
 	public function getAllServiceIDsByServiceType($type) {
 		return(Helper::getAllServiceIDsByServiceType($type));
 	}
+	public function getImages() {
+		return(Helper::getImages());
+	}
+
+	public function getImageByImageId($image_id) {
+		return(Helper::getImageByImageId($image_id));
+	}
+
+	public function getImageConfigsByImageId($image_id) {
+		return(Helper::getImageConfigsByImageId($image_id));
+	}
+
+	public function getImageConfigByConfigId($config_id) {
+		return(Helper::getImageConfigByConfigId($config_id));
+	}
+
 }
 
 ?>
