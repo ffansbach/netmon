@@ -162,7 +162,7 @@ class Helper {
 	try {
 		$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.use_netmons_url, services.url, services.create_date,
 			       ips.id as ip_id, ips.ip, ips.zone_start, ips.zone_end,			       
-			       subnets.id as subnet_id, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
+			       subnets.id as subnet_id, subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email
 			FROM services
 			LEFT JOIN ips ON (ips.id = services.ip_id)
@@ -694,6 +694,74 @@ class Helper {
 		}
 
 		return $checked_ip;
+	}
+	public function getImages() {
+		try {
+			$sql = "SELECT imagemaker_images.id as image_id, imagemaker_images.title,
+				       users.nickname 
+					FROM imagemaker_images
+					LEFT JOIN users ON (users.id=imagemaker_images.user_id)";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$images[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		return $images;
+	}
+
+	public function getImageByImageId($image_id) {
+		try {
+			$sql = "SELECT imagemaker_images.id as image_id, imagemaker_images.title, imagemaker_images.description,
+					users.nickname 
+					FROM imagemaker_images
+					LEFT JOIN users ON (users.id=imagemaker_images.user_id)
+					WHERE imagemaker_images.id=$image_id";
+			$result = DB::getInstance()->query($sql);
+			$image = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $image;
+	}
+
+	public function getImageConfigsByImageId($image_id) {
+		try {
+			$sql = "SELECT imagemaker_configs.id as config_id, imagemaker_configs.title, imagemaker_configs.description,
+					users.nickname 
+					FROM imagemaker_configs
+					LEFT JOIN users ON (users.id=imagemaker_configs.user_id)
+					WHERE imagemaker_configs.image_id=$image_id";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$configs[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		return $configs;
+	}
+
+	public function getImageConfigByConfigId($config_id) {
+		try {
+			$sql = "SELECT imagemaker_configs.id as config_id, imagemaker_configs.title, imagemaker_configs.description,
+					users.nickname 
+					FROM imagemaker_configs
+					LEFT JOIN users ON (users.id=imagemaker_configs.user_id)
+					WHERE imagemaker_configs.id=$config_id";
+			$result = DB::getInstance()->query($sql);
+			$image = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $image;
 	}
 }
 

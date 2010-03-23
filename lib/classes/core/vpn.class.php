@@ -44,6 +44,7 @@ class Vpn {
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
+
 		if (empty($vpn['vpn_server_ca']) OR empty($vpn['vpn_server_cert']) OR empty($vpn['vpn_server_key'])) {
 			$message[] = array("Die Zertifikate konnten nicht generiert werden.", 2);
 			$message[] = array("Der Subnetverwalter muss erst ein Masterzertifikat für das Subnetz erstellen.", 2);
@@ -66,6 +67,7 @@ class Vpn {
 			}
 			
 			$req_key = openssl_pkey_new();
+
 			if(openssl_pkey_export ($req_key, $out_key)) {
 				$req_csr  = openssl_csr_new ($dn, $req_key);
 				$req_cert = openssl_csr_sign($req_csr, $vpn['vpn_server_cert'], $vpn['vpn_server_key'], $expiration);
