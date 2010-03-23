@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 13, 2010 at 07:35 PM
+-- Generation Time: Mar 23, 2010 at 11:48 AM
 -- Server version: 5.1.41
 -- PHP Version: 5.2.12-2
 
@@ -66,6 +66,39 @@ CREATE TABLE IF NOT EXISTS `history` (
   `object_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `data` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `imagemaker_configs`
+--
+
+DROP TABLE IF EXISTS `imagemaker_configs`;
+CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `image_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(250) NOT NULL,
+  `description` text NOT NULL,
+  `create_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `imagemaker_images`
+--
+
+DROP TABLE IF EXISTS `imagemaker_images`;
+CREATE TABLE IF NOT EXISTS `imagemaker_images` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
