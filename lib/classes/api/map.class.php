@@ -27,6 +27,8 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+  require_once('./lib/classes/core/olsr.class.php');
+
 class ApiMap {
 	//Function modified by Floh1111 on 01.11.2009 oldenburg.freifunk.net
 	//Prints a KML file that can be used with OpenStreetmap and the Modified freifunkmap.php
@@ -653,6 +655,7 @@ class ApiMap {
 						}
 						
 						if ($current_crawl['status']=='online') {
+							$current_crawl['olsrd_links'] = Olsr::getCurrentlyEstablishedOLSRConnections($current_crawl['id']);
 							$iplist[] = array_merge($current_crawl, $service);
 						}
 					}
@@ -670,21 +673,30 @@ class ApiMap {
 								$xw->endElement();
 								$xw->startElement('description');
 									if ($entry['status']=='online') {
+										unset($links);
+										foreach ($entry['olsrd_links'] as $olsrd_link) {
+											if ($olsrd_link['Cost']==0)
+												$font_color = '#bb3333';
+											elseif ($olsrd_link['Cost']<4)
+												$font_color = '#00cc00';
+											elseif ($olsrd_link['Cost']<10)
+												$font_color = '#ffcb05';
+											elseif ($olsrd_link['Cost']<100)
+												$font_color = '#ff6600';
+
+											$tmp = 'Remote IP';
+											$links .= "<span style=\"color: $font_color;\">olsr zu ".$olsrd_link[$tmp]." (ETX: $olsrd_link[Cost])</span><br>";
+										}
 										$box_inhalt = "<b>Position:</b> <span style=\"color: green;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
 												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
 												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end] ($entry[ips] IP's)<br>
 												   <b>SSID:</b> $entry[ssid]<br>
 												   <b>Standortbeschreibung:</b> $entry[location]<br>
-												   <b>Letzter Crawl:</b> $entry[crawl_time]<br>";
-										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
-									} elseif ($entry['status']=='offline') {
-										$box_inhalt = "<b>Position:</b> <span style=\"color: red;\">lat: $entry[latitude], lon: $entry[longitude]</span><br>
-												   <b>Benutzer:</b> <a href='./user.php?id=$entry[user_id]'>$entry[nickname]</a><br>
-												   <b>DHCP-Range:</b> $GLOBALS[net_prefix].$entry[zone_start] bis $GLOBALS[net_prefix].$entry[zone_end]<br>
-												   <b>SSID:</b> $entry[ssid]<br>
-												   <b>Standortbeschreibung:</b> $entry[location]<br>
-													<b style=\"color: red;\">Diese Ip ist offline!</b><br>
-												   <b>Letztes Mal online:</b> $entry[crawl_time]<br>";
+												   <b>Letzter Crawl:</b> $entry[crawl_time]<br><br>
+												   <b>Verbindungen:</b><br>
+												    $links
+												    ";
+												   
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 									}
 								$xw->endElement();
