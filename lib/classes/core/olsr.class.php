@@ -24,5 +24,25 @@ class Olsr {
 		}
 		return $data;
 	}
+
+	public function getCurrentlyEstablishedOLSRConnections($crawl_id) {
+		$olsrd_data = Olsr::getOlsrCrawlDataByCrawlId($crawl_id);
+		$olsrd_links = unserialize($olsrd_data['olsrd_links']);
+		
+		if(is_array($olsrd_links)) {
+		$first = array();
+		foreach($olsrd_links as $key=>$olsrd_link) {
+			$first[$key] = $olsrd_link['Cost'];
+		}
+		array_multisort($first, SORT_ASC, $olsrd_links);
+		} else {
+			$olsrd_links = array();
+		}
+		return $olsrd_links;
+	}
+
+	
+
+
 }
 ?>
