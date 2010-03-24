@@ -22,8 +22,8 @@
 		Json: {if $json_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 		Zip: {if $zip_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 		Curl: {if $curl_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		GD: {if $gd_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}
-		OpenSSL: {if $openssl}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}
+		GD: {if $gd_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		OpenSSL: {if $openssl}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 		FTP: {if $ftp}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}
 	</div>
 	<div style="float:left; width: 33%;">

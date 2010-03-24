@@ -138,7 +138,7 @@
 	<h2>Lokale Begrenzung des Projekts</h2>
 	<div style="width: 100%; overflow: hidden;">
 		<div style="float:left; width: 55%;">
-			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
+			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 			<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
