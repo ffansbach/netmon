@@ -47,4 +47,7 @@ $GLOBALS['mysql_querry_log_time'] = 5;
 //Image Generator
 $GLOBALS['imggen_supported_chipsets'][] = "Atheros AR2317";
 
+//Google Maps Api Key
+$GLOBALS['google_maps_api_key'] = 'ABQIAAAACRLdP-ifG9hOW_8o3tqVjBT5NsVQw1hcITWIyu14Fuv7KbvrKhRmX1uacYtrW5R3jOkcGrF76Cjmdg';
+
 ?>

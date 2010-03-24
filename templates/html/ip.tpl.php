@@ -72,7 +72,7 @@
     <div style="float:left; width: 50%;">
 		{if !empty($service_data.last_online_crawl.longitude) AND !empty($service_data.last_online_crawl.latitude)}
 		<h2>Standort (Hellblau markiert)</h2>
-			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ'></script>
+			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 			<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
