@@ -128,6 +128,33 @@
 			{/foreach}
 		{/if}-->
 
+
+
+		{if !empty($service_data.olsrd_links)}
+			<h2>Benachbarte IP´s</h2>
+
+<div id="ipitem" style="width: 370px; overflow: hidden;">
+  <div nstyle="white-space: nowrap;">
+    <div style="float:left; width: 150px;"><b>Neighbour IP</b></div>
+    <div style="float:left; width: 150px;"><b>Local interface IP</b></div>
+    <div style="float:left; width: 70px;"><b>ETX</b></div>
+  </div>
+</div>
+
+			{foreach item=olsrd_links from=$service_data.olsrd_links}
+<div id="ipitem" style="width: 370px; overflow: hidden;">
+  <div style="white-space: nowrap;">
+    {assign var="tmp" value="Remote IP"}
+    <div style="float:left; width: 150px;">{$olsrd_links.$tmp}</div>
+    {assign var="tmp2" value="Local IP"}
+    <div style="float:left; width: 150px;">{$olsrd_links.$tmp2}</div>
+    <div style="float:left; width: 70px; background: {if $olsrd_links.Cost==0}#bb3333{elseif $olsrd_links.Cost<4}#00cc00{elseif $olsrd_links.Cost<10}#ffcb05{elseif $olsrd_links.Cost<100}#ff6600{/if};">{$olsrd_links.Cost}</div>
+  </div>
+</div>
+			{/foreach}
+		{/if}
+
+
 	</div>
 </div>
 
