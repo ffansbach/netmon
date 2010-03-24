@@ -24,10 +24,9 @@ if ($GLOBALS['installed']) {
     $smarty->assign('curl_loaded', extension_loaded('curl'));	
     $smarty->assign('gd_loaded', extension_loaded('gd'));
     $smarty->assign('zip_loaded', extension_loaded('zip'));
+    $smarty->assign('openssl', extension_loaded('openssl'));
+    $smarty->assign('ftp', extension_loaded('ftp'));
     $smarty->assign('exec', function_exists('exec'));
-    $smarty->assign('openssl', function_exists('openssl'));
-    $smarty->assign('ftp', function_exists('ftp'));
-
     $smarty->assign('ezcomponents', class_exists('ezcBase'));
 
     $to = "noreply@noreply.org";

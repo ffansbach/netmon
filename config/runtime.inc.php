@@ -58,6 +58,7 @@
   $dirs[] = 'config/config.local.inc.php';
   $dirs[] = 'log/';
   $dirs[] = 'tmp/';
+  $dirs[] = 'scripts/imagemaker/images/';
 
   $everything_is_writable = true;
   foreach($dirs as $dir) {
@@ -182,5 +183,6 @@
  	}
   //Give often used variables to smarty
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+  $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
   $smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
 ?>
