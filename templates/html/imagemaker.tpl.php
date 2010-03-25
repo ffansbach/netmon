@@ -15,7 +15,7 @@ konfigurieren und Downloaden können.</p>
 	<p>Imagebeschreibung:<br>
 		<textarea name="description" cols="57" rows="3"></textarea>
 	</p>
-	<p>Image-ZIP:<br>
+	<p>Image (*.tar.gz):<br>
 		<input name="file" type="file" size="40">
 	</p>
 	<p><input type="submit" value="Hochladen"></p>
@@ -26,7 +26,7 @@ konfigurieren und Downloaden können.</p>
 	<p>Image der Konfiguration: 
 	<select name="image_id">
 		{foreach item=images from=$images}
-			<option value="{$images.image_id}">{$images.title} ({$images.nickname}</option>
+			<option value="{$images.image_id}">{$images.title} ({$images.nickname} am {$images.create_date})</option>
 		{/foreach}
 	</select>
 	</p>
