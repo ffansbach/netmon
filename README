@@ -1,11 +1,11 @@
-Dies ist die Readme zur ersten Netmon Version, Version 0.1 Codename "first".
+Dies ist die Readme für Netmon, Version 0.2 Beta 1 Codename "Shake-Up".
 Netmon wird als Verwaltungsportal für das Freifunknetzwerk Oldenburg (http://freifunk-ol.de/) enwickelt.
 Mit Netmon lässt sich die Benutzer, Netwerk und Monitoringstruktur eines Freifunknetzes verwalten.
 Netmon steht unter der GPLv3.
 
-Generell über Netmon: http://wiki.freifunk-ol.de/index.php/Netmon
-Systemanforderungen: http://wiki.freifunk-ol.de/index.php/Netmon#Systemanforderungen
-Installationsanleitung: http://wiki.freifunk-ol.de/index.php/Netmon#Installation
+Generell über Netmon: http://wiki.freifunk-ol.de/index.php?title=Netmon
+Systemanforderungen: http://wiki.freifunk-ol.de/index.php?title=Netmon#Systemanforderungen
+Installationsanleitung: http://wiki.freifunk-ol.de/index.php?title=Netmon#Installation
 
 Für Fragen stehe ich unter clemens@freifunk-ol.de zur Verfügung.
 Bugs und Verbesserungsvorschläge bitte unter http://trac.freifunk-ol.de melden.
@@ -13,5 +13,5 @@ Bugs und Verbesserungsvorschläge bitte unter http://trac.freifunk-ol.de melden.
 --
 Erstellt am 29.03.2009 von Floh1111 <clemens@freifunk-ol.de>
 --
-Letztes Update am 07.06.2009 von Floh1111 <clemens@freifunk-ol.de>
+Letztes Update am 25.03.2010 von Floh1111 <clemens@freifunk-ol.de>
 --
