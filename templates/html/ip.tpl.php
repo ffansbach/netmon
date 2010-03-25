@@ -63,8 +63,8 @@
 				<b>Free memory:</b> {$service_data.current_crawl.memory_free}/{$service_data.last_online_crawl.memory_total} Kb<br>
 				<b>Loadaverage:</b> {$service_data.service_data.current_crawl.loadavg}<br>
 				<b>Processes:</b> {$service_data.current_crawl.processes}<br>
-				<b>Uptime:</b> {$service_data.current_crawl.uptime/60/60} Stunden<br>
-				<b>Idletime:</b> {$service_data.current_crawl.idletime/60/60} Stunden<br>
+				<b>Uptime:</b> {$service_data.current_crawl.uptime/60/60|round:1} Stunden<br>
+				<b>Idletime:</b> {$service_data.current_crawl.idletime/60/60|round:1} Stunden<br>
 			</p>
 		{/if}
     </div>
