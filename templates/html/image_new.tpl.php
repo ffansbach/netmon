@@ -64,7 +64,7 @@
 	</p>
 	<p>Informationen zur Konfiguration:<br><span id="config_info">Es sind keine Informationen zur gewählten Konfiguration.</span></p>
 
-  <p>Chipset:<br><input name="chipset" type="text" size="30" maxlength="30"  value="{$configdata.chipset}"></p>
+<!--  <p>Chipset:<br><input name="chipset" type="text" size="30" maxlength="30"  value="{$configdata.chipset}"></p>-->
   <h2>Netzwerk</h2>
   <p>IP:<br><input name="ip" type="text" size="30" maxlength="30"  value="{$configdata.ip}"></p>
   <p>Subnetmask:<br><input name="subnetmask" type="text" size="30" maxlength="30"  value="{$configdata.subnetmask}"></p>
