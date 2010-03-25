@@ -30,7 +30,7 @@ if (!$_GET['section']) {
 	exec($command);
 
 	unlink("tmp/".$tmp_name."_".$_FILES['file']['name']);
-
+	header('Location: imagemaker.php');
 } elseif ($_GET['section'] == 'upload_config') {
 	DB::getInstance()->exec("INSERT INTO imagemaker_configs (image_id, user_id, title, description, create_date)
 							VALUES ('$_POST[image_id]', '$_SESSION[user_id]', '$_POST[title]', '$_POST[description]', NOW());");
@@ -39,6 +39,7 @@ if (!$_GET['section']) {
 	$tmp_name = time();
 	move_uploaded_file($_FILES['file']['tmp_name'], "scripts/imagemaker/configurations/$config_id");
 
+	header('Location: imagemaker.php');
 } elseif ($_GET['section'] == "new") {
 	$netmon_url = "http://$GLOBALS[url_to_netmon]/";
 
