@@ -1,8 +1,0 @@
-config core general
-	option leasetime 1
-
-#config 'iface'
-#  option 'zone' 'freifunk'
-#  option 'network' 'wifi0dhcp
-#  option 'network' 'landhcp'
-
