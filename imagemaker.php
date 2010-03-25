@@ -88,13 +88,8 @@ if (!$_GET['section']) {
 	$configdata['community_name'] = $community_info['community_name'];
 	$configdata['community_website'] = $community_info['community_website'];
 
-	$time = time();	
-	$configdata['imagepath'] = "$_GET[ip_id]_$time";
-
-	$build_command = "cd $_SERVER[DOCUMENT_ROOT]/scripts/imgbuild/ && $_SERVER[DOCUMENT_ROOT]/scripts/imgbuild/mkall '$configdata[chipset]' '$configdata[ip]' '$configdata[subnetmask]' '$configdata[dhcp_start]' '$configdata[dhcp_limit]' '$configdata[location]' '$configdata[longitude]' '$configdata[latitude]' '$configdata[essid]' '$configdata[bssid]' '$configdata[channel]' '$configdata[nickname]' '$configdata[vorname] $configdata[nachname]' '$configdata[email]' '$configdata[prefix]' '$configdata[community_name]' '$configdata[community_website]' '$configdata[imagepath]'";
 	$smarty->assign('vpn_ips', Helper::getIpsByUserIDThatCanVPN($_SESSION['user_id']));
 	$smarty->assign('configdata', $configdata);
-	$smarty->assign('build_command', $build_command);
 
 	$smarty->display("header.tpl.php");
 	$smarty->display("image_new.tpl.php");
@@ -111,7 +106,7 @@ if (!$_GET['section']) {
 		exec("cp -al ".__DIR__."/scripts/imagemaker/images/$_POST[image_id]/* ".__DIR__."/tmp/$build_dir/preimage/");
 		
 		exec("chmod +x ".__DIR__."/scripts/imagemaker/configurations/$_POST[config_id]");
-		exec(__DIR__."/scripts/imagemaker/configurations/$_POST[config_id] '10.18.1.1' '255.255.255.0' '5' '3' 'Hamelmannstraße Ecke Winkelmannstraße auf dem Dachboden' '8.1906080245981' '53.147619716638' 'oldenburg.freifunk.net' '02:CA:FF:EE:BA:BE' '6' 'Floh1111' 'Clemens John' 'clemens-john@gmx.de' '10.18' 'Freifunk Oldenburg' 'http://freifunk-ol.de' 'false' '' '' '' '' '' '' '' '10.18.0.1 10.18.0.254' '".__DIR__."/tmp/$build_dir/preimage/'");
+		exec(__DIR__."/scripts/imagemaker/configurations/$_POST[config_id] '$_POST[ip]' '$_POST[subnetmask]' '$_POST[dhcp_start]' '$_POST[dhcp_limit]' '$_POST[location]' '$_POST[longitude]' '$_POST[latitude]' '$_POST[essid]' '$_POST[bssid]' '$_POST[channel]' '$_POST[nickname]' '$_POST[vorname] $_POST[nachname]' '$_POST[email]' '$_POST[prefix]' '$_POST[community_name]' '$_POST[community_website]' '$_POST[vpn_ip_id]' '$vpn_ip_data[vpn_server]' '$vpn_ip_data[vpn_server_port]' '$vpn_ip_data[vpn_server_device]' '$vpn_ip_data[vpn_server_proto]' '$vpn_ip_data[vpn_server_ca]' '$vpn_ip_data[vpn_client_cert]' '$vpn_ip_data[vpn_client_key]' '208.67.222.222  208.67.220.220' '".__DIR__."/tmp/$build_dir/preimage/'");
 
 		$last_line = exec(__DIR__."/scripts/imagemaker/mkimg '".__DIR__."/scripts/imagemaker/bin' '".__DIR__."/tmp/$build_dir'", $retval);
 
