@@ -18,6 +18,7 @@ Changelog für Netmon 0.1 zu Netmon 0.2 beta 1
 +SUBNETZE: Umfangreicher Subnetcalculator um Netzmasken und Anderes zu berechnen
 +SUBNETZE: VPN CCD ist editierbar
 +SUBNETZE: Netmons CCD Ordner wird per FTP mit dem CCD Ordner des VPN Servers synchronisiert
++SUBNETZE: Autozoom auf geographischen Subnetzlayer
 *IP: Komplettes Redesign der IP-Übersicht
 +IP: Services und IP-Daten zusammengeführt
 +BENUTZER: Neue Datenfelder wie ICQ-Nummer, Name, Vorname, Wohnort, Website etc.
@@ -29,8 +30,10 @@ Changelog für Netmon 0.1 zu Netmon 0.2 beta 1
 *RECHTEYSTE:Festigung des Rechtesystems (Viele Funktionen sind nur noch aufrufbar, wenn der Benutzer die Rechte zum Aufruf besitzt)
 +RECHTEYSTE: Interface um Benutzerrechte zu ändern
 +MAP: Olsrd Verbindungen werden auf der Karte angezeigt
-+MAP: Onlin und Offline Nodes werden Mit Informationen auf der Karte angezeigt
-+IMAGE-GENERAOR: Image-generator hinzugefügt. Ermöglicht das Erstellen und Downloaden vorkonfigurierter Images.
++MAP: Onlin und Offline Nodes werden in zwei verschiedenen Layern mit Informationen auf der Karte angezeigt
++MAP: Olsr Verbindungsinformationen in der Knoteninformation
++MAP: Openstreetmap, Bing und Google Maps Layer
++IMAGE-GENERAOR: Image-generator hinzugefügt. Ermöglicht das Up- und Downloaden vorkonfigurierter Images.
 *CRAWLER: Crawler nutzt neue JSON-RPC API
 *SONSTIGES: Neuer Dateiaufbau
 *SONSTIGES: Umstellung auf MixedCaseSyntax von Klassen und Methodennamen
