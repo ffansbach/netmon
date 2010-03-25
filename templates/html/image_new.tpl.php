@@ -50,7 +50,7 @@
 		<select name="image_id" onChange="getImageInfo(this.options[this.selectedIndex].value); getImageConfigs(this.options[this.selectedIndex].value);">
 			<option value="false" selected>Bitte wählen</option>
 			{foreach item=images from=$images}
-				<option value="{$images.image_id}">{$images.title} ({$images.nickname})</option>
+				<option value="{$images.image_id}">{$images.title} ({$images.nickname} am {$images.create_date})</option>
 			{/foreach}
 		</select>
 	</p>

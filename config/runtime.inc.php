@@ -59,6 +59,7 @@
   $dirs[] = 'log/';
   $dirs[] = 'tmp/';
   $dirs[] = 'scripts/imagemaker/images/';
+  $dirs[] = 'scripts/imagemaker/configurations/';
 
   $everything_is_writable = true;
   foreach($dirs as $dir) {

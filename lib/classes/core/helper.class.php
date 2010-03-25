@@ -697,7 +697,7 @@ class Helper {
 	}
 	public function getImages() {
 		try {
-			$sql = "SELECT imagemaker_images.id as image_id, imagemaker_images.title,
+			$sql = "SELECT imagemaker_images.id as image_id, imagemaker_images.title, imagemaker_images.create_date,
 				       users.nickname 
 					FROM imagemaker_images
 					LEFT JOIN users ON (users.id=imagemaker_images.user_id)";
