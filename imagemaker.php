@@ -24,9 +24,13 @@ if (!$_GET['section']) {
 							VALUES ('$_SESSION[user_id]', '$_POST[title]', '$_POST[description]', NOW());");
 	$image_id = DB::getInstance()->lastInsertId();
 
-	mkdir("scripts/imagemaker/images/$image_id", 0777);
+	mkdir("scripts/imagemaker/images/$image_id/", 0777);
+	mkdir("scripts/imagemaker/images/$image_id/image/", 0777);
+	mkdir("scripts/imagemaker/images/$image_id/kernel/", 0777);
 
-	$command = "tar -C ".__DIR__."/scripts/imagemaker/images/$image_id/ -xvzf ".__DIR__."/tmp/$tmp_name"."_".$_FILES['file']['name'];
+	move_uploaded_file($_FILES['file2']['tmp_name'], "scripts/imagemaker/images/$image_id/kernel/openwrt-vmlinux.lzma");
+
+	$command = "tar -C ".__DIR__."/scripts/imagemaker/images/$image_id/image/ -xvzf ".__DIR__."/tmp/$tmp_name"."_".$_FILES['file']['name'];
 	exec($command);
 
 	unlink("tmp/".$tmp_name."_".$_FILES['file']['name']);
@@ -104,14 +108,14 @@ if (!$_GET['section']) {
 		mkdir("tmp/$build_dir", 0777);
 		mkdir("tmp/$build_dir/preimage", 0777);
 
-		exec("cp -al ".__DIR__."/scripts/imagemaker/images/$_POST[image_id]/* ".__DIR__."/tmp/$build_dir/preimage/");
+		exec("cp -al ".__DIR__."/scripts/imagemaker/images/$_POST[image_id]/image/* ".__DIR__."/tmp/$build_dir/preimage/");
 		
 		exec("chmod +x ".__DIR__."/scripts/imagemaker/configurations/$_POST[config_id]");
-		exec(__DIR__."/scripts/imagemaker/configurations/$_POST[config_id] '$_POST[ip]' '$_POST[subnetmask]' '$_POST[dhcp_start]' '$_POST[dhcp_limit]' '$_POST[location]' '$_POST[longitude]' '$_POST[latitude]' '$_POST[essid]' '$_POST[bssid]' '$_POST[channel]' '$_POST[nickname]' '$_POST[vorname] $_POST[nachname]' '$_POST[email]' '$_POST[prefix]' '$_POST[community_name]' '$_POST[community_website]' '$_POST[vpn_ip_id]' '$vpn_ip_data[vpn_server]' '$vpn_ip_data[vpn_server_port]' '$vpn_ip_data[vpn_server_device]' '$vpn_ip_data[vpn_server_proto]' '$vpn_ip_data[vpn_server_ca]' '$vpn_ip_data[vpn_client_cert]' '$vpn_ip_data[vpn_client_key]' '208.67.222.222  208.67.220.220' '".__DIR__."/tmp/$build_dir/preimage/'");
+		$config_exec = exec(__DIR__."/scripts/imagemaker/configurations/$_POST[config_id] '$_POST[ip]' '$_POST[subnetmask]' '$_POST[dhcp_start]' '$_POST[dhcp_limit]' '$_POST[location]' '$_POST[longitude]' '$_POST[latitude]' '$_POST[essid]' '$_POST[bssid]' '$_POST[channel]' '$_POST[nickname]' '$_POST[vorname] $_POST[nachname]' '$_POST[email]' '$_POST[prefix]' '$_POST[community_name]' '$_POST[community_website]' '$_POST[vpn_ip_id]' '$vpn_ip_data[vpn_server]' '$vpn_ip_data[vpn_server_port]' '$vpn_ip_data[vpn_server_device]' '$vpn_ip_data[vpn_server_proto]' '$vpn_ip_data[vpn_server_ca]' '$vpn_ip_data[vpn_client_cert]' '$vpn_ip_data[vpn_client_key]' '208.67.222.222  208.67.220.220' '".__DIR__."/tmp/$build_dir/preimage/'");
 
 		$last_line = exec(__DIR__."/scripts/imagemaker/mkimg '".__DIR__."/scripts/imagemaker/bin' '".__DIR__."/tmp/$build_dir'", $retval);
 
-		exec("cp -al ".__DIR__."/scripts/imagemaker/src/openwrt-atheros-vmlinux.lzma ".__DIR__."/tmp/$build_dir");
+		exec("cp -al ".__DIR__."/scripts/imagemaker/images/$_POST[image_id]/kernel/openwrt-vmlinux.lzma ".__DIR__."/tmp/$build_dir");
 
 		$smarty->assign('build_command', $build_command);
 		$smarty->assign('build_prozess_return', $retval);

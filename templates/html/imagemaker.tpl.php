@@ -17,6 +17,8 @@ konfigurieren und Downloaden können.</p>
 	</p>
 	<p>Image (*.tar.gz):<br>
 		<input name="file" type="file" size="40">
+	<p>Image (*.lzma):<br>
+		<input name="file2" type="file" size="40">
 	</p>
 	<p><input type="submit" value="Hochladen"></p>
 </form>

@@ -13,6 +13,6 @@ dd of=$DEST/root.squashfs if=$DEST/tmpfile.1 bs=64k conv=sync
 
 echo -ne '\xde\xad\xc0\xde' >> $DEST/root.squashfs
 
-dd if=$DEST/root.squashfs of=$DEST/openwrt-atheros-root.squashfs bs=128k conv=sync
+dd if=$DEST/root.squashfs of=$DEST/openwrt-root.squashfs bs=128k conv=sync
 
 /bin/rm -rf $DEST/root.squashfs $DEST/tmpfile.1
