@@ -110,8 +110,10 @@ if (!$_GET['section']) {
 
 		exec("cp -al ".__DIR__."/scripts/imagemaker/images/$_POST[image_id]/image/* ".__DIR__."/tmp/$build_dir/preimage/");
 		
-		exec("chmod +x ".__DIR__."/scripts/imagemaker/configurations/$_POST[config_id]");
-		$config_exec = exec(__DIR__."/scripts/imagemaker/configurations/$_POST[config_id] '$_POST[ip]' '$_POST[subnetmask]' '$_POST[dhcp_start]' '$_POST[dhcp_limit]' '$_POST[location]' '$_POST[longitude]' '$_POST[latitude]' '$_POST[essid]' '$_POST[bssid]' '$_POST[channel]' '$_POST[nickname]' '$_POST[vorname] $_POST[nachname]' '$_POST[email]' '$_POST[prefix]' '$_POST[community_name]' '$_POST[community_website]' '$_POST[vpn_ip_id]' '$vpn_ip_data[vpn_server]' '$vpn_ip_data[vpn_server_port]' '$vpn_ip_data[vpn_server_device]' '$vpn_ip_data[vpn_server_proto]' '$vpn_ip_data[vpn_server_ca]' '$vpn_ip_data[vpn_client_cert]' '$vpn_ip_data[vpn_client_key]' '208.67.222.222  208.67.220.220' '".__DIR__."/tmp/$build_dir/preimage/'");
+		if($_POST['config_id']!='false') {
+			exec("chmod +x ".__DIR__."/scripts/imagemaker/configurations/$_POST[config_id]");
+			$config_exec = exec(__DIR__."/scripts/imagemaker/configurations/$_POST[config_id] '$_POST[ip]' '$_POST[subnetmask]' '$_POST[dhcp_start]' '$_POST[dhcp_limit]' '$_POST[location]' '$_POST[longitude]' '$_POST[latitude]' '$_POST[essid]' '$_POST[bssid]' '$_POST[channel]' '$_POST[nickname]' '$_POST[vorname] $_POST[nachname]' '$_POST[email]' '$_POST[prefix]' '$_POST[community_name]' '$_POST[community_website]' '$_POST[vpn_ip_id]' '$vpn_ip_data[vpn_server]' '$vpn_ip_data[vpn_server_port]' '$vpn_ip_data[vpn_server_device]' '$vpn_ip_data[vpn_server_proto]' '$vpn_ip_data[vpn_server_ca]' '$vpn_ip_data[vpn_client_cert]' '$vpn_ip_data[vpn_client_key]' '208.67.222.222  208.67.220.220' '".__DIR__."/tmp/$build_dir/preimage/'");
+		}
 
 		$last_line = exec(__DIR__."/scripts/imagemaker/mkimg '".__DIR__."/scripts/imagemaker/bin' '".__DIR__."/tmp/$build_dir'", $retval);
 
