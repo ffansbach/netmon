@@ -19,7 +19,7 @@
 				configs = api_main.getImageConfigsByImageId(image_id);
 				var master=document.myform.config_id
 				master.options.length=0
-				master.options[master.options.length]=new Option('Bitte wählen', 'false', true, true)
+				master.options[master.options.length]=new Option('Keine Konfiguration vornehmen', 'false', true, true)
 				for (i=0; i<configs.length; i++){
 					master.options[master.options.length]=new Option(configs[i]['title'], configs[i]['config_id'], true, false)
 				}
@@ -31,6 +31,11 @@
 				api_main = jQuery.Zend.jsonrpc({url: 'api_main.php'});
 				image = api_main.getImageConfigByConfigId(config_id);
 				document.getElementById('config_info').innerHTML = image.description;
+				if(config_id!='false') {
+					document.getElementById('config').style.display = 'block';
+				} else {
+					document.getElementById('config').style.display = 'none';
+				}
 			});
 		}
 	</script>
@@ -38,11 +43,7 @@
 
 <h1>Neues Image generieren</h1>
 
-<h2>Hinweis:</h2>
-<p>Die Felder unten sind in der Regel vorausgefüllt und müssen nicht geändert werden!</p>
-
 <h2>Daten zur erstellung des Images:</h2>
-
 
 <form name="myform" action="./imagemaker.php?section=generate&ip_id={$smarty.get.ip_id}" method="POST">
 	<p>
@@ -65,6 +66,7 @@
 	<p>Informationen zur Konfiguration:<br><span id="config_info">Es sind keine Informationen zur gewählten Konfiguration.</span></p>
 
 <!--  <p>Chipset:<br><input name="chipset" type="text" size="30" maxlength="30"  value="{$configdata.chipset}"></p>-->
+<div id="config" style="display: none;">
   <h2>Netzwerk</h2>
   <p>IP:<br><input name="ip" type="text" size="30" maxlength="30"  value="{$configdata.ip}"></p>
   <p>Subnetmask:<br><input name="subnetmask" type="text" size="30" maxlength="30"  value="{$configdata.subnetmask}"></p>
@@ -105,6 +107,7 @@
 <p>Build Kommando:<br>
 {$build_command}
 </p>
+</div>
 
   <p><input type="submit" value="Image generieren"></p>
 </form>
