@@ -46,10 +46,7 @@
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 		<div id="map" style="height:300px; width:300px; border:solid 1px black;font-size:9pt;">
 		<script type="text/javascript">
-			subnetmap();
-			AddKmlLayer("Netzwerklocation", "./api.php?class=apiMap&section=getSubnetPolygons&subnet_id={$subnet.id}");
-			AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
-			AddKmlLayer("online and offline Nodes", "./api.php?class=apiMap&section=getOnlineAndOfflineServiceKML&highlighted_subnet={$subnet.id}");
+			subnetmap({$subnet.id});
 		</script>
 	</div>
 

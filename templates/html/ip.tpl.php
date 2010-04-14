@@ -60,6 +60,7 @@
 		{if !empty($service_data.last_online_crawl.memory_total)}		
 			<h2>Status</h2>
 			<p>
+				<b>Stability:</b> {$service_data.stability.percent}% ({$service_data.stability.online}/{$service_data.stability.gesammt}) online<br>
 				<b>Free memory:</b> {$service_data.current_crawl.memory_free}/{$service_data.last_online_crawl.memory_total} Kb<br>
 				<b>Loadaverage:</b> {$service_data.service_data.current_crawl.loadavg}<br>
 				<b>Processes:</b> {$service_data.current_crawl.processes}<br>
@@ -71,31 +72,24 @@
 
     <div style="float:left; width: 50%;">
 		{if !empty($service_data.last_online_crawl.longitude) AND !empty($service_data.last_online_crawl.latitude)}
-		<h2>Standort (Hellblau markiert)</h2>
+			<h2>Standort (Hellblau markiert)</h2>
 			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
+			<script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
+			
 			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+			
 			<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+
 			<div id="map" style="height:300px; width:300px; border:solid 1px black;font-size:9pt;">
 				<script type="text/javascript">
-					var lon = {$service_data.last_online_crawl.longitude};
-					var lat = {$service_data.last_online_crawl.latitude};
+					var lon = {$ip.longitude};
+					var lat = {$ip.latitude};
 					var radius = 30
-					var zoom = 15;
-					{literal}
-						/* Initialize Map */
-						ipmap();
-						
-						/* Zoom to the subnet's center */
-						point = new OpenLayers.LonLat(lon, lat);
-						point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-						map.setCenter(point, zoom);
-						
-						/* Create the Subnet Layer */
-						/* SubnetLayer("Subnet", lon, lat, radius);*/
-					{/literal}
-					 AddKmlLayer("Verbindungen", "./api.php?class=apiMap&section=conn");
-					 AddKmlLayer("online and offline Nodes", "./api.php?class=apiMap&section=getOnlineAndOfflineServiceKML&highlighted_service={$service_data.service_id}");
+					var zoom = 16;
+
+					/* Initialize Map */
+					ipmap({$service_data.service_id});
 				</script>
 			</div>
 			{if !empty($ip.location)}
@@ -103,20 +97,18 @@
 			{/if}
 		{/if}
 
-<!--
-{if !empty($dont_show_indicator)}
+
+
 	<h2>Grafische Historie</h2>
 	<p>
-		{if empty($ping_exception)}
-			<img src="./tmp/service_ping_history.png">
-		{else}
-			Beim erstellen der Grafik <i>Ping History</i>ist ein Fehler aufgetreten.
-		{/if}
+			<img src="./tmp/ip_{$ip.ip_id}_ping.png" width="380">
 	</p>
-	<p><img src="./tmp/loadaverage_history.png"></p>
-	<p><img src="./tmp/memory_free_history.png"></p>
-{/if}
--->
+	<p>
+			<img src="./tmp/ip_{$ip.ip_id}_loadavg.png" width="380">
+	</p>
+
+
+
 <!--		{if !empty($service_data.current_crawl.olsrd_neighbors)}
 			<h2>Benachbarte IP´s</h2>
 			{assign var="tmp" value="2 Hop Neighbors"}

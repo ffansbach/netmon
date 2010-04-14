@@ -207,6 +207,9 @@ class Vpn {
 
 	//Sncronize With external FTP-Source (VPN-Server)
 	set_time_limit(0);
+
+/*echo $subnet_data['vpn_server'].$subnet_data['ftp_ccd_username'].$subnet_data['ftp_ccd_password'];
+echo $subnet_data['ftp_ccd_folder'];*/
 	
 	$sync = new FTPSync($subnet_data['vpn_server'], $subnet_data['ftp_ccd_username'], $subnet_data['ftp_ccd_password']);
 	$sync->setPassive(true);
