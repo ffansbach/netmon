@@ -8,23 +8,24 @@ var serviceAuswahl = {
 
   'crawl' : {
     'node' : [
-      ['json', 'json (Empfohlen)']
+      ['json', 'Luci Status Informationen (empfohlen)'],
+      ['ping', 'Ping']
     ],
 
     'vpn' : [
-      ['json', 'json (Empfohlen)'],
-      ['ping', 'ping']
+      ['json', 'Luci Status Informationen (empfohlen)'],
+      ['ping', 'Ping']
     ],
 
     'client' : [
-      ['ping', 'ping (Empfohlen)'],
-      ['json', 'json']
+      ['ping', 'Ping (empfohlen)'],
+      ['json', 'Luci Status Informationen']
     ],
 
     'service' : [
-      ['port', 'port (Empfohlen)'],
-      ['ping', 'ping'],
-      ['json', 'json']
+      ['port', 'Port (empfohlen)'],
+      ['ping', 'Ping'],
+      ['json', 'Luci Status Informationen (empfohlen)']
     ]
   }
 };

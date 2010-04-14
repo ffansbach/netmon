@@ -91,7 +91,7 @@
       $smarty->display("footer.tpl.php");
     }
     if ($_GET['section'] == "insert_regenerate_ccd_subnet") {
-		$subnet = Helper::getSubnetById($_POST['subnet_id']);
+	$subnet = Helper::getSubnetById($_POST['subnet_id']);
 
 	//Only owner and Root can access this site.
 	if (!UserManagement::checkIfUserIsOwnerOrPermitted(64, $subnet['user_id']))
