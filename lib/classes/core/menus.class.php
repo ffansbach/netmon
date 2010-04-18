@@ -32,15 +32,8 @@ class Menus extends UserManagement {
 
   function topMenu() {
     if (UserManagement::checkPermission(1)) {
-      //Please put your own links here
-      $menu[] = array('name'=>'Wiki', 'href'=> 'http://wiki.freifunk-ol.de');
-      $menu[] = array('name'=>'Blog', 'href'=>'http://blog.freifunk-ol.de'); 
-      $menu[] = array('name'=>'Mailingliste', 'href'=>'http://lists.nord-west.net/mailman/listinfo/freifunk-ol');
-      $menu[] = array('name'=>'OLSR', 'href'=>'http://olsr.freifunk-ol.de:8888');
-      $menu[] = array('name'=>'Trac', 'href'=>'https://trac.freifunk-ol.de');
-      $menu[] = array('name'=>'Software Repository', 'href' => 'http://dev.freifunk-ol.de/');
+	    return $GLOBALS['topMenu'];
     }
-    return $menu;
   }
   
   public function loginOutMenu() {

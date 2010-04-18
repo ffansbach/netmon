@@ -49,23 +49,23 @@ $GLOBALS['password'] = "password";
 */
 
 class JsonDataCollector {
-  function file_get_contents_curl($url) {
+  function file_get_contents_curl($url, $curl_timeout) {
       $curl_handle=curl_init();
       curl_setopt($curl_handle,CURLOPT_URL,$url);
-      curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,3);
+      curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,$curl_timeout);
       curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,1);
       $data = curl_exec($curl_handle);
       curl_close($curl_handle);
       return $data;
   }
 
-  function getJason($url) {
-      $string = $this->file_get_contents_curl($url);
+  function getJason($url, $curl_timeout) {
+      $string = $this->file_get_contents_curl($url, $curl_timeout);
       return json_decode($string);
   }
 
-  public function pingHost($host) {
-	$online=exec("ping $host -c 1 -w 1");
+  public function pingHost($host, $ping_timeout) {
+	$online=exec("ping $host -c 1 -w ".$ping_timeout);
 	if ($online)
 		$ping = substr($online, -15, -9);
 	else
@@ -93,11 +93,16 @@ class JsonDataCollector {
 		}
 
 		foreach ($services as $service) {
-			$ping = $this->pingHost("$GLOBALS[net_prefix].$service[ip]");
+			//Get Crawler
+			$api_crawl = new jsonRPCClient($GLOBALS['netmon_url']."api_crawl.php");
+			$crawler_config = $api_crawl->config();
+
+			$ping = $this->pingHost("$GLOBALS[net_prefix].$service[ip]", $crawler_config['crawler_ping_timeout']);
+			$current_crawl_data['ping'] = $ping;
 
 			if ($service['crawler']=="json") {
 				if ($ping) {
-					$json_obj = $this->getJason("http://$GLOBALS[net_prefix].$service[ip]/cgi-bin/luci/freifunk/status.json");
+					$json_obj = $this->getJason("http://$GLOBALS[net_prefix].$service[ip]/cgi-bin/luci/freifunk/status.json", $crawler_config['crawler_curl_timeout']);
 				}
 
 				if ($json_obj) {
@@ -106,8 +111,6 @@ class JsonDataCollector {
 				} else {
 					$current_crawl_data['status'] = "offline";
 				}
-
-				$current_crawl_data['ping'] = $ping;
 			} elseif ($service['crawler']=="ping") {
 				if ($ping) {
 					$current_crawl_data['status'] = "online";
@@ -124,11 +127,10 @@ class JsonDataCollector {
 					$current_crawl_data['status'] = "offline";
 				}
 			}
-
-			//Send data
-			$api_crawl = new jsonRPCClient($GLOBALS['netmon_url']."api_crawl.php");
+			
+			//Send Data
 			try {
-				$ergebnis = $api_crawl->receive($GLOBALS['nickname'], $GLOBALS['password'], $service['service_id'], $current_crawl_data);
+				$api_crawl->receive($GLOBALS['nickname'], $GLOBALS['password'], $service['service_id'], $current_crawl_data);
 			} catch (Exception $e) {
 				echo nl2br($e->getMessage());
 			}
