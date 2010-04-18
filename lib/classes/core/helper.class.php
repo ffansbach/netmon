@@ -526,6 +526,20 @@ class Helper {
 		return $last_online_crawl;
 	}
 
+	public function getLastCrawlDataByServiceId($service_id) {
+		$last_crawl_data['status'] = "unbekannt";
+		try {
+			$sql = "SELECT * FROM crawl_data
+					WHERE service_id='$service_id' ORDER BY id DESC LIMIT 1";
+			$result = DB::getInstance()->query($sql);
+			$last_crawl_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+		  echo $e->getMessage();
+		}
+		return $last_crawl_data;
+	}
+
 	public function getCurrentCrawlDataByServiceId($service_id) {
 		try {
 			$sql = "SELECT id, crawl_time, status, nickname as luci_nickname, hostname, email, location, prefix, ssid, longitude, latitude, luciname, luciversion, distname, distversion, chipset, cpu, network, wireless_interfaces, uptime, idletime, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes 

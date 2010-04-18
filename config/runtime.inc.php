@@ -47,6 +47,7 @@
   date_default_timezone_set('Europe/Berlin');
 
   require_once('config/config.local.inc.php');
+  require_once('config/menus.local.inc.php');
   require_once('config/release.php');
 
   /**

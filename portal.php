@@ -22,6 +22,7 @@
 
 require_once('./config/runtime.inc.php');
 require_once("./lib/classes/extern/FeedParser.class.php");
+require_once("./lib/classes/core/service.class.php");
 
 try {
 	$Parser = new FeedParser();
@@ -32,7 +33,7 @@ catch(Exception $e) {
 }
 $smarty->assign('feed_channels', $Parser->getChannels());
 $smarty->assign('feed_items', $Parser->getItems());
-/*
+
 try {
 	$TracParser = new FeedParser();
 	$TracParser->parse('https://trac.freifunk-ol.de/timeline?ticket=on&changeset=on&milestone=on&wiki=on&max=10&daysback=90&format=rss');
@@ -43,7 +44,7 @@ catch(Exception $e) {
 
 $smarty->assign('trac_feed_channels', $TracParser->getChannels());
 $smarty->assign('trac_feed_items', $TracParser->getItems());
-*/
+
 
 class verfuegbarkeitsPalette extends ezcGraphPalette {
 	protected $dataSetColor = array('#00b308', '#c10000', '#fff600');
@@ -116,31 +117,11 @@ if ($service_status['online']!=0 OR $service_status['offline']!=0 OR $service_st
 	$smarty->assign('service_status', false);
 }
 
-
-
 	require_once('./lib/classes/core/history.class.php');
 	
 	$history = History::getServiceHistory(false, $GLOBALS['portal_history_hours']);
-   $smarty->assign('portal_history_hours', $GLOBALS['portal_history_hours']);
-
+	$smarty->assign('portal_history_hours', $GLOBALS['portal_history_hours']);
 	$smarty->assign('history', $history);
-
-/*		try {
-			$sql = "SELECT ips.id, ips.zone_start, ips.zone_end
-			       FROM ips
-					WHERE ips.zone_start!=0";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-			echo "<pre>";
-			print_r($row);
-				DB::getInstance()->exec("UPDATE ips SET zone_start='1.$row[zone_start]',
-														zone_end='1.$row[zone_end]'
-										WHERE id='$row[id]'");
-			}
-		}
-		catch(PDOException $e) { 
-			echo $e->getMessage(); 
-		}*/
 
 $smarty->assign('message', Message::getMessage());
 $smarty->display("header.tpl.php");

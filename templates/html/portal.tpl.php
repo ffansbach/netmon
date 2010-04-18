@@ -18,21 +18,18 @@
 
 {if !empty($history)}
 {foreach key=count item=hist from=$history}
-	{$hist.create_date}: 
-	{if $hist.type == 'user'}Der Benutzer <a href="./user.php?id={$hist.object_id}">{$hist.object_name_1}</a> hat sich registriert
-	{elseif $hist.type == 'subnet'} Das Subnets <a href="./subnet.php?id={$hist.object_id}">{$hist.object_name_1}</a> wurde angelgt
-	{elseif $hist.type == 'ip'} Die Ip <a href="./ip.php?id={$hist.object_id}">{$net_prefix}.{$hist.object_name_1}.{$hist.object_name_2}</a> wurde angelegt
-	{elseif $hist.type == 'service'} Ein <a href="./service.php?id={$hist.service_id}">Service</a> wurde auf der IP <a href="./ip.php?id={$hist.ip_id}">{$net_prefix}.{$hist.ip}</a> angelegt
-	{elseif $hist.data.action == 'status'}
-		{if $hist.data.action == 'status' AND $hist.data.from=='offline'}
-			{$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) geht online.
-		{elseif $hist.data.action == 'status' AND $hist.data.from=='online'}
-			{$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) geht offline.
+	{if $hist.data.action == 'status'}
+		{if $hist.data.from=='offline'}
+			{$hist.create_date}: {$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) geht online.<br>
+		{elseif $hist.data.from=='online'}
+			{$hist.create_date}: {$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) geht offline.<br>
 		{/if}
-	{elseif $hist.data.action == 'distversion'}
-		{$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) Distversion geändert ({$hist.data.from} -> {$hist.data.to}).
 	{/if}
-<br>
+	{if $hist.data.action == 'reboot'}
+		{$hist.create_date}: {$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) wurde rebootet.<br>
+	{/if}
+
+
 {/foreach}
 {else}
 <p>In den letzten {$portal_history_hours} Stunden ist nichts passiert.</p>
@@ -50,7 +47,7 @@
 	<p>{$rss_exception}</p>
 {/if}
 
-<!--{if empty($trac_rss_exception)}
+{if empty($trac_rss_exception)}
 	<h1><a href="{$trac_feed_channels.LINK}" target="_blank">Freifunk Oldenburg Trac Timeline</a></h1>
 	<p>
 		{foreach item=trac_feed_item from=$trac_feed_items}
@@ -60,4 +57,4 @@
 {else}
 	<h1>Freifunk Oldenburg Trac Timeline</h1>
 	<p>{$trac_rss_exception}</p>
-{/if}-->
+{/if}

@@ -64,7 +64,10 @@ class ServiceEditor {
 				$message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
 				
 				DB::getInstance()->exec("DELETE FROM crawl_data WHERE service_id='$service_id';");
-				$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurde gelöscht.",1);
+				$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurden gelöscht.",1);
+
+				DB::getInstance()->exec("DELETE FROM history WHERE object='service' AND object_id='$service_id';");
+				$message[] = array("Die History-Daten des Service mit der ID ".$service_id." wurden gelöscht.",1);
 				
 				Message::setMessage($message);
 				return true;
