@@ -29,6 +29,8 @@
  */
 
   require_once($path.'lib/classes/core/subnet.class.php');
+  require_once($path.'lib/classes/core/subnetcalculator.class.php');
+  require_once($path.'lib/classes/core/project.class.php');
 
 class EditingHelper {
 	public function getAFreeIP($subnet_id, $zone_start=false, $zone_end=false) {
@@ -247,6 +249,36 @@ class EditingHelper {
 		Message::setMessage($message);
 		
 		return array("result"=>true, "service_id"=>$service_id);
+	}
+
+	public function getAFreeIPv4IPByProjectId($project_id) {
+		$existingips = Helper::getExistingIPv4Ips();
+
+		$project_data = Project::getProjectData($project_id);
+		$last_ip = SubnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$project_data['ipv4_host'], $project_data['ipv4_netmask']);
+		$first_ip = SubnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$project_data['ipv4_host'], $project_data['ipv4_netmask']);
+
+		//Get first free IP in subnet
+		$first_ip = explode(".", $first_ip);
+		$last_ip = explode(".", $last_ip);
+
+		for($i=$first_ip[2]; $i<=$last_ip[2]; $i++) {
+			for($ii=$first_ip[3]; $ii<=$last_ip[3]; $ii++) {
+				if(!in_array("$i.$ii", $existingips, TRUE)) {
+					$available_ip = "$i.$ii";
+					break;
+				}
+			}
+			if(!empty($available_ip)) {
+				break;
+			}
+		}
+
+		if (isset($available_ip)) {
+			return $available_ip;
+		} else {
+			return false;
+		}
 	}
 }
 

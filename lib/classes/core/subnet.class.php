@@ -81,11 +81,13 @@ class Subnet {
 			$exploded_last_ip = explode(".", $subnet['last_ip']);
 			$exploded_first_ip = explode(".", $subnet['first_ip']);
 			
-			$iplist = array();			
-			for($i=$exploded_first_ip[2]; $i<=$exploded_last_ip[2]; $i++) {
-				for($ii=$exploded_first_ip[3]; $ii<=$exploded_last_ip[3]; $ii++) {
-					$iplist[$GLOBALS['net_prefix'].".".$i.".".$ii]['type'] = 'free';
-					$iplist[$GLOBALS['net_prefix'].".".$i.".".$ii]['ip'] = $GLOBALS['net_prefix'].".".$i.".".$ii;
+			$iplist = array();
+			if($subnet['netmask']>20) {
+				for($i=$exploded_first_ip[2]; $i<=$exploded_last_ip[2]; $i++) {
+					for($ii=$exploded_first_ip[3]; $ii<=$exploded_last_ip[3]; $ii++) {
+						$iplist[$GLOBALS['net_prefix'].".".$i.".".$ii]['type'] = 'free';
+						$iplist[$GLOBALS['net_prefix'].".".$i.".".$ii]['ip'] = $GLOBALS['net_prefix'].".".$i.".".$ii;
+					}
 				}
 			}
 			return $iplist;

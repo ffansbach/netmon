@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 23, 2010 at 11:48 AM
--- Server version: 5.1.41
--- PHP Version: 5.2.12-2
+-- Generation Time: May 09, 2010 at 11:20 PM
+-- Server version: 5.1.45
+-- PHP Version: 5.3.2-1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -16,10 +16,66 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `chipsets`
+--
+
+CREATE TABLE IF NOT EXISTS `chipsets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `crawl_batman_advanced_interfaces`
+--
+
+CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `router_id` int(11) NOT NULL,
+  `crawl_cycle_id` int(11) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `crawl_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `crawl_batman_advanced_originators`
+--
+
+CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `router_id` int(11) NOT NULL,
+  `crawl_cycle_id` int(11) NOT NULL,
+  `originators` text NOT NULL,
+  `crawl_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `crawl_cycle`
+--
+
+CREATE TABLE IF NOT EXISTS `crawl_cycle` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `crawl_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `crawl_data`
 --
 
-DROP TABLE IF EXISTS `crawl_data`;
 CREATE TABLE IF NOT EXISTS `crawl_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `service_id` int(11) NOT NULL,
@@ -56,10 +112,95 @@ CREATE TABLE IF NOT EXISTS `crawl_data` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `crawl_interfaces`
+--
+
+CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `crawl_id` int(11) NOT NULL,
+  `router_id` int(11) NOT NULL,
+  `crawl_cycle_id` int(11) NOT NULL,
+  `crawl_date` datetime NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `mac_addr` varchar(150) NOT NULL,
+  `ipv4_addr` varchar(40) NOT NULL,
+  `ipv6_addr` varchar(150) NOT NULL,
+  `traffic_rx` int(11) NOT NULL,
+  `traffic_tx` int(11) NOT NULL,
+  `wlan_mode` varchar(20) NOT NULL,
+  `wlan_frequency` varchar(10) NOT NULL,
+  `wlan_essid` varchar(40) NOT NULL,
+  `wlan_bssid` varchar(40) NOT NULL,
+  `wlan_tx_power` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `crawl_olsr`
+--
+
+CREATE TABLE IF NOT EXISTS `crawl_olsr` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `router_id` int(11) NOT NULL,
+  `crawl_cycle_id` int(11) NOT NULL,
+  `olsrd_hna` text NOT NULL,
+  `olsrd_neighbors` text NOT NULL,
+  `olsrd_links` text NOT NULL,
+  `olsrd_mid` text NOT NULL,
+  `olsrd_routes` text NOT NULL,
+  `olsrd_topology` text NOT NULL,
+  `crawl_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `crawl_routers`
+--
+
+CREATE TABLE IF NOT EXISTS `crawl_routers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `router_id` int(11) NOT NULL,
+  `crawl_cycle_id` int(11) NOT NULL,
+  `crawl_date` datetime NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `ping` varchar(20) NOT NULL,
+  `hostname` varchar(40) NOT NULL,
+  `description` text NOT NULL,
+  `location` varchar(250) NOT NULL,
+  `latitude` varchar(15) NOT NULL,
+  `longitude` varchar(15) NOT NULL,
+  `luciname` varchar(40) NOT NULL,
+  `luciversion` varchar(40) NOT NULL,
+  `distname` varchar(40) NOT NULL,
+  `distversion` varchar(40) NOT NULL,
+  `chipset` varchar(20) NOT NULL,
+  `cpu` varchar(20) NOT NULL,
+  `memory_total` varchar(8) NOT NULL,
+  `memory_caching` varchar(8) NOT NULL,
+  `memory_buffering` varchar(30) NOT NULL,
+  `memory_free` varchar(8) NOT NULL,
+  `loadavg` varchar(8) NOT NULL,
+  `processes` varchar(8) NOT NULL,
+  `uptime` varchar(15) NOT NULL,
+  `idletime` varchar(15) NOT NULL,
+  `local_time` varchar(60) NOT NULL,
+  `community_essid` varchar(100) NOT NULL,
+  `community_nickname` varchar(100) NOT NULL,
+  `community_email` varchar(100) NOT NULL,
+  `community_prefix` varchar(15) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `history`
 --
 
-DROP TABLE IF EXISTS `history`;
 CREATE TABLE IF NOT EXISTS `history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `object` varchar(20) NOT NULL,
@@ -75,7 +216,6 @@ CREATE TABLE IF NOT EXISTS `history` (
 -- Table structure for table `imagemaker_configs`
 --
 
-DROP TABLE IF EXISTS `imagemaker_configs`;
 CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `image_id` int(11) NOT NULL,
@@ -92,7 +232,6 @@ CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
 -- Table structure for table `imagemaker_images`
 --
 
-DROP TABLE IF EXISTS `imagemaker_images`;
 CREATE TABLE IF NOT EXISTS `imagemaker_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -105,13 +244,33 @@ CREATE TABLE IF NOT EXISTS `imagemaker_images` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `interfaces`
+--
+
+CREATE TABLE IF NOT EXISTS `interfaces` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `router_id` int(11) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `mac_addr` varchar(150) NOT NULL,
+  `ipv4_addr` varchar(40) NOT NULL,
+  `ipv6_addr` varchar(150) NOT NULL,
+  `vpn_client_cert` text NOT NULL,
+  `vpn_client_key` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `ips`
 --
 
-DROP TABLE IF EXISTS `ips`;
 CREATE TABLE IF NOT EXISTS `ips` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
+  `router_id` int(11) NOT NULL,
   `subnet_id` int(3) NOT NULL,
   `ip` varchar(7) NOT NULL,
   `zone_start` varchar(7) NOT NULL,
@@ -135,7 +294,6 @@ CREATE TABLE IF NOT EXISTS `ips` (
 -- Table structure for table `olsr_crawl_data`
 --
 
-DROP TABLE IF EXISTS `olsr_crawl_data`;
 CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `crawl_id` int(11) NOT NULL,
@@ -151,10 +309,71 @@ CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `projects`
+--
+
+CREATE TABLE IF NOT EXISTS `projects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `title` varchar(250) NOT NULL,
+  `description` text NOT NULL,
+  `is_wlan` tinyint(4) NOT NULL,
+  `wlan_essid` varchar(200) NOT NULL,
+  `wlan_bssid` varchar(100) NOT NULL,
+  `wlan_channel` int(11) NOT NULL,
+  `is_vpn` tinyint(4) NOT NULL,
+  `vpn_server` varchar(100) NOT NULL,
+  `vpn_server_port` int(11) NOT NULL,
+  `vpn_server_device` varchar(20) NOT NULL,
+  `vpn_server_proto` varchar(20) NOT NULL,
+  `vpn_server_ca_crt` text NOT NULL,
+  `vpn_server_ca_key` text NOT NULL,
+  `vpn_server_pass` varchar(200) NOT NULL,
+  `is_ccd_ftp_sync` tinyint(4) NOT NULL,
+  `ccd_ftp_folder` varchar(250) NOT NULL,
+  `ccd_ftp_username` varchar(100) NOT NULL,
+  `ccd_ftp_password` varchar(200) NOT NULL,
+  `is_olsr` tinyint(4) NOT NULL,
+  `is_batman_adv` tinyint(4) NOT NULL,
+  `ipv` varchar(20) NOT NULL,
+  `ipv4_host` varchar(20) NOT NULL,
+  `ipv4_netmask` varchar(10) NOT NULL,
+  `ipv4_dhcp_kind` varchar(30) NOT NULL,
+  `is_geo_specific` tinyint(4) NOT NULL,
+  `geo_polygons` text NOT NULL,
+  `dns_server` varchar(200) NOT NULL,
+  `website` varchar(250) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `routers`
+--
+
+CREATE TABLE IF NOT EXISTS `routers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
+  `crawl_method` varchar(30) NOT NULL,
+  `hostname` varchar(40) NOT NULL,
+  `description` text NOT NULL,
+  `location` varchar(250) NOT NULL,
+  `latitude` varchar(15) NOT NULL,
+  `longitude` varchar(15) NOT NULL,
+  `chipset_id` int(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `services`
 --
 
-DROP TABLE IF EXISTS `services`;
 CREATE TABLE IF NOT EXISTS `services` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip_id` int(11) NOT NULL,
@@ -179,7 +398,6 @@ CREATE TABLE IF NOT EXISTS `services` (
 -- Table structure for table `subnets`
 --
 
-DROP TABLE IF EXISTS `subnets`;
 CREATE TABLE IF NOT EXISTS `subnets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `subnet_type` varchar(10) NOT NULL,
@@ -201,9 +419,8 @@ CREATE TABLE IF NOT EXISTS `subnets` (
   `vpn_server_port` int(11) NOT NULL,
   `vpn_server_device` varchar(10) NOT NULL,
   `vpn_server_proto` varchar(10) NOT NULL,
-  `vpn_server_ca` text NOT NULL,
-  `vpn_server_cert` text NOT NULL,
-  `vpn_server_key` text NOT NULL,
+  `vpn_server_ca_crt` text NOT NULL,
+  `vpn_server_ca_key` text NOT NULL,
   `vpn_server_pass` varchar(255) NOT NULL,
   `ftp_sync` tinyint(4) NOT NULL,
   `ftp_ccd_folder` varchar(200) NOT NULL,
@@ -219,7 +436,6 @@ CREATE TABLE IF NOT EXISTS `subnets` (
 -- Table structure for table `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `session_id` varchar(32) NOT NULL,

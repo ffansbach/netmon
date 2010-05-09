@@ -67,6 +67,7 @@ class Menus extends UserManagement {
       $menu[] = array('name'=>'Topologie', 'href'=>'./topology.php');
 //      $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'./status.php');
       $menu[] = array('name'=>'Ipliste', 'href'=>'./iplist.php');
+      $menu[] = array('name'=>'Routerliste', 'href'=>'./routerlist.php');
       $menu[] = array('name'=>'Projektliste', 'href'=>'./subnetlist.php');
       $menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'./networkstatistic.php');
 //      $menu[] = array('name'=>'Impressum', 'href'=>'./impressum.php');
@@ -77,6 +78,7 @@ class Menus extends UserManagement {
   function userMenu() {
     if (UserManagement::checkPermission(8)) {
       $menu[] = array('name'=>'Desktop', 'href'=>'./desktop.php');
+      $menu[] = array('name'=>'Neuer Router', 'href'=>'./routereditor.php?section=new');
       $menu[] = array('name'=>'Neue Ip', 'href'=>'./ipeditor.php?section=new');
 //      $menu[] = array('name'=>'Mein Benutzer', 'href'=>'./user.php?id='.$_SESSION['user_id']);
 //      $menu[] = array('name'=>'Benutzer ändern', 'href'=>'./user_edit.php?section=edit&id='.$_SESSION['user_id']);
@@ -87,7 +89,8 @@ class Menus extends UserManagement {
 
   function adminMenu() {
     if (UserManagement::checkPermission(32)) {
-      $menu[] = array('name'=>'Neues Projekt', 'href'=>'./subneteditor.php?section=new');
+//      $menu[] = array('name'=>'Neues Projekt', 'href'=>'./subneteditor.php?section=new');
+      $menu[] = array('name'=>'Neues Projekt', 'href'=>'./projecteditor.php?section=new');
       $menu[] = array('name'=>'Imagemaker', 'href'=>'./imagemaker.php');
       $menu[] = array('name'=>'CCD regenerieren', 'href'=>'./vpn.php?section=regenerate_ccd_subnet');
     }

@@ -1,71 +1,45 @@
 <?php
 
-// +---------------------------------------------------------------------------+
-// index.php
-// Netmon, Freifunk Netzverwaltung und Monitoring Software
-//
-// Copyright (c) 2009 Clemens John <clemens-john@gmx.de>
-// +---------------------------------------------------------------------------+
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 3
-// of the License, or any later version.
-// +---------------------------------------------------------------------------+
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-// +---------------------------------------------------------------------------+/
+require_once('./config/runtime.inc.php');
+require_once("./lib/classes/core/service.class.php");
 
-/**
- * This file contains the class to crawl the IP's from the database
- *
- * @author	Clemens John <clemens-john@gmx.de>
- * @version	0.1
- * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
- */
+$json_obj = JsonDataCollector::getJason("http://netmon.freifunk-ol.de/status.json");
+if ($json_obj) {
+	$current_crawl_data = JsonDataCollector::makeCurrentJsonCrawlDataArray($json_obj);
+	$current_crawl_data['status'] = "online";
+} else {
+	$current_crawl_data['status'] = "offline";
+}
 
+$last_crawl_data = Helper::getLastCrawlDataByServiceId(181);
+$last_online_crawl_data = Helper::getLastOnlineCrawlDataByServiceId(181);
 
+echo "<pre>";
+service::makeHistoryEntry($current_crawl_data, $last_crawl_data, $last_online_crawl_data, 181);
 
-//For Informations take a look at: http://luci.freifunk-halle.net/Documentation/JsonRpcHowTo
-
-/**
-* Configuration
-*/
-
-//The URL to your Netmon installation
-$GLOBALS['netmon_url'] = "http://netmon.freifunk-ol.de/";
-
-//Login-Data
-//This must be a Netmon user with root permissions!
-$GLOBALS['nickname'] = "crawler";
-$GLOBALS['password'] = "ff26ol";
 
 /**
 * Crawl class
 */
 
 class JsonDataCollector {
-  function file_get_contents_curl($url, $curl_timeout) {
+  function file_get_contents_curl($url) {
       $curl_handle=curl_init();
       curl_setopt($curl_handle,CURLOPT_URL,$url);
-      curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,$curl_timeout);
+      curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,3);
       curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,1);
       $data = curl_exec($curl_handle);
       curl_close($curl_handle);
       return $data;
   }
 
-  function getJason($url, $curl_timeout) {
-      $string = $this->file_get_contents_curl($url, $curl_timeout);
+  function getJason($url) {
+      $string = JsonDataCollector::file_get_contents_curl($url);
       return json_decode($string);
   }
 
-  public function pingHost($host, $ping_timeout) {
-	$online=exec("ping $host -c 1 -w ".$ping_timeout);
+  public function pingHost($host) {
+	$online=exec("ping $host -c 1 -w 1");
 	if ($online)
 		$ping = substr($online, -15, -9);
 	else
@@ -93,20 +67,16 @@ class JsonDataCollector {
 		}
 
 		foreach ($services as $service) {
-			//Get Crawler
-			$api_crawl = new jsonRPCClient($GLOBALS['netmon_url']."api_crawl.php");
-			$crawler_config = $api_crawl->config();
-
-			$ping = $this->pingHost("$GLOBALS[net_prefix].$service[ip]", $crawler_config['crawler_ping_timeout']);
+			$ping = JsonDataCollector::pingHost("$GLOBALS[net_prefix].$service[ip]");
 			$current_crawl_data['ping'] = $ping;
 
 			if ($service['crawler']=="json") {
 				if ($ping) {
-					$json_obj = $this->getJason("http://$GLOBALS[net_prefix].$service[ip]/cgi-bin/luci/freifunk/status.json", $crawler_config['crawler_curl_timeout']);
+					$json_obj = JsonDataCollector::getJason("http://$GLOBALS[net_prefix].$service[ip]/cgi-bin/luci/freifunk/status.json");
 				}
 
 				if ($json_obj) {
-					$current_crawl_data = $this->makeCurrentJsonCrawlDataArray($json_obj);
+					$current_crawl_data = JsonDataCollector::makeCurrentJsonCrawlDataArray($json_obj);
 					$current_crawl_data['status'] = "online";
 				} else {
 					$current_crawl_data['status'] = "offline";
@@ -127,10 +97,11 @@ class JsonDataCollector {
 					$current_crawl_data['status'] = "offline";
 				}
 			}
-			
-			//Send Data
+
+			//Send data
+			$api_crawl = new jsonRPCClient($GLOBALS['netmon_url']."api_crawl.php");
 			try {
-				$api_crawl->receive($GLOBALS['nickname'], $GLOBALS['password'], $service['service_id'], $current_crawl_data);
+				$ergebnis = $api_crawl->receive($GLOBALS['nickname'], $GLOBALS['password'], $service['service_id'], $current_crawl_data);
 			} catch (Exception $e) {
 				echo nl2br($e->getMessage());
 			}
@@ -187,81 +158,6 @@ class JsonDataCollector {
 		$current_crawl_data['olsrd_topology'] = serialize($json_obj['olsrd']['Topology']);
 
 		return $current_crawl_data;
-	}
-}
-
-  crawlRouters::crawl();
-
-  $crawler = new JsonDataCollector;
-
-  $crawler->crawl('node');
-  $crawler->crawl('vpn');
-  $crawler->crawl('service');
-  $crawler->crawl('client');
-
-
-
-class crawlRouters {
-	public function crawl() {
-		//get communkty informations
-		$api_router_config = new jsonRPCClient($GLOBALS['netmon_url']."api_router_config.php");
-		try {
-			$community_info = $api_router_config->getCommunityInfo();
-		} catch (Exception $e) {
-			echo nl2br($e->getMessage());
-		}
-
-		//get services
-		$api_main = new jsonRPCClient($GLOBALS['netmon_url']."api_main.php");
-		try {
-			$routers = $api_main->getRoutersForCrawl();
-		} catch (Exception $e) {
-			echo nl2br($e->getMessage());
-		}
-
-		$crawler_config = $api_main->crawler_config();
-
-		foreach ($routers as $router) {
-			$interfaces = $api_main->getIPv4InterfacesByRouterId($router['id']);
-			foreach($interfaces as $interface) {
-				$crawler = new JsonDataCollector;
-				$ping = $crawler->pingHost("$community_info[net_prefix].$interface[ipv4_addr]", $crawler_config['crawler_ping_timeout']);
-				
-				if ($ping) {
-					$json_obj = $crawler->getJason("http://$community_info[net_prefix].$interface[ipv4_addr]/cgi-bin/luci/freifunk/status.json", $crawler_config['crawler_curl_timeout']);
-					if ($json_obj) {
-						$crawl_data = $crawler->makeCurrentJsonCrawlDataArray($json_obj);
-						$crawl_data['luciname'] = urlencode($crawl_data['luciname']);
-						$crawl_data['luciversion'] = urlencode($crawl_data['luciversion']);
-						$crawl_data['distname'] = urlencode($crawl_data['distname']);
-						$crawl_data['distversion'] = urlencode($crawl_data['distversion']);
-						$crawl_data['chipset'] = urlencode($crawl_data['chipset']);
-						$crawl_data['location'] = urlencode($crawl_data['location']);
-						$crawl_data['cpu'] = urlencode($crawl_data['cpu']);
-
-						$url = $GLOBALS['netmon_url']."api_crawl_routers.php?section=insert_router&nickname=$GLOBALS[nickname]&password=$GLOBALS[password]&router_id=$router[id]&status=online&ping=$ping&hostname=$crawl_data[hostname]&description=&location=$crawl_data[location]&latitude=$crawl_data[latitude]&longitude=$crawl_data[longitude]&luciname=$crawl_data[luciname]&luciversion=$crawl_data[luciversion]&distname=$crawl_data[distname]&distversion=$crawl_data[distversion]&chipset=$crawl_data[chipset]&cpu=$crawl_data[cpu]&memory_total=$crawl_data[memory_total]&memory_caching=$crawl_data[memory_caching]&memory_buffering=$crawl_data[memory_buffering]&memory_free=$crawl_data[memory_free]&loadavg=$crawl_data[loadavg]&processes=$crawl_data[processes]&uptime=$crawl_data[uptime]&idletime=$crawl_data[idletime]&local_time=&community_essid=$crawl_data[ssid]&community_nickname=$crawl_data[nickname]&community_email=$crawl_data[email]&community_prefix=$crawl_data[prefix]";
-						$crawler->file_get_contents_curl($url, $crawler_config['crawler_curl_timeout']);
-
-						$url = $GLOBALS['netmon_url']."api_crawl_interfaces.php?section=insert_olsr_data&nickname=$GLOBALS[nickname]&password=$GLOBALS[password]&router_id=$router[id]";
-						
-						$curl_handle=curl_init();
-						curl_setopt($curl_handle,CURLOPT_URL, $url);
-						curl_setopt($curl_handle, CURLOPT_POST, 1);
-						curl_setopt($curl_handle, CURLOPT_POSTFIELDS, "olsrd_links=$crawl_data[olsrd_links]");
-						curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,$crawler_config['crawler_curl_timeout']);
-						curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,1);
-						$data = curl_exec($curl_handle);
-						curl_close($curl_handle);
-
-						break;
-					} elseif ($ping) {
-						$url = $GLOBALS['netmon_url']."api_crawl_routers.php?section=insert_router&nickname=$GLOBALS[nickname]&password=$GLOBALS[password]&router_id=$router[id]&status=online&ping=$ping";
-						$crawler->file_get_contents_curl($url, $crawler_config['crawler_curl_timeout']);
-						break;
-					}
-				}
-			}
-		}
 	}
 }
 
