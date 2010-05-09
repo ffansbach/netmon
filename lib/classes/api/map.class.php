@@ -27,6 +27,13 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+require_once('./lib/classes/core/router.class.php');
+require_once('./lib/classes/core/interfaces.class.php');
+require_once('./lib/classes/core/batmanadvanced.class.php');
+require_once('./lib/classes/core/olsr.class.php');
+require_once('./lib/classes/core/crawling.class.php');
+
+
   require_once('./lib/classes/core/olsr.class.php');
 
 class ApiMap {
@@ -416,6 +423,146 @@ class ApiMap {
 		
 		echo $poligons['polygons'];
 
+	}
+
+	public function getOnlineRouters() {
+		header('Content-type: text/xml');
+		$xw = new xmlWriter();
+		$xw->openMemory();
+		$xw->startDocument('1.0','UTF-8');
+			$xw->startElement ('kml'); 
+				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_green-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_blue-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_ip_online_highlighted_pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+							$xw->writeRaw('<href>./templates/img/ffmap/ip_online_highlighted_1.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_red-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+								$xw->writeRaw('<href>./templates/img/ffmap/ip_offline.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+
+
+				$xw->startElement('ListStyle');
+				$xw->endElement();
+				$xw->startElement('Folder');
+					$xw->startElement('name');
+						$xw->writeRaw('create');
+					$xw->endElement();
+
+$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+$crawl_routers = Router::getCrawlRoutersByCrawlCycleIdAndStatus($last_endet_crawl_cycle['id'], 'online');
+
+foreach($crawl_routers as $crawl_router) {
+	$router_data = Router::getRouterInfo($crawl_router['router_id']);
+
+	//Make coordinates and location information
+	if(!empty($crawl_router['longitude']) AND !empty($crawl_router['latitude'])) {
+		$longitude = $crawl_router['longitude'];
+		$latitude = $crawl_router['latitude'];
+		$location = $crawl_router['location'];
+		$do = true;
+	} elseif(!empty($router_data['longitude']) AND !empty($router_data['latitude'])) {
+		$longitude = $router_data['longitude'];
+		$latitude = $router_data['latitude'];
+		$location = $router_data['location'];
+		$do = true;
+	} else {
+		$do = false;
+	}
+	
+	if($do) {
+
+
+	//Make Olsr Informations
+/*										unset($links);
+										foreach ($entry['crawl_data']['olsrd_links'] as $olsrd_link) {
+											if ($olsrd_link['Cost']==0)
+												$font_color = '#bb3333';
+											elseif ($olsrd_link['Cost']<4)
+												$font_color = '#00cc00';
+											elseif ($olsrd_link['Cost']<10)
+												$font_color = '#ffcb05';
+											elseif ($olsrd_link['Cost']<100)
+												$font_color = '#ff6600';
+
+											$tmp = 'Remote IP';
+											$links .= "<span style=\"color: $font_color;\">olsr zu ".$olsrd_link[$tmp]." (ETX: $olsrd_link[Cost])</span><br>";
+										}*/
+
+
+	//Make B.A.T.M.A.N advanced informaions
+
+
+
+	
+							$xw->startElement('Placemark');
+								$xw->startElement('name');
+									$xw->writeRaw("<![CDATA[Ip <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
+								$xw->endElement();
+								$xw->startElement('description');
+										$box_inhalt = "<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>
+												   <b>Benutzer:</b> <a href='./user.php?id=$router_data[user_id]'>$router_data[nickname]</a><br>
+												   <b>Standortbeschreibung:</b> $location<br>
+												   <b>Letzter Crawl:</b> ".$crawl_router['crawl_date']."<br><br>";
+												   
+										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
+								$xw->endElement();
+								$xw->startElement('styleUrl');
+									if(isset($_GET['highlighted_router']) AND $_GET['highlighted_router']==$router_data['router_id'])
+										$xw->writeRaw('#sh_blue-pushpin');
+									else {
+										$xw->writeRaw('#sh_green-pushpin');
+									}
+								$xw->endElement();
+								$xw->startElement('Point');
+									$xw->startElement('coordinates');
+										$xw->writeRaw("$longitude,$latitude,0");
+									$xw->endElement();
+								$xw->endElement();
+							$xw->endElement();
+						}
+					}
+				$xw->endElement();
+			$xw->endElement();
+		$xw->endDocument();
+		
+		print $xw->outputMemory(true);
+		return true;
 	}
 }
 ?>

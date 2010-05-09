@@ -145,7 +145,7 @@
 			
 			<div id="map" style="height:200px; width:400px; border:solid 1px black;font-size:9pt;">
 				<script type="text/javascript">
-					newsubnet_map();
+					newproject_map();
 				</script>
 			</div>
 		</div>

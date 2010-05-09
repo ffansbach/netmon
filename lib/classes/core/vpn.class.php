@@ -28,24 +28,19 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+  require_once('./lib/classes/core/interfaces.class.php');
+  require_once('./lib/classes/core/router.class.php');
+  require_once('./lib/classes/core/project.class.php');
+
   require_once('./lib/classes/extern/archive.class.php');
   require_once('./lib/classes/extern/FTPSync.class.php');
 
 class Vpn {
-	public function generateKeys($ip_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $privkeypass_chk, $expiration) {
-		try {
-			$sql = "SELECT subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass
-					FROM ips
-					LEFT JOIN subnets on (subnets.id=ips.subnet_id)
-					WHERE ips.id='$ip_id'";
-			$result = DB::getInstance()->query($sql);
-			$vpn = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
+	public function generateKeys($interface_id, $organizationalunitname, $commonname, $emailaddress, $privkeypass, $privkeypass_chk, $expiration) {
+		$interface = Interfaces::getInterfaceByInterfaceId($interface_id);
+		$project = Project::getProjectData($interface['project_id']);
 
-		if (empty($vpn['vpn_server_ca']) OR empty($vpn['vpn_server_cert']) OR empty($vpn['vpn_server_key'])) {
+		if (empty($project['vpn_server_ca_crt']) OR empty($project['vpn_server_ca_key'])) {
 			$message[] = array("Die Zertifikate konnten nicht generiert werden.", 2);
 			$message[] = array("Der Subnetverwalter muss erst ein Masterzertifikat für das Subnetz erstellen.", 2);
 			Message::setMessage($message);
@@ -65,17 +60,19 @@ class Vpn {
 				Message::setMessage($message);
 				return false;
 			}
-			
+
 			$req_key = openssl_pkey_new();
 
 			if(openssl_pkey_export ($req_key, $out_key)) {
 				$req_csr  = openssl_csr_new ($dn, $req_key);
-				$req_cert = openssl_csr_sign($req_csr, $vpn['vpn_server_cert'], $vpn['vpn_server_key'], $expiration);
+				$req_cert = openssl_csr_sign($req_csr, $project['vpn_server_ca_crt'], $project['vpn_server_ca_key'], $expiration);
 				if(openssl_x509_export ($req_cert, $out_cert)) {
 					//  echo "$out_key\n";
 					// echo "$out_cert\n";
 				} else echo "Failed Cert\n";
 			} else echo "FailedKey\n";
+
+
 
 			return array("return" => true, "vpn_client_cert" => $out_cert, "vpn_client_key" => $out_key);
 		} else {
@@ -85,11 +82,11 @@ class Vpn {
 		}
 	}
 
-	public function saveKeysToDB($ip_id, $vpn_client_cert, $vpn_client_key) {
-		$result = DB::getInstance()->exec("UPDATE ips
+	public function saveKeysToDB($interface_id, $vpn_client_cert, $vpn_client_key) {
+		$result = DB::getInstance()->exec("UPDATE interfaces
 										   SET vpn_client_cert = '$vpn_client_cert',
 											   vpn_client_key = '$vpn_client_key'
-										   WHERE id = '$ip_id'");
+										   WHERE id = '$interface_id'");
 		
 		if ($result>0) {
 			$message[] = array("Die Keys wurden in der Datenbank gespeichert und werden Ihnen jetzt zum Download angeboten.", 1);
@@ -102,25 +99,26 @@ class Vpn {
 		}
 	}
 
-  public function downloadKeyBundle($ip_id) {
-    $keys = Helper::getIpDataByIpId($ip_id);
+  public function downloadKeyBundle($interface_id) {
+    $interface = Interfaces::getInterfaceByInterfaceId($interface_id);
+    $project = Project::getProjectData($interface['project_id']);
     
-    if (!empty($keys['vpn_server_ca']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
+    if (!empty($project['vpn_server_ca_crt']) AND !empty($interface['vpn_client_cert']) AND !empty($interface['vpn_client_key'])) {
 		//Get Config Datei
-		$config = Vpn::getVpnConfig($ip_id);
+		$config = Vpn::getVpnConfig($interface_id);
 
       $tmpdir = "./tmp/";
       
       $handle = fopen($tmpdir."ca.crt", "w+");
-      fwrite($handle, $keys['vpn_server_ca']);
+      fwrite($handle, $project['vpn_server_ca_crt']);
       fclose($handle);
 
       $handle = fopen($tmpdir."client.key", "w+");
-      fwrite($handle, $keys['vpn_client_key']);
+      fwrite($handle, $interface['vpn_client_key']);
       fclose($handle);
 
       $handle = fopen($tmpdir."client.crt", "w+");
-      fwrite($handle, $keys['vpn_client_cert']);
+      fwrite($handle, $interface['vpn_client_cert']);
       fclose($handle);
       
       $handle = fopen($tmpdir."openvpn", "w+");
@@ -128,7 +126,7 @@ class Vpn {
       fclose($handle);      
 
       // Objekt erzeugen. Das Argument bezeichnet den Dateinamen
-      $zipfile= new zip_file("VpnKeys_".$GLOBALS['net_prefix'].".".$keys['ip'].".zip");
+      $zipfile= new zip_file("VpnKeys_".$interface['id'].".zip");
 
       // Die Optionen
       $zipfile->set_options(array (
@@ -162,9 +160,9 @@ class Vpn {
 
   public function getCertificateInfo($ip_id) {
     $keys = Helper::getIpDataByIpId($ip_id);
-    if (!empty($keys['vpn_server_ca']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
+    if (!empty($keys['vpn_server_ca_crt']) AND !empty($keys['vpn_client_cert']) AND !empty($keys['vpn_client_key'])) {
       $ip_info = openssl_x509_parse($keys['vpn_client_cert']);
-      $subnet_info = openssl_x509_parse($keys['vpn_server_ca']);
+      $subnet_info = openssl_x509_parse($keys['vpn_server_ca_crt']);
 
       $ip_info['validFrom_time_t'] = date("d.m.Y H:m:s", $ip_info['validFrom_time_t']);
       $ip_info['validTo_time_t'] = date("d.m.Y H:m:s", $ip_info['validTo_time_t']);
@@ -274,8 +272,9 @@ echo $subnet_data['ftp_ccd_folder'];*/
 		return true;
 	}
   
-  public function getVpnConfig($ip_id) {
-  	$data = Helper::getIpDataByIpId($ip_id);
+  public function getVpnConfig($interface_id) {
+		$interface = Interfaces::getInterfaceByInterfaceId($interface_id);
+		$project = Project::getProjectData($interface['project_id']);
   	
   	$config = "package openvpn
 
@@ -283,9 +282,9 @@ config openvpn client
 option enable 1
 option client 1
 
-option dev $data[vpn_server_device]
-option proto $data[vpn_server_proto]
-list remote \"$data[vpn_server] $data[vpn_server_port]\"
+option dev $project[vpn_server_device]
+option proto $project[vpn_server_proto]
+list remote \"$project[vpn_server] $project[vpn_server_port]\"
 
 option resolv_retry infinite
 option nobind 1

@@ -33,7 +33,7 @@ class Helper {
 		try {
 			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.dhcp_host, ips.dhcp_netmask, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.location, ips.longitude, ips.latitude, ips.chipset, ips.create_date,
 						   users.nickname,
-						   subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
+						   subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca_crt
 					FROM ips
 					LEFT JOIN users ON (users.id=ips.user_id)
 					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
@@ -48,12 +48,67 @@ class Helper {
 		return $ip;
 	}
 
+	public function getChipsets() {
+		try {
+			$sql = "SELECT  *
+					FROM chipsets
+					ORDER BY name asc";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$chipsets[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $chipsets;
+	}
+
+
+
+	public function getInterfacesCrawlByCrawlCycle($crawl_cycle_id, $router_id) {
+		$interfaces = array();
+		try {
+			$sql = "SELECT  *
+					FROM crawl_interfaces
+					WHERE crawl_cycle_id='$crawl_cycle_id' AND router_id='$router_id'
+					ORDER BY name asc";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$interfaces[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $interfaces;
+	}
+
+	public function getCrawlInterfaceHistoryByRouterIdAndInterfaceNameExceptActualCrawlCycle($router_id, $actual_crawl_cycle_id, $interface_name, $limit) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_interfaces
+					WHERE router_id='$router_id' AND name='$interface_name' AND crawl_cycle_id!='$actual_crawl_cycle_id'
+					ORDER BY crawl_date desc
+					LIMIT $limit";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$interfaces[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $interfaces;
+	}
+
+
 	public function getIpsByUserIDThatCanVPN($user_id) {
 		try {
 			$sql = "SELECT ips.id as ip_id, ips.ip, subnets.title as subnet_title
 					FROM ips
 					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
-					WHERE ips.user_id='$user_id' AND ips.vpn_client_cert!='' AND ips.vpn_client_key!='' AND subnets.vpn_server_ca!=''";
+					WHERE ips.user_id='$user_id' AND ips.vpn_client_cert!='' AND ips.vpn_client_key!='' AND subnets.vpn_server_ca_crt!=''";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$ips[] = $row;
@@ -69,7 +124,7 @@ class Helper {
     try {
       $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.radius, ips.vpn_client_cert, ips.vpn_client_key, ips.location, ips.longitude, ips.latitude, ips.chipset, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
 				      users.nickname, users.email,
-				      subnets.title, subnets.host, subnets.netmask, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca
+				      subnets.title, subnets.host, subnets.netmask, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca_crt
 				   FROM ips
 				   LEFT JOIN users ON (users.id=ips.user_id)
 				   LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
@@ -162,7 +217,7 @@ class Helper {
 	try {
 		$sql = "SELECT services.id as service_id, services.ip_id, services.title as services_title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.use_netmons_url, services.url, services.create_date,
 			       ips.id as ip_id, ips.ip, ips.zone_start, ips.zone_end,			       
-			       subnets.id as subnet_id, subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
+			       subnets.id as subnet_id, subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca_crt, subnets.vpn_server_ca_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email
 			FROM services
 			LEFT JOIN ips ON (ips.id = services.ip_id)
@@ -433,7 +488,7 @@ class Helper {
 		try {
 			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.use_netmons_url, services.url, services.create_date,
 			       ips.id as ip_id, ips.ip, ips.zone_start, ips.zone_end,
-			       subnets.id as subnet_id, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca, subnets.vpn_server_cert, subnets.vpn_server_key, subnets.vpn_server_pass,
+			       subnets.id as subnet_id, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca_crt, subnets.vpn_server_ca_key, subnets.vpn_server_pass,
 			       users.id as user_id, users.nickname, users.email
 			       FROM  services
 			       LEFT JOIN ips ON (ips.id=services.ip_id)
@@ -462,6 +517,40 @@ class Helper {
 			echo $e->getMessage();
 		}
 		return $ips;
+	}
+
+	public function getExistingIPv4IpsByProjectId($project_id) {
+		$ips = array();
+		try {
+			$sql = "SELECT * FROM interfaces
+				WHERE project_id='$project_id' AND ipv4_addr!=''
+				ORDER BY ipv4_addr ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$interfaces[] = $row['ipv4_addr'];
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $interfaces;
+	}
+
+	public function getExistingIPv4Ips() {
+		$ips = array();
+		try {
+			$sql = "SELECT * FROM interfaces
+				WHERE ipv4_addr!=''
+				ORDER BY ipv4_addr ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$interfaces[] = $row['ipv4_addr'];
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $interfaces;
 	}
 
 	public function getExistingRangesBySubnetId($subnet_id) {
