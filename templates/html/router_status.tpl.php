@@ -145,6 +145,24 @@
 
 		{/if}
 
+	<h2>History</h2>
+	{if !empty($router_history)}
+		<ul>
+			{foreach item=hist from=$router_history}
+				<li>
+					<b>{$hist.create_date|date_format:"%e.%m.%Y %H:%M"}:</b> 
+					{if $hist.data.action == 'status' AND $hist.data.to == 'online'}
+						Router geht <span style="color: #007B0F;">online</span>
+					{/if}
+					{if $hist.data.action == 'status' AND $hist.data.to == 'offline'}
+						Router geht <span style="color: #CB0000;">offline</span>
+					{/if}
+				</li>
+			{/foreach}
+		</ul>
+	{else}
+		<p>Keine Daten vorhanden</p>
+	{/if}
 
 	<h2>Grafische Historie</h2>
 	<p>
@@ -154,9 +172,10 @@
 	</div>
 </div>
 
+{if !empty($router_batman_adv_interfaces)}
 <div style="width: 100%; overflow: hidden;">
     <div style="float:left; width: 50%;">
-{if !empty($router_batman_adv_interfaces)}
+
 	<h2>B.A.T.M.A.N advanced Monitoring</h2>
 	<h3>Interfaces and status</h3>
 	{if !empty($batman_adv_interfaces)}
@@ -183,45 +202,43 @@
 	{else}
 		<p>Keine Originators gefunden</p>
 	{/if}
-{/if}
 	</div>
 	<div style="float:left; width: 50%;">
-	<p>
 		<img src="./tmp/router_{$router_data.router_id}_originators.png">
-	</p>
 	</div>
+{/if}
 
-<div style="width: 100%; overflow: hidden;">
-    <div style="float:left; width: 50%;">
 {if !empty($router_olsr_interfaces)}
-<h2>Olsr Monitoring - Links</h2>
-<div id="ipitem" style="width: 370px; overflow: hidden;">
-  <div nstyle="white-space: nowrap;">
-    <div style="float:left; width: 150px;"><b>Link IP</b></div>
-    <div style="float:left; width: 150px;"><b>Local interface IP</b></div>
-    <div style="float:left; width: 70px;"><b>ETX</b></div>
-  </div>
+<div style="width: 100%; overflow: hidden;">
+	<div style="float:left; width: 50%;">
+			<h2>Olsr Monitoring - Links</h2>
+			<div id="ipitem" style="width: 370px; overflow: hidden;">
+			<div nstyle="white-space: nowrap;">
+			<div style="float:left; width: 150px;"><b>Link IP</b></div>
+			<div style="float:left; width: 150px;"><b>Local interface IP</b></div>
+			<div style="float:left; width: 70px;"><b>ETX</b></div>
+	</div>
 </div>
 
 {foreach item=olsrd_links from=$olsrd_crawl_data.olsrd_links}
-<div id="ipitem" style="width: 370px; overflow: hidden;">
-  <div style="white-space: nowrap;">
-    {assign var="tmp" value="Remote IP"}
-    <div style="float:left; width: 150px;">{$olsrd_links.$tmp}</div>
-    {assign var="tmp2" value="Local IP"}
-    <div style="float:left; width: 150px;">{$olsrd_links.$tmp2}</div>
-    <div style="float:left; width: 70px; background: {if $olsrd_links.Cost==0}#bb3333{elseif $olsrd_links.Cost<4}#00cc00{elseif $olsrd_links.Cost<10}#ffcb05{elseif $olsrd_links.Cost<100}#ff6600{/if};">{$olsrd_links.Cost}</div>
-  </div>
-</div>
+	<div id="ipitem" style="width: 370px; overflow: hidden;">
+		<div style="white-space: nowrap;">
+			{assign var="tmp" value="Remote IP"}
+			<div style="float:left; width: 150px;">{$olsrd_links.$tmp}</div>
+			{assign var="tmp2" value="Local IP"}
+			<div style="float:left; width: 150px;">{$olsrd_links.$tmp2}</div>
+			<div style="float:left; width: 70px; background: {if $olsrd_links.Cost==0}#bb3333{elseif $olsrd_links.Cost<4}#00cc00{elseif $olsrd_links.Cost<10}#ffcb05{elseif $olsrd_links.Cost<100}#ff6600{/if};">{$olsrd_links.Cost}</div>
+		</div>
+	</div>
 {/foreach}
-{/if}
+
 	</div>
 	<div style="float:left; width: 50%;">
 	<p>
 		<img src="./tmp/router_{$router_data.router_id}_olsrd_links.png">
 	</p>
 	</div>
-
+{/if}
 
 <h2>Interface Monitoring</h2>
 {if !empty($interface_crawl_data)}

@@ -1,8 +1,6 @@
 <p>
 <!-- Nur ein Beispiel was vielleicht möglich währe für Ideen: http://karte.freifunk-halle.net/ -->
 
-<!--<a href="#">Online Ips</a>&nbsp|&nbsp<a href="#">Alle Ips</a>&nbsp|&nbsp<a href="#">Offline Ips</a>&nbsp|&nbsp<a href="#">Viel besuchte Ips</a>-->
-
 <h2>Freifunk Knoten auf einen Blick</h2>
 
 	<div style="margin-right: 10px;">

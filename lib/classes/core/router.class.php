@@ -50,6 +50,21 @@ class Router {
 		return $routers;
 	}
 
+	public function getLastOnlineCrawlByRouterId($router_id) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_routers
+					WHERE router_id='$router_id' AND status='online' ORDER BY id desc
+					LIMIT 1";
+			$result = DB::getInstance()->query($sql);
+			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $crawl_data;
+	}
+
 
 
 	public function getRouters() {
@@ -188,6 +203,8 @@ class Router {
 		}
 		return $count['count'];
 	}
+
+
 
 
 }

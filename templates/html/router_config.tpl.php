@@ -158,8 +158,28 @@
 
 <h2>Dienste</h2>
 
+{foreach item=service from=$services}
+<h3>{$service.title}</h3>
+<div style="width: 100%; overflow: hidden;">
+    <div style="float:left; width: 50%;">
+	<ul>
+		<li>
+			<b>Port: </b> {$service.port}
+		</li>
+		<li>
+			<b>Beschreibung: </b> {$service.description}
+		</li>
+	</ul>
+	</div>
+	<div style="float:left; width: 50%;">
+
+	</div>
+</div>	  
+<hr>
+{/foreach}
+
 <p>
-  <a href="./deviceeditor.php?section=add&router_id={$router_data.router_id}">Dienst hinzufügen</a>
+  <a href="./serviceeditor.php?section=add&router_id={$router_data.router_id}">Dienst hinzufügen</a>
 </p>
 
 

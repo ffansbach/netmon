@@ -8,6 +8,17 @@ require_once('./lib/classes/core/crawling.class.php');
 /** Get and assign global messages **/
 $smarty->assign('message', Message::getMessage());
 
+/** Get and assign crawler status **/
+$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+$last_ended_crawl_cycle['crawl_date_end'] = strtotime($last_ended_crawl_cycle['crawl_date'])+$GLOBALS['crawl_cycle']*60;
+
+$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+$actual_crawl_cycle['crawl_date_end'] = strtotime($actual_crawl_cycle['crawl_date'])+$GLOBALS['crawl_cycle']*60;
+$actual_crawl_cycle['crawl_date_end_minutes'] = floor(($actual_crawl_cycle['crawl_date_end']-time())/60).':'.(($actual_crawl_cycle['crawl_date_end']-time()) % 60);
+
+$smarty->assign('last_ended_crawl_cycle', $last_ended_crawl_cycle);
+$smarty->assign('actual_crawl_cycle', $actual_crawl_cycle);
+
 /**Get and assign routers By Chipset **/
 $chipsets = Helper::getChipsets();
 foreach ($chipsets as $key=>$chipset) {
@@ -54,6 +65,15 @@ for ($i=$history_count-1; $i>=0; $i--) {
 exec("rrdtool graph $image_path_status -a PNG --title='Router status' --vertical-label 'routers' --units-exponent 0 --start $history_start --end $history_end DEF:probe1=$rrd_path_status:online:AVERAGE DEF:probe2=$rrd_path_status:offline:AVERAGE DEF:probe3=$rrd_path_status:unknown:AVERAGE DEF:probe4=$rrd_path_status:all:AVERAGE LINE1:probe1#007B0F:'online' LINE1:probe2#CB0000:'offline' LINE1:probe3#F8C901:'unknown' LINE1:probe4#696969:'all'");
 
 $smarty->assign('router_status_history', $router_status_history);
+
+/** History **/
+
+/*	require_once('./lib/classes/core/history.class.php');
+	
+	$history = History::getServiceHistory(false, $GLOBALS['portal_history_hours']);
+	$smarty->assign('portal_history_hours', $GLOBALS['portal_history_hours']);
+	$smarty->assign('history', $history);
+*/
 
 /** Display templates **/
 $smarty->display("header.tpl.php");

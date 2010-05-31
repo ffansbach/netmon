@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# NodeWatcher wrapper
+# 
+
+LANG=C
+
+SCRIPT_DIR=`dirname $0`
+echo $SCRIPT_DIR
+. $SCRIPT_DIR/nodewatcher_config
+
+
+
+$SCRIPT_DIR/nodewatcher_script "crawl" "$netmon_api" "$router_id" "$nickname" "$password"

@@ -31,6 +31,97 @@
 require_once $path.'lib/classes/extern/xmpphp/XMPP.php';
 
 class Service {
+	public function addService($router_id, $title, $description, $port, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {
+		DB::getInstance()->exec("INSERT INTO services (router_id, title, description, port, visible, notify, notification_wait, use_netmons_url, url, create_date)
+					 VALUES ('$router_id', '$title', '$description', '$port', '$visible', '$notify', '$notification_wait', '$use_netmons_url', '$url', NOW());");
+		$service_id = DB::getInstance()->lastInsertId();
+		
+		try {
+			$sql = "select hostname FROM routers WHERE id='$router_id'";
+			$result = DB::getInstance()->query($sql);
+			$router_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		$message[] = array("Ein Service auf Port $port wurde dem Router $router_data[hostname] hinzugefügt.",1);
+		Message::setMessage($message);
+		
+		return array("result"=>true, "service_id"=>$service_id, "router_id"=>$router_id);
+	}
+
+	public function getServicesByRouterId($router_id) {
+		$servicelist = array();
+		try {
+			$sql = "SELECT  *
+					FROM services
+					WHERE router_id='$router_id'";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$servicelist[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+		  echo $e->getMessage();
+		}
+		return $servicelist;
+	}
+
+
+
+	public function insertEditService($service_id, $typ, $crawler, $title, $description, $visible, $notify, $notification_wait, $use_netmons_url, $url) {
+		DB::getInstance()->exec("UPDATE services SET
+										title = '$title',
+										description = '$description',
+										typ = '$typ',
+										crawler = '$crawler',
+										visible = '$visible',
+										notify = '$notify',
+										notification_wait = '$notification_wait',
+										use_netmons_url = '$use_netmons_url',
+										url = '$url'
+								WHERE id = '$service_id'");
+		
+		$message[] = array("Der Service mit der ID ".$service_id." wurde geändert.", 1);
+		Message::setMessage($message);
+		return array("result"=>true, "service_id"=>$service_id);
+	}
+
+	public function deleteService($service_id, $force=false) {
+		if ($_POST['delete']=="true") {
+
+			$service_data = Helper::getServiceDataByServiceId($service_id);
+			if(count(Helper::getServicesByIpId($service_data['ip_id']))<2 AND !$force) {
+				$link1 = "<a href=\"./serviceeditor.php?section=new&ip_id=$service_data[ip_id]\">hier</a>";
+				$link2 = "<a href=\"./ipeditor.php?section=edit&id=$service_data[ip_id]\">hier</a>";
+				$message[] = array("Sie können diesen Service nicht löschen da eine IP durch mindestens einen Service spezifiziert werden muss.<br>"
+									."Um einen 2. Service zu erstellen klicken Sie bitte $link1<br>"
+									."Um die IP zu komplett zu löschen, klicken Sie bitte $link2", 2);
+				Message::setMessage($message);
+				return false;
+			} else {
+				DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
+				$message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
+				
+				DB::getInstance()->exec("DELETE FROM crawl_data WHERE service_id='$service_id';");
+				$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurden gelöscht.",1);
+
+				DB::getInstance()->exec("DELETE FROM history WHERE object='service' AND object_id='$service_id';");
+				$message[] = array("Die History-Daten des Service mit der ID ".$service_id." wurden gelöscht.",1);
+				
+				Message::setMessage($message);
+				return true;
+			}
+		} else {
+			$message[] = array("Zum löschen des Services bitte das Häckchen bei \"Ja\" setzen.",2);
+
+			Message::setMessage($message);
+			return false;
+		}
+	}
+
+
+
 	public function getCrawlHistory($service_id, $count) {
 		$last_crawl = array();
 		try {

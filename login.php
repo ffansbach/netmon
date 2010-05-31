@@ -1,7 +1,7 @@
 <?php
-  require_once('./config/runtime.inc.php');
-  require_once('./lib/classes/core/login.class.php');
-  require_once('./lib/classes/core/user.class.php');
+  require_once('config/runtime.inc.php');
+  require_once('lib/classes/core/login.class.php');
+  require_once('lib/classes/core/user.class.php');
   require_once('lib/classes/extern/class.openid.php');
 
   $Login = new Login;

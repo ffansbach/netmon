@@ -223,34 +223,6 @@ class EditingHelper {
 		}
 	}
 	
-	public function addIpTyp($ip_id, $title, $description, $typ, $crawler, $port, $visible, $notify, $notification_wait, $use_netmons_url=true, $url='') {
-		if ($typ=="false" OR $crawler=="false") {
-			$message[] = array("Bitte wählen sie Servicetyp und Crawler aus.", 2);
-			Message::setMessage($message);
-			return array("result"=>false, "service_id"=>$service_id);
-		}
-
-		if (!empty($port)) {
-			$crawler = $port;
-		}
-		
-		DB::getInstance()->exec("INSERT INTO services (ip_id, title, description, typ, crawler, visible, notify, notification_wait, use_netmons_url, url, create_date) VALUES ('$ip_id', '$title', '$description', '$typ', '$crawler', '$visible', '$notify', '$notification_wait', '$use_netmons_url', '$url', NOW());");
-		$service_id = DB::getInstance()->lastInsertId();
-		
-		try {
-			$sql = "select ips.ip FROM ips WHERE ips.id='$ip_id'";
-			$result = DB::getInstance()->query($sql);
-			$ip_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		$message[] = array("Ein Service vom Typ ".$typ." wurde der Ip $GLOBALS[net_prefix].$ip_data[ip] hinzugefügt.",1);
-		Message::setMessage($message);
-		
-		return array("result"=>true, "service_id"=>$service_id);
-	}
-
 	public function getAFreeIPv4IPByProjectId($project_id) {
 		$existingips = Helper::getExistingIPv4Ips();
 

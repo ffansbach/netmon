@@ -1,0 +1,187 @@
+#!/bin/sh
+#
+# NodeWatcher cgi-bin script
+# 
+
+LANG=C
+
+urlencode() {
+	arg="$1"
+	i=0
+	while [ $i -lt ${#arg} ]; do
+		c=${arg:$i:1}
+
+		if echo "$c" | grep -q '[a-zA-Z/:_\.\-]'; then
+			echo -n "$c"
+		else
+			echo -n "%"
+			printf "%X" "'$c'"
+		fi
+		i=$((i+1))
+	done
+}
+	
+if [ "$1" = "version" ]; then
+	echo "2"
+	exit 0
+fi
+
+netmon_api=$2
+router_id=$3
+nickname=$4
+password=$5
+
+if which uci >/dev/null; then
+	echo "UCI is installed, collecting data from UCI"
+
+hostname="`uci get system.@system[0].hostname`"
+location="`uci get freifunk.contact.location`"
+location=`urlencode "$location"`
+latitude="`uci get system.@system[0].latitude`"
+longitude="`uci get system.@system[0].longitude`"
+
+community_essid="`uci get freifunk.community.ssid`"
+community_nickname="`uci get freifunk.contact.nickname`"
+community_email="`uci get freifunk.contact.mail`"
+community_prefix="`uci get freifunk.community.prefix`"
+description="`uci get freifunk.contact.note`"
+description=`urlencode "$description"`
+
+chipset=`lua -l luci.sys -e 'print(luci.sys.sysinfo())' | awk '{ print $1" "$2}'`
+chipset=`urlencode "$chipset"`
+cpu=`lua -l luci.sys -e 'print(luci.sys.sysinfo())' | awk '{ print $3" "$4" "$5 }'`
+cpu=`urlencode "$cpu"`
+memory_total=`lua -l luci.sys -e 'print(luci.sys.sysinfo())' | awk '{ print $6 }'`
+memory_caching=`lua -l luci.sys -e 'print(luci.sys.sysinfo())' | awk '{ print $7 }'`
+memory_buffering=`lua -l luci.sys -e 'print(luci.sys.sysinfo())' | awk '{ print $8 }'`
+memory_free=`lua -l luci.sys -e 'print(luci.sys.sysinfo())' | awk '{ print $9 }'`
+uptime=`lua -l luci.sys -e 'print(luci.sys.uptime())' | awk '{ print $1 }'`
+#idletime=
+loadavg=`lua -l luci.sys -e 'print(luci.sys.loadavg())' | awk '{ print $1 }'`
+
+luciname=`lua -l luci.version -e 'print(luci.version.luciname)'`
+luciname=`urlencode "$luciname"`
+lucversion=`lua -l luci.version -e 'print(luci.version.luciversion)'`
+lucversion=`urlencode "$lucversion"`
+distname=`lua -l luci.version -e 'print(luci.version.distname)'`
+distname=`urlencode "$distname"`
+distversion=`lua -l luci.version -e 'print(luci.version.distversion)'`
+distversion=`urlencode "$distversion"`
+
+else
+	echo "UCI is NOT installed"
+
+	hostname="`hostname`"
+	uptime=`cat /proc/uptime | awk '{ print $1 }'`
+
+	memory_total=`cat /proc/meminfo | grep 'MemTotal' | awk '{ print $2 }'`
+	memory_caching=`cat /proc/meminfo | grep -m 1 'Cached:' | awk '{ print $2 }'`
+	memory_buffering=`cat /proc/meminfo | grep 'Buffers' | awk '{ print $2 }'`
+	memory_free=`cat /proc/meminfo | grep 'MemFree' | awk '{ print $2 }'`
+	cpu=`grep -m 1 "model name" /proc/cpuinfo | cut -d ":" -f 2`
+	cpu=`urlencode "$cpu"`
+fi
+
+local_time="`date +%s`"
+
+command="wget -q -O - http://$netmon_api/api_crawl_routers.php?section=insert_router&nickname=$nickname&password=$password&router_id=$router_id&status=online&hostname=$hostname&description=$description&location=$location&latitude=$latitude&longitude=$longitude&luciname=$luciname&luciversion=$luciversion&distname=$distname&distversion=$distversion&chipset=$chipset&cpu=$cpu&memory_total=$memory_total&memory_caching=$memory_caching&memory_buffering=$memory_buffering&memory_free=$memory_free&loadavg=$loadavg&processes=$processes&uptime=$uptime&idletime=$idletime&local_time=$local_time&community_essid=$community_essid&community_nickname=$community_nickname&community_email=$community_email&community_prefix=$community_prefix"
+
+if [ "$1" = "debug" ]; then
+	echo $command
+else
+	echo `$command`
+fi
+
+
+
+
+
+
+#INTERFACES
+  IFACES=`cat /proc/net/dev | awk -F: '!/\|/ { gsub(/[[:space:]]*/, "", $1); split($2, a, " "); printf("%s=%s=%s ", $1, a[1], a[9]) }'`
+  
+  for entry in $IFACES; do
+    iface=`echo $entry | cut -d '=' -f 1`
+    rcv=`echo $entry | cut -d '=' -f 2`
+    xmt=`echo $entry | cut -d '=' -f 3`
+
+  wlan_mode=""
+  wlan_bssid=""
+  wlan_essid=""
+  wlan_frequency=""
+  wlan_tx_power=""
+
+    if [ "$iface" != "lo" ]; then
+      if [ "`ifconfig ${iface} | grep UP`" != "" ]; then
+	name="${iface}"
+	mac_addr="`ifconfig ${iface} | grep 'HWaddr' | awk '{ print $5}'`"
+	ipv4_addr="`ifconfig ${iface} | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`"
+	ipv6_addr="`ifconfig ${iface} | grep 'inet6 addr:' | grep 'Scope:Global' | awk '{ print $3}'`"
+        traffic_rx="$rcv"
+        traffic_tx="$xmt"
+
+	if [ "`iwconfig ${iface} 2>/dev/null | grep Frequency | awk '{ print $2 }' | cut -d ':' -f 2`" != "" ]; then
+		wlan_mode="`iwconfig ${iface} 2>/dev/null | grep 'Mode' | awk '{ print $1 }' | cut -d ':' -f 2`"
+		if [ $wlan_mode = "Master" ]; then	
+			wlan_bssid="`iwconfig ${iface} 2>/dev/null | grep 'Access Point' | awk '{ print $6 }'`"
+		elif [ $wlan_mode = "Ad-Hoc" ]; then	
+			wlan_bssid="`iwconfig ${iface} 2>/dev/null | grep Cell | awk '{ print $5 }'`"
+		fi
+		
+		wlan_essid="`iwconfig ${iface} 2>/dev/null | grep ESSID | awk '{ split($4, a, \"\\"\"); printf(\"%s\", a[2]); }'`"
+		wlan_frequency="`iwconfig ${iface} 2>/dev/null | grep Frequency | awk '{ print $2 }' | cut -d ':' -f 2`"
+		wlan_tx_power="`iwconfig ${iface} 2>/dev/null | grep 'Tx-Power' | awk '{ print $4 }' | cut -d ':' -f 2`"
+	fi
+	command="wget -q -O - http://$netmon_api/api_crawl_interfaces.php?section=insert_interface&nickname=$nickname&password=$password&crawl_id=$crawl_id&router_id=$router_id&name=$name&mac_addr=$mac_addr&ipv4_addr=$ipv4_addr&ipv6_addr=$ipv6_addr&traffic_rx=$traffic_rx&traffic_tx=$traffic_tx&wlan_mode=$wlan_mode&wlan_frequency=$wlan_frequency&wlan_essid=$wlan_essid&wlan_bssid=$wlan_bssid&wlan_tx_power=$wlan_tx_power"
+	if [ "$1" = "debug" ]; then
+		echo $command
+	else
+		echo `$command`
+	fi
+      fi
+    fi
+  done
+
+#B.A.T.M.A.N. advanced
+#insert new interfaces
+if which batctl >/dev/null; then
+	has_active_interface="0"
+	BAT_ADV_IFACES=`batctl if | awk '{ print $3 }'`
+	for device_name in $BAT_ADV_IFACES; do
+		echo $device_name
+		if [ "`batctl if | grep $device_name | grep active`" != "" ]; then
+			status='active'
+			has_active_interface="1"
+		else
+			status='inactive'
+		fi
+		
+		command="wget -q -O - http://$netmon_api/api_crawl_interfaces.php?section=insert_batman_advanced_interface&nickname=$nickname&password=$password&router_id=$router_id&name=$device_name&status=$status"
+		if [ "$1" = "debug" ]; then
+			echo $command
+		else
+			echo `$command`
+		fi
+	done
+	
+	if [ $has_active_interface = "1" ]; then
+		BAT_ADV_ORIGINATORS=`batctl o | awk '/O/ {next} {print $1}'`
+		i=0
+		for originator in $BAT_ADV_ORIGINATORS; do
+			if [ $i -eq 0 ]; then
+				originators_string="$originator"
+			else
+				originators_string="$originators_string,$originator"
+			fi
+
+			i=$(($i + 1))
+		done
+		
+		command="wget -q -O - http://$netmon_api/api_crawl_interfaces.php?section=insert_batman_advanced_originators&nickname=$nickname&password=$password&router_id=$router_id&originators=$originators_string"
+		if [ "$1" = "debug" ]; then
+			echo $command
+		else
+			echo `$command`
+		fi
+	fi
+fi

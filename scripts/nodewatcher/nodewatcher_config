@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# NodeWatcher configuration
+# 
+
+autoupdate="y"
+
+netmon_api="netmon.freifunk-ol.de"
+
+router_id="13"
+nickname="Floh1111"
+password="blabla"
