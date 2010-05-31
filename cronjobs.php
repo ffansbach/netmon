@@ -39,45 +39,31 @@ foreach($files as $file) {
 	}
 }*/
 
-//Initialisiere neuen Crawl Cycle
-try {
-	$sql = "SELECT *
-	        FROM  crawl_cycle
-	        ORDER BY crawl_date desc
-		LIMIT 1;";
-	$result = DB::getInstance()->query($sql);
-	$last_crawl_cycle = $result->fetch(PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-	echo $e->getMessage();
-}
+/**
+* Crawl cycles and offline crawls
+**/
 
-if(strtotime($last_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<time()) {
-	try {
-		DB::getInstance()->exec("INSERT INTO crawl_cycle (crawl_date)
-						      VALUES (NOW());");
-	}
-	catch(PDOException $e) {
-		echo $e->getMessage();
-	}
-}
+$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 
-//Schließe alten Crawl Cycle
-$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-
-$routers = Router::getRouters();
-foreach ($routers as $router) {
-	$crawl = Router::getCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $router['id']);
-	if(empty($crawl)) {
-		try {
-			DB::getInstance()->exec("INSERT INTO crawl_routers (router_id, crawl_cycle_id, crawl_date, status)
-						 VALUES ('$router[id]', '$last_ended_crawl_cycle[id]', NOW(), 'offline');");
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
+if(strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<time()) {
+	//End actual crawl
+	$routers = Router::getRouters();
+	foreach ($routers as $router) {
+		$crawl = Router::getCrawlRouterByCrawlCycleId($actual_crawl_cycle['id'], $router['id']);
+		if(empty($crawl)) {
+			$crawl_data['status'] = "offline";
+			Crawling::insertRouterCrawl($router['id'], $crawl_data);
 		}
 	}
+
+	//Initialise new crawl cycle
+	Crawling::newCrawlCycle();
 }
 
+/**
+* Clean database
+**/
+
+Crawling::deleteOldCrawlData($GLOBALS['days_to_keep_mysql_crawl_data']);
 
 ?>

@@ -1,3 +1,15 @@
+<h2>Crawl Status</h2>
+<h3>Aktueller Crawl</h3>
+<p>
+	<b>Beginn:</b> {$actual_crawl_cycle.crawl_date|date_format:"%e.%m.%Y %H:%M"}<br>
+	<b>Vorraussichtliches Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} (noch {$actual_crawl_cycle.crawl_date_end_minutes} Minuten)
+</p>
+<h3>Letzter Crawl</h3>
+<p>
+	<b>Beginn:</b> {$last_ended_crawl_cycle.crawl_date}<br>
+	<b>Ende:</b> {$last_ended_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"}
+</p>
+
 <h2>Router Status</h2>
 
 <table style="text-align: center;
@@ -24,3 +36,25 @@
 
 <h2>Router status History</h2>
 <img src="./tmp/networkstatistic_status.png">
+
+<!--
+<h1>History der letzten {$portal_history_hours} Stunden</h1>
+
+{if !empty($history)}
+{foreach key=count item=hist from=$history}
+	{if $hist.data.action == 'status'}
+		{if $hist.data.from=='offline'}
+			{$hist.create_date}: {$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) geht online.<br>
+		{elseif $hist.data.from=='online'}
+			{$hist.create_date}: {$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) geht offline.<br>
+		{/if}
+	{/if}
+	{if $hist.data.action == 'reboot'}
+		{$hist.create_date}: {$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) wurde rebootet.<br>
+	{/if}
+
+
+{/foreach}
+{else}
+<p>In den letzten {$portal_history_hours} Stunden ist nichts passiert.</p>
+{/if}-->

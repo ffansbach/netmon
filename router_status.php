@@ -7,6 +7,7 @@ require_once('./lib/classes/core/interfaces.class.php');
 require_once('./lib/classes/core/batmanadvanced.class.php');
 require_once('./lib/classes/core/olsr.class.php');
 require_once('./lib/classes/core/crawling.class.php');
+require_once('./lib/classes/core/history.class.php');
 
 /**Set history time window**/
 $history_start = time()-(60*60*24);
@@ -14,6 +15,10 @@ $history_end = time();
 
 /** Get and assign global messages **/
 $smarty->assign('message', Message::getMessage());
+
+/** Get Router History **/
+$router_history = History::getRouterHistoryByRouterId($_GET['router_id'], 5, false);
+$smarty->assign('router_history', $router_history);
 
 /** Get and assign Router Informations **/
 //Router Status

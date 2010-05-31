@@ -1,5 +1,49 @@
 <?php
+require_once('./lib/classes/core/router.class.php');
+require_once('./lib/classes/core/crawling.class.php');
+
 class History {
+	public function makeRouterHistoryEntry($current_crawl_data, $router_id){
+		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+		$last_crawl_data = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router_id);
+		if($last_crawl_data['status']!="online") {
+			$last_online_crawl_data = Router::getLastOnlineCrawlByRouterId($router_id);
+		}
+
+		if (!empty($current_crawl_data['status']) AND $current_crawl_data['status']!=$last_crawl_data['status']) {
+			$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'status', 'from'=>$last_crawl_data['status'], 'to'=>$current_crawl_data['status']));
+		}
+
+		if($current_crawl_data['status']=='online') {
+			if (!empty($current_crawl_data['luciname']) AND !empty($last_online_crawl_data['luciname']) AND $current_crawl_data['luciname']!=$last_online_crawl_data['luciname']) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'luciname', 'from'=>$last_crawl_data['luciname'], 'to'=>$current_crawl_data['luciname']));
+			}
+			if (!empty($current_crawl_data['luciversion']) AND !empty($last_online_crawl_data['luciversion']) AND $current_crawl_data['luciversion']!=$last_online_crawl_data['luciversion']) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'luciversion', 'from'=>$last_crawl_data['luciversion'], 'to'=>$current_crawl_data['luciversion']));
+			}
+			if (!empty($current_crawl_data['distname']) AND !empty($last_online_crawl_data['distname']) AND $current_crawl_data['distname']!=$last_online_crawl_data['distname']) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'distname', 'from'=>$last_crawl_data['distname'], 'to'=>$current_crawl_data['distname']));
+			}
+			if (!empty($current_crawl_data['distversion']) AND !empty($last_online_crawl_data['distversion']) AND $current_crawl_data['distversion']!=$last_online_crawl_data['distversion']) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'distversion', 'from'=>$last_crawl_data['distversion'], 'to'=>$current_crawl_data['distversion']));
+			}
+		}
+
+		if($current_crawl_data['status']=='online' AND $last_crawl_data['status']=='online') {
+			if (!empty($current_crawl_data['uptime']) AND !empty($last_online_crawl_data['uptime']) AND $current_crawl_data['uptime']<$last_crawl_data['uptime']) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'reboot'));
+			}
+		}
+
+		if (is_array($history_data)) {
+			foreach ($history_data as $hist_data) {
+				DB::getInstance()->exec("INSERT INTO history (object, object_id, create_date, data) VALUES ('router', '$router_id', NOW(), '$hist_data');");
+			}
+		}
+	}
+
+
+
 	public function getLastRegisteredUsers($limit, $daylimit) {
 		if($limit)
 			$range = "ORDER BY create_date desc
@@ -165,6 +209,33 @@ class History {
 				$history[$key]['data'] = unserialize($history[$key]['data']);
 				$history[$key]['additional_data'] = Helper::getServiceDataByServiceId($row['object_id']);
 				$history[$key]['create_date'] = Helper::makeSmoothIplistTime(strtotime($history[$key]['create_date']));
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $history;
+	}
+
+	public function getRouterHistoryByRouterId($router_id, $countlimit, $hourlimit) {
+		if($countlimit)
+			$range = "
+						WHERE object='router' AND object_id=$router_id
+						ORDER BY history.create_date desc
+					  LIMIT 0, $countlimit";
+		elseif ($hourlimit)
+			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR AND object='service'
+					  ORDER BY history.create_date desc";
+		try {
+			$sql = "SELECT id, object, object_id, create_date, data
+			       FROM history
+				   $range";
+
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $key=>$row) {
+				$history[$key] = $row;
+				$history[$key]['data'] = unserialize($history[$key]['data']);
+				$history[$key]['additional_data'] = Router::getRouterInfo($row['object_id']);
 			}
 		}
 		catch(PDOException $e) {

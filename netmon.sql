@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 09, 2010 at 11:20 PM
--- Server version: 5.1.45
+-- Generation Time: May 31, 2010 at 07:52 PM
+-- Server version: 5.1.47
 -- PHP Version: 5.3.2-1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
@@ -19,6 +19,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `chipsets`
 --
 
+DROP TABLE IF EXISTS `chipsets`;
 CREATE TABLE IF NOT EXISTS `chipsets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -33,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
 -- Table structure for table `crawl_batman_advanced_interfaces`
 --
 
+DROP TABLE IF EXISTS `crawl_batman_advanced_interfaces`;
 CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `router_id` int(11) NOT NULL,
@@ -49,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
 -- Table structure for table `crawl_batman_advanced_originators`
 --
 
+DROP TABLE IF EXISTS `crawl_batman_advanced_originators`;
 CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `router_id` int(11) NOT NULL,
@@ -64,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
 -- Table structure for table `crawl_cycle`
 --
 
+DROP TABLE IF EXISTS `crawl_cycle`;
 CREATE TABLE IF NOT EXISTS `crawl_cycle` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `crawl_date` datetime NOT NULL,
@@ -76,6 +80,7 @@ CREATE TABLE IF NOT EXISTS `crawl_cycle` (
 -- Table structure for table `crawl_data`
 --
 
+DROP TABLE IF EXISTS `crawl_data`;
 CREATE TABLE IF NOT EXISTS `crawl_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `service_id` int(11) NOT NULL,
@@ -115,6 +120,7 @@ CREATE TABLE IF NOT EXISTS `crawl_data` (
 -- Table structure for table `crawl_interfaces`
 --
 
+DROP TABLE IF EXISTS `crawl_interfaces`;
 CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `crawl_id` int(11) NOT NULL,
@@ -141,6 +147,7 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
 -- Table structure for table `crawl_olsr`
 --
 
+DROP TABLE IF EXISTS `crawl_olsr`;
 CREATE TABLE IF NOT EXISTS `crawl_olsr` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `router_id` int(11) NOT NULL,
@@ -161,6 +168,7 @@ CREATE TABLE IF NOT EXISTS `crawl_olsr` (
 -- Table structure for table `crawl_routers`
 --
 
+DROP TABLE IF EXISTS `crawl_routers`;
 CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `router_id` int(11) NOT NULL,
@@ -178,11 +186,11 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `distname` varchar(40) NOT NULL,
   `distversion` varchar(40) NOT NULL,
   `chipset` varchar(20) NOT NULL,
-  `cpu` varchar(20) NOT NULL,
-  `memory_total` varchar(8) NOT NULL,
-  `memory_caching` varchar(8) NOT NULL,
+  `cpu` varchar(100) NOT NULL,
+  `memory_total` varchar(15) NOT NULL,
+  `memory_caching` varchar(15) NOT NULL,
   `memory_buffering` varchar(30) NOT NULL,
-  `memory_free` varchar(8) NOT NULL,
+  `memory_free` varchar(15) NOT NULL,
   `loadavg` varchar(8) NOT NULL,
   `processes` varchar(8) NOT NULL,
   `uptime` varchar(15) NOT NULL,
@@ -201,6 +209,7 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
 -- Table structure for table `history`
 --
 
+DROP TABLE IF EXISTS `history`;
 CREATE TABLE IF NOT EXISTS `history` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `object` varchar(20) NOT NULL,
@@ -216,6 +225,7 @@ CREATE TABLE IF NOT EXISTS `history` (
 -- Table structure for table `imagemaker_configs`
 --
 
+DROP TABLE IF EXISTS `imagemaker_configs`;
 CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `image_id` int(11) NOT NULL,
@@ -232,6 +242,7 @@ CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
 -- Table structure for table `imagemaker_images`
 --
 
+DROP TABLE IF EXISTS `imagemaker_images`;
 CREATE TABLE IF NOT EXISTS `imagemaker_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -247,6 +258,7 @@ CREATE TABLE IF NOT EXISTS `imagemaker_images` (
 -- Table structure for table `interfaces`
 --
 
+DROP TABLE IF EXISTS `interfaces`;
 CREATE TABLE IF NOT EXISTS `interfaces` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `router_id` int(11) NOT NULL,
@@ -267,6 +279,7 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
 -- Table structure for table `ips`
 --
 
+DROP TABLE IF EXISTS `ips`;
 CREATE TABLE IF NOT EXISTS `ips` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -294,6 +307,7 @@ CREATE TABLE IF NOT EXISTS `ips` (
 -- Table structure for table `olsr_crawl_data`
 --
 
+DROP TABLE IF EXISTS `olsr_crawl_data`;
 CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `crawl_id` int(11) NOT NULL,
@@ -312,6 +326,7 @@ CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
 -- Table structure for table `projects`
 --
 
+DROP TABLE IF EXISTS `projects`;
 CREATE TABLE IF NOT EXISTS `projects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -353,6 +368,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
 -- Table structure for table `routers`
 --
 
+DROP TABLE IF EXISTS `routers`;
 CREATE TABLE IF NOT EXISTS `routers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -374,13 +390,13 @@ CREATE TABLE IF NOT EXISTS `routers` (
 -- Table structure for table `services`
 --
 
+DROP TABLE IF EXISTS `services`;
 CREATE TABLE IF NOT EXISTS `services` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ip_id` int(11) NOT NULL,
+  `router_id` int(11) NOT NULL,
   `title` varchar(100) NOT NULL,
   `description` text NOT NULL,
-  `typ` varchar(20) NOT NULL,
-  `crawler` varchar(20) NOT NULL,
+  `port` int(11) NOT NULL,
   `visible` int(11) NOT NULL,
   `notify` tinyint(1) NOT NULL,
   `notification_wait` int(11) NOT NULL,
@@ -398,6 +414,7 @@ CREATE TABLE IF NOT EXISTS `services` (
 -- Table structure for table `subnets`
 --
 
+DROP TABLE IF EXISTS `subnets`;
 CREATE TABLE IF NOT EXISTS `subnets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `subnet_type` varchar(10) NOT NULL,
@@ -436,6 +453,7 @@ CREATE TABLE IF NOT EXISTS `subnets` (
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `session_id` varchar(32) NOT NULL,

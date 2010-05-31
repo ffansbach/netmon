@@ -38,67 +38,67 @@ class Menus extends UserManagement {
   
   public function loginOutMenu() {
     if (UserManagement::checkPermission(2)) {
-      $menu[] = array('name'=>'Login', 'href'=>'./login.php?section=login');
-      $menu[] = array('name'=>'Registrieren', 'href'=>'./register.php');
+      $menu[] = array('name'=>'Login', 'href'=>'login.php?section=login');
+      $menu[] = array('name'=>'Registrieren', 'href'=>'register.php');
     }
     
     if (UserManagement::checkPermission(4)) {
       $user_data = Helper::getUserByID($_SESSION['user_id']);
 
-      $menu[] = array('pretext'=>'Eingeloggt als:', 'name'=>$user_data['nickname'], 'href'=>"./user.php?id=$_SESSION[user_id]");
-      $menu[] = array('name'=>'Logout', 'href'=>'./login.php?section=logout');
+      $menu[] = array('pretext'=>'Eingeloggt als:', 'name'=>$user_data['nickname'], 'href'=>"user.php?id=$_SESSION[user_id]");
+      $menu[] = array('name'=>'Logout', 'href'=>'login.php?section=logout');
     }
     return $menu;
   }
 
   function installationMenu() {
-      $menu[] = array('name'=>'Übersicht', 'href'=>'./install.php');
-      $menu[] = array('name'=>'Datenbank', 'href'=>'./install.php?section=db');
-      $menu[] = array('name'=>'Nachrichten', 'href'=>'./install.php?section=messages');
-      $menu[] = array('name'=>'Netzwerk', 'href'=>'./install.php?section=network');
-      $menu[] = array('name'=>'Beenden', 'href'=>'./install.php?section=finish');
+      $menu[] = array('name'=>'Übersicht', 'href'=>'install.php');
+      $menu[] = array('name'=>'Datenbank', 'href'=>'install.php?section=db');
+      $menu[] = array('name'=>'Nachrichten', 'href'=>'install.php?section=messages');
+      $menu[] = array('name'=>'Netzwerk', 'href'=>'install.php?section=network');
+      $menu[] = array('name'=>'Beenden', 'href'=>'install.php?section=finish');
     return $menu;
   }
 
   function normalMenu() {
     if (UserManagement::checkPermission(1)) {
-      $menu[] = array('name'=>'Portal', 'href'=>'./portal.php');
-      $menu[] = array('name'=>'Map', 'href'=>'./map.php');
-      $menu[] = array('name'=>'Topologie', 'href'=>'./topology.php');
-//      $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'./status.php');
-      $menu[] = array('name'=>'Ipliste', 'href'=>'./iplist.php');
-      $menu[] = array('name'=>'Routerliste', 'href'=>'./routerlist.php');
-      $menu[] = array('name'=>'Projektliste', 'href'=>'./subnetlist.php');
-      $menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'./networkstatistic.php');
-//      $menu[] = array('name'=>'Impressum', 'href'=>'./impressum.php');
+      $menu[] = array('name'=>'News', 'href'=>'portal.php');
+      $menu[] = array('name'=>'Map', 'href'=>'map.php');
+      $menu[] = array('name'=>'Topologie', 'href'=>'topology.php');
+//      $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'status.php');
+//      $menu[] = array('name'=>'Ipliste', 'href'=>'iplist.php');
+      $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php');
+//      $menu[] = array('name'=>'Projektliste', 'href'=>'subnetlist.php');
+      $menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'networkstatistic.php');
+//      $menu[] = array('name'=>'Impressum', 'href'=>'impressum.php');
     }
     return $menu;
   }
 
   function userMenu() {
     if (UserManagement::checkPermission(8)) {
-      $menu[] = array('name'=>'Desktop', 'href'=>'./desktop.php');
-      $menu[] = array('name'=>'Neuer Router', 'href'=>'./routereditor.php?section=new');
-      $menu[] = array('name'=>'Neue Ip', 'href'=>'./ipeditor.php?section=new');
-//      $menu[] = array('name'=>'Mein Benutzer', 'href'=>'./user.php?id='.$_SESSION['user_id']);
-//      $menu[] = array('name'=>'Benutzer ändern', 'href'=>'./user_edit.php?section=edit&id='.$_SESSION['user_id']);
-      $menu[] = array('name'=>'Benutzerliste', 'href'=>'./userlist.php');
+      $menu[] = array('name'=>'Desktop', 'href'=>'desktop.php');
+      $menu[] = array('name'=>'Neuer Router', 'href'=>'routereditor.php?section=new');
+//      $menu[] = array('name'=>'Neue Ip', 'href'=>'ipeditor.php?section=new');
+//      $menu[] = array('name'=>'Mein Benutzer', 'href'=>'user.php?id='.$_SESSION['user_id']);
+//      $menu[] = array('name'=>'Benutzer ändern', 'href'=>'user_edit.php?section=edit&id='.$_SESSION['user_id']);
+      $menu[] = array('name'=>'Benutzerliste', 'href'=>'userlist.php');
     }
     return $menu;
   }
 
   function adminMenu() {
     if (UserManagement::checkPermission(32)) {
-//      $menu[] = array('name'=>'Neues Projekt', 'href'=>'./subneteditor.php?section=new');
-      $menu[] = array('name'=>'Neues Projekt', 'href'=>'./projecteditor.php?section=new');
-      $menu[] = array('name'=>'Imagemaker', 'href'=>'./imagemaker.php');
-      $menu[] = array('name'=>'CCD regenerieren', 'href'=>'./vpn.php?section=regenerate_ccd_subnet');
+//      $menu[] = array('name'=>'Neues Projekt', 'href'=>'subneteditor.php?section=new');
+      $menu[] = array('name'=>'Neues Projekt', 'href'=>'projecteditor.php?section=new');
+      $menu[] = array('name'=>'Imagemaker', 'href'=>'imagemaker.php');
+      $menu[] = array('name'=>'CCD regenerieren', 'href'=>'vpn.php?section=regenerate_ccd_subnet');
     }
     return $menu;
   }
   function rootMenu() {
     if (UserManagement::checkPermission(64)) {
-      $menu[] = array('name'=>'Konfiguration', 'href'=>'./config.php?section=edit');
+      $menu[] = array('name'=>'Konfiguration', 'href'=>'config.php?section=edit');
     }
     return $menu;
   }

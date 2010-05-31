@@ -9,7 +9,7 @@ if($_GET['section']=="insert_interface") {
 	$router_data = Router::getRouterInfo($_GET['router_id']);
 
 	//If is owning user or if root
-	if(UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id'])) {
+	if(UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120) {
 		try {
 			$sql = "SELECT *
 			        FROM  crawl_cycle
@@ -53,7 +53,7 @@ if($_GET['section']=="insert_batman_advanced_interface") {
 	$router_data = Router::getRouterInfo($_GET['router_id']);
 
 	//If is owning user or if root
-	if(UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id'])) {
+	if(UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120) {
 		try {
 			$sql = "SELECT *
 			        FROM  crawl_cycle
@@ -97,7 +97,7 @@ if($_GET['section']=="insert_batman_advanced_originators") {
 	$router_data = Router::getRouterInfo($_GET['router_id']);
 
 	//If is owning user or if root
-	if(UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id'])) {
+	if(UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120) {
 		try {
 			$sql = "SELECT *
 			        FROM  crawl_cycle
