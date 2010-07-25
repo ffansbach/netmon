@@ -3,6 +3,7 @@
 	require_once('./lib/classes/core/editinghelper.class.php');
 	require_once('./lib/classes/core/router.class.php');
 	require_once('./lib/classes/core/service.class.php');
+	require_once('./lib/classes/core/serviceeditor.class.php');
 
 	if ($_GET['section'] == "add") {
 		if (UserManagement::checkPermission(4)) {
@@ -21,7 +22,7 @@
 
 	if ($_GET['section'] == "insert_add") {
 		if (UserManagement::checkPermission(4)) {
-			$add_result = Service::addService($_GET['router_id'], $_POST['title'], $_POST['description'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait'], $_POST['use_netmons_url'], $_POST['url']);
+			$add_result = ServiceEditor::addService($_GET['router_id'], $_POST['title'], $_POST['description'], $_POST['port'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait'], $_POST['use_netmons_url'], $_POST['url']);
 			if($add_result['result']) {
 				header('Location: ./router_config.php?router_id='.$add_result['router_id']);
 			} else {
@@ -69,10 +70,14 @@
 	header('Location: ./service.php?service_id='.$edit_result['service_id']);
     }
     if ($_GET['section'] == "delete") {
-		$ip = Helper::getIpIdByServiceId($_GET['service_id']);
-		if ($ServiceEditor->deleteService($_GET['service_id']))
-			header('Location: ./ip.php?id='.$ip['id']);
-		else
-			header('Location: ./serviceeditor.php?section=edit&service_id='.$_GET['service_id']);
+		if (UserManagement::checkPermission(4)) {
+				$service_data = Service::getServiceByServiceId($_GET['service_id']);
+				$insert_result = ServiceEditor::deleteService($_GET['service_id']);
+				header('Location: ./router_config.php?router_id='.$service_data['router_id']);
+		} else {
+			$message[] = array("Nur eingeloggte Benutzer dürfen einen Router anlegen oder editieren!", 2);
+			Message::setMessage($message);
+			header('Location: ./login.php');
+		}
     }
 ?>

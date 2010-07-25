@@ -1,3 +1,11 @@
+<script type="text/javascript">
+	document.body.id='tab1';
+</script>
+<ul id="tabnav">
+	<li class="tab1"><a href="./networkstatistic.php">Netzwerkstatistik</a></li>
+	<li class="tab2"><a href="./networkhistory.php">Historie</a></li>
+</ul>
+
 <h2>Crawl Status</h2>
 <h3>Aktueller Crawl</h3>
 <p>

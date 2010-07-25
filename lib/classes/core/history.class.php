@@ -1,6 +1,6 @@
 <?php
-require_once('./lib/classes/core/router.class.php');
-require_once('./lib/classes/core/crawling.class.php');
+require_once('lib/classes/core/router.class.php');
+require_once('lib/classes/core/crawling.class.php');
 
 class History {
 	public function makeRouterHistoryEntry($current_crawl_data, $router_id){
@@ -30,7 +30,7 @@ class History {
 		}
 
 		if($current_crawl_data['status']=='online' AND $last_crawl_data['status']=='online') {
-			if (!empty($current_crawl_data['uptime']) AND !empty($last_online_crawl_data['uptime']) AND $current_crawl_data['uptime']<$last_crawl_data['uptime']) {
+			if ((!empty($current_crawl_data['uptime']) AND !empty($last_crawl_data['uptime'])) AND ($current_crawl_data['uptime']<$last_crawl_data['uptime'])) {
 				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'reboot'));
 			}
 		}
@@ -236,6 +236,34 @@ class History {
 				$history[$key] = $row;
 				$history[$key]['data'] = unserialize($history[$key]['data']);
 				$history[$key]['additional_data'] = Router::getRouterInfo($row['object_id']);
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $history;
+	}
+
+	public function getHistory($countlimit, $hourlimit) {
+		if($countlimit)
+			$range = "
+					  ORDER BY history.create_date desc
+					  LIMIT 0, $countlimit";
+		elseif ($hourlimit)
+			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR
+					  ORDER BY history.create_date desc";
+		try {
+			$sql = "SELECT id, object, object_id, create_date, data
+			       FROM history
+				   $range";
+
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $key=>$row) {
+				$history[$key] = $row;
+				$history[$key]['data'] = unserialize($history[$key]['data']);
+				if($history[$key]['object'] == "router") {
+					$history[$key]['additional_data'] = Router::getRouterInfo($row['object_id']);
+				}
 			}
 		}
 		catch(PDOException $e) {

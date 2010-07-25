@@ -222,10 +222,26 @@ function fullmap() {
 //	var layer_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 //	var layer_nodes_offline = loadKmlLayer('Offline Knoten', './api.php?class=apiMap&section=getOfflineServiceKML');
 	var layer_nodes_online = loadKmlLayer('Online Knoten ', './api.php?class=apiMap&section=getOnlineRouters');
+	var batman_adv_conn = loadKmlLayer('Bat. Adv. Verbindungen', './api.php?class=apiMap&section=batman_advanced_conn');
+	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
+	
+	/*
+    var: new OpenLayers.Layer.OSM("Cycle &amp; Hiking", "tiles/overlay_ch/", {numZoomLevels: 19, isBaseLayer: false, visibility: false }),
+    pt: new OpenLayers.Layer.OSM("Public Transport", "tiles/overlay_pt/", {numZoomLevels: 19, isBaseLayer: false, visibility: false }),
+    car: new OpenLayers.Layer.OSM("Individual Transport", "tiles/overlay_car/", {numZoomLevels: 19, isBaseLayer: false, visibility: false }),
+*/
+//    var food = new OpenLayers.Layer.OSM("Food &amp; Drink", "tiles/overlay_food/", {numZoomLevels: 19, isBaseLayer: false, visibility: false });
 
+    /*culture: new OpenLayers.Layer.OSM("Culture &amp; Tourism", "tiles/overlay_culture/", {numZoomLevels: 19, isBaseLayer: false, visibility: false }),
+    services: new OpenLayers.Layer.OSM("Services", "tiles/overlay_services/", {numZoomLevels: 19, isBaseLayer: false, visibility: false }),
+    shop: new OpenLayers.Layer.OSM("Shops", "tiles/shop/", {numZoomLevels: 19, isBaseLayer: false, visibility: false }),
+    agri_ind: new OpenLayers.Layer.OSM("Agriculture &amp; Industry", "tiles/agri_ind/", {numZoomLevels: 19, isBaseLayer: false, visibility: false })
+	*/
+	
 	//Add Layers
-        map.addLayers([layer_nodes_online]);
+        map.addLayers([layer_nodes_online, batman_adv_conn, olsr_conn]);
 
+	
 	// Define bubbles
 	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes_online], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);

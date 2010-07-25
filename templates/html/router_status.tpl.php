@@ -178,9 +178,9 @@
 
 	<h2>B.A.T.M.A.N advanced Monitoring</h2>
 	<h3>Interfaces and status</h3>
-	{if !empty($batman_adv_interfaces)}
+	{if !empty($crawl_batman_adv_interfaces)}
 		<ul>
-			{foreach item=interface from=$batman_adv_interfaces}
+			{foreach item=interface from=$crawl_batman_adv_interfaces}
 				<li>
 					<b>{$interface.name}</b> {$interface.status} ({$interface.crawl_date|date_format:"%e.%m.%Y %H:%M"})
 				</li>
@@ -195,7 +195,7 @@
 		<ul>
 			{foreach item=originators from=$batman_adv_originators.originators}
 				<li>
-					{$originators}
+					{$originators.originator} ({$originators.link_quality})
 				</li>
 			{/foreach}
 		</ul>
@@ -266,6 +266,11 @@
 					{if !empty($interface.ipv6_addr)}
 						<li>
 							<b>IPv6 Adresse:</b> {$interface.ipv6_addr}		
+						</li>
+					{/if}
+					{if !empty($interface.ipv6_link_local_addr)}
+						<li>
+							<b>IPv6 Link Local Adresse:</b> {$interface.ipv6_link_local_addr}		
 						</li>
 					{/if}
 					{if !empty($interface.traffic_info.traffic_rx_per_second_kilobyte)}

@@ -3,6 +3,7 @@
 require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/project.class.php');
+require_once('lib/classes/core/imagemaker.class.php');
 
 class Main {
 	public function login($nickname, $password){
@@ -31,19 +32,19 @@ class Main {
 		return(Helper::getAllServiceIDsByServiceType($type));
 	}
 	public function getImages() {
-		return(Helper::getImages());
+		return(Imagemaker::getImages());
 	}
 
 	public function getImageByImageId($image_id) {
-		return(Helper::getImageByImageId($image_id));
+		return(Imagemaker::getImageByImageId($image_id));
 	}
 
 	public function getImageConfigsByImageId($image_id) {
-		return(Helper::getImageConfigsByImageId($image_id));
+		return(Imagemaker::getImageConfigsByImageId($image_id));
 	}
 
 	public function getImageConfigByConfigId($config_id) {
-		return(Helper::getImageConfigByConfigId($config_id));
+		return(Imagemaker::getImageConfigByConfigId($config_id));
 	}
 
 	public function getAFreeIPv4IPByProjectId($project_id) {

@@ -7,16 +7,16 @@
 
 
     <div style="float:left; padding: 5px; background: #ff6a5a; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
-      	<a href="./ipeditor.php?section=new">Neue IP</a>
+      	<a href="./routereditor.php?section=new">Neuer Router</a>
     </div>
 
     <div style="float:left; padding: 5px; background: #ffac5b; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
-      	<a href="./ipeditor.php?section=new">IP-Liste</a>
+      	<a href="./routerlist.php">Routerliste</a>
     </div>
 
-    <div style="float:left; padding: 5px; background: #fff55b; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
+<!--    <div style="float:left; padding: 5px; background: #fff55b; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
       	<a href="./subnetlist.php">Projektliste</a>
-    </div>
+    </div>-->
 
     <div style="float:left; padding: 5px; background: #5abbff; margin-right: 20px;  border: solid 1px; black; font-size: 14pt; font-weight: bold;">
 	<a href="./user_edit.php?section=edit&id={$session_user_id}">Benutzereinstellungen</a>
@@ -28,8 +28,43 @@
   </div>
 </div>
 
+<h2>Meine Router</h2>
+<div id="ipitem" style="width: 1000px; overflow: hidden;">
+  <div nstyle="white-space: nowrap;">
+    <div style="float:left; width: 120px;"><b>Hostname</b></div>
+    <div style="float:left; width: 60px;"><b>Status</b></div>
+    <div style="float:left; width: 180px;"><b>letzte Aktualisierung</b></div>
+    <div style="float:left; width: 230px;"><b>Standort</b></div>
+    <div style="float:left; width: 130px;"><b>Technik</b></div>
+    <div style="float:left; width: 85px;"><b>Benutzer</b></div>
+  </div>
+</div>
 
-<h2>Meine Dienste</h2>
+{if !empty($routerlist)}
+{foreach key=count item=router from=$routerlist}
+<div id="ipitem" style="width: 1000px; overflow: hidden;">
+  <div style="white-space: nowrap;">
+    <div style="float:left; width: 120px;"><a href="./router_status.php?router_id={$router.router_id}">{$router.hostname}</a></div>
+    <div style="float:left; width: 60px;">
+    {if $router.actual_crawl_data.status=="online"}
+      <div style="float:left; width: 60px; align: center;"><img src="./templates/img/ffmap/status_up_small.png" alt="online"></div>
+    {elseif $router.actual_crawl_data.status=="offline"}
+      <div style="float:left; width: 60px; align: center;"><img src="./templates/img/ffmap/status_down_small.png" alt="offline"></div>
+    {/if}
+    </div>
+    <div style="float:left; width: 180px;">{$router.actual_crawl_data.crawl_date|date_format:"%e.%m.%Y %H:%M"} Uhr</div>
+    <div style="float:left; width: 230px;">{$router.short_location}...</div>
+    <div style="float:left; width: 130px;">{$router.chipset_name}</div>
+    <div style="float:left; width: 85px;"><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></div>
+  </div>
+</div>
+{/foreach}
+{else}
+<p>Keine Router vorhanden</p>
+{/if}
+
+
+<!--<h2>Meine Dienste</h2>
 
 {if !empty($servicelist)}
 <div id="ipitem" style="width: 745px; overflow: hidden;">
@@ -96,7 +131,7 @@
   </div>
 </div>
 {/foreach}
-{/if}
+{/if}-->
 
 <h2>Hostory der letzten 24 Stunden</h2>
 

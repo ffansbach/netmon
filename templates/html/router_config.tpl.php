@@ -26,6 +26,12 @@
 
 		<h3><u>Statusdaten</u></h3>
 		<b>Datenquelle:</b> {if $router_data.crawl_method=='router'}Router sendet Daten{elseif $router_data.crawl_method=='crawler'}Netmon Crawler{/if}<br>
+
+
+<p>
+  <a href="./routereditor.php?section=edit&router_id={$router_data.router_id}">Router editieren</a>
+</p>
+
     </div>
 
       <div style="float:left; width: 50%;">
@@ -143,6 +149,9 @@
 				<a href="./vpn.php?section=download&interface_id={$interface.interface_id}">VPN-Zertifikate und Config-Datei downloaden</a><br>
 			</p>
 		{/if}
+		<p>
+			<a href="./interfaceeditor.php?section=delete&interface_id={$interface.interface_id}">Interface entfernen</a>
+		</p>
 	</div>
 </div>	  
 <hr>
@@ -174,7 +183,12 @@
 	<div style="float:left; width: 50%;">
 
 	</div>
-</div>	  
+	<div style="float:left; width: 50%;">
+		<p>
+			<a href="./serviceeditor.php?section=delete&service_id={$service.id}">Dienst entfernen</a>
+		</p>
+	</div>
+</div>
 <hr>
 {/foreach}
 

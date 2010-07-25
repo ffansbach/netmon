@@ -2,8 +2,9 @@
 
 BIN=$1
 DEST=$2
+OPTIONS=$3
 
-$BIN/mksquashfs-lzma $DEST/preimage $DEST/root.squashfs -nopad -noappend -root-owned -be 
+$BIN $DEST/preimage $DEST/root.squashfs $OPTIONS
 
 dd if=$DEST/root.squashfs of=$DEST/tmpfile.1 bs=64k conv=sync
 

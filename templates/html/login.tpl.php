@@ -16,7 +16,7 @@
 <div id="openid_login" style="display:none;">
 <form action="./login.php?section=openid_login_send" method="POST">
 	<input type="hidden" name="openid_action" value="login">
-	<p>Open-ID:<br><input name="openid_url" type="text" size="30" maxlength="30"> <img src="./templates/img/arrow_undo.png" onclick="document.getElementById('openid_login').style.display = 'none'; document.getElementById('traditionall_login').style.display = 'block';"></p>
+	<p>Open-ID:<br><input name="openid_url" type="text" size="30" maxlength="200"> <img src="./templates/img/arrow_undo.png" onclick="document.getElementById('openid_login').style.display = 'none'; document.getElementById('traditionall_login').style.display = 'block';"></p>
 	<p><input type="checkbox" name="remember" value="true" checked> Login merken</p>
 
 	<p><input type="submit" value="Login"></p>

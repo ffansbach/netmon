@@ -5,10 +5,16 @@
 	<script type="text/javascript" src="lib/classes/extern/zend_framework_json-rpc/json2.js"></script>
 	<script type="text/javascript" src="lib/classes/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></script>
 	<script type="text/javascript">
+	function nl2br_12(str) {
+		if(typeof(str)=="string") return str.replace(/(\r\n)|(\n\r)|\r|\n/g,"<BR>");
+		else return str;
+	}
+
 		function getImageInfo(image_id) {
 			$(document).ready(function(){
 				api_main = jQuery.Zend.jsonrpc({url: 'api_main.php'});
 				image = api_main.getImageByImageId(image_id);
+				image.description = nl2br_12(image.description)
 				document.getElementById('image_info').innerHTML = image.description;
 			});
 		}
@@ -30,6 +36,7 @@
 			$(document).ready(function(){
 				api_main = jQuery.Zend.jsonrpc({url: 'api_main.php'});
 				image = api_main.getImageConfigByConfigId(config_id);
+				image.description = nl2br_12(image.description)
 				document.getElementById('config_info').innerHTML = image.description;
 				if(config_id!='false') {
 					document.getElementById('config').style.display = 'block';

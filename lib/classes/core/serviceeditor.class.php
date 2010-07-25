@@ -28,5 +28,42 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+require_once $path.'lib/classes/core/service.class.php';
 
+class ServiceEditor {
+	public function addService($router_id, $title, $description, $port, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {
+		DB::getInstance()->exec("INSERT INTO services (router_id, title, description, port, visible, notify, notification_wait, use_netmons_url, url, create_date)
+					 VALUES ('$router_id', '$title', '$description', '$port', '$visible', '$notify', '$notification_wait', '$use_netmons_url', '$url', NOW());");
+		$service_id = DB::getInstance()->lastInsertId();
+		
+		try {
+			$sql = "select hostname FROM routers WHERE id='$router_id'";
+			$result = DB::getInstance()->query($sql);
+			$router_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		$message[] = array("Ein Service auf Port $port wurde dem Router $router_data[hostname] hinzugefügt.",1);
+		Message::setMessage($message);
+		
+		return array("result"=>true, "service_id"=>$service_id, "router_id"=>$router_id);
+	}
+
+	public function deleteService($service_id) {
+		$service_data = Service::getServiceByServiceId($service_id);
+
+		//Delete Service
+		try {
+			DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		$message[] = array("Der Service $service_data[title] wurde entfernt.",1);
+		Message::setMessage($message);
+		return true;
+	}
+}
 ?>

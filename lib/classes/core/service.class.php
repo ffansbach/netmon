@@ -31,23 +31,18 @@
 require_once $path.'lib/classes/extern/xmpphp/XMPP.php';
 
 class Service {
-	public function addService($router_id, $title, $description, $port, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {
-		DB::getInstance()->exec("INSERT INTO services (router_id, title, description, port, visible, notify, notification_wait, use_netmons_url, url, create_date)
-					 VALUES ('$router_id', '$title', '$description', '$port', '$visible', '$notify', '$notification_wait', '$use_netmons_url', '$url', NOW());");
-		$service_id = DB::getInstance()->lastInsertId();
-		
+	public function getServiceByServiceId($service_id) {
 		try {
-			$sql = "select hostname FROM routers WHERE id='$router_id'";
+			$sql = "SELECT  *
+					FROM services
+					WHERE id='$service_id'";
 			$result = DB::getInstance()->query($sql);
-			$router_data = $result->fetch(PDO::FETCH_ASSOC);
+			$service_data = $result->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(PDOException $e) {
-			echo $e->getMessage();
+		  echo $e->getMessage();
 		}
-		$message[] = array("Ein Service auf Port $port wurde dem Router $router_data[hostname] hinzugefügt.",1);
-		Message::setMessage($message);
-		
-		return array("result"=>true, "service_id"=>$service_id, "router_id"=>$router_id);
+		return $service_data;
 	}
 
 	public function getServicesByRouterId($router_id) {
