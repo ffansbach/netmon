@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 31, 2010 at 07:52 PM
--- Server version: 5.1.47
+-- Generation Time: Jul 25, 2010 at 09:37 PM
+-- Server version: 5.1.48
 -- PHP Version: 5.3.2-1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
@@ -131,6 +131,7 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `mac_addr` varchar(150) NOT NULL,
   `ipv4_addr` varchar(40) NOT NULL,
   `ipv6_addr` varchar(150) NOT NULL,
+  `ipv6_link_local_addr` varchar(200) NOT NULL,
   `traffic_rx` int(11) NOT NULL,
   `traffic_tx` int(11) NOT NULL,
   `wlan_mode` varchar(20) NOT NULL,
@@ -345,6 +346,9 @@ CREATE TABLE IF NOT EXISTS `projects` (
   `vpn_server_ca_crt` text NOT NULL,
   `vpn_server_ca_key` text NOT NULL,
   `vpn_server_pass` varchar(200) NOT NULL,
+  `vpn_client_config` text NOT NULL,
+  `vpn_client_config_needs_script` tinyint(4) NOT NULL,
+  `vpn_client_config_script` text NOT NULL,
   `is_ccd_ftp_sync` tinyint(4) NOT NULL,
   `ccd_ftp_folder` varchar(250) NOT NULL,
   `ccd_ftp_username` varchar(100) NOT NULL,
@@ -376,6 +380,8 @@ CREATE TABLE IF NOT EXISTS `routers` (
   `update_date` datetime NOT NULL,
   `crawl_method` varchar(30) NOT NULL,
   `hostname` varchar(40) NOT NULL,
+  `allow_router_auto_assign` tinyint(1) NOT NULL,
+  `router_auto_assign_hash` varchar(250) NOT NULL,
   `description` text NOT NULL,
   `location` varchar(250) NOT NULL,
   `latitude` varchar(15) NOT NULL,
@@ -471,6 +477,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `icq` varchar(20) NOT NULL,
   `website` varchar(255) NOT NULL,
   `about` text NOT NULL,
+  `allow_node_delegation` tinyint(1) NOT NULL,
   `notification_method` varchar(20) NOT NULL,
   `permission` varchar(20) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,

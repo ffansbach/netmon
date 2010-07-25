@@ -56,53 +56,108 @@ class ApiMap {
 						$xw->startElement('name');
 							$xw->writeRaw('create');
 						$xw->endElement();
-
-						//Hole Alle Services vom Typ ip die Online sind
-						$services = Helper::getServicesByType("node");
-						$linedata = array();
-						foreach ($services as $key1=>$service) {
-							$crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-							$olsr_data = Olsr::getOlsrCrawlDataByCrawlId($crawl_data['id']);
-							$data = array_merge($crawl_data, $olsr_data);
-
-							if ($data['status']=='online') {
-								$data['olsrd_neighbors'] = unserialize($data['olsrd_neighbors']);
-								foreach($data['olsrd_neighbors'] as $key2=>$neighbours) {
-									//Hole die Service-ID der Nachbarips
-									$tmp1 = 'IP address';
-									$neighbourServiceIds = Helper::getServicesByTypeAndIpId('node', Helper::getIpIdByIp($neighbours[$tmp1]));
-									foreach($neighbourServiceIds as $key=>$neighbourServiceId) {
-										$neighbourServiceCrawlData = Helper::getCurrentCrawlDataByServiceId($neighbourServiceId['service_id']);
-										if(!empty($neighbourServiceCrawlData['longitude']) AND !empty($neighbourServiceCrawlData['latitude'])) {
-											$linedata[$key1.$key2.$key]['my_service_id'] = $service['service_id'];
-											$linedata[$key1.$key2.$key]['my_lon'] = $data['longitude'];
-											$linedata[$key1.$key2.$key]['my_lat'] = $data['latitude'];
-											
-											$linedata[$key1.$key2.$key]['neighbour_service_id'] = $neighbourServiceId['service_id'];
-											$linedata[$key1.$key2.$key]['neighbour_lon'] = $neighbourServiceCrawlData['longitude'];
-											$linedata[$key1.$key2.$key]['neighbour_lat'] = $neighbourServiceCrawlData['latitude'];
+						$routers = Router::getRouters();
+						$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+						foreach($routers as $router) {
+							if(!empty($router['latitude']) AND !empty($router['longitude'])) {
+								$originators = Olsr::getCrawlOlsrDataByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+								$olsr_entrys = unserialize($originators['olsrd_links']);
+								if(!empty($olsr_entrys)) {
+									$router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+									foreach($olsr_entrys as $olsr_entry) {
+										$tmp1 = 'Remote IP';
+										$neighbour_router = Router::getRouterByIPv4Addr($olsr_entry[$tmp1]);
+										$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
+										if(!empty($neighbour_router['longitude']) AND !empty($neighbour_router['longitude'])) {
+											$xw->startElement('Placemark');
+												$xw->startElement('name');
+													$xw->writeRaw("myname");
+												$xw->endElement();
+												$xw->startElement('Polygon');
+													$xw->startElement('outerBoundaryIs');
+														$xw->startElement('LinearRing');
+															$xw->startElement('coordinates');
+																$xw->writeRaw("$router[longitude],$router[latitude],0
+																			    $neighbour_router[longitude],$neighbour_router[latitude],0");
+															$xw->endElement();
+														$xw->endElement();
+													$xw->endElement();
+												$xw->endElement();
+											$xw->endElement();
 										}
 									}
 								}
 							}
 						}
-						
-						foreach($linedata as $line) {
-							$xw->startElement('Placemark');
-								$xw->startElement('name');
-									$xw->writeRaw("myname");
-								$xw->endElement();
-								$xw->startElement('Polygon');
-									$xw->startElement('outerBoundaryIs');
-										$xw->startElement('LinearRing');
-											$xw->startElement('coordinates');
-												$xw->writeRaw("$line[my_lon],$line[my_lat],0
-															    $line[neighbour_lon],$line[neighbour_lat],0");
+					$xw->endElement();
+				$xw->endElement();
+			$xw->endElement();
+		$xw->endDocument();
+
+		print $xw->outputMemory(true);
+		return true;
+	}
+
+	public function batman_advanced_conn() {
+		header('Content-type: text/xml');
+		$xw = new xmlWriter();
+		$xw->openMemory();
+		$xw->startDocument('1.0','UTF-8');
+			$xw->startElement ('kml'); 
+				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+				$xw->startElement('Document');   
+					$xw->writeElement ('name', '200903170407-200903170408');
+					$xw->startElement('Folder');
+						$xw->startElement('name');
+							$xw->writeRaw('create');
+						$xw->endElement();
+						$routers = Router::getRouters();
+						$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+						foreach($routers as $router) {
+							$router_longitude = $router['longitude'];
+							$router_latitude = $router['latitude'];
+
+							$router_crawl = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+							if(!empty($router_crawl['longitude']) AND !empty($router_crawl['latitude'])) {
+								$router_longitude = $router_crawl['longitude'];
+								$router_latitude = $router_crawl['latitude'];
+							}
+
+							if(!empty($router_longitude) AND !empty($router_latitude)) {
+								$originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+								$originators = unserialize($originators['originators']);
+
+								if(!empty($originators)) {
+									foreach($originators as $originator) {
+										$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['originator'], $last_endet_crawl_cycle['id']);
+										$neighbour_router_longitude = $neighbour_router['longitude'];
+										$neighbour_router_latitude = $neighbour_router['latitude'];
+										$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
+										if(!empty($neighbour_router['longitude']) AND !empty($neighbour_router['latitude'])) {
+											$neighbour_router_longitude = $neighbour_router['longitude'];
+											$neighbour_router_latitude = $neighbour_router['latitude'];
+										}
+
+										if(!empty($neighbour_router)) {
+											$xw->startElement('Placemark');
+												$xw->startElement('name');
+													$xw->writeRaw("myname");
+												$xw->endElement();
+												$xw->startElement('Polygon');
+													$xw->startElement('outerBoundaryIs');
+														$xw->startElement('LinearRing');
+															$xw->startElement('coordinates');
+																$xw->writeRaw("$router[longitude],$router[latitude],0
+																			    $neighbour_router_longitude,$neighbour_router_latitude,0");
+															$xw->endElement();
+														$xw->endElement();
+													$xw->endElement();
+												$xw->endElement();
 											$xw->endElement();
-										$xw->endElement();
-									$xw->endElement();
-								$xw->endElement();
-							$xw->endElement();
+										}
+									}
+								}
+							}
 						}
 					$xw->endElement();
 				$xw->endElement();
@@ -373,7 +428,7 @@ class ApiMap {
 
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
-									$xw->writeRaw("<![CDATA[Ip <a href='./ip.php?id=".$entry['service_data']['ip_id']."'>".$GLOBALS['net_prefix'].".".$entry['ip_data']['ip']."</a>]]>");
+									$xw->writeRaw("<![CDATA[Router <a href='./ip.php?id=".$entry['service_data']['ip_id']."'>".$GLOBALS['net_prefix'].".".$entry['ip_data']['ip']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 									$box_inhalt = "<b>Position:</b> <span style=\"color: green;\">lat: ".$entry['ip_data']['longitude'].", lon: ".$entry['ip_data']['latitude']."</span><br>
@@ -381,7 +436,7 @@ class ApiMap {
 											   <b>DHCP-Range:</b> ".$GLOBALS['net_prefix'].".".$entry['service_data']['zone_start']." bis ".$GLOBALS['net_prefix'].".".$entry['service_data']['zone_end']." (".$entry['service_data']['ips']." IP's)<br>
 											   <b>SSID:</b> ".$entry['crawl_data']['ssid']."<br>
 											   <b>Standortbeschreibung:</b> ".$entry['crawl_data']['location']."<br>
-												<b style=\"color: red;\">Diese Ip ist offline!</b><br>
+												<b style=\"color: red;\">Dieser Router ist offline!</b><br>
 											   <b>Letztes Mal online:</b> ".$entry['crawl_data']['crawl_time']."<br>";
 
 									$xw->writeRaw("<![CDATA[$box_inhalt]]>");
@@ -532,7 +587,7 @@ foreach($crawl_routers as $crawl_router) {
 	
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
-									$xw->writeRaw("<![CDATA[Ip <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
+									$xw->writeRaw("<![CDATA[Router <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 										$box_inhalt = "<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>

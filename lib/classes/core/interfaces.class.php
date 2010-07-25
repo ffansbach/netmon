@@ -104,6 +104,23 @@ class Interfaces {
 		}
 		return $interfaces;
 	}
+
+	public function deleteInterface($interface_id) {
+		$interface_data = Interfaces::getInterfaceByInterfaceId($interface_id);
+
+		//Delete Interface
+		try {
+			DB::getInstance()->exec("DELETE FROM interfaces WHERE id='$interface_id';");
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		$message[] = array("Das Interface $interface_data[name] wurde entfernt.",1);
+		Message::setMessage($message);
+		return true;
+	}
+
 }
 
 ?>

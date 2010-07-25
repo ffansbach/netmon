@@ -41,6 +41,10 @@
 	</p>
 
 	<p>
+		<input name="allow_router_auto_assign" type="checkbox" value="1"> Erlaube automatische Router Zuweisung
+	</p>
+
+	<p>
 		Anmerkungen: <br><textarea name="description" cols="40" rows="3"></textarea>
 	</p>
 

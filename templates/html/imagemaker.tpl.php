@@ -4,6 +4,13 @@
 Administratoren können verschiedene Images mit verschiedenen Konfigurationsscripten uploaden, wärend Benutzer diese Images
 konfigurieren und Downloaden können.</p>
 
+<h2>Optionen</h2>
+<a href="./imagemaker.php?section=images_edit">Images hochladen und entfernen</a><br>
+<a href="./imagemaker.php?section=configurations_edit">Konfigurationen hochladen und entfernen</a><br>
+<a href="./imagemaker.php?section=images_download">Image Konfigurieren, Bauen und Downloaden</a>
+
+
+<!--
 
 <h2>Image hochladen</h2>
 <form action="./imagemaker.php?section=upload_image" method="POST" enctype="multipart/form-data">
@@ -50,4 +57,4 @@ konfigurieren und Downloaden können.</p>
 {foreach item=ip from=$user_ips}
 	Image für <a href="./imagemaker.php?section=new&ip_id={$ip.id}">{$net_prefix}.{$ip.ip}</a><br>
 {/foreach}
-</p>
+</p>-->

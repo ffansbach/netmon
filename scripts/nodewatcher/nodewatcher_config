@@ -3,10 +3,14 @@
 # NodeWatcher configuration
 # 
 
+netmon_api="[fe80::201:2ff:fe03:405%br-mesh]"
+
 autoupdate="y"
 
-netmon_api="netmon.freifunk-ol.de"
+router_update_by_id="n"
+router_id="yournodeid"
+nickname="yourickname"
+password="yourpassword"
 
-router_id="13"
-nickname="Floh1111"
-password="blabla"
+router_auto_assign="y"
+router_auto_update_hash=" " #Space for no Hash!!!

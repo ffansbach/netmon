@@ -5,7 +5,6 @@
   require_once('lib/classes/extern/class.openid.php');
 
   $Login = new Login;
-  $message = new message;
 
   if ($_GET['section']=="login") {
     $smarty->assign('message', Message::getMessage());
@@ -29,8 +28,9 @@
 	$openid->SetTrustRoot('http://' . $_SERVER["HTTP_HOST"]);
 	$openid->SetRequiredFields(array('email','fullname'));
 	$openid->SetOptionalFields(array('dob','gender','postcode','country','language','timezone'));
+
 	if ($openid->GetOpenIDServer()){
-		$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].dirname($_SERVER['PHP_SELF']).'/login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
+		$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].dirname($_SERVER['PHP_SELF']).'login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
 		$openid->Redirect(); 	// This will redirect user to OpenID Server
 	}else{
 		$error = $openid->GetError();

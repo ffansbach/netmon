@@ -53,20 +53,22 @@
   /**
   * Check if dirs a writable
   */
-  $dirs[] = 'templates_c/';
-  $dirs[] = 'ccd/';
-  $dirs[] = 'config/';
-  $dirs[] = 'config/config.local.inc.php';
-  $dirs[] = 'log/';
-  $dirs[] = 'tmp/';
-  $dirs[] = 'scripts/imagemaker/images/';
-  $dirs[] = 'scripts/imagemaker/configurations/';
+  $dirs[] = $GLOBALS['netmon_root_path'].'templates_c/';
+  $dirs[] = $GLOBALS['netmon_root_path'].'ccd/';
+  $dirs[] = $GLOBALS['netmon_root_path'].'config/';
+  $dirs[] = $GLOBALS['netmon_root_path'].'config/config.local.inc.php';
+  $dirs[] = $GLOBALS['netmon_root_path'].'log/';
+  $dirs[] = $GLOBALS['netmon_root_path'].'tmp/';
+  $dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/images/';
+  $dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/configurations/';
 
   $everything_is_writable = true;
   foreach($dirs as $dir) {
     if (!is_writable($dir))
       $not_writable_dirs[] = $dir;
   }
+
+
 
   if(!empty($not_writable_dirs)) {
     echo "The following files or directories have to be writable to run Netmon:<br><br>";
@@ -93,20 +95,18 @@
   require_once('lib/classes/core/logsystem.class.php');
   //Class to generate the menu
   require_once('lib/classes/core/menus.class.php');
-  //Class to edit things
-  require_once('lib/classes/core/editinghelper.class.php');
 
   $UserManagement =  new UserManagement;
 
   /**
   * PEAR EZC LIBRARY FOR GRAPHS
   */
-  
+/* NOT NEEDED ANYMORE 
   require_once "ezc/Base/base.php"; // dependent on installation method, see below
   function __autoload( $className ) {
 	ezcBase::autoload( $className );
   }
-
+*/
   /**
   * ZEND FRAMEWORK LIBRARYS
   */

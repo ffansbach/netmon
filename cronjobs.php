@@ -2,15 +2,16 @@
   /**
   * IF Netmon is called by the server/cronjob
   */
-	if (!empty($_SERVER["REQUEST_URI"]))
-		$path = "";
-	else
+	if (empty($_SERVER["REQUEST_URI"])) {
 		$path = dirname(__FILE__)."/";
+		set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+		$GLOBALS['netmon_root_path'] = $path."/";
+	}
 
-	require_once($path.'config/runtime.inc.php');
-	require_once($path.'lib/classes/core/service.class.php');
-	require_once($path.'lib/classes/core/crawling.class.php');
-	require_once($path.'lib/classes/core/router.class.php');
+	require_once('config/runtime.inc.php');
+	require_once('lib/classes/core/service.class.php');
+	require_once('lib/classes/core/crawling.class.php');
+	require_once('lib/classes/core/router.class.php');
 
 /*
  * Get all Services that have notification on

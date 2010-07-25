@@ -99,64 +99,79 @@ class Vpn {
 		}
 	}
 
-  public function downloadKeyBundle($interface_id) {
-    $interface = Interfaces::getInterfaceByInterfaceId($interface_id);
-    $project = Project::getProjectData($interface['project_id']);
-    
-    if (!empty($project['vpn_server_ca_crt']) AND !empty($interface['vpn_client_cert']) AND !empty($interface['vpn_client_key'])) {
-		//Get Config Datei
-		$config = Vpn::getVpnConfig($interface_id);
-
-      $tmpdir = "./tmp/";
-      
-      $handle = fopen($tmpdir."ca.crt", "w+");
-      fwrite($handle, $project['vpn_server_ca_crt']);
-      fclose($handle);
-
-      $handle = fopen($tmpdir."client.key", "w+");
-      fwrite($handle, $interface['vpn_client_key']);
-      fclose($handle);
-
-      $handle = fopen($tmpdir."client.crt", "w+");
-      fwrite($handle, $interface['vpn_client_cert']);
-      fclose($handle);
-      
-      $handle = fopen($tmpdir."openvpn", "w+");
-      fwrite($handle, $config);
-      fclose($handle);      
-
-      // Objekt erzeugen. Das Argument bezeichnet den Dateinamen
-      $zipfile= new zip_file("VpnKeys_".$interface['id'].".zip");
-
-      // Die Optionen
-      $zipfile->set_options(array (
-        'basedir' => $tmpdir,
-        'followlinks' => 1, // (Symlinks)
-        'inmemory' => 1, // Make the File in RAM
-        'level' => 6, // Level 1 = fast, Level 9 = good
-        'recurse' => 1, // Recursive
-        'maxsize' => 12*1024*1024 // Zip only data that is <= 12 MB big becuse og php memory limit
-      ));
-
-      $zipfile->add_files(array("ca.crt", "client.key", "client.crt", "openvpn"));
-
-      // Make zip
-      $zipfile->create_archive();
-
-      // download zip
-      $zipfile->download_file();
-
-      unlink($tmpdir."ca.crt");
-      unlink($tmpdir."client.key");
-      unlink($tmpdir."client.crt");
-      unlink($tmpdir."openvpn");
- } else {
-      $message[] = array("Es sind nicht genügen Informationen vorhanden um die Keys bereit zu stellen.", 2);
-      $message[] = array("Warscheinlich müssen haben sie die Keys noch nicht erstellt.", 2);
-      Message::setMessage($message);
-      return false;
-    }
-  }
+	public function downloadKeyBundle($interface_id) {
+		$interface = Interfaces::getInterfaceByInterfaceId($interface_id);
+		$project = Project::getProjectData($interface['project_id']);
+		
+		if (!empty($project['vpn_server_ca_crt']) AND !empty($interface['vpn_client_cert']) AND !empty($interface['vpn_client_key'])) {
+			$tmpdir = "./tmp/";
+			
+			$filearray[] = "ca.crt";
+			$filearray[] = "client.key";
+			$filearray[] = "client.crt";
+			$filearray[] = "openvpn";
+			
+			
+			//Get Config Datei
+			$config = Vpn::getVpnConfig($interface_id);
+			
+			$handle = fopen($tmpdir."ca.crt", "w+");
+			fwrite($handle, $project['vpn_server_ca_crt']);
+			fclose($handle);
+			
+			$handle = fopen($tmpdir."client.key", "w+");
+			fwrite($handle, $interface['vpn_client_key']);
+			fclose($handle);
+			
+			$handle = fopen($tmpdir."client.crt", "w+");
+			fwrite($handle, $interface['vpn_client_cert']);
+			fclose($handle);
+			
+			$handle = fopen($tmpdir."openvpn", "w+");
+			fwrite($handle, $config);
+			fclose($handle);
+			
+			//Add config script
+			if ($project['vpn_client_config_needs_script']) {
+				$handle = fopen($tmpdir."vpn_config_script.sh", "w+");
+				fwrite($handle, $project['vpn_client_config_script']);
+				fclose($handle);
+				
+				$filearray[] = "vpn_config_script.sh";
+			}
+			
+			// Objekt erzeugen. Das Argument bezeichnet den Dateinamen
+			$zipfile= new zip_file("VpnKeys_".$interface['id'].".zip");
+			
+			// Die Optionen
+			$zipfile->set_options(array (
+				'basedir' => $tmpdir,
+				'followlinks' => 1, // (Symlinks)
+				'inmemory' => 1, // Make the File in RAM
+				'level' => 6, // Level 1 = fast, Level 9 = good
+				'recurse' => 1, // Recursive
+				'maxsize' => 12*1024*1024 // Zip only data that is <= 12 MB big becuse og php memory limit
+			));
+			$zipfile->add_files($filearray);
+			
+			// Make zip
+			$zipfile->create_archive();
+			
+			// download zip
+			$zipfile->download_file();
+			
+			//Delete temporary files
+			foreach($filearray as $file) {
+				unlink($tmpdir.$file);
+			}
+			
+		} else {
+			$message[] = array("Es sind nicht genügen Informationen vorhanden um die Keys bereit zu stellen.", 2);
+			$message[] = array("Warscheinlich müssen haben sie die Keys noch nicht erstellt.", 2);
+			Message::setMessage($message);
+			return false;
+		}
+	}
 
   public function getCertificateInfo($ip_id) {
     $keys = Helper::getIpDataByIpId($ip_id);
@@ -273,32 +288,19 @@ echo $subnet_data['ftp_ccd_folder'];*/
 	}
   
   public function getVpnConfig($interface_id) {
-		$interface = Interfaces::getInterfaceByInterfaceId($interface_id);
-		$project = Project::getProjectData($interface['project_id']);
-  	
-  	$config = "package openvpn
+	$interface = Interfaces::getInterfaceByInterfaceId($interface_id);
+	$project = Project::getProjectData($interface['project_id']);
 
-config openvpn client
-option enable 1
-option client 1
+	$config = $project;
 
-option dev $project[vpn_server_device]
-option proto $project[vpn_server_proto]
-list remote \"$project[vpn_server] $project[vpn_server_port]\"
+	$config_string = $project['vpn_client_config'];
+	
+//echo "<pre>";
+eval ("\$config_string = \"$config_string\";");
+//echo $config_string . "\n";
 
-option resolv_retry infinite
-option nobind 1
-option persist_key 1
-option persist_tun 1
 
-option ca /etc/config/ca.crt
-option cert /etc/config/client.crt
-option key /etc/config/client.key
-
-option comp_lzo 1
-option verb 3";
-  	
-  	return $config;
+	return $config_string;
   }
 
 	public function getCCD($ip_id) {

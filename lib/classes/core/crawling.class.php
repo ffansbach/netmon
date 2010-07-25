@@ -1,7 +1,7 @@
 <?php
 
-require_once('./lib/classes/core/history.class.php');
-require_once('./lib/classes/core/router.class.php');
+require_once('lib/classes/core/history.class.php');
+require_once('lib/classes/core/router.class.php');
 
 class Crawling {
 	public function newCrawlCycle() {
