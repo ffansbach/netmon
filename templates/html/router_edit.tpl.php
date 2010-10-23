@@ -21,10 +21,6 @@
 	</p>
 
 	<p>
-		<input name="allow_router_auto_assign" type="checkbox" value="1" {if $router_data.allow_router_auto_assign==1}checked{/if}> Erlaube automatische Router Zuweisung
-	</p>
-
-	<p>
 		Anmerkungen: <br><textarea name="description" cols="40" rows="3">{$router_data.description}</textarea>
 	</p>
 
@@ -74,6 +70,15 @@
 			<option value="crawler" {if $router_data.crawl_method=='crawler'}selected='selected'{/if}>Netmon Crawlt den Router</option>
 			<option value="router" {if $router_data.crawl_method=='router'}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>
 		</select>
+	</p>
+
+	<h2>Netmon Autozuweisung</h2>
+	<p>
+		<input name="allow_router_auto_assign" type="checkbox" value="1" {if $router_data.allow_router_auto_assign==1}checked{/if}> Erlaube automatische Router Zuweisung
+	</p>
+
+	<p>
+		Autozuweisungs Login: <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$router_data.router_auto_assign_login_string}">
 	</p>
 
 	<p><input type="submit" value="Absenden"></p>

@@ -5,11 +5,10 @@ require_once('lib/classes/core/router.class.php');
 
 
 if($_GET['section']=="update") {
-header("Content-Type: text/plain");
-header("Content-Disposition: attachment; filename=nodewatcher_script");
+	header("Content-Type: text/plain");
+	header("Content-Disposition: attachment; filename=nodewatcher_script");
 
-echo file_get_contents('./scripts/nodewatcher/nodewatcher_script');
-
+	echo file_get_contents('./scripts/nodewatcher/nodewatcher_script');
 }
 
 if($_GET['section']=="version") {
@@ -17,13 +16,15 @@ if($_GET['section']=="version") {
 }
 
 if($_GET['section']=="router_auto_assign") {
-	$router_data = Router::getRouterByHostname($_GET['hostname']);
+	$router_data = Router::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
+
+//	$router_data = Router::getRouterByHostname($_GET['hostname']);
 	if(empty($router_data)) {
-		echo "error: router $_GET[hostname] does not exist";
+		echo "error: router $_GET[router_auto_assign_login_string] does not exist";
 	} elseif ($router_data['allow_router_auto_assign']==0) {
-		echo "error: router $_GET[hostname] does not allow autoassign";
+		echo "error: router $_GET[router_auto_assign_login_string] does not allow autoassign";
 	} elseif(!empty($router_data['router_auto_assign_hash'])) {
-		echo "error: router $_GET[hostname] cannot be assignet a second time";
+		echo "error: router $_GET[router_auto_assign_login_string] cannot be assignet a second time";
 	} else {
 
 		//generate random string
@@ -44,9 +45,8 @@ if($_GET['section']=="router_auto_assign") {
 						WHERE id = '$router_data[router_id]'");
 
 		//Make output
-		echo $router_data['router_id'].";".$hash;
+		echo $router_data['router_id'].";".$hash.";".$router_data['hostname'];
 	}
-	
 }
 
 

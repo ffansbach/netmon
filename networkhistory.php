@@ -8,9 +8,15 @@ require_once('./lib/classes/core/history.class.php');
 $smarty->assign('message', Message::getMessage());
 
 /** History **/
-$history = History::getHistory(false, $GLOBALS['portal_history_hours']);
+if(empty($_POST['history_hours'])) {
+	$history_hours = $GLOBALS['portal_history_hours'];
+} else {
+	$history_hours = $_POST['history_hours'];
+}
 
-$smarty->assign('history_hours', $GLOBALS['portal_history_hours']);
+$history = History::getHistory(false, $history_hours);
+
+$smarty->assign('history_hours', $history_hours);
 $smarty->assign('history', $history);
 
 /** Display templates **/

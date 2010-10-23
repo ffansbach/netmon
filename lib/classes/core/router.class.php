@@ -5,7 +5,7 @@ require_once('lib/classes/core/crawling.class.php');
 class Router {
 	public function getRouterInfo($router_id) {
 		try {
-			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.chipset_id,
+			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.chipset_id,
 					users.nickname, chipsets.name as chipset_name
 					FROM routers
 					LEFT JOIN users ON (users.id=routers.user_id)
@@ -28,6 +28,23 @@ class Router {
 					LEFT JOIN users ON (users.id=routers.user_id)
 					LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
 					WHERE routers.hostname='$hostname'";
+			$result = DB::getInstance()->query($sql);
+			$router = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $router;
+	}
+
+	public function getRouterByAutoAssignLoginString($auto_assign_login_string) {
+		try {
+			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
+					users.nickname, chipsets.name as chipset_name
+					FROM routers
+					LEFT JOIN users ON (users.id=routers.user_id)
+					LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
+					WHERE routers.router_auto_assign_login_string='$auto_assign_login_string'";
 			$result = DB::getInstance()->query($sql);
 			$router = $result->fetch(PDO::FETCH_ASSOC);
 		}

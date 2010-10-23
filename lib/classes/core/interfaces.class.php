@@ -121,6 +121,20 @@ class Interfaces {
 		return true;
 	}
 
+	public function getInterfaceCrawlByCrawlCycleAndRouterIdAndInterfaceName($crawl_cycle_id, $router_id, $interface_name) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_interfaces
+				WHERE 	crawl_cycle_id='$crawl_cycle_id' AND router_id='$router_id' AND name='$interface_name'";
+			$result = DB::getInstance()->query($sql);
+			$interface = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $interface;
+	}
+
 }
 
 ?>

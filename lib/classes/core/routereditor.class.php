@@ -6,8 +6,8 @@ require_once($path.'lib/classes/core/serviceeditor.class.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
-		DB::getInstance()->exec("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, description, location, latitude, longitude, chipset_id)
-						      VALUES ('$_SESSION[user_id]', NOW(), NOW(), '$_POST[crawl_method]', '$_POST[hostname]', '$_POST[allow_router_auto_assign]', '$_POST[description]', '$_POST[location]', '$_POST[latitude]', '$_POST[longitude]', '$_POST[chipset_id]');");
+		DB::getInstance()->exec("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, router_auto_assign_login_string, description, location, latitude, longitude, chipset_id)
+						      VALUES ('$_SESSION[user_id]', NOW(), NOW(), '$_POST[crawl_method]', '$_POST[hostname]', '$_POST[allow_router_auto_assign]', '$_POST[router_auto_assign_login_string]', '$_POST[description]', '$_POST[location]', '$_POST[latitude]', '$_POST[longitude]', '$_POST[chipset_id]');");
 		$router_id = DB::getInstance()->lastInsertId();
 		
 		$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
@@ -37,6 +37,7 @@ class RouterEditor {
 							crawl_method='$_POST[crawl_method]',
 							hostname='$_POST[hostname]',
 							allow_router_auto_assign='$_POST[allow_router_auto_assign]',
+							router_auto_assign_login_string='$_POST[router_auto_assign_login_string]',
 							description='$_POST[description]',
 							location='$_POST[location]',
 							latitude='$_POST[latitude]',

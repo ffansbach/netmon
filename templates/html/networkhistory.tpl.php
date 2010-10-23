@@ -7,7 +7,11 @@
 </ul>
 
 
-<h1>History der letzten {$portal_history_hours} Stunden</h1>
+<h1>History der letzten {$history_hours} Stunden</h1>
+
+<form action="./networkhistory.php" method="POST" enctype="multipart/form-data">
+<p>Historie der letzten <input name="history_hours" type="text" size="1" value="24"> Stunden anzeigen <input type="submit" value="aktualisieren"></p>
+</form>
 
 {if !empty($history)}
 	<ul>
@@ -20,6 +24,9 @@
 					{/if}
 					{if $hist.data.action == 'status' AND $hist.data.to == 'offline'}
 						{$hist.additional_data.hostname} ({$hist.additional_data.nickname}) geht <span style="color: #CB0000;">offline</span>
+					{/if}
+					{if $hist.data.action == 'reboot'}
+						{$hist.additional_data.hostname} ({$hist.additional_data.nickname}) wurde <span style="color: #000f9c;">Rebootet</span>
 					{/if}
 				{/if}
 <!--	{if $hist.object == 'router'}

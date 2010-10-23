@@ -3,6 +3,8 @@ require_once('./config/runtime.inc.php');
 require_once('./lib/classes/core/login.class.php');
 require_once('./lib/classes/core/router.class.php');
 require_once('./lib/classes/core/crawling.class.php');
+require_once('./lib/classes/core/interfaces.class.php');
+require_once('./lib/classes/core/rrdtool.class.php');
 
 if($_GET['section']=="insert_interface") {
 	$session = login::user_login($_GET['nickname'], $_GET['password']);
@@ -13,6 +15,7 @@ if($_GET['section']=="insert_interface") {
 	if((($_GET['authentificationmethod']=='user') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
 		$last_crawl_cycle = Crawling::getActualCrawlCycle();
 
+		//Check if interface has already been crawled in current crawl cycle
 		try {
 			$sql = "SELECT *
 	        		FROM  crawl_interfaces
@@ -25,8 +28,10 @@ if($_GET['section']=="insert_interface") {
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-	
+
+		//Make DB insert if interface has not been crawled in current crawl cycle
 		if(empty($crawl_interface)) {
+			//Make DB Insert
 			try {
 				DB::getInstance()->exec("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, crawl_date, name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_tx, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power)
 							 VALUES ('$_GET[router_id]', '$last_crawl_cycle[id]', NOW(), '$_GET[name]', '$_GET[mac_addr]', '$_GET[ipv4_addr]', '$_GET[ipv6_addr]', '$_GET[ipv6_link_local_addr]', '$_GET[traffic_rx]', '$_GET[traffic_tx]', '$_GET[wlan_mode]', '$_GET[wlan_frequency]', '$_GET[wlan_essid]', '$_GET[wlan_bssid]', '$_GET[wlan_tx_power]');");
@@ -34,6 +39,37 @@ if($_GET['section']=="insert_interface") {
 			catch(PDOException $e) {
 				echo $e->getMessage();
 			}
+
+
+
+			//Update RRD Graph DB
+			$rrd_path_traffic_rx = __DIR__."/rrdtool/databases/router_$_GET[router_id]_interface_$_GET[name]_traffic_rx.rrd";
+			if(!file_exists($rrd_path_traffic_rx)) {
+				//Create new RRD-Database
+				exec("rrdtool create $rrd_path_traffic_rx --step 600 --start ".time()." DS:traffic_rx:GAUGE:700:U:U DS:traffic_tx:GAUGE:900:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
+			}
+
+			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+			$interface_last_endet_crawl = Interfaces::getInterfaceCrawlByCrawlCycleAndRouterIdAndInterfaceName($last_endet_crawl_cycle['id'], $_GET['router_id'], $_GET['name']);
+
+			$interface_crawl_data['traffic_info']['traffic_rx_per_second_byte'] = ($_GET['traffic_rx']-$interface_last_endet_crawl['traffic_rx'])/$GLOBALS['crawl_cycle']/60;
+
+			//Set negative values to 0
+			if ($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']<0)
+				$interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']=0;
+			$interface_crawl_data['traffic_info']['traffic_rx_per_second_kibibyte'] = round($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']/1024, 2);
+			$interface_crawl_data['traffic_info']['traffic_rx_per_second_kilobyte'] = round($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']/1000, 2);
+			
+			$interface_crawl_data['traffic_info']['traffic_tx_per_second_byte'] = ($_GET['traffic_tx']-$interface_last_endet_crawl['traffic_tx'])/$GLOBALS['crawl_cycle']/60;
+			//Set negative values to 0
+			if ($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']<0)
+				$interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']=0;
+			$interface_crawl_data['traffic_info']['traffic_tx_per_second_kibibyte'] = round($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']/1024, 2);
+			$interface_crawl_data['traffic_info']['traffic_tx_per_second_kilobyte'] = round($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']/1000, 2);
+
+			//Update Database
+			$crawl_time = time();
+			exec("rrdtool update $rrd_path_traffic_rx $crawl_time:".$interface_crawl_data['traffic_info']['traffic_rx_per_second_kilobyte'].":".$interface_crawl_data['traffic_info']['traffic_tx_per_second_kilobyte']);
 		}
 	}
 }
@@ -121,6 +157,7 @@ if($_GET['section']=="insert_batman_advanced_originators") {
 				$originators[$key] = array('originator'=>$originator[0],
 							   'link_quality'=>$originator[1]);
 			}
+			$originators_count = count($originators);
 			$originators = serialize($originators);
 			
 			try {
@@ -130,6 +167,8 @@ if($_GET['section']=="insert_batman_advanced_originators") {
 			catch(PDOException $e) {
 				echo $e->getMessage();
 			}
+			
+			RrdTool::updateRouterBatmanAdvOriginatorsCountHistory($_GET['router_id'], $originators_count);
 		}
 	}
 }
