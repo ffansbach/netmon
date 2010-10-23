@@ -3,6 +3,7 @@ require_once('./config/runtime.inc.php');
 require_once('./lib/classes/core/login.class.php');
 require_once('./lib/classes/core/router.class.php');
 require_once('./lib/classes/core/crawling.class.php');
+require_once('./lib/classes/core/rrdtool.class.php');
 
 if($_GET['section']=="insert_router") {
 	$session = login::user_login($_GET['nickname'], $_GET['password']);
@@ -49,7 +50,7 @@ echo "get router_auto_update_hash: ".$_GET['router_auto_update_hash'];
 			$crawl_data['community_prefix'] = $_GET['community_prefix'];
 			
 			Crawling::insertRouterCrawl($_GET['router_id'], $crawl_data);
-
+			RrdTool::updateRouterMemoryHistory($_GET['router_id'], $_GET['memory_free'], $_GET['memory_caching'], $_GET['memory_buffering']);
 		}
 	} else {
 		echo "you are not permitted";

@@ -1,3 +1,7 @@
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+
 <script type="text/javascript">
 	document.body.id='tab1';
 </script>
@@ -6,27 +10,26 @@
 	<li class="tab2"><a href="./router_config.php?router_id={$router_data.router_id}">Router Konfiguration</a></li>
 </ul>
 
-
 <h1>Daten des Routers {$router_data.hostname}</h1>
 
 <div style="width: 100%; overflow: hidden;">
-    <div style="float:left; width: 50%;">
+    <div style="float:left; width: 47%;">
 		<h2>Grunddaten</h2>
 		<b>Benutzer:</b> <a href="./user.php?id={$router_data.user_id}">{$router_data.nickname}</a><br>
 		<b>Angelegt am:</b> {$router_data.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
 
 		<h2>System Monitoring</h2>
 		<h3><u>Allgemein</u></h3>
-			<b>Status:</b> 
-    {if $router_last_crawl.status=="online"}
-      <img src="./templates/img/ffmap/status_up_small.png" alt="online">
-    {elseif $router_last_crawl.status=="offline"}
-      <img src="./templates/img/ffmap/status_down_small.png" alt="offline">
-    {/if}
-<br>
-			<b>Datenquelle:</b> {if $router_data.crawl_method=='router'}Router sendet Daten{elseif $router_data.crawl_method=='crawler'}Netmon Crawler{/if}<br>
-			<b>Letzter Crawl:</b> {$router_last_crawl.crawl_date|date_format:"%e.%m.%Y %H:%M"}<br>
-			<b>Crawl Intervall:</b> alle {$crawl_cycle} Minuten<br>
+		<b>Status:</b> 
+		{if $router_last_crawl.status=="online"}
+			<img src="./templates/img/ffmap/status_up_small.png" alt="online">
+		{elseif $router_last_crawl.status=="offline"}
+			<img src="./templates/img/ffmap/status_down_small.png" alt="offline">
+		{/if}
+		<br>
+		<b>Datenquelle:</b> {if $router_data.crawl_method=='router'}Router sendet Daten{elseif $router_data.crawl_method=='crawler'}Netmon Crawler{/if}<br>
+		<b>Letzter Crawl:</b> {$router_last_crawl.crawl_date|date_format:"%e.%m.%Y %H:%M"}<br>
+		<b>Crawl Intervall:</b> alle {$crawl_cycle} Minuten<br>
 
 		<h3><u>Community Daten des Webinterfaces</u></h3>
 			{if !empty($router_last_crawl.community_nickname)}
@@ -98,7 +101,7 @@
 			{/if}
 		</p>
 	</div>
-	<div style="float:left; width: 50%;">
+	<div style="float:left; width: 53%;">
 			{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
 			<h2>Standort ({if !empty($router_last_crawl.latitude)}crawl{else}Netmon{/if})</h2>
 			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
@@ -121,7 +124,7 @@
 					{/if}
 
 					var radius = 30
-					var zoom = 16;
+					var zoom = 17;
 
 					/* Initialize Map */
 					ipmap({$service_data.service_id});
@@ -150,12 +153,15 @@
 		<ul>
 			{foreach item=hist from=$router_history}
 				<li>
-					<b>{$hist.create_date|date_format:"%e.%m.%Y %H:%M"}:</b> 
+					<b>{$hist.create_date|date_format:"%e.%m. %H:%M:%S"}:</b> 
 					{if $hist.data.action == 'status' AND $hist.data.to == 'online'}
 						Router geht <span style="color: #007B0F;">online</span>
 					{/if}
 					{if $hist.data.action == 'status' AND $hist.data.to == 'offline'}
 						Router geht <span style="color: #CB0000;">offline</span>
+					{/if}
+					{if $hist.data.action == 'reboot'}
+						Router wurde <span style="color: #000f9c;">Rebootet</span>
 					{/if}
 				</li>
 			{/foreach}
@@ -165,93 +171,177 @@
 	{/if}
 
 	<h2>Grafische Historie</h2>
-	<p>
-		<img src="./tmp/router_{$router_data.router_id}_memory.png">
-	</p>
+	{literal}
+		<script>
+			$(document).ready(function() {
+	{/literal}
+			$("#tabs_router_memory").tabs();
+	{literal}
+			});
+		</script>
+	{/literal}
 
+	<div id="tabs_router_memory" style="width: 96%">
+		<ul>
+			<li><a href="#fragment-1_router_memory"><span>12 Sunden</span></a></li>
+        		<li><a href="#fragment-2_router_memory"><span>24 Stunden</span></a></li>
+        		<li><a href="#fragment-3_router_memory"><span>7 Tage</span></a></li>
+		</ul>
+		<div id="fragment-1_router_memory">
+			<img src="./tmp/router_{$router_data.router_id}_memory_12_hours.png">
+		</div>
+		<div id="fragment-2_router_memory">
+			<img src="./tmp/router_{$router_data.router_id}_memory_1_day.png">
+		</div>
+		<div id="fragment-3_router_memory">
+			<img src="./tmp/router_{$router_data.router_id}_memory_1_week.png">
+		</div>
 	</div>
 </div>
 
-{if !empty($router_batman_adv_interfaces)}
-<div style="width: 100%; overflow: hidden;">
-    <div style="float:left; width: 50%;">
 
-	<h2>B.A.T.M.A.N advanced Monitoring</h2>
-	<h3>Interfaces and status</h3>
-	{if !empty($crawl_batman_adv_interfaces)}
-		<ul>
-			{foreach item=interface from=$crawl_batman_adv_interfaces}
-				<li>
-					<b>{$interface.name}</b> {$interface.status} ({$interface.crawl_date|date_format:"%e.%m.%Y %H:%M"})
-				</li>
-			{/foreach}
-		</ul>
-	{else}
-		<p>Keine Interfaces gefunden</p>
-	{/if}
-	
-	<h3>Originators</h3>
-	{if !empty($batman_adv_originators.originators)}
-		<ul>
-			{foreach item=originators from=$batman_adv_originators.originators}
-				<li>
-					{$originators.originator} ({$originators.link_quality})
-				</li>
-			{/foreach}
-		</ul>
-	{else}
-		<p>Keine Originators gefunden</p>
-	{/if}
-	</div>
-	<div style="float:left; width: 50%;">
-		<img src="./tmp/router_{$router_data.router_id}_originators.png">
+{if !empty($router_batman_adv_interfaces)}
+	{literal}
+		<script>
+			$(document).ready(function() {
+	{/literal}
+    				$("#tabs_batman_adv").tabs();
+	{literal}
+			});
+		</script>
+	{/literal}
+	<div style="width: 100%; overflow: hidden;">
+		<div style="float:left; width: 47%;">
+			<h2>B.A.T.M.A.N advanced Monitoring</h2>
+			<h3>Interfaces and status</h3>
+			{if !empty($crawl_batman_adv_interfaces)}
+				<ul>
+					{foreach item=interface from=$crawl_batman_adv_interfaces}
+						<li>
+							<b>{$interface.name}</b> {$interface.status} ({$interface.crawl_date|date_format:"%e.%m.%Y %H:%M"})
+						</li>
+					{/foreach}
+				</ul>
+			{else}
+				<p>Keine Interfaces gefunden</p>
+			{/if}
+			
+			<h3>Originators</h3>
+			{if !empty($batman_adv_originators.originators)}
+				<ul>
+					{foreach item=originators from=$batman_adv_originators.originators}
+						<li>
+							{$originators.originator} ({$originators.link_quality})
+						</li>
+					{/foreach}
+				</ul>
+			{else}
+				<p>Keine Originators gefunden</p>
+			{/if}
+		</div>
+		<div style="float:left; width: 53%;">
+			<div id="tabs_batman_adv" style="width: 96%">
+				<ul>
+				        <li><a href="#fragment-1_batman_adv"><span>12 Sunden</span></a></li>
+				        <li><a href="#fragment-2_batman_adv"><span>24 Stunden</span></a></li>
+				        <li><a href="#fragment-3_batman_adv"><span>7 Tage</span></a></li>
+				</ul>
+				<div id="fragment-1_batman_adv">
+					<img src="./tmp/router_{$router_data.router_id}_originators_12_hours.png">
+				</div>
+				<div id="fragment-2_batman_adv">
+					<img src="./tmp/router_{$router_data.router_id}_originators_1_day.png">
+				</div>
+				<div id="fragment-3_batman_adv">
+					<img src="./tmp/router_{$router_data.router_id}_originators_1_week.png">
+				</div>
+			</div>
+		</div>
 	</div>
 {/if}
 
 {if !empty($router_olsr_interfaces)}
-<div style="width: 100%; overflow: hidden;">
-	<div style="float:left; width: 50%;">
+	<div style="width: 100%; overflow: hidden;">
+		<div style="float:left; width: 40%;">
 			<h2>Olsr Monitoring - Links</h2>
 			<div id="ipitem" style="width: 370px; overflow: hidden;">
 			<div nstyle="white-space: nowrap;">
 			<div style="float:left; width: 150px;"><b>Link IP</b></div>
 			<div style="float:left; width: 150px;"><b>Local interface IP</b></div>
 			<div style="float:left; width: 70px;"><b>ETX</b></div>
-	</div>
-</div>
-
-{foreach item=olsrd_links from=$olsrd_crawl_data.olsrd_links}
-	<div id="ipitem" style="width: 370px; overflow: hidden;">
-		<div style="white-space: nowrap;">
-			{assign var="tmp" value="Remote IP"}
-			<div style="float:left; width: 150px;">{$olsrd_links.$tmp}</div>
-			{assign var="tmp2" value="Local IP"}
-			<div style="float:left; width: 150px;">{$olsrd_links.$tmp2}</div>
-			<div style="float:left; width: 70px; background: {if $olsrd_links.Cost==0}#bb3333{elseif $olsrd_links.Cost<4}#00cc00{elseif $olsrd_links.Cost<10}#ffcb05{elseif $olsrd_links.Cost<100}#ff6600{/if};">{$olsrd_links.Cost}</div>
 		</div>
 	</div>
-{/foreach}
+	
+	{foreach item=olsrd_links from=$olsrd_crawl_data.olsrd_links}
+		<div id="ipitem" style="width: 370px; overflow: hidden;">
+			<div style="white-space: nowrap;">
+				{assign var="tmp" value="Remote IP"}
+				<div style="float:left; width: 150px;">{$olsrd_links.$tmp}</div>
+				{assign var="tmp2" value="Local IP"}
+				<div style="float:left; width: 150px;">{$olsrd_links.$tmp2}</div>
+				<div style="float:left; width: 70px; background: {if $olsrd_links.Cost==0}#bb3333{elseif $olsrd_links.Cost<4}#00cc00{elseif $olsrd_links.Cost<10}#ffcb05{elseif $olsrd_links.Cost<100}#ff6600{/if};">{$olsrd_links.Cost}</div>
+			</div>
+		</div>
+	{/foreach}
 
-	</div>
-	<div style="float:left; width: 50%;">
-	<p>
-		<img src="./tmp/router_{$router_data.router_id}_olsrd_links.png">
-	</p>
+	<div style="float:left; width: 60%;">
+		<p>
+			<img src="./tmp/router_{$router_data.router_id}_olsrd_links.png">
+		</p>
 	</div>
 {/if}
 
 <h2>Interface Monitoring</h2>
 {if !empty($interface_crawl_data)}
-	{foreach item=interface from=$interface_crawl_data}
-		<h3>{$interface.name} {if !empty($interface.wlan_frequency)}(Wlan Interface){/if} {if $interface.is_vpn=='true'}(VPN Interface){/if}</a></h3>
-		<div style="width: 100%; overflow: hidden;">
-			<div style="float:left; width: 50%;">
+	{foreach item=interface from=$interface_crawl_data key=schluessel}
+<script type="text/javascript">
+	{literal}
+	$(document).ready(function(){
+		var selectedEffect = 'blind';
+		var options = {direction: 'vertical'};
+	{/literal}
+		{if empty($interface.wlan_frequency) AND $interface.is_vpn!='true'}
+			$('#traffic_{$schluessel}').hide(); // Hide div by default
+			document.getElementById('traffic_title_arrow_up_{$schluessel}').style.display = 'inline';
+			document.getElementById('traffic_title_arrow_down_{$schluessel}').style.display = 'none';
+		{else}
+			document.getElementById('traffic_title_arrow_up_{$schluessel}').style.display = 'none';
+			document.getElementById('traffic_title_arrow_down_{$schluessel}').style.display = 'inline';
+		{/if}
+		$('#traffic_title_{$schluessel}').click(function(){literal} { {/literal}
+			$('#traffic_{$schluessel}').toggle(selectedEffect,options,650); // First click should toggle to 'show'
+			return false;
+		{literal} } );
+	});
+	{/literal}
+</script> 
+
+
+
+		{literal}
+			<script>
+				$(document).ready(function() {
+		{/literal}
+					$("#tabs_{$schluessel}").tabs();
+		{literal}
+				});
+			</script>
+		{/literal}
+<!--onClick="$('#traffic_{$schluessel}').slideToggle(800);"-->
+
+
+
+		<div onclick="var el = document.getElementById('traffic_title_arrow_up_{$schluessel}'); var el2 = document.getElementById('traffic_title_arrow_down_{$schluessel}'); {literal} if (el.style.display == 'none') {el.style.display = 'inline'; el2.style.display = 'none';} else {el.style.display = 'none'; el2.style.display = 'inline';} {/literal}" id="traffic_title_{$schluessel}" style="width: 98%; background: #81b59e;" >
+			<h3><span id="traffic_title_arrow_up_{$schluessel}">↑</span><span id="traffic_title_arrow_down_{$schluessel}">↓</span> | {$interface.name} {if !empty($interface.wlan_frequency)}(Wlan Interface){/if} {if $interface.is_vpn=='true'}(VPN Interface){/if}</h3>
+		</div>
+		<div id="traffic_{$schluessel}" style="width: 100%; overflow: hidden;">
+			<div style="float:left; width: 47%;">
 				<ul>
 					<li>
 						<b>Letzte Aktualisierung:</b> {$interface.crawl_date|date_format:"%e.%m.%Y %H:%M"}
 					</li>
 				</ul>
-		
+				
 				<ul>
 					{if !empty($interface.mac_addr)}
 						<li>
@@ -315,39 +405,48 @@
 					</ul>
 				{/if}
 			</div>
-			<div style="float:left; width: 50%;">
-				<p>
-					<img src="./tmp/router_{$router_data.router_id}_interface_{$interface.name}_traffic_rx.png">
-				</p>
+			<div style="float:left; width: 53%;">
+				<div id="tabs_{$schluessel}" style="width: 96%">
+					<ul>
+						<li><a href="#fragment-1_{$schluessel}"><span>12 Sunden</span></a></li>
+					        <li><a href="#fragment-2_{$schluessel}"><span>24 Stunden</span></a></li>
+					        <li><a href="#fragment-3_{$schluessel}"><span>7 Tage</span></a></li>
+					</ul>
+					<div id="fragment-1_{$schluessel}">
+						<img src="./tmp/router_{$router_data.router_id}_interface_{$interface.name}_traffic_rx_12_hours.png">
+					</div>
+					<div id="fragment-2_{$schluessel}">
+						<img src="./tmp/router_{$router_data.router_id}_interface_{$interface.name}_traffic_rx_1_day.png">
+					</div>
+					<div id="fragment-3_{$schluessel}">
+						<img src="./tmp/router_{$router_data.router_id}_interface_{$interface.name}_traffic_rx_1_week.png">
+					</div>
+				</div>
 			</div>
 		</div>
-		<hr>
+
 	{/foreach}
 {else}
 	<p>Keine Daten zu Interfaces vorhanden</p>
 {/if}
 
-
 {if $ip.is_ip_owner}
-<h2>Aktionen</h2>
+	<h2>Aktionen</h2>
+	<p>
+		<a href="./serviceeditor.php?section=new&ip_id={$ip.ip_id}">Dienst hinzufügen</a>
+	</p>
+	
+	<p>
+		<a href="./ipeditor.php?section=edit&id={$ip.ip_id}">Ip Editieren</a><br>
+		<a href="./imagemaker.php?section=new&ip_id={$ip.ip_id}">Image Downloaden</a><br>
+		<!--  <a href="./vpn.php?section=edit&ip_id={$ip.ip_id}">VPN-Optionen</a>-->
+	</p>
 
-<p>
-  <a href="./serviceeditor.php?section=new&ip_id={$ip.ip_id}">Dienst hinzufügen</a>
-</p>
-
-<p>
-  <a href="./ipeditor.php?section=edit&id={$ip.ip_id}">Ip Editieren</a><br>
-  <a href="./imagemaker.php?section=new&ip_id={$ip.ip_id}">Image Downloaden</a><br>
-
-<!--  <a href="./vpn.php?section=edit&ip_id={$ip.ip_id}">VPN-Optionen</a>-->
-</p>
-
-<p>
-  <a href="./vpn.php?section=new&ip_id={$ip.ip_id}">Neue VPN-Zertifikate generieren</a><br>
-  <a href="./vpn.php?section=info&ip_id={$ip.ip_id}">VPN-Zertifikat, VPN-Config und CCD ansehen</a><br>
-  <a href="./vpn.php?section=insert_regenerate_ccd&ip_id={$ip.ip_id}">CCD neu anlegen</a><br>
-  <a href="./vpn.php?section=insert_delete_ccd&ip_id={$ip.ip_id}">CCD löschen</a><br>
-  <a href="./vpn.php?section=download&ip_id={$ip.ip_id}">VPN-Zertifikate und Config-Datei downloaden</a><br>
-</p>
-
+	<p>
+		<a href="./vpn.php?section=new&ip_id={$ip.ip_id}">Neue VPN-Zertifikate generieren</a><br>
+		<a href="./vpn.php?section=info&ip_id={$ip.ip_id}">VPN-Zertifikat, VPN-Config und CCD ansehen</a><br>
+		<a href="./vpn.php?section=insert_regenerate_ccd&ip_id={$ip.ip_id}">CCD neu anlegen</a><br>
+		<a href="./vpn.php?section=insert_delete_ccd&ip_id={$ip.ip_id}">CCD löschen</a><br>
+		<a href="./vpn.php?section=download&ip_id={$ip.ip_id}">VPN-Zertifikate und Config-Datei downloaden</a><br>
+	</p>
 {/if}

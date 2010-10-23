@@ -12,6 +12,7 @@
 	require_once('lib/classes/core/service.class.php');
 	require_once('lib/classes/core/crawling.class.php');
 	require_once('lib/classes/core/router.class.php');
+	require_once('lib/classes/core/rrdtool.class.php');
 
 /*
  * Get all Services that have notification on
@@ -57,6 +58,11 @@ if(strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)
 		}
 	}
 
+	$online = Router::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'online');
+	$offline = Router::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'offline');
+	$unknown = (Router::countRoutersByTime(strtotime($actual_crawl_cycle['crawl_date'])))-($offline+$online);
+	$total = $unknown+$offline+$online;
+	RrdTool::updateNetmonHistoryRouterStatus($online, $offline, $unknown, $total);
 	//Initialise new crawl cycle
 	Crawling::newCrawlCycle();
 }

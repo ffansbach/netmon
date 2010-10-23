@@ -1,3 +1,8 @@
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+
+
 <script type="text/javascript">
 	document.body.id='tab1';
 </script>
@@ -26,11 +31,11 @@
   font-weight: bold;">
 <tr>
 
-<td style="width: 33%; color: #007B0F;" ><img src="/templates/img/status_up_big.png" title="up - node is reachable" alt="up"/> {$router_status_history.0.online}</td>
+<td style="width: 33%; color: #007B0F;" ><img src="/templates/img/status_up_big.png" title="up - node is reachable" alt="up"/> {$router_status_online}</td>
 
-<td class="node_status_down nodes" style="width: 33%; color: #CB0000;" ><img src="/templates/img/status_down_big.png" title="down - node is not visible via OLSR" alt="down"/> {$router_status_history.0.offline}</td>
+<td class="node_status_down nodes" style="width: 33%; color: #CB0000;" ><img src="/templates/img/status_down_big.png" title="down - node is not visible via OLSR" alt="down"/> {$router_status_offline}</td>
 
-<td class="node_status_pending nodes" style="width: 33%; color: #F8C901;" ><img src="/templates/img/status_pending_big.png" title="pending - node has not yet been seen since registration" alt="pending"/> {$router_status_history.0.unknown}</td>
+<td class="node_status_pending nodes" style="width: 33%; color: #F8C901;" ><img src="/templates/img/status_pending_big.png" title="pending - node has not yet been seen since registration" alt="pending"/> {$router_status_unknown}</td>
 
 </tr>
 </table>
@@ -43,26 +48,29 @@
 </p>
 
 <h2>Router status History</h2>
-<img src="./tmp/networkstatistic_status.png">
+{literal}
+	<script>
+		$(document).ready(function() {
+{/literal}
+		$("#tabs_router_status_history").tabs();
+{literal}
+		});
+	</script>
+{/literal}
 
-<!--
-<h1>History der letzten {$portal_history_hours} Stunden</h1>
-
-{if !empty($history)}
-{foreach key=count item=hist from=$history}
-	{if $hist.data.action == 'status'}
-		{if $hist.data.from=='offline'}
-			{$hist.create_date}: {$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) geht online.<br>
-		{elseif $hist.data.from=='online'}
-			{$hist.create_date}: {$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) geht offline.<br>
-		{/if}
-	{/if}
-	{if $hist.data.action == 'reboot'}
-		{$hist.create_date}: {$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) wurde rebootet.<br>
-	{/if}
-
-
-{/foreach}
-{else}
-<p>In den letzten {$portal_history_hours} Stunden ist nichts passiert.</p>
-{/if}-->
+<div id="tabs_router_status_history" style="width: 520px">
+	<ul>
+		<li><a href="#fragment-1_router_history"><span>1 Tag</span></a></li>
+       		<li><a href="#fragment-2_router_history"><span>7 Tage</span></a></li>
+       		<li><a href="#fragment-3_router_history"><span>1 Monat</span></a></li>
+	</ul>
+	<div id="fragment-1_router_history">
+		<img src="./tmp/netmon_history_router_status_1_day.png">
+	</div>
+	<div id="fragment-2_router_history">
+		<img src="./tmp/netmon_history_router_status_7_days.png">
+	</div>
+	<div id="fragment-3_router_history">
+		<img src="./tmp/netmon_history_router_status_1_month.png">
+	</div>
+</div>

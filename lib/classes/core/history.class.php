@@ -4,6 +4,7 @@ require_once('lib/classes/core/crawling.class.php');
 
 class History {
 	public function makeRouterHistoryEntry($current_crawl_data, $router_id){
+		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		$last_crawl_data = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router_id);
 		if($last_crawl_data['status']!="online") {
@@ -37,7 +38,7 @@ class History {
 
 		if (is_array($history_data)) {
 			foreach ($history_data as $hist_data) {
-				DB::getInstance()->exec("INSERT INTO history (object, object_id, create_date, data) VALUES ('router', '$router_id', NOW(), '$hist_data');");
+				DB::getInstance()->exec("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data) VALUES ('$actual_crawl_cycle[id]', 'router', '$router_id', NOW(), '$hist_data');");
 			}
 		}
 	}
@@ -243,6 +244,35 @@ class History {
 		}
 		return $history;
 	}
+
+	public function getRouterHistoryByRouterIdExceptActualCrawlCycle($router_id, $actual_crawl_cycle_id, $countlimit, $hourlimit) {
+		if($countlimit)
+			$range = "
+						WHERE object='router' AND object_id=$router_id AND crawl_cycle_id<'$actual_crawl_cycle_id'
+						ORDER BY history.create_date desc
+					  LIMIT 0, $countlimit";
+		elseif ($hourlimit)
+			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR AND object='service' AND crawl_cycle_id<'$actual_crawl_cycle_id'
+					  ORDER BY history.create_date desc";
+		try {
+			$sql = "SELECT id, object, object_id, create_date, data
+			       FROM history
+				   $range";
+
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $key=>$row) {
+				$history[$key] = $row;
+				$history[$key]['data'] = unserialize($history[$key]['data']);
+				$history[$key]['additional_data'] = Router::getRouterInfo($row['object_id']);
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $history;
+	}
+
+
 
 	public function getHistory($countlimit, $hourlimit) {
 		if($countlimit)
