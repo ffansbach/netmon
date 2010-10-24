@@ -5,20 +5,20 @@ $GLOBALS['installed'] = true;
 
 //WEBSERVER
 $GLOBALS['subfolder'] = dirname($_SERVER['PHP_SELF']);
-$GLOBALS['domain'] = $_SERVER["HTTP_HOST"];
+$GLOBALS['domain'] = "netmon.freifunk-ol.de";
 $GLOBALS['monitor_root'] = $_SERVER["DOCUMENT_ROOT"].$GLOBALS['subfolder'];
-$GLOBALS['url_to_netmon'] = $GLOBALS['domain'].$GLOBALS['subfolder'];
+$GLOBALS['url_to_netmon'] = "netmon.freifunk-ol.de";
 
 //MYSQL
 $GLOBALS['mysql_host'] = "localhost";
 $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
-$GLOBALS['mysql_password'] = "passwd";
+$GLOBALS['mysql_password'] = "bla";
 
 //JABBER
 $GLOBALS['jabber_server'] = "jabber.nord-west.net";
 $GLOBALS['jabber_username'] = "netmon";
-$GLOBALS['jabber_password'] = "passwd";
+$GLOBALS['jabber_password'] = "bla";
 
 //MAIL
 $GLOBALS['mail_sending_type'] = "php_mail";

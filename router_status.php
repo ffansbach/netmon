@@ -22,6 +22,9 @@ $history_end = strtotime($last_ended_crawl_cycle['crawl_date']);
 /** Get and assign global messages **/
 $smarty->assign('message', Message::getMessage());
 
+$router_reliability = Router::getRouterReliability($_GET['router_id'], 500);
+$smarty->assign('router_reliability', $router_reliability);
+
 /** Get Router History **/
 $router_history = History::getRouterHistoryByRouterIdExceptActualCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id'], 6, false);
 $smarty->assign('router_history', $router_history);
@@ -31,6 +34,7 @@ $smarty->assign('router_history', $router_history);
 $router_data = Router::getRouterInfo($_GET['router_id']);
 $smarty->assign('router_data', $router_data);
 $smarty->assign('crawl_cycle', $GLOBALS['crawl_cycle']);
+
 //Batman advanced interfaces
 $router_batman_adv_interfaces = BatmanAdvanced::getBatmanAdvancedInterfacesByRouterId($_GET['router_id']);
 $smarty->assign('router_batman_adv_interfaces', $router_batman_adv_interfaces);

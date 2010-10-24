@@ -66,7 +66,7 @@
 		if (UserManagement::checkPermission(4)) {
 			$insert_result = RouterEditor::resetRouterAutoAssignHash($_GET['router_id']);
 
-			header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+			header('Location: ./routereditor.php?section=edit&router_id='.$_GET['router_id']);
 		} else {
 			$message[] = array("Nur eingeloggte Benutzer dürfen einen Router anlegen oder editieren!", 2);
 			Message::setMessage($message);

@@ -5,6 +5,7 @@
 <script type="text/javascript">
 	document.body.id='tab1';
 </script>
+
 <ul id="tabnav">
 	<li class="tab1"><a href="./router_status.php?router_id={$router_data.router_id}">Router Status</a></li>
 	<li class="tab2"><a href="./router_config.php?router_id={$router_data.router_id}">Router Konfiguration</a></li>
@@ -13,7 +14,7 @@
 <h1>Daten des Routers {$router_data.hostname}</h1>
 
 <div style="width: 100%; overflow: hidden;">
-    <div style="float:left; width: 47%;">
+	<div style="float:left; width: 47%;">
 		<h2>Grunddaten</h2>
 		<b>Benutzer:</b> <a href="./user.php?id={$router_data.user_id}">{$router_data.nickname}</a><br>
 		<b>Angelegt am:</b> {$router_data.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
@@ -27,6 +28,7 @@
 			<img src="./templates/img/ffmap/status_down_small.png" alt="offline">
 		{/if}
 		<br>
+		<b>Zuverlässigkeit:</b> {$router_reliability.online_percent}% online<br>
 		<b>Datenquelle:</b> {if $router_data.crawl_method=='router'}Router sendet Daten{elseif $router_data.crawl_method=='crawler'}Netmon Crawler{/if}<br>
 		<b>Letzter Crawl:</b> {$router_last_crawl.crawl_date|date_format:"%e.%m.%Y %H:%M"}<br>
 		<b>Crawl Intervall:</b> alle {$crawl_cycle} Minuten<br>
@@ -102,7 +104,7 @@
 		</p>
 	</div>
 	<div style="float:left; width: 53%;">
-			{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
+		{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
 			<h2>Standort ({if !empty($router_last_crawl.latitude)}crawl{else}Netmon{/if})</h2>
 			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 			<script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
@@ -111,13 +113,11 @@
 			
 			<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
-
 			<div id="map" style="height:300px; width:450px; border:solid 1px black;font-size:9pt;">
 				<script type="text/javascript">
 					{if !empty($router_last_crawl.latitude)}
 						var lat = {$router_last_crawl.latitude};
 						var lon = {$router_last_crawl.longitude};
-
 					{else}
 						var lat = {$router_data.latitude};
 						var lon = {$router_data.longitude};
@@ -130,6 +130,7 @@
 					ipmap({$service_data.service_id});
 				</script>
 			</div>
+
 			<p><b>Standortbeschreibung:</b><br>
 				{if !empty($router_last_crawl.latitude)}
 					Lat: {$router_last_crawl.latitude}
@@ -140,67 +141,66 @@
 				{/if}
 				<br><br>
 				{if !empty($router_last_crawl.latitude) AND !empty($router_last_crawl.location)}
-					 {$router_last_crawl.location}
+					{$router_last_crawl.location}
 				{elseif !empty($router_data.latitude) AND !empty($router_data.location)}
 					{$router_last_crawl.location}
 				{/if}
 			</p>
-
 		{/if}
 
-	<h2>History</h2>
-	{if !empty($router_history)}
-		<ul>
-			{foreach item=hist from=$router_history}
-				<li>
-					<b>{$hist.create_date|date_format:"%e.%m. %H:%M:%S"}:</b> 
-					{if $hist.data.action == 'status' AND $hist.data.to == 'online'}
-						Router geht <span style="color: #007B0F;">online</span>
-					{/if}
-					{if $hist.data.action == 'status' AND $hist.data.to == 'offline'}
-						Router geht <span style="color: #CB0000;">offline</span>
-					{/if}
-					{if $hist.data.action == 'reboot'}
-						Router wurde <span style="color: #000f9c;">Rebootet</span>
-					{/if}
-				</li>
-			{/foreach}
-		</ul>
-	{else}
-		<p>Keine Daten vorhanden</p>
-	{/if}
+		<h2>History</h2>
+		{if !empty($router_history)}
+			<ul>
+				{foreach item=hist from=$router_history}
+					<li>
+						<b>{$hist.create_date|date_format:"%e.%m. %H:%M:%S"}:</b> 
+						{if $hist.data.action == 'status' AND $hist.data.to == 'online'}
+							Router geht <span style="color: #007B0F;">online</span>
+						{/if}
+						{if $hist.data.action == 'status' AND $hist.data.to == 'offline'}
+							Router geht <span style="color: #CB0000;">offline</span>
+						{/if}
+						{if $hist.data.action == 'reboot'}
+							Router wurde <span style="color: #000f9c;">Rebootet</span>
+						{/if}
+					</li>
+				{/foreach}
+			</ul>
+		{else}
+			<p>Keine Daten vorhanden</p>
+		{/if}
 
-	<h2>Grafische Historie</h2>
-	{literal}
-		<script>
-			$(document).ready(function() {
-	{/literal}
-			$("#tabs_router_memory").tabs();
-	{literal}
-			});
-		</script>
-	{/literal}
+		<h2>Grafische Historie</h2>
+		{literal}
+			<script>
+				$(document).ready(function() {
+		{/literal}
+				$("#tabs_router_memory").tabs();
+		{literal}
+				});
+			</script>
+		{/literal}
 
-	<div id="tabs_router_memory" style="width: 96%">
-		<ul>
-			<li><a href="#fragment-1_router_memory"><span>12 Sunden</span></a></li>
-        		<li><a href="#fragment-2_router_memory"><span>24 Stunden</span></a></li>
-        		<li><a href="#fragment-3_router_memory"><span>7 Tage</span></a></li>
-		</ul>
-		<div id="fragment-1_router_memory">
-			<img src="./tmp/router_{$router_data.router_id}_memory_12_hours.png">
-		</div>
-		<div id="fragment-2_router_memory">
-			<img src="./tmp/router_{$router_data.router_id}_memory_1_day.png">
-		</div>
-		<div id="fragment-3_router_memory">
-			<img src="./tmp/router_{$router_data.router_id}_memory_1_week.png">
+		<div id="tabs_router_memory" style="width: 96%">
+			<ul>
+				<li><a href="#fragment-1_router_memory"><span>12 Sunden</span></a></li>
+				<li><a href="#fragment-2_router_memory"><span>24 Stunden</span></a></li>
+				<li><a href="#fragment-3_router_memory"><span>7 Tage</span></a></li>
+			</ul>
+			<div id="fragment-1_router_memory">
+				<img src="./tmp/router_{$router_data.router_id}_memory_12_hours.png">
+			</div>
+			<div id="fragment-2_router_memory">
+				<img src="./tmp/router_{$router_data.router_id}_memory_1_day.png">
+			</div>
+			<div id="fragment-3_router_memory">
+				<img src="./tmp/router_{$router_data.router_id}_memory_1_week.png">
+			</div>
 		</div>
 	</div>
 </div>
 
-
-{if !empty($router_batman_adv_interfaces)}
+<!--{if !empty($router_batman_adv_interfaces)}-->
 	{literal}
 		<script>
 			$(document).ready(function() {
@@ -258,7 +258,7 @@
 			</div>
 		</div>
 	</div>
-{/if}
+<!--{/if}-->
 
 {if !empty($router_olsr_interfaces)}
 	<div style="width: 100%; overflow: hidden;">

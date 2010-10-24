@@ -26,9 +26,17 @@ window.onload = function()
 <h1>Dienst zum Router <i>{$router_data.hostname}</i> hinzufügen</h1>
 
 <form action="./serviceeditor.php?section=insert_add&router_id={$smarty.get.router_id}" method="POST">
-	<h2>Port</h2>
+	<h2>Port und URL</h2>
 	<p>
 		Portnummer: <input name="port" type="text" size="5" maxlength="10" value="">
+	</p>
+
+	<p>URL-Prefix
+		<select name="url_prefix" size="1">
+			<option value="http://" selected>http://</option>
+			<option value="ftp://">ftp://</option>
+			<option value="">Kein URL Prefix</option>
+		</select>
 	</p>
 	
 	<h2>Beschreibung</h2>

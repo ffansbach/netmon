@@ -25,21 +25,13 @@
 		<textarea name="description" cols="57" rows="3"></textarea>
 	</p>
 
-	<h2>Einstellungen</h2>
+	<h2>Projekt Einstellungen</h2>
+	<h3>Infrastruktur</h3>
 {literal}
 	<input type="checkbox" id="is_wlan" name="is_wlan" value="1" onChange="if(document.getElementById('is_wlan').checked) {document.getElementById('wlan').style.display = 'block';} else {document.getElementById('wlan').style.display = 'none';}">Diese Projekt ist ein Wlan Projekt<br>
 
-	<input type="checkbox" id="is_vpn" name="is_vpn" value="1" onChange="if(document.getElementById('is_vpn').checked) {document.getElementById('vpn').style.display = 'block';} else {document.getElementById('vpn').style.display = 'none';}">Diese Projekt ist ein VPN Projekt<br>
-
-	<input type="checkbox" id="is_batman_adv" name="is_batman_adv" value="1"> Diese Projekt ist ein B.A.T.M.A.N advanced Projekt<br>
-
-	<input type="checkbox" id="is_olsr" name="is_olsr" value="1"> Diese Projekt ist ein Olsr Projekt<br>
-
-	<input type="checkbox" id="is_geo_specific" name="is_geo_specific" value="1" onChange="if(document.getElementById('is_geo_specific').checked) {document.getElementById('geo_specific').style.display = 'block';} else {document.getElementById('geo_specific').style.display = 'none';}">Diese Projekt ist lokal begrenzt<br>
-{/literal}
-
 	<div id="wlan" style="display:none;">
-	<h2>Wlan Einstellungen</h2>
+	<h4>Wlan Einstellungen</h4>
 	<p>WLAN ESSID:<br>
 		<input name="wlan_essid" type="text" size="20">
 	<p>Projekt BSSID:<br>
@@ -62,9 +54,11 @@
 	</p>
 	</div>
 
+	<input type="checkbox" id="is_vpn" name="is_vpn" value="1" onChange="if(document.getElementById('is_vpn').checked) {document.getElementById('vpn').style.display = 'block';} else {document.getElementById('vpn').style.display = 'none';}">Diese Projekt ist ein VPN Projekt<br>
+
 	<div id="vpn" style="display:none">
-	<h2>VPN Einstellungen</h2>
-		<h3>Daten zu eigenem VPN Server</h3>
+	<h4>VPN Einstellungen</h4>
+		<h5>Daten zu eigenem VPN Server</h5>
 		
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 40%;">
@@ -82,13 +76,13 @@
 		<p>Protokoll:<br><input name="vpn_server_proto" type="text" size="5"></p>
 		<p>Device:<br><input name="vpn_server_device" type="text" size="5"></p>
 		
-		<h3>Daten zu eigenen VPN-Zertifikaten</h3>
+		<h5>Daten zu eigenen VPN-Zertifikaten</h5>
 		<p>Server CA.CRT:<br><textarea name="vpn_server_ca_crt" cols="50" rows="10"></textarea></p>
 		<p>Server CA.KEY:<br><textarea name="vpn_server_ca_key" cols="50" rows="10"></textarea></p>
 		
 		<p>Passphrase:<br><input name="vpn_server_pass" type="password" size="30"></p>
 
-		<h3>Synchronisation der CCD Daten per FTP zum VPN-Server</h3>
+		<h5>Synchronisation der CCD Daten per FTP zum VPN-Server</h5>
 		<input type="radio" name="is_ccd_ftp_sync" value="0" checked="checked" onChange="document.getElementById('ftp_sync_data').style.display = 'none';">VPN-Server greift auf CCD-Verzeichnis von Netmon zu<br>
 		<input type="radio" name="is_ccd_ftp_sync" value="1" onChange="document.getElementById('ftp_sync_data').style.display = 'block';">Netmon Synchronisiert CCD Ordner per FTP mit einem Ordner auf dem VPN-Server<br>
 		<div id="ftp_sync_data" style="display:none">
@@ -98,22 +92,19 @@
 		</div>
 	</div>
 
+	<h3>Routing</h3>
+	<input type="checkbox" id="is_batman_adv" name="is_batman_adv" value="1"> Diese Projekt ist ein B.A.T.M.A.N advanced Projekt<br>
 
-{literal}
-	<h2>IP Einstellungen</h2>
-	<p>IP Einstellungen <select name="ipv" onChange="if(this.options[this.selectedIndex].value=='ipv4') {
-document.getElementById('ipv4').style.display = 'block';
-} else {
-document.getElementById('ipv4').style.display = 'none';
-}">
-			<option value="ipv4" selected="selected">IPv4</option>
-			<option value="ipv6">IPv6</option>
-			<option value="no">Ausschließlich Layer 2</option>
-		</select></p>
+	<input type="checkbox" id="is_olsr" name="is_olsr" value="1"> Diese Projekt ist ein Olsr Projekt<br>
+
+	<h3>IP Einstellungen</h3>
 {/literal}
-	<div id="ipv4" style="display:block">
-	<h2>IPv4 Einstellungen</h2>
-	<p>Subnet Host<br> {$net_prefix}.<input name="ipv4_host" type="text" size="20"></p>
+{literal}
+	<input type="checkbox" id="is_ipv4" name="is_ipv4" value="1" onChange="if(document.getElementById('is_ipv4').checked) {document.getElementById('ipv4').style.display = 'block';} else {document.getElementById('ipv4').style.display = 'none';}">Diese Projekt ist ein IPv4 Projekt<br>
+
+	<div id="ipv4" style="display:none">
+	<h4>IPv4 Einstellungen</h4>
+	<p>Subnet Host:<br> <input name="ipv4_host" type="text" size="15"></p>
 	<p>Subnet Netmask <select name="ipv4_netmask">
 				<option value="28">28</option>
 				<option value="27">27</option>
@@ -137,8 +128,14 @@ document.getElementById('ipv4').style.display = 'none';
 			    </select></p>
 	</div>
 
+	<input type="checkbox" id="is_ipv6" name="is_ipv6" value="1" onChange="if(document.getElementById('is_ipv6').checked) {document.getElementById('ipv6').style.display = 'block';} else {document.getElementById('ipv6').style.display = 'none';}">Diese Projekt ist ein IPv6 Projekt<br>
+
+
+
+	<h3>Sonstiges</h3>
+	<input type="checkbox" id="is_geo_specific" name="is_geo_specific" value="1" onChange="if(document.getElementById('is_geo_specific').checked) {document.getElementById('geo_specific').style.display = 'block';} else {document.getElementById('geo_specific').style.display = 'none';}">Diese Projekt ist lokal begrenzt<br>
 	<div id="geo_specific" style="display:none">
-	<h2>Lokale Begrenzung des Projekts</h2>
+	<h4>Lokale Begrenzung des Projekts</h4>
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 55%;">
 				<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
@@ -158,8 +155,7 @@ document.getElementById('ipv4').style.display = 'none';
 		        </div>
 		</div>
 	</div>
-
-	<h2>Sonstiges</h2>
+{/literal}
 	<p>DNS Server (durch Leerzeichen getrennt):<br>
 		<input name="dns_server" type="text" size="50">
 

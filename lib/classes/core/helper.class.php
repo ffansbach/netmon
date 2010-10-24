@@ -466,44 +466,6 @@ class Helper {
 		return $subnetlist;	
 	}
 
-	public function getServiceseBySubnetId($subnet_id) {
-		$servicelist = array();
-		try {
-			$sql = "SELECT ips.id as ip_id, ips.ip, services.id as service_id
-					FROM ips
-					LEFT JOIN services ON (services.ip_id=ips.id)
-					WHERE ips.subnet_id='$subnet_id'";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$servicelist[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $servicelist;
-	}
-
-	public function getServiceDataByServiceId($service_id) {
-		try {
-			$sql = "SELECT services.id as service_id, services.ip_id, services.title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.use_netmons_url, services.url, services.create_date,
-			       ips.id as ip_id, ips.ip, ips.zone_start, ips.zone_end,
-			       subnets.id as subnet_id, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca_crt, subnets.vpn_server_ca_key, subnets.vpn_server_pass,
-			       users.id as user_id, users.nickname, users.email
-			       FROM  services
-			       LEFT JOIN ips ON (ips.id=services.ip_id)
-			       LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
-			       LEFT JOIN users ON (users.id=ips.user_id)
-			       WHERE services.id=$service_id";
-			$result = DB::getInstance()->query($sql);
-			$service = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $service;
-	}
-
 	public function getExistingIpsBySubnetId($subnet_id) {
 		$ips = array();
 		try {
@@ -544,13 +506,13 @@ class Helper {
 				ORDER BY ipv4_addr ASC";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
-				$interfaces[] = $row['ipv4_addr'];
+				$ips[] = $row['ipv4_addr'];
 			}
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $interfaces;
+		return $ips;
 	}
 
 	public function getExistingRangesBySubnetId($subnet_id) {

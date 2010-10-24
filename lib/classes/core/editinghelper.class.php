@@ -227,17 +227,27 @@ class EditingHelper {
 		$existingips = Helper::getExistingIPv4Ips();
 
 		$project_data = Project::getProjectData($project_id);
-		$last_ip = SubnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$project_data['ipv4_host'], $project_data['ipv4_netmask']);
-		$first_ip = SubnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$project_data['ipv4_host'], $project_data['ipv4_netmask']);
+		$first_ip = SubnetCalculator::getDqFirstIp($project_data['ipv4_host'], $project_data['ipv4_netmask']);
+		$last_ip = SubnetCalculator::getDqLastIp($project_data['ipv4_host'], $project_data['ipv4_netmask']);
 
 		//Get first free IP in subnet
 		$first_ip = explode(".", $first_ip);
 		$last_ip = explode(".", $last_ip);
 
-		for($i=$first_ip[2]; $i<=$last_ip[2]; $i++) {
-			for($ii=$first_ip[3]; $ii<=$last_ip[3]; $ii++) {
-				if(!in_array("$i.$ii", $existingips, TRUE)) {
-					$available_ip = "$i.$ii";
+		for($i=$first_ip[0]; $i<=$last_ip[0]; $i++) {
+			for($ii=$first_ip[1]; $ii<=$last_ip[1]; $ii++) {
+				for($iii=$first_ip[2]; $iii<=$last_ip[2]; $iii++) {
+					for($iiii=$first_ip[3]; $iiii<=$last_ip[3]; $iiii++) {
+						if(!in_array("$i.$ii.$iii.$iiii", $existingips, TRUE)) {
+							$available_ip = "$i.$ii.$iii.$iiii";
+							break;
+						}
+					}
+					if(!empty($available_ip)) {
+						break;
+					}
+				}
+				if(!empty($available_ip)) {
 					break;
 				}
 			}
@@ -245,7 +255,6 @@ class EditingHelper {
 				break;
 			}
 		}
-
 		if (isset($available_ip)) {
 			return $available_ip;
 		} else {
