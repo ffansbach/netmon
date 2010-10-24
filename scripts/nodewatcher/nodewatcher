@@ -47,16 +47,31 @@ echo $router_auto_update_hash
 	if [ "$router_auto_update_hash" == " " ]; then
 		echo "Der Router ist noch NICHT mit Netmon verknüpft"
 		echo "Versuche verknüpfung herzustellen"
-		hostname="`cat /proc/sys/kernel/hostname`"
-		command="wget -q -O - http://$netmon_api/api_nodewatcher.php?section=router_auto_assign&hostname=$hostname"
-		echo "$command"
-		ergebnis=`$command`
+
+		#try to get mac adress for auto assign
+		router_auto_assign_login_string=$(ifconfig br-mesh | grep HWaddr | awk '{ print $5 }'|sed -e 's/://g')
+		if [ "$router_auto_assign_login_string" == "" ]; then
+			router_auto_assign_login_string=$(ifconfig eth0 | grep HWaddr | awk '{ print $5 }'|sed -e 's/://g')
+		fi
 		
-		if [ "${ergebnis/error}" == "$ergebnis" ]; then
+		if [ "$router_auto_assign_login_string" == "" ]; then
+			router_auto_assign_login_string=$(ifconfig ath0 | grep HWaddr | awk '{ print $5 }'|sed -e 's/://g')
+		fi
 
-router_auto_update_hash=`echo $ergebnis| cut '-d;' -f2`
-router_id=`echo $ergebnis| cut '-d;' -f1`
+		if [ "$router_auto_assign_login_string" == "" ]; then
+			echo "Cannot get router_auto_assign_login_string from interface mac adress"
+		else
 
+	#		hostname="`cat /proc/sys/kernel/hostname`"
+			command="wget -q -O - http://$netmon_api/api_nodewatcher.php?section=router_auto_assign&router_auto_assign_login_string=$router_auto_assign_login_string"
+			echo "$command"
+			ergebnis=`$command`
+			
+			if [ "${ergebnis/error}" == "$ergebnis" ]; then
+				router_auto_update_hash=`echo $ergebnis| cut '-d;' -f2`
+				router_id=`echo $ergebnis| cut '-d;' -f1`
+				hostname=`echo $ergebnis| cut '-d;' -f3`
+			
 #write new config
 cat > $SCRIPT_DIR/nodewatcher_config <<EOF
 autoupdate="$autoupdate"
@@ -71,13 +86,20 @@ router_auto_assign="$router_auto_assign"
 router_auto_update_hash="$router_auto_update_hash"
 EOF
 
-			echo "Der Router wurde mit Netmon verknüpft"
+				echo "Der Router wurde mit Netmon verknüpft"
 
-		else
-			echo "es ist ein fehler aufgetreten"
-			echo $ergebnis
+				echo "Hostname wird konfiguriert"
+				uci set system.@system[0].hostname=$hostname
+				uci commit
+				echo $hostname > /proc/sys/kernel/hostname
+				echo "Hostname wurde konfiguriert"
+
+
+			else
+				echo "es ist ein fehler aufgetreten"
+				echo $ergebnis
+			fi
 		fi
-
 	else
 		echo "Der Router ist bereits mit Netmon verknüpft"
 	fi
