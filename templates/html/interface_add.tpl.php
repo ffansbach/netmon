@@ -13,9 +13,9 @@
 			$(document).ready(function(){
 				api_main = jQuery.Zend.jsonrpc({url: 'api_main.php'});
 				project = api_main.project_info(project_id);
-				if(project.ipv=='ipv4') {
+/*				if(project.ipv=='ipv4') {
 					free_ipv4_ip = api_main.getAFreeIPv4IPByProjectId(project_id);
-				}
+				}*/
 
 				document.getElementById('project_title').innerHTML = project.title;
 				document.getElementById('project_description').innerHTML = project.description;
@@ -54,15 +54,16 @@
 					document.getElementById('section_batman_adv').style.display = 'none';
 				}
 
-				if(project.ipv=='ipv4') {
+				if(project.is_ipv4=='1') {
 					document.getElementById('section_ipv4').style.display = 'block';
 					document.getElementById('section_ipv6').style.display = 'none';
 					document.getElementById('section_ip_no').style.display = 'none';
 
+					free_ipv4_ip = api_main.getAFreeIPv4IPByProjectId(project_id);
 					document.getElementById('ipv4_netmask').innerHTML = project.ipv4_netmask_dot;
 					document.getElementById('ipv4_addr').innerHTML = free_ipv4_ip;
 					document.getElementById('ipv4_addr_input').value = free_ipv4_ip;
-				} else if(project.ipv=='ipv6') {
+				} else if(project.is_ipv6=='1') {
 					document.getElementById('section_ipv6').style.display = 'block';
 					document.getElementById('section_ipv4').style.display = 'none';
 					document.getElementById('section_ip_no').style.display = 'none';
@@ -74,6 +75,12 @@
 					document.getElementById('section_ip_no').style.display = 'none';
 					document.getElementById('section_ipv6').style.display = 'none';
 					document.getElementById('section_ipv4').style.display = 'none';
+				}
+
+				if(project.ipv4_dhcp_kind=='range') {
+					document.getElementById('section_ipv4_dhcp').style.display = 'block';
+				}  else if(project.ipv4_dhcp_kind=='no') {
+					document.getElementById('section_ipv4_dhcp').style.display = 'none';
 				}
 			});
 		}
@@ -168,13 +175,31 @@
 				<b>IPv4: </b> Ja
 			</li>
 			<li>
-				<b>IP-Adresse: </b> {$net_prefix}.<span id="ipv4_addr"></span>
+				<b>IP-Adresse: </b> <span id="ipv4_addr"></span>
 				<input id="ipv4_addr_input" name="ipv4_addr" type="hidden">
 			</li>
 			<li>
 				<b>Netzmaske: </b> <span id="ipv4_netmask"></span>
 			</li>
 		<ul>
+	</div>
+
+	<div id="section_ipv4_dhcp" style="display: none;">
+		<h2>IP DHCP Range Konfiguration</h2>
+		<p>Geben Sie die Größe des Adressraumes ein den Sie zum verteilen reservieren möchten.</p>
+		<ul>
+			<li>
+				<b>Anzahl der IP´s: </b> <input id="ipv4_dhcp_range" name="ipv4_dhcp_range" size="3" onChange="getIpRange(this.value)">
+			</li>
+		<ul>
+		<div>
+			<ul>
+				<li>
+					<b>Zu reservierender Adressraum </b> <span id="ipv4_dhcp_range_first_ip"></span>
+									     <span id="ipv4_dhcp_range_last_ip"></span>
+				</li>
+			<ul>
+		</div>
 	</div>
 
 	<div id="section_ipv6" style="display: none;">

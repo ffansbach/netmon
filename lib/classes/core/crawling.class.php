@@ -39,6 +39,7 @@ class Crawling {
 
 		//Make router history
 		History::makeRouterHistoryEntry($crawl_data, $router_id);
+		Router::routerOfflineNotification($router_id, $crawl_data);
 	}
 
 

@@ -37,7 +37,6 @@ class RrdTool {
 			//Update Database
 			exec("rrdtool update $rrd_path ".time().":$online:$offline:$unknown:$total");
 	}
-
 }
 
 ?>

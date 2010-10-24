@@ -4,6 +4,7 @@ require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/project.class.php');
 require_once('lib/classes/core/imagemaker.class.php');
+require_once('lib/classes/core/editinghelper.class.php');
 
 class Main {
 	public function login($nickname, $password){

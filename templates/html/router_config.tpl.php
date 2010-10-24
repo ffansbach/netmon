@@ -28,11 +28,11 @@
 		<b>Datenquelle:</b> {if $router_data.crawl_method=='router'}Router sendet Daten{elseif $router_data.crawl_method=='crawler'}Netmon Crawler{/if}<br>
 
 
-<p>
-  <a href="./routereditor.php?section=edit&router_id={$router_data.router_id}">Router editieren</a>
-</p>
+		<p>
+			<a href="./routereditor.php?section=edit&router_id={$router_data.router_id}">Router editieren</a>
+		</p>
 
-    </div>
+      </div>
 
       <div style="float:left; width: 50%;">
 		<h2>Standort</h2>
@@ -71,10 +71,10 @@
 <h3>{$interface.name}</h3>
 <div style="width: 100%; overflow: hidden;">
     <div style="float:left; width: 50%;">
-	{if $interface.ipv=='ipv4'}
+	{if $interface.is_ipv4=='1'}
 	<ul>
 		<li>
-			<b>IPv4 Adresse:</b> {$net_prefix}.{$interface.ipv4_addr}		
+			<b>IPv4 Adresse:</b> {$interface.ipv4_addr}		
 		</li>
 		<li>
 			<b>IPv4 Netmask:</b> {$interface.ipv4_netmask_dot}		
@@ -84,7 +84,7 @@
 		</li>
 	</ul>
 	{/if}
-	{if $interface.ipv=='ipv6'}
+	{if $interface.is_ipv6=='ipv6' OR !empty($interface.ipv6_addr)}
 	<ul>
 
 		<li>
@@ -92,14 +92,14 @@
 		</li>
 	</ul>
 	{/if}
-	{if $interface.ipv=='no'}
+<!--	{if $interface.ipv=='no'}
 	<ul>
 
 		<li>
 			<b>IP Adresse:</b> Keine (Layer 2)
 		</li>
 	</ul>
-	{/if}
+	{/if}-->
 	
 	{if $interface.is_wlan=='1'}	
 	<ul>
@@ -168,12 +168,23 @@
 <h2>Dienste</h2>
 
 {foreach item=service from=$services}
+<a name="service_{$service.id}"></a>
+
+{if !empty($interfaces) AND !empty($service.url_prefix) AND !empty($service.port)}
+<a href="{$service.url_prefix}{$interfaces.0.ipv4_addr}:{$service.port}">
+{/if}
 <h3>{$service.title}</h3>
+{if !empty($interfaces) AND !empty($service.url_prefix) AND !empty($service.port)}
+</a>
+{/if}
 <div style="width: 100%; overflow: hidden;">
     <div style="float:left; width: 50%;">
 	<ul>
 		<li>
 			<b>Port: </b> {$service.port}
+		</li>
+		<li>
+			<b>URL-Prefix: </b> {if empty($service.url_prefix)}Kein URL-Prefix{else}{$service.url_prefix}{/if}
 		</li>
 		<li>
 			<b>Beschreibung: </b> {$service.description}
@@ -185,6 +196,7 @@
 	</div>
 	<div style="float:left; width: 50%;">
 		<p>
+			<a href="./serviceeditor.php?section=edit&service_id={$service.id}">Dienst editieren</a><br>
 			<a href="./serviceeditor.php?section=delete&service_id={$service.id}">Dienst entfernen</a>
 		</p>
 	</div>

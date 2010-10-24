@@ -31,9 +31,9 @@
 require_once $path.'lib/classes/core/service.class.php';
 
 class ServiceEditor {
-	public function addService($router_id, $title, $description, $port, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {
-		DB::getInstance()->exec("INSERT INTO services (router_id, title, description, port, visible, notify, notification_wait, use_netmons_url, url, create_date)
-					 VALUES ('$router_id', '$title', '$description', '$port', '$visible', '$notify', '$notification_wait', '$use_netmons_url', '$url', NOW());");
+	public function addService($router_id, $title, $description, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {
+		DB::getInstance()->exec("INSERT INTO services (router_id, title, description, port, url_prefix, visible, notify, notification_wait, use_netmons_url, url, create_date)
+					 VALUES ('$router_id', '$title', '$description', '$port', '$url_prefix', '$visible', '$notify', '$notification_wait', '$use_netmons_url', '$url', NOW());");
 		$service_id = DB::getInstance()->lastInsertId();
 		
 		try {
@@ -48,6 +48,32 @@ class ServiceEditor {
 		Message::setMessage($message);
 		
 		return array("result"=>true, "service_id"=>$service_id, "router_id"=>$router_id);
+	}
+
+	public function insertEditService($service_id, $title, $description, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url, $url) {
+		$service_data = Service::getServiceByServiceId($service_id);
+
+		$result = DB::getInstance()->exec("UPDATE services SET
+							title='$title',
+							description='$description',
+							port='$port',
+							url_prefix='$url_prefix',
+							visible='$visible',
+							notify='$notify',
+							notification_wait='$notification_wait',
+							use_netmons_url='$use_netmons_url',
+							url='$url'
+						WHERE id = '$service_id'");
+
+		if ($result>0) {
+			$message[] = array("Der Dienst $title wurde geändert",1);
+			Message::setMessage($message);
+			return array("result"=>true, "service_id"=>$service_id, "router_id"=>$service_data['router_id']);
+		} else {
+			$message[] = array("Fehler!", 2);
+			Message::setMessage($message);
+			return array("result"=>false, "service_id"=>$service_id, "router_id"=>$service_data['router_id']);
+		}
 	}
 
 	public function deleteService($service_id) {

@@ -92,6 +92,15 @@
 		</select>
 	</p>
 
+	<h2>Offline Benachrichtigung</h2>
+	<p>
+		Möchtest du benachrichtigt werden, wenn dieser Router <input name="notification_wait" type="text" size="1" maxlength="5" value="6"> Crawlzyklen offline ist?
+		<select name="notify">
+			<option value="1" selected='selected'>Ja</option>
+			<option value="0" >Nein</option>
+		</select>
+	</p>
+
 	<h2>Netmon Autozuweisung</h2>
 	<p>
 		<input name="allow_router_auto_assign" type="checkbox" value="1" {if $router_data.allow_router_auto_assign==1}checked{/if}> Erlaube automatische Router Zuweisung

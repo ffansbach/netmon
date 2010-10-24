@@ -68,7 +68,7 @@ class Menus extends UserManagement {
 //      $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'status.php');
 //      $menu[] = array('name'=>'Ipliste', 'href'=>'iplist.php');
       $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php');
-//      $menu[] = array('name'=>'Projektliste', 'href'=>'subnetlist.php');
+      $menu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
       $menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'networkstatistic.php');
 //      $menu[] = array('name'=>'Impressum', 'href'=>'impressum.php');
     }
@@ -93,6 +93,7 @@ class Menus extends UserManagement {
       $menu[] = array('name'=>'Neues Projekt', 'href'=>'projecteditor.php?section=new');
       $menu[] = array('name'=>'Imagemaker', 'href'=>'imagemaker.php');
       $menu[] = array('name'=>'CCD regenerieren', 'href'=>'vpn.php?section=regenerate_ccd_subnet');
+      $menu[] = array('name'=>'Projektliste', 'href'=>'projectlist.php');
     }
     return $menu;
   }

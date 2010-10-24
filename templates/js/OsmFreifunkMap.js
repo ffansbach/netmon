@@ -302,16 +302,23 @@ function ipmap(highlighted_service) {
 	map.addControl(new OpenLayers.Control.Permalink());
 	map.addControl(new OpenLayers.Control.Attribution());
 
-	//Make Layers
+/*	//Make Layers
 	var layer_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 	var layer_nodes_offline = loadKmlLayer('Offline Knoten', './api.php?class=apiMap&section=getOfflineServiceKML&highlighted_service='+highlighted_service);
 	var layer_nodes_online = loadKmlLayer('Online Knoten ', './api.php?class=apiMap&section=getOnlineServiceKML&highlighted_service='+highlighted_service);
 
 	//Add Layers
-        map.addLayers([layer_conn, layer_nodes_offline, layer_nodes_online]);
+        map.addLayers([layer_conn, layer_nodes_offline, layer_nodes_online]);*/
 
+	var layer_nodes_online = loadKmlLayer('Online Knoten ', './api.php?class=apiMap&section=getOnlineRouters');
+	var batman_adv_conn = loadKmlLayer('Bat. Adv. Verbindungen', './api.php?class=apiMap&section=batman_advanced_conn');
+	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
+	
+	//Add Layers
+        map.addLayers([layer_nodes_online, batman_adv_conn, olsr_conn]);
+	
 	// Define bubbles
-	selectControl = new OpenLayers.Control.SelectFeature([layer_conn, layer_nodes_offline, layer_nodes_online], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
+	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes_online], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
 	selectControl.activate();
 }

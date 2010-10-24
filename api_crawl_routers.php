@@ -50,6 +50,7 @@ echo "get router_auto_update_hash: ".$_GET['router_auto_update_hash'];
 			$crawl_data['community_prefix'] = $_GET['community_prefix'];
 			
 			Crawling::insertRouterCrawl($_GET['router_id'], $crawl_data);
+			//Update router memory rrd hostory
 			RrdTool::updateRouterMemoryHistory($_GET['router_id'], $_GET['memory_free'], $_GET['memory_caching'], $_GET['memory_buffering']);
 		}
 	} else {
