@@ -32,6 +32,7 @@ nickname=$4
 password=$5
 authentificationmethod=$6
 router_auto_update_hash=$7
+router_auto_update_hash=`urlencode "$router_auto_update_hash"`
 
 if which uci >/dev/null; then
 	echo "UCI is installed, collecting data from UCI"
@@ -152,48 +153,51 @@ fi
 #B.A.T.M.A.N. advanced
 #insert new interfaces
 if which batctl >/dev/null; then
-	has_active_interface="0"
-	BAT_ADV_IFACES=`batctl if | awk '{ print $1 }' | cut -d ':' -f 1`
-	for device_name in $BAT_ADV_IFACES; do
-		if [ "`batctl if | grep $device_name | grep active`" != "" ]; then
-			status='active'
-			has_active_interface="1"
-		else
-			status='inactive'
-		fi
-		
-		command="wget -q -O - http://$netmon_api/api_crawl_interfaces.php?section=insert_batman_advanced_interface&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&name=$device_name&status=$status"
-		if [ "$1" = "debug" ]; then
-			echo $command
-		else
-			echo `$command`
-		fi
-	done
-	
-	if [ $has_active_interface = "1" ]; then
-		BAT_ADV_ORIGINATORS=`batctl o | grep 'No batman nodes in range'`
-		if [ "$BAT_ADV_ORIGINATORS" == "" ]; then
-			BAT_ADV_ORIGINATORS=`batctl o | awk '/O/ {next} {print $1}'`
-			i=0
-			for originator in $BAT_ADV_ORIGINATORS; do
-				link_quality=`batctl o | grep "$originator" | awk '{print $2}'`
-				link_quality="${link_quality//(/}"
-				link_quality="${link_quality//)/}"
-				
-				if [ $i -eq 0 ]; then
-					originators_string="$originator;$link_quality"
-				else
-					originators_string="$originators_string,$originator;$link_quality"
-				fi
-	
-				i=$(($i + 1))
-			done
+        batman_check_running=`batctl if | grep 'Error'`
+        if [ "$batman_check_running" == "" ]; then
+		has_active_interface="0"
+		BAT_ADV_IFACES=`batctl if | awk '{ print $1 }' | cut -d ':' -f 1`
+		for device_name in $BAT_ADV_IFACES; do
+			if [ "`batctl if | grep $device_name | grep active`" != "" ]; then
+				status='active'
+				has_active_interface="1"
+			else
+				status='inactive'
+			fi
 			
-			command="wget -q -O - http://$netmon_api/api_crawl_interfaces.php?section=insert_batman_advanced_originators&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&originators=$originators_string"
+			command="wget -q -O - http://$netmon_api/api_crawl_interfaces.php?section=insert_batman_advanced_interface&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&name=$device_name&status=$status"
 			if [ "$1" = "debug" ]; then
 				echo $command
 			else
 				echo `$command`
+			fi
+		done
+		
+		if [ $has_active_interface = "1" ]; then
+			BAT_ADV_ORIGINATORS=`batctl o | grep 'No batman nodes in range'`
+			if [ "$BAT_ADV_ORIGINATORS" == "" ]; then
+				BAT_ADV_ORIGINATORS=`batctl o | awk '/O/ {next} {print $1}'`
+				i=0
+				for originator in $BAT_ADV_ORIGINATORS; do
+					link_quality=`batctl o | grep "$originator" | awk '{print $2}'`
+					link_quality="${link_quality//(/}"
+					link_quality="${link_quality//)/}"
+					
+					if [ $i -eq 0 ]; then
+						originators_string="$originator;$link_quality"
+					else
+						originators_string="$originators_string,$originator;$link_quality"
+					fi
+					
+					i=$(($i + 1))
+				done
+				
+				command="wget -q -O - http://$netmon_api/api_crawl_interfaces.php?section=insert_batman_advanced_originators&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&originators=$originators_string"
+				if [ "$1" = "debug" ]; then
+					echo $command
+				else
+					echo `$command`
+				fi
 			fi
 		fi
 	fi
