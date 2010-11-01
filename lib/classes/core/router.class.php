@@ -401,26 +401,58 @@ Bitte stelle den Router zur Erhaltung des Meshnetzwerkes wieder zur Verfuegung o
 Mit freundlichen Gruessen
 $GLOBALS[community_name]";
 
-if ($GLOBALS['mail_sending_type']=='smtp') {
-	$config = array('username' => $GLOBALS['mail_smtp_username'],
-			'password' => $GLOBALS['mail_smtp_password']);
-
-	if(!empty($GLOBALS['mail_smtp_ssl']))
-		$config['ssl'] = $GLOBALS['mail_smtp_ssl'];
-	if(!empty($GLOBALS['mail_smtp_login_auth']))
-		$config['auth'] = $GLOBALS['mail_smtp_login_auth'];
-
-	$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
-}
-
-$mail = new Zend_Mail();
-
-$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
-$mail->addTo($user_data['email']);
-$mail->setSubject("Service offline $GLOBALS[community_name]");
-$mail->setBodyText($text);
-
-$mail->send($transport);
+		if ($GLOBALS['mail_sending_type']=='smtp') {
+			$config = array('username' => $GLOBALS['mail_smtp_username'],
+					'password' => $GLOBALS['mail_smtp_password']);
+			
+			if(!empty($GLOBALS['mail_smtp_ssl']))
+				$config['ssl'] = $GLOBALS['mail_smtp_ssl'];
+			if(!empty($GLOBALS['mail_smtp_login_auth']))
+				$config['auth'] = $GLOBALS['mail_smtp_login_auth'];
+			
+			$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
+		}
+		
+		$mail = new Zend_Mail();
+		$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
+		$mail->addTo($user_data['email']);
+		$mail->setSubject("Service offline $GLOBALS[community_name]");
+		$mail->setBodyText($text);
+		$mail->send($transport);
 	}
+
+
+	public function getSmallerOnlineCrawlRouterByCrawlCycleId($crawl_cycle_id, $router_id) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_routers
+					WHERE router_id='$router_id' AND status='online' AND crawl_cycle_id<'$crawl_cycle_id'
+					ORDER BY crawl_cycle_id DESC
+					LIMIT 1";
+			$result = DB::getInstance()->query($sql);
+			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $crawl_data;
+	}
+
+	public function getBiggerOnlineCrawlRouterByCrawlCycleId($crawl_cycle_id, $router_id) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_routers
+					WHERE router_id='$router_id' AND status='online' AND crawl_cycle_id>'$crawl_cycle_id'
+					ORDER BY crawl_cycle_id DESC
+					LIMIT 1";
+			$result = DB::getInstance()->query($sql);
+			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $crawl_data;
+	}
+
 
 }
