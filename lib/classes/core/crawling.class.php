@@ -14,6 +14,52 @@ class Crawling {
 		}
 	}
 
+	public function getCrawlCycleById($crawl_cycle_id) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_cycle
+					WHERE id=$crawl_cycle_id";
+			$result = DB::getInstance()->query($sql);
+			$count_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $count_data;
+	}
+
+	public function getNextSmallerCrawlCycleById($crawl_cycle_id) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_cycle
+					WHERE id<$crawl_cycle_id
+					ORDER BY id DESC
+					LIMIT 1";
+			$result = DB::getInstance()->query($sql);
+			$count_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $count_data;
+	}
+
+	public function getNextBiggerCrawlCycleById($crawl_cycle_id) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_cycle
+					WHERE id>$crawl_cycle_id
+					ORDER BY id ASC
+					LIMIT 1";
+			$result = DB::getInstance()->query($sql);
+			$count_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $count_data;
+	}
+
 	public function deleteOldCrawlData($days) {
 		DB::getInstance()->exec("DELETE FROM crawl_cycle WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
 		DB::getInstance()->exec("DELETE FROM crawl_routers WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");

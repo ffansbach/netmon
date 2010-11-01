@@ -10,8 +10,30 @@ require_once('./lib/classes/core/crawling.class.php');
 require_once('./lib/classes/core/history.class.php');
 
 /** Get crawl cycles **/
-$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+if(!isset($_GET['crawl_cycle_id'])) {
+	$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+} else {
+	$last_ended_crawl_cycle = Crawling::getCrawlCycleById($_GET['crawl_cycle_id']);
+}
+
 $actual_crawl_cycle = Crawling::getActualCrawlCycle();
+
+//Before next navigation
+$online_crawl_before = Router::getSmallerOnlineCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
+$smarty->assign('online_crawl_before', $online_crawl_before);
+
+$online_crawl_next = Router::getBiggerOnlineCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
+if ($online_crawl_next['crawl_cycle_id']!=$actual_crawl_cycle['id']) {
+	$smarty->assign('online_crawl_next', $online_crawl_next);
+}
+
+$next_smaller_crawl_cycle = Crawling::getNextSmallerCrawlCycleById($last_ended_crawl_cycle['id']);
+$smarty->assign('next_smaller_crawl_cycle', $next_smaller_crawl_cycle);
+
+$next_bigger_crawl_cycle = Crawling::getNextBiggerCrawlCycleById($last_ended_crawl_cycle['id']);
+if ($next_bigger_crawl_cycle['id']!=$actual_crawl_cycle['id']) {
+	$smarty->assign('next_bigger_crawl_cycle', $next_bigger_crawl_cycle);
+}
 
 /**Set history time window**/
 $history_start_12_hours = time()-(60*60*12);
@@ -59,9 +81,9 @@ $smarty->assign('router_crawl_history', $router_crawl_history);
 	@unlink($image_path_memory);
 
 	//Create Image
-	exec("rrdtool graph $image_path_memory_12_hours -a PNG --title='Memory usage' --vertical-label 'Bytes' --units-exponent 0 --start $history_start_12_hours --end $history_end DEF:probe2=$rrd_path_memory:memory_caching:AVERAGE DEF:probe1=$rrd_path_memory:memory_free:AVERAGE DEF:probe3=$rrd_path_memory:memory_buffering:AVERAGE AREA:probe2#ff0000:'Memory caching' AREA:probe1#0400ff:'Memory free' AREA:probe3#72c2c3:'Memory buffering'");
-	exec("rrdtool graph $image_path_memory_1_day -a PNG --title='Memory usage' --vertical-label 'Bytes' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe2=$rrd_path_memory:memory_caching:AVERAGE DEF:probe1=$rrd_path_memory:memory_free:AVERAGE DEF:probe3=$rrd_path_memory:memory_buffering:AVERAGE AREA:probe2#ff0000:'Memory caching' AREA:probe1#0400ff:'Memory free' AREA:probe3#72c2c3:'Memory buffering'");
-	exec("rrdtool graph $image_path_memory_1_week -a PNG --title='Memory usage' --vertical-label 'Bytes' --units-exponent 0 --start $history_start_1_week --end $history_end DEF:probe2=$rrd_path_memory:memory_caching:AVERAGE DEF:probe1=$rrd_path_memory:memory_free:AVERAGE DEF:probe3=$rrd_path_memory:memory_buffering:AVERAGE AREA:probe2#ff0000:'Memory caching' AREA:probe1#0400ff:'Memory free' AREA:probe3#72c2c3:'Memory buffering'");
+	exec("rrdtool graph $image_path_memory_12_hours -a PNG --width 270 --title='Memory usage' --vertical-label 'Bytes' --units-exponent 0 --start $history_start_12_hours --end $history_end DEF:probe2=$rrd_path_memory:memory_caching:AVERAGE DEF:probe1=$rrd_path_memory:memory_free:AVERAGE DEF:probe3=$rrd_path_memory:memory_buffering:AVERAGE AREA:probe2#ff0000:'Memory caching' AREA:probe1#0400ff:'Memory free' AREA:probe3#72c2c3:'Memory buffering'");
+	exec("rrdtool graph $image_path_memory_1_day -a PNG --width 270 --title='Memory usage' --vertical-label 'Bytes' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe2=$rrd_path_memory:memory_caching:AVERAGE DEF:probe1=$rrd_path_memory:memory_free:AVERAGE DEF:probe3=$rrd_path_memory:memory_buffering:AVERAGE AREA:probe2#ff0000:'Memory caching' AREA:probe1#0400ff:'Memory free' AREA:probe3#72c2c3:'Memory buffering'");
+	exec("rrdtool graph $image_path_memory_1_week -a PNG --width 270 --title='Memory usage' --vertical-label 'Bytes' --units-exponent 0 --start $history_start_1_week --end $history_end DEF:probe2=$rrd_path_memory:memory_caching:AVERAGE DEF:probe1=$rrd_path_memory:memory_free:AVERAGE DEF:probe3=$rrd_path_memory:memory_buffering:AVERAGE AREA:probe2#ff0000:'Memory caching' AREA:probe1#0400ff:'Memory free' AREA:probe3#72c2c3:'Memory buffering'");
 //-----------------------------------
 
 
@@ -86,9 +108,9 @@ $image_path_originators_1_week = __DIR__."/tmp/router_$_GET[router_id]_originato
 @unlink($image_path_originators);
 
 //Create Image
-exec("rrdtool graph $image_path_originators_12_hours -a PNG --title='B.A.T.M.A.N advanced Originators' --vertical-label 'Originators' --units-exponent 0 --start $history_start_12_hours --end $history_end DEF:probe2=$rrd_path_originators:originators:AVERAGE LINE2:probe2#72c2c3:'Originators'");
-exec("rrdtool graph $image_path_originators_1_day -a PNG --title='B.A.T.M.A.N advanced Originators' --vertical-label 'Originators' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe2=$rrd_path_originators:originators:AVERAGE LINE2:probe2#72c2c3:'Originators'");
-exec("rrdtool graph $image_path_originators_1_week -a PNG --title='B.A.T.M.A.N advanced Originators' --vertical-label 'Originators' --units-exponent 0 --start $history_start_1_week --end $history_end DEF:probe2=$rrd_path_originators:originators:AVERAGE LINE2:probe2#72c2c3:'Originators'");
+exec("rrdtool graph $image_path_originators_12_hours -a PNG --width 270 --title='B.A.T.M.A.N advanced Originators' --vertical-label 'Originators' --units-exponent 0 --start $history_start_12_hours --end $history_end DEF:probe2=$rrd_path_originators:originators:AVERAGE LINE2:probe2#72c2c3:'Originators'");
+exec("rrdtool graph $image_path_originators_1_day -a PNG --width 270 --title='B.A.T.M.A.N advanced Originators' --vertical-label 'Originators' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe2=$rrd_path_originators:originators:AVERAGE LINE2:probe2#72c2c3:'Originators'");
+exec("rrdtool graph $image_path_originators_1_week -a PNG --width 270 --title='B.A.T.M.A.N advanced Originators' --vertical-label 'Originators' --units-exponent 0 --start $history_start_1_week --end $history_end DEF:probe2=$rrd_path_originators:originators:AVERAGE LINE2:probe2#72c2c3:'Originators'");
 
 /** Get and assign actual Olsrd status **/
 $olsrd_crawl_data = Olsr::getCrawlOlsrDataByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
@@ -169,9 +191,9 @@ foreach($interface_crawl_data as $key=>$interface) {
 	@unlink($image_path_traffic_rx);
 
 	//Create Image
-	exec("rrdtool graph $image_path_traffic_rx_12_hours -a PNG --title='Traffic $interface[name]' --vertical-label 'Kilobytes/s' --units-exponent 0 --start $history_start_12_hours --end $history_end DEF:probe1=$rrd_path_traffic_rx:traffic_rx:AVERAGE DEF:probe2=$rrd_path_traffic_rx:traffic_tx:AVERAGE LINE2:probe1#0400ff:'Traffic received' LINE2:probe2#ff0000:'Traffic transmitted'");
-	exec("rrdtool graph $image_path_traffic_rx_1_day -a PNG --title='Traffic $interface[name]' --vertical-label 'Kilobytes/s' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe1=$rrd_path_traffic_rx:traffic_rx:AVERAGE DEF:probe2=$rrd_path_traffic_rx:traffic_tx:AVERAGE LINE2:probe1#0400ff:'Traffic received' LINE2:probe2#ff0000:'Traffic transmitted'");
-	exec("rrdtool graph $image_path_traffic_rx_1_week -a PNG --title='Traffic $interface[name]' --vertical-label 'Kilobytes/s' --units-exponent 0 --start $history_start_1_week --end $history_end DEF:probe1=$rrd_path_traffic_rx:traffic_rx:AVERAGE DEF:probe2=$rrd_path_traffic_rx:traffic_tx:AVERAGE LINE2:probe1#0400ff:'Traffic received' LINE2:probe2#ff0000:'Traffic transmitted'");
+	exec("rrdtool graph $image_path_traffic_rx_12_hours -a PNG --width 270 --title='Traffic $interface[name]' --vertical-label 'Kilobytes/s' --units-exponent 0 --start $history_start_12_hours --end $history_end DEF:probe1=$rrd_path_traffic_rx:traffic_rx:AVERAGE DEF:probe2=$rrd_path_traffic_rx:traffic_tx:AVERAGE LINE2:probe1#0400ff:'Traffic received' LINE2:probe2#ff0000:'Traffic transmitted'");
+	exec("rrdtool graph $image_path_traffic_rx_1_day -a PNG --width 270 --title='Traffic $interface[name]' --vertical-label 'Kilobytes/s' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe1=$rrd_path_traffic_rx:traffic_rx:AVERAGE DEF:probe2=$rrd_path_traffic_rx:traffic_tx:AVERAGE LINE2:probe1#0400ff:'Traffic received' LINE2:probe2#ff0000:'Traffic transmitted'");
+	exec("rrdtool graph $image_path_traffic_rx_1_week -a PNG --width 270 --title='Traffic $interface[name]' --vertical-label 'Kilobytes/s' --units-exponent 0 --start $history_start_1_week --end $history_end DEF:probe1=$rrd_path_traffic_rx:traffic_rx:AVERAGE DEF:probe2=$rrd_path_traffic_rx:traffic_tx:AVERAGE LINE2:probe1#0400ff:'Traffic received' LINE2:probe2#ff0000:'Traffic transmitted'");
 }
 
 $smarty->assign('interface_crawl_data', $interface_crawl_data);

@@ -15,6 +15,28 @@
 
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 47%;">
+		{if !empty($next_smaller_crawl_cycle.id)}
+		<a href="./router_status.php?router_id={$router_data.router_id}&crawl_cycle_id={$next_smaller_crawl_cycle.id}">&lt; zum vorherigen Datensatz</a>
+		{/if}
+		{if !empty($online_crawl_before.crawl_cycle_id)}
+		<br>
+		<a href="./router_status.php?router_id={$router_data.router_id}&crawl_cycle_id={$online_crawl_before.crawl_cycle_id}">&lt;&lt; zum vorherigen online Datensatz</a>
+		{/if}
+	</div>
+	<div style="float:left; width: 53%; text-align: right;">
+
+		{if !empty($next_bigger_crawl_cycle.id)}
+		<a href="./router_status.php?router_id={$router_data.router_id}&crawl_cycle_id={$next_bigger_crawl_cycle.id}">zum nächsten Datensatz &gt;</a>
+		{/if}
+		{if !empty($online_crawl_next.crawl_cycle_id)}
+		<br>
+		<a href="./router_status.php?router_id={$router_data.router_id}&crawl_cycle_id={$online_crawl_next.crawl_cycle_id}">zum nächsten online Datensatz &gt;&gt;</a>
+		{/if}
+	</div>
+</div>
+
+<div style="width: 100%; overflow: hidden;">
+	<div style="float:left; width: 47%;">
 		<h2>Grunddaten</h2>
 		<b>Benutzer:</b> <a href="./user.php?id={$router_data.user_id}">{$router_data.nickname}</a><br>
 		<b>Angelegt am:</b> {$router_data.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
@@ -113,7 +135,7 @@
 			
 			<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
-			<div id="map" style="height:300px; width:450px; border:solid 1px black;font-size:9pt;">
+			<div id="map" style="height:220px; width:400px; border:solid 1px black;font-size:9pt;">
 				<script type="text/javascript">
 					{if !empty($router_last_crawl.latitude)}
 						var lat = {$router_last_crawl.latitude};
