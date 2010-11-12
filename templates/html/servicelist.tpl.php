@@ -31,5 +31,5 @@
 </div>
 {/foreach}
 {else}
-<p>Keine Router vorhanden</p>
+<p>Keine Services vorhanden</p>
 {/if}

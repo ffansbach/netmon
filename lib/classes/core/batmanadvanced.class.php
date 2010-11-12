@@ -7,7 +7,9 @@ class BatmanAdvanced {
 					FROM crawl_batman_advanced_originators
 					WHERE router_id='$router_id' AND crawl_cycle_id='$crawl_cycle_id'";
 			$result = DB::getInstance()->query($sql);
-			$originators = $result->fetch(PDO::FETCH_ASSOC);
+			foreach($result as $row) {
+				$originators[] = $row;
+			}
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();

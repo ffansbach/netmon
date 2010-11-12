@@ -272,7 +272,55 @@ class History {
 		return $history;
 	}
 
+	public function getUserHistory($user_id, $countlimit) {
+		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 
+		try {
+			$sql = "SELECT  *
+					FROM routers
+					WHERE user_id='$user_id'";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$routers[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		foreach($routers as $router) {
+			try {
+				$sql = "SELECT id, object, object_id, create_date, data
+					FROM history
+					WHERE object='router' AND object_id=$router[id] AND crawl_cycle_id<'$actual_crawl_cycle[id]'
+					ORDER BY history.create_date desc
+					LIMIT 0, $countlimit";
+					
+				$result = DB::getInstance()->query($sql);
+				foreach($result as $key=>$row) {
+					$history[$key] = $row;
+					$history[$key]['data'] = unserialize($history[$key]['data']);
+					$history[$key]['additional_data'] = Router::getRouterInfo($row['object_id']);
+					$user_history[] = $history[$key];
+				}
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+		}
+
+		$first = array();
+		foreach($user_history as $key=>$user_hist) {
+			$first[$key] = $user_hist['create_date'];
+		}
+		array_multisort($first, SORT_DESC, $user_history);
+
+		for($i=0; $i<6; $i++) {
+			$history_cp[] = $user_history[$i];
+		}
+
+		return $history_cp;
+	}
 
 	public function getHistory($countlimit, $hourlimit) {
 		if($countlimit)
