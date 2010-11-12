@@ -70,6 +70,7 @@ class Menus extends UserManagement {
       $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php');
       $menu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
       $menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'networkstatistic.php');
+      $menu[] = array('name'=>'Suchen', 'href'=>'search.php');
 //      $menu[] = array('name'=>'Impressum', 'href'=>'impressum.php');
     }
     return $menu;
@@ -77,7 +78,7 @@ class Menus extends UserManagement {
 
   function userMenu() {
     if (UserManagement::checkPermission(8)) {
-      $menu[] = array('name'=>'Desktop', 'href'=>'desktop.php');
+      $menu[] = array('name'=>'Mein Benutzer', 'href'=>"user.php?id=$_SESSION[user_id]");
       $menu[] = array('name'=>'Neuer Router', 'href'=>'routereditor.php?section=new');
 //      $menu[] = array('name'=>'Neue Ip', 'href'=>'ipeditor.php?section=new');
 //      $menu[] = array('name'=>'Mein Benutzer', 'href'=>'user.php?id='.$_SESSION['user_id']);

@@ -222,7 +222,6 @@
 	</div>
 </div>
 
-<!--{if !empty($router_batman_adv_interfaces)}-->
 	{literal}
 		<script>
 			$(document).ready(function() {
@@ -249,11 +248,11 @@
 			{/if}
 			
 			<h3>Originators</h3>
-			{if !empty($batman_adv_originators.originators)}
+			{if !empty($batman_adv_originators)}
 				<ul>
-					{foreach item=originators from=$batman_adv_originators.originators}
+					{foreach item=originators from=$batman_adv_originators}
 						<li>
-							{$originators.originator} ({$originators.link_quality})
+							{$originators.originator} ({$originators.link_quality}) ({$originators.last_seen})
 						</li>
 					{/foreach}
 				</ul>
@@ -280,7 +279,6 @@
 			</div>
 		</div>
 	</div>
-<!--{/if}-->
 
 {if !empty($router_olsr_interfaces)}
 	<div style="width: 100%; overflow: hidden;">

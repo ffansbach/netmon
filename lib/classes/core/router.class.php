@@ -174,6 +174,7 @@ class Router {
 
 				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 				$row['actual_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
+				$row['router_reliability'] = Router::getRouterReliability($row['router_id'], 500);
 				$routers[] = $row;
 			}
 		}

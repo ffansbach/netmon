@@ -61,6 +61,35 @@ class Service {
 		return $servicelist;
 	}
 
+	public function getServiceListByUserId($user_id) {
+		$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+		$servicelist = array();
+		try {
+			$sql = "SELECT  services.id as service_id, services.router_id, services.title, services.description, services.port, services.url_prefix, services.visible, services.notify, services.notification_wait, services.notified, services.last_notification, services.use_netmons_url, services.url, services.create_date,
+					routers.hostname, routers.user_id,
+					users.id as user_id, users.nickname,
+					crawl_routers.status as router_status
+					FROM services
+					LEFT JOIN routers on (routers.id=services.router_id)
+					LEFT JOIN users on (users.id=routers.user_id)
+					LEFT JOIN crawl_routers on (crawl_routers.crawl_cycle_id='$last_ended_crawl_cycle[id]' AND crawl_routers.router_id=services.router_id)
+					WHERE routers.user_id='$user_id'";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $key=>$row) {
+				$interfaces = Interfaces::getIPv4InterfacesByRouterId($row['router_id']);
+				if(!empty($interfaces) AND !empty($row['url_prefix']) AND !empty($row['port'])) {
+					$row['combined_url_to_service'] = $row['url_prefix'].$interfaces[0]['ipv4_addr'].":".$row['port'];
+				}
+
+				$servicelist[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+		  echo $e->getMessage();
+		}
+		return $servicelist;
+	}
+
 	public function getServiceByServiceId($service_id) {
 		try {
 			$sql = "SELECT  *

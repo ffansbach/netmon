@@ -4,9 +4,7 @@
   
   $routerlist = Router::getRouterList();
   $smarty->assign('routerlist', $routerlist);
-/*echo "<pre>";
-print_r($routerlist);
-echo "</pre>";*/
+
   $smarty->display("header.tpl.php");
   $smarty->display("routerlist.tpl.php");
   $smarty->display("footer.tpl.php");

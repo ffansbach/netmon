@@ -15,61 +15,61 @@ if($_GET['section']=="insert_interface") {
 	if((($_GET['authentificationmethod']=='user') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
 		$last_crawl_cycle = Crawling::getActualCrawlCycle();
 
-		//Check if interface has already been crawled in current crawl cycle
-		try {
-			$sql = "SELECT *
-	        		FROM  crawl_interfaces
-				WHERE router_id='$_GET[router_id]' AND crawl_cycle_id='$last_crawl_cycle[id]' AND name='$_GET[name]'";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$crawl_interface[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-
-		//Make DB insert if interface has not been crawled in current crawl cycle
-		if(empty($crawl_interface)) {
-			//Make DB Insert
+		foreach($_GET['interfaces'] as $sendet_interface) {
+			//Check if interface has already been crawled in current crawl cycle
 			try {
-				DB::getInstance()->exec("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, crawl_date, name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_tx, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power)
-							 VALUES ('$_GET[router_id]', '$last_crawl_cycle[id]', NOW(), '$_GET[name]', '$_GET[mac_addr]', '$_GET[ipv4_addr]', '$_GET[ipv6_addr]', '$_GET[ipv6_link_local_addr]', '$_GET[traffic_rx]', '$_GET[traffic_tx]', '$_GET[wlan_mode]', '$_GET[wlan_frequency]', '$_GET[wlan_essid]', '$_GET[wlan_bssid]', '$_GET[wlan_tx_power]');");
+				$sql = "SELECT *
+	        			FROM  crawl_interfaces
+					WHERE router_id='$_GET[router_id]' AND crawl_cycle_id='$last_crawl_cycle[id]' AND name='$sendet_interface[name]'";
+				$result = DB::getInstance()->query($sql);
+				foreach($result as $row) {
+					$crawl_interface[] = $row;
+				}
 			}
 			catch(PDOException $e) {
 				echo $e->getMessage();
 			}
-
-
-
-			//Update RRD Graph DB
-			$rrd_path_traffic_rx = __DIR__."/rrdtool/databases/router_$_GET[router_id]_interface_$_GET[name]_traffic_rx.rrd";
-			if(!file_exists($rrd_path_traffic_rx)) {
-				//Create new RRD-Database
-				exec("rrdtool create $rrd_path_traffic_rx --step 600 --start ".time()." DS:traffic_rx:GAUGE:700:U:U DS:traffic_tx:GAUGE:900:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
-			}
-
-			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-			$interface_last_endet_crawl = Interfaces::getInterfaceCrawlByCrawlCycleAndRouterIdAndInterfaceName($last_endet_crawl_cycle['id'], $_GET['router_id'], $_GET['name']);
-
-			$interface_crawl_data['traffic_info']['traffic_rx_per_second_byte'] = ($_GET['traffic_rx']-$interface_last_endet_crawl['traffic_rx'])/$GLOBALS['crawl_cycle']/60;
-
-			//Set negative values to 0
-			if ($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']<0)
-				$interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']=0;
-			$interface_crawl_data['traffic_info']['traffic_rx_per_second_kibibyte'] = round($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']/1024, 2);
-			$interface_crawl_data['traffic_info']['traffic_rx_per_second_kilobyte'] = round($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']/1000, 2);
 			
-			$interface_crawl_data['traffic_info']['traffic_tx_per_second_byte'] = ($_GET['traffic_tx']-$interface_last_endet_crawl['traffic_tx'])/$GLOBALS['crawl_cycle']/60;
-			//Set negative values to 0
-			if ($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']<0)
-				$interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']=0;
-			$interface_crawl_data['traffic_info']['traffic_tx_per_second_kibibyte'] = round($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']/1024, 2);
-			$interface_crawl_data['traffic_info']['traffic_tx_per_second_kilobyte'] = round($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']/1000, 2);
-
-			//Update Database
-			$crawl_time = time();
-			exec("rrdtool update $rrd_path_traffic_rx $crawl_time:".$interface_crawl_data['traffic_info']['traffic_rx_per_second_kilobyte'].":".$interface_crawl_data['traffic_info']['traffic_tx_per_second_kilobyte']);
+			//Make DB insert if interface has not been crawled in current crawl cycle
+			if(empty($crawl_interface)) {
+				//Make DB Insert
+				try {
+					DB::getInstance()->exec("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, crawl_date, name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_tx, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power)
+								 VALUES ('$_GET[router_id]', '$last_crawl_cycle[id]', NOW(), '$sendet_interface[name]', '$sendet_interface[mac_addr]', '$sendet_interface[ipv4_addr]', '$sendet_interface[ipv6_addr]', '$sendet_interface[ipv6_link_local_addr]', '$sendet_interface[traffic_rx]', '$sendet_interface[traffic_tx]', '$sendet_interface[wlan_mode]', '$sendet_interface[wlan_frequency]', '$sendet_interface[wlan_essid]', '$sendet_interface[wlan_bssid]', '$sendet_interface[wlan_tx_power]');");
+				}
+				catch(PDOException $e) {
+					echo $e->getMessage();
+				}
+				
+				//Update RRD Graph DB
+				$rrd_path_traffic_rx = __DIR__."/rrdtool/databases/router_$_GET[router_id]_interface_$sendet_interface[name]_traffic_rx.rrd";
+				if(!file_exists($rrd_path_traffic_rx)) {
+					//Create new RRD-Database
+					exec("rrdtool create $rrd_path_traffic_rx --step 600 --start ".time()." DS:traffic_rx:GAUGE:700:U:U DS:traffic_tx:GAUGE:900:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
+				}
+			
+				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+				$interface_last_endet_crawl = Interfaces::getInterfaceCrawlByCrawlCycleAndRouterIdAndInterfaceName($last_endet_crawl_cycle['id'], $_GET['router_id'], $sendet_interface['name']);
+			
+				$interface_crawl_data['traffic_info']['traffic_rx_per_second_byte'] = ($sendet_interface['traffic_rx']-$interface_last_endet_crawl['traffic_rx'])/$GLOBALS['crawl_cycle']/60;
+			
+				//Set negative values to 0
+				if ($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']<0)
+					$interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']=0;
+				$interface_crawl_data['traffic_info']['traffic_rx_per_second_kibibyte'] = round($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']/1024, 2);
+				$interface_crawl_data['traffic_info']['traffic_rx_per_second_kilobyte'] = round($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']/1000, 2);
+				
+				$interface_crawl_data['traffic_info']['traffic_tx_per_second_byte'] = ($sendet_interface['traffic_tx']-$interface_last_endet_crawl['traffic_tx'])/$GLOBALS['crawl_cycle']/60;
+				//Set negative values to 0
+				if ($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']<0)
+					$interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']=0;
+				$interface_crawl_data['traffic_info']['traffic_tx_per_second_kibibyte'] = round($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']/1024, 2);
+				$interface_crawl_data['traffic_info']['traffic_tx_per_second_kilobyte'] = round($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']/1000, 2);
+	
+				//Update Database
+				$crawl_time = time();
+				exec("rrdtool update $rrd_path_traffic_rx $crawl_time:".$interface_crawl_data['traffic_info']['traffic_rx_per_second_kilobyte'].":".$interface_crawl_data['traffic_info']['traffic_tx_per_second_kilobyte']);
+			}
 		}
 	}
 }
