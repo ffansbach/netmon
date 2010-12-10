@@ -45,7 +45,7 @@ class Menus extends UserManagement {
     if (UserManagement::checkPermission(4)) {
       $user_data = Helper::getUserByID($_SESSION['user_id']);
 
-      $menu[] = array('pretext'=>'Eingeloggt als:', 'name'=>$user_data['nickname'], 'href'=>"user.php?id=$_SESSION[user_id]");
+      $menu[] = array('pretext'=>'Eingeloggt als:', 'name'=>$user_data['nickname'], 'href'=>"user.php?user_id=$_SESSION[user_id]");
       $menu[] = array('name'=>'Logout', 'href'=>'login.php?section=logout');
     }
     return $menu;
@@ -62,9 +62,9 @@ class Menus extends UserManagement {
 
   function normalMenu() {
     if (UserManagement::checkPermission(1)) {
-      $menu[] = array('name'=>'News', 'href'=>'portal.php');
+//      $menu[] = array('name'=>'News', 'href'=>'portal.php');
       $menu[] = array('name'=>'Map', 'href'=>'map.php');
-      $menu[] = array('name'=>'Topologie', 'href'=>'topology.php');
+//      $menu[] = array('name'=>'Topologie', 'href'=>'topology.php');
 //      $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'status.php');
 //      $menu[] = array('name'=>'Ipliste', 'href'=>'iplist.php');
       $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php');
@@ -93,7 +93,7 @@ class Menus extends UserManagement {
 //      $menu[] = array('name'=>'Neues Projekt', 'href'=>'subneteditor.php?section=new');
       $menu[] = array('name'=>'Neues Projekt', 'href'=>'projecteditor.php?section=new');
       $menu[] = array('name'=>'Imagemaker', 'href'=>'imagemaker.php');
-      $menu[] = array('name'=>'CCD regenerieren', 'href'=>'vpn.php?section=regenerate_ccd_subnet');
+//      $menu[] = array('name'=>'CCD regenerieren', 'href'=>'vpn.php?section=regenerate_ccd_subnet');
       $menu[] = array('name'=>'Projektliste', 'href'=>'projectlist.php');
     }
     return $menu;

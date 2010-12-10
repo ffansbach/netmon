@@ -145,25 +145,25 @@ if (!$_GET['section']) {
 		$build_time = time();
 		$build_dir = "imagemaker_$_SESSION[user_id]_$build_time";
 
-		mkdir("tmp/$build_dir", 0777);
-		mkdir("tmp/$build_dir/preimage", 0777);
+		mkdir("scripts/imagemaker/tmp/$build_dir", 0777);
+		mkdir("scripts/imagemaker/tmp/$build_dir/preimage", 0777);
 
-		exec("cp -al ".__DIR__."/scripts/imagemaker/images/$_POST[image_id]/image/* ".__DIR__."/tmp/$build_dir/preimage/");
+		exec("cp -al ".__DIR__."/scripts/imagemaker/images/$_POST[image_id]/image/* ".__DIR__."/scripts/imagemaker/tmp/$build_dir/preimage/");
 		
 		if($_POST['config_id']!='false') {
 			exec("chmod +x ".__DIR__."/scripts/imagemaker/configurations/$_POST[config_id]");
-			$command = __DIR__."/scripts/imagemaker/configurations/$_POST[config_id] ".__DIR__."/tmp/$build_dir/preimage/ '$_POST[ip]' '$_POST[subnetmask]' '$_POST[dhcp_start]' '$_POST[dhcp_limit]' '$_POST[location]' '$_POST[longitude]' '$_POST[latitude]' '$_POST[essid]' '$_POST[bssid]' '$_POST[channel]' '$_POST[nickname]' '$_POST[vorname] $_POST[nachname]' '$_POST[email]' '$_POST[prefix]' '$_POST[community_name]' '$_POST[community_website]' '$_POST[vpn_ip_id]' '$vpn_ip_data[vpn_server]' '$vpn_ip_data[vpn_server_port]' '$vpn_ip_data[vpn_server_device]' '$vpn_ip_data[vpn_server_proto]' '$vpn_ip_data[vpn_server_ca]' '$vpn_ip_data[vpn_client_cert]' '$vpn_ip_data[vpn_client_key]' '208.67.222.222  208.67.220.220'";
+			$command = __DIR__."/scripts/imagemaker/configurations/$_POST[config_id] ".__DIR__."/scripts/imagemaker/tmp/$build_dir/preimage/ '$_POST[ip]' '$_POST[subnetmask]' '$_POST[dhcp_start]' '$_POST[dhcp_limit]' '$_POST[location]' '$_POST[longitude]' '$_POST[latitude]' '$_POST[essid]' '$_POST[bssid]' '$_POST[channel]' '$_POST[nickname]' '$_POST[vorname] $_POST[nachname]' '$_POST[email]' '$_POST[prefix]' '$_POST[community_name]' '$_POST[community_website]' '$_POST[vpn_ip_id]' '$vpn_ip_data[vpn_server]' '$vpn_ip_data[vpn_server_port]' '$vpn_ip_data[vpn_server_device]' '$vpn_ip_data[vpn_server_proto]' '$vpn_ip_data[vpn_server_ca]' '$vpn_ip_data[vpn_client_cert]' '$vpn_ip_data[vpn_client_key]' '208.67.222.222  208.67.220.220'";
 			$config_exec = exec($command);
 		}
 //		$last_line = exec(__DIR__."/scripts/imagemaker/mkimg '".__DIR__."/scripts/imagemaker/bin' '".__DIR__."/tmp/$build_dir'", $retval);
 		//Make SquashFS
 //		$build_command = __DIR__."/scripts/imagemaker/bin/squashfs-tools/x86_64/v4/mksquashfs4 ".__DIR__."/tmp/$build_dir/preimage/ ".__DIR__."/tmp/$build_dir/openwrt-root.squashfs -nopad -noappend -root-owned -comp lzma";
-		$build_command = __DIR__."/scripts/imagemaker/mkimg ".__DIR__."/scripts/imagemaker/bin/squashfs-tools/x86_64/v4/mksquashfs4 ".__DIR__."/tmp/$build_dir '-nopad -noappend -root-owned -comp lzma'";
+		$build_command = __DIR__."/scripts/imagemaker/mkimg ".__DIR__."/scripts/imagemaker/bin/squashfs-tools/x86_64/v4/mksquashfs4 ".__DIR__."/scripts/imagemaker/tmp/$build_dir '-nopad -noappend -root-owned -comp lzma'";
 //echo $build_command;
 		exec($build_command, $retval);
-		exec("chmod 777 ".__DIR__."/tmp/$build_dir/openwrt-root.squashfs");
+		exec("chmod 777 ".__DIR__."/scripts/imagemaker/tmp/$build_dir/openwrt-root.squashfs");
 
-		exec("cp -al ".__DIR__."/scripts/imagemaker/images/$_POST[image_id]/kernel/openwrt-vmlinux.lzma ".__DIR__."/tmp/$build_dir");
+		exec("cp -al ".__DIR__."/scripts/imagemaker/images/$_POST[image_id]/kernel/openwrt-vmlinux.lzma ".__DIR__."/scripts/imagemaker/tmp/$build_dir");
 
 		$smarty->assign('build_command', $build_command);
 		$smarty->assign('build_prozess_return', $retval);
@@ -182,7 +182,7 @@ if (!$_GET['section']) {
 
       // Die Optionen
       $zipfile->set_options(array (
-        'basedir' => "./tmp/$_GET[imagepath]/preimage/etc/config/",
+        'basedir' => "./scripts/imagemaker/$_GET[imagepath]/preimage/etc/config/",
         'followlinks' => 0, // (Symlinks)
         'inmemory' => 1, // Make the File in RAM
         'level' => 6, // Level 1 = fast, Level 9 = good

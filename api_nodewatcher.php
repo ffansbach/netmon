@@ -13,7 +13,7 @@ if($_GET['section']=="update") {
 }
 
 if($_GET['section']=="version") {
-	echo 7;
+	echo 9;
 }
 
 if($_GET['section']=="router_auto_assign") {
@@ -49,7 +49,7 @@ if($_GET['section']=="router_auto_assign") {
 	}
 }
 
-if($_GET['section']=="insert_crawl_data") {
+if($_GET['section']=="insert_crawl_interfaces_data") {
 	$session = login::user_login($_GET['nickname'], $_GET['password']);
 	$router_data = Router::getRouterInfo($_GET['router_id']);
 
@@ -61,18 +61,9 @@ if($_GET['section']=="insert_crawl_data") {
 		echo "Your netmon router_auto_assign_hash is: ".$router_data['router_auto_assign_hash'];
 		echo "Your router_auto_update_hash is: ".$_GET['router_auto_update_hash'];
 
-		/**Insert Router System Data*/
 		$last_crawl_cycle = Crawling::getActualCrawlCycle();
-		$crawl_router = Router::getCrawlRouterByCrawlCycleId($last_crawl_cycle['id'], $_GET['router_id']);
 
-		if(empty($crawl_router)) {
-			Crawling::insertRouterCrawl($_GET['router_id'], $_GET);
-			//Update router memory rrd hostory
-			RrdTool::updateRouterMemoryHistory($_GET['router_id'], $_GET['memory_free'], $_GET['memory_caching'], $_GET['memory_buffering']);
-		} else {
-			echo "Router System Data has already been crawled\n";
-		}
-
+		print_r($_GET);
 
 		/**Insert Router Interfaces*/
 		foreach($_GET['int'] as $sendet_interface) {
@@ -133,6 +124,37 @@ if($_GET['section']=="insert_crawl_data") {
 			} else {
 				echo "The Interface $sendet_interface[name] has already been crawled\n";
 			}
+		}
+	} else {
+		echo "You FAILED! to authenticated at netmon api nodewatcher section insert_crawl_data\n";
+		echo "Your router_id is: ".$_GET['router_id'];
+		echo "Your authentificationmethod is: ".$_GET['authentificationmethod'];
+		echo "Your netmon router_auto_assign_hash is: ".$router_data['router_auto_assign_hash'];
+		echo "Your router_auto_update_hash is: ".$_GET['router_auto_update_hash'];
+	}
+}
+if($_GET['section']=="insert_crawl_system_data") {
+	$session = login::user_login($_GET['nickname'], $_GET['password']);
+	$router_data = Router::getRouterInfo($_GET['router_id']);
+
+	//If is owning user or if root
+	if((($_GET['authentificationmethod']=='user') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
+		echo "You successfully authenticated at netmon api nodewatcher section insert_crawl_data\n";
+		echo "Your router_id is: ".$_GET['router_id'];
+		echo "Your authentificationmethod is: ".$_GET['authentificationmethod'];
+		echo "Your netmon router_auto_assign_hash is: ".$router_data['router_auto_assign_hash'];
+		echo "Your router_auto_update_hash is: ".$_GET['router_auto_update_hash'];
+
+		/**Insert Router System Data*/
+		$last_crawl_cycle = Crawling::getActualCrawlCycle();
+		$crawl_router = Router::getCrawlRouterByCrawlCycleId($last_crawl_cycle['id'], $_GET['router_id']);
+
+		if(empty($crawl_router) AND !empty($_GET['status'])) {
+			Crawling::insertRouterCrawl($_GET['router_id'], $_GET);
+			//Update router memory rrd hostory
+			RrdTool::updateRouterMemoryHistory($_GET['router_id'], $_GET['memory_free'], $_GET['memory_caching'], $_GET['memory_buffering']);
+		} else {
+			echo "Router System Data has already been crawled\n";
 		}
 
 		/**Insert Batman advanced Interfaces*/

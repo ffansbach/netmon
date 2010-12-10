@@ -49,7 +49,11 @@ class Service {
 			foreach($result as $key=>$row) {
 				$interfaces = Interfaces::getIPv4InterfacesByRouterId($row['router_id']);
 				if(!empty($interfaces) AND !empty($row['url_prefix']) AND !empty($row['port'])) {
+					$row['service_ipv4_addr'] = $interfaces[0]['ipv4_addr'];
 					$row['combined_url_to_service'] = $row['url_prefix'].$interfaces[0]['ipv4_addr'].":".$row['port'];
+					$service_crawl = Service::getCrawlServiceByCrawlCycleId($last_ended_crawl_cycle['id'], $row['service_id']);
+					$row['service_status'] = $service_crawl['status'];
+					$row['service_status_crawled_ipv4_addr'] = $service_crawl['crawled_ipv4_addr'];
 				}
 
 				$servicelist[] = $row;
@@ -78,7 +82,11 @@ class Service {
 			foreach($result as $key=>$row) {
 				$interfaces = Interfaces::getIPv4InterfacesByRouterId($row['router_id']);
 				if(!empty($interfaces) AND !empty($row['url_prefix']) AND !empty($row['port'])) {
+					$row['service_ipv4_addr'] = $interfaces[0]['ipv4_addr'];
 					$row['combined_url_to_service'] = $row['url_prefix'].$interfaces[0]['ipv4_addr'].":".$row['port'];
+					$service_crawl = Service::getCrawlServiceByCrawlCycleId($last_ended_crawl_cycle['id'], $row['service_id']);
+					$row['service_status'] = $service_crawl['status'];
+					$row['service_status_crawled_ipv4_addr'] = $service_crawl['crawled_ipv4_addr'];
 				}
 
 				$servicelist[] = $row;
@@ -191,6 +199,57 @@ class Service {
 		}
 
 		return $last_crawl;
+	}
+
+	public function insertCrawl($nickname, $password, $service_id, $status, $crawled_ipv4_addr) {
+		$session = login::user_login($nickname, $password);
+		
+		$service_data = Service::getServiceByServiceId($service_id);
+
+		//If is owning user or if root
+		if(UserManagement::isThisUserOwner($service_data['user_id'], $session['user_id']) OR $session['permission']==120) {
+			$last_crawl_cycle = Crawling::getActualCrawlCycle();
+
+			//Check if interface has already been crawled in current crawl cycle
+			try {
+				$sql = "SELECT *
+	        			FROM  crawl_services
+					WHERE service_id='$service_id' AND crawl_cycle_id='$last_crawl_cycle[id]'";
+				$result = DB::getInstance()->query($sql);
+				foreach($result as $row) {
+					$crawl_service[] = $row;
+				}
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+			
+			//Make DB insert if service has not been crawled in current crawl cycle
+			if(empty($crawl_service)) {
+				//Make DB Insert
+				try {
+					DB::getInstance()->exec("INSERT INTO crawl_services (service_id, crawl_cycle_id, crawl_date, status, crawled_ipv4_addr)
+								 VALUES ('$service_id', '$last_crawl_cycle[id]', NOW(), '$status', '$crawled_ipv4_addr');");
+				}
+				catch(PDOException $e) {
+					echo $e->getMessage();
+				}
+			}
+		}
+	}
+
+	public function getCrawlServiceByCrawlCycleId($crawl_cycle_id, $service_id) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_services
+					WHERE service_id='$service_id' AND crawl_cycle_id='$crawl_cycle_id'";
+			$result = DB::getInstance()->query($sql);
+			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $crawl_data;
 	}
 }
 ?>

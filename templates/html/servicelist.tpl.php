@@ -24,7 +24,13 @@
 			<img src="./templates/img/ffmap/status_down_small.png" alt="offline">
 		{/if}
     </div>
-    <div style="float:left; width: 80px;">-</div>
+    <div style="float:left; width: 80px;">
+		{if $service.service_status=="online"}
+			<img src="./templates/img/ffmap/status_up_small.png" alt="online">
+		{elseif $service.service_status=="offline"}
+			<img src="./templates/img/ffmap/status_down_small.png" alt="offline">
+		{/if}
+    </div>
     <div style="float:left; width: 85px;"><a href="./user.php?user_id={$service.user_id}">{$service.nickname}</a></div>
     <div style="float:left; width: 100px;"><a href="{$service.combined_url_to_service}">{$service.combined_url_to_service}</a></div>
   </div>
