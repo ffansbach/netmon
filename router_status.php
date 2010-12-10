@@ -94,9 +94,6 @@ $batman_adv_originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCyc
 //$batman_adv_originators['originators'] = unserialize($batman_adv_originators['originators']);
 $smarty->assign('batman_adv_originators', $batman_adv_originators);
 
-echo "<pre>";
-print_r($batman_adv_originators);
-echo "</pre>";
 /** Make B.A.T.M.A.N advanced history graph **/
 $batman_adv_history = BatmanAdvanced::getCrawlBatmanAdvancedHistoryExceptActualCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id'], (60*24)/10);
 

@@ -32,6 +32,6 @@
   if(!$GLOBALS['installed']) {
     header('Location: ./install.php');
   } else {
-    header('Location: portal.php');
+    header('Location: routerlist.php');
   }
 ?>

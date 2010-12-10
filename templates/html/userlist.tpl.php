@@ -13,7 +13,7 @@
 {foreach key=count item=userlist from=$userlist}
 	<tr>
 		<td>{$count+1}</td>
-		<td><a href="./user.php?id={$userlist.id}">{$userlist.nickname}</a></td>
+		<td><a href="./user.php?user_id={$userlist.id}">{$userlist.nickname}</a></td>
 		<td>{$userlist.ipcount}</td>
 		<td>{$userlist.jabber}</td>
 		<td>{$userlist.icq}</td>

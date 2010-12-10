@@ -32,6 +32,10 @@
 		<br>
 		<a href="./router_status.php?router_id={$router_data.router_id}&crawl_cycle_id={$online_crawl_next.crawl_cycle_id}">zum nächsten online Datensatz &gt;&gt;</a>
 		{/if}
+		{if !empty($online_crawl_next.crawl_cycle_id) OR !empty($next_bigger_crawl_cycle.id)}
+		<br>
+		<a href="./router_status.php?router_id={$router_data.router_id}">zum aktuellen Datensatz &gt;&gt;</a>
+		{/if}
 	</div>
 </div>
 
@@ -252,7 +256,7 @@
 				<ul>
 					{foreach item=originators from=$batman_adv_originators}
 						<li>
-							{$originators.originator} ({$originators.link_quality}) ({$originators.last_seen})
+							<a href="search.php?search_range=mac_addr&search_string={$originators.originator}">{$originators.originator}</a> ({$originators.link_quality}) ({$originators.last_seen})
 						</li>
 					{/foreach}
 				</ul>

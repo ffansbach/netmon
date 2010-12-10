@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 12, 2010 at 04:13 PM
+-- Generation Time: Dec 10, 2010 at 07:36 PM
 -- Server version: 5.1.49
--- PHP Version: 5.3.2-2
+-- PHP Version: 5.3.3-3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -203,6 +203,23 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `community_nickname` varchar(100) NOT NULL,
   `community_email` varchar(100) NOT NULL,
   `community_prefix` varchar(15) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `crawl_services`
+--
+
+DROP TABLE IF EXISTS `crawl_services`;
+CREATE TABLE IF NOT EXISTS `crawl_services` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `service_id` int(11) NOT NULL,
+  `crawl_cycle_id` int(11) NOT NULL,
+  `crawl_date` datetime NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `crawled_ipv4_addr` varchar(30) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 

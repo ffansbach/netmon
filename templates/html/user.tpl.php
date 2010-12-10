@@ -2,28 +2,25 @@
 
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 47%;">
-
-<h2>Benutzerdaten</h2>
-<p>
-{if !empty($user.vorname) OR !empty($user.nachname)}<b>Name:</b> {$user.vorname} {$user.nachname}<br>{/if}
-
-{if !empty($user.strasse)}<b>Strasse: </b>{$user.strasse}<br>{/if}
-{if !empty($user.plz) OR !empty($user.ort)}</b>Wohnort:</b>  {$user.plz} {$user.ort}<br>{/if}
-{if !empty($user.telefon)}<b>Telefon:</b> {$user.telefon}<br>{/if}
-<b>Email:</b> <a href="mailto:{$user.email}">{$user.email}</a><br>
-
-{if !empty($user.jabber)}<b>Jabber-ID:</b> {$user.jabber}<br>{/if}
-{if !empty($user.icq)}<b>ICQ:</b> {$user.icq}<br>{/if}
-{if !empty($user.website)}<b>Website:</b> <a href="{$user.website}">{$user.website}</a><br>{/if}
-
-{if !empty($user.telefon)}<h2>Beschreibung:</h2><p> {$user.about}</p>{/if}
-
-<b>Anmeldedatum:</b> {$user.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr
-</p>
-
+		<h2>Benutzerdaten</h2>
+		<p>
+			{if !empty($user.vorname) OR !empty($user.nachname)}<b>Name:</b> {$user.vorname} {$user.nachname}<br>{/if}
+			
+			{if !empty($user.strasse)}<b>Strasse: </b>{$user.strasse}<br>{/if}
+			{if !empty($user.plz) OR !empty($user.ort)}</b>Wohnort:</b>  {$user.plz} {$user.ort}<br>{/if}
+			{if !empty($user.telefon)}<b>Telefon:</b> {$user.telefon}<br>{/if}
+			<b>Email:</b> <a href="mailto:{$user.email}">{$user.email}</a><br>
+			
+			{if !empty($user.jabber)}<b>Jabber-ID:</b> {$user.jabber}<br>{/if}
+			{if !empty($user.icq)}<b>ICQ:</b> {$user.icq}<br>{/if}
+			{if !empty($user.website)}<b>Website:</b> <a href="{$user.website}">{$user.website}</a><br>{/if}
+			
+			{if !empty($user.telefon)}<h2>Beschreibung:</h2><p> {$user.about}</p>{/if}
+			
+			<b>Anmeldedatum:</b> {$user.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr
+		</p>
 	</div>
 	<div style="float:left; width: 53%;">
-
 		<h2>History</h2>
 		{if !empty($user_history)}
 			<ul>
@@ -46,6 +43,7 @@
 		{else}
 			<p>Keine Daten vorhanden</p>
 		{/if}
+	</div>
 </div>
 
 <h2>Router von {$user.nickname}</h2>
@@ -113,7 +111,13 @@
 			<img src="./templates/img/ffmap/status_down_small.png" alt="offline">
 		{/if}
     </div>
-    <div style="float:left; width: 80px;">-</div>
+    <div style="float:left; width: 80px;">
+		{if $service.service_status=="online"}
+			<img src="./templates/img/ffmap/status_up_small.png" alt="online">
+		{elseif $service.service_status=="offline"}
+			<img src="./templates/img/ffmap/status_down_small.png" alt="offline">
+		{/if}
+</div>
     <div style="float:left; width: 85px;"><a href="./user.php?user_id={$service.user_id}">{$service.nickname}</a></div>
     <div style="float:left; width: 100px;"><a href="{$service.combined_url_to_service}">{$service.combined_url_to_service}</a></div>
   </div>

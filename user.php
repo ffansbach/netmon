@@ -6,18 +6,18 @@ require_once('./lib/classes/core/service.class.php');
   
 $smarty->assign('message', Message::getMessage());
   
-if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $_GET['id']))
+if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
 	$smarty->assign('permitted', true);
 
-$smarty->assign('user', Helper::getUserByID($_GET['id']));
+$smarty->assign('user', Helper::getUserByID($_GET['user_id']));
 
-$routerlist = Router::getRouterListByUserId($_GET['id']);
+$routerlist = Router::getRouterListByUserId($_GET['user_id']);
 $smarty->assign('routerlist', $routerlist);
 
-$servicelist = Service::getServiceListByUserId($_GET['id']);
+$servicelist = Service::getServiceListByUserId($_GET['user_id']);
 $smarty->assign('servicelist', $servicelist);
 
-$user_history = History::getUserHistory($_GET['id'], 5);
+$user_history = History::getUserHistory($_GET['user_id'], 5);
 $smarty->assign('user_history', $user_history);
 
 /*$smarty->assign('iplist', Helper::getIplistByUserID($_GET['id']));
