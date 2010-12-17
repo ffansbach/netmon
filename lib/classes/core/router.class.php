@@ -55,6 +55,23 @@ class Router {
 		return $router;
 	}
 
+	public function getRouterByAutoAssignHash($auto_assign_hash) {
+		try {
+			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
+					users.nickname, chipsets.name as chipset_name
+					FROM routers
+					LEFT JOIN users ON (users.id=routers.user_id)
+					LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
+					WHERE routers.router_auto_assign_hash='$auto_assign_hash'";
+			$result = DB::getInstance()->query($sql);
+			$router = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $router;
+	}
+
 	public function getCrawlRouterByCrawlCycleId($crawl_cycle_id, $router_id) {
 		try {
 			$sql = "SELECT  *

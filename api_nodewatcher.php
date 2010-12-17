@@ -1,7 +1,9 @@
 <?php
 
 require_once('./config/runtime.inc.php');
+require_once('lib/classes/core/login.class.php');
 require_once('lib/classes/core/router.class.php');
+require_once('lib/classes/core/routersnotassigned.class.php');
 require_once('lib/classes/core/rrdtool.class.php');
 require_once('lib/classes/core/interfaces.class.php');
 
@@ -16,11 +18,41 @@ if($_GET['section']=="version") {
 	echo 9;
 }
 
+if($_GET['section']=="get_standart_data") {
+	if ($_GET['authentificationmethod']=='hash') {
+		$router_data = Router::getRouterByAutoAssignHash($_GET['router_auto_update_hash']);
+	} elseif ($_GET['authentificationmethod']=='user') {
+		$router_data = Router::getRouterInfo($router_id);
+	}
+	echo $router_data['router_id'].";".$router_data['router_auto_assign_hash'].";".$router_data['hostname'];
+}
+
 if($_GET['section']=="router_auto_assign") {
 	$router_data = Router::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
 
 	if(empty($router_data)) {
 		echo "error: router $_GET[router_auto_assign_login_string] does not exist";
+		$router = RoutersNotAssigned::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
+		if (empty($router)) {
+			//Make DB Insert
+			try {
+				DB::getInstance()->exec("INSERT INTO routers_not_assigned (create_date, update_date, hostname, router_auto_assign_login_string, interface)
+							 VALUES (NOW(), NOW(), '$_GET[hostname]', '$_GET[router_auto_assign_login_string]', '$_GET[interface]');");
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+			echo "error: router $_GET[router_auto_assign_login_string] has been put on netmons list of not assigned routers";
+		} else {
+			try {
+				$result = DB::getInstance()->exec("UPDATE routers_not_assigned SET
+									  update_date = NOW()
+								   WHERE id = '$router[id]'");
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+		}
 	} elseif ($router_data['allow_router_auto_assign']==0) {
 		echo "error: router $_GET[router_auto_assign_login_string] does not allow autoassign";
 	} elseif(!empty($router_data['router_auto_assign_hash'])) {
@@ -86,8 +118,8 @@ if($_GET['section']=="insert_crawl_interfaces_data") {
 				unset($crawl_interface);
 				//Make DB Insert
 				try {
-					DB::getInstance()->exec("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, crawl_date, name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_tx, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power)
-								 VALUES ('$_GET[router_id]', '$last_crawl_cycle[id]', NOW(), '$sendet_interface[name]', '$sendet_interface[mac_addr]', '$sendet_interface[ipv4_addr]', '$sendet_interface[ipv6_addr]', '$sendet_interface[ipv6_link_local_addr]', '$sendet_interface[traffic_rx]', '$sendet_interface[traffic_tx]', '$sendet_interface[wlan_mode]', '$sendet_interface[wlan_frequency]', '$sendet_interface[wlan_essid]', '$sendet_interface[wlan_bssid]', '$sendet_interface[wlan_tx_power]');");
+					DB::getInstance()->exec("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, crawl_date, name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_tx, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power, mtu)
+								 VALUES ('$_GET[router_id]', '$last_crawl_cycle[id]', NOW(), '$sendet_interface[name]', '$sendet_interface[mac_addr]', '$sendet_interface[ipv4_addr]', '$sendet_interface[ipv6_addr]', '$sendet_interface[ipv6_link_local_addr]', '$sendet_interface[traffic_rx]', '$sendet_interface[traffic_tx]', '$sendet_interface[wlan_mode]', '$sendet_interface[wlan_frequency]', '$sendet_interface[wlan_essid]', '$sendet_interface[wlan_bssid]', '$sendet_interface[wlan_tx_power]', '$sendet_interface[mtu]');");
 				}
 				catch(PDOException $e) {
 					echo $e->getMessage();
@@ -220,6 +252,23 @@ if($_GET['section']=="insert_crawl_system_data") {
 		echo "Your authentificationmethod is: ".$_GET['authentificationmethod'];
 		echo "Your netmon router_auto_assign_hash is: ".$router_data['router_auto_assign_hash'];
 		echo "Your router_auto_update_hash is: ".$_GET['router_auto_update_hash'];
+	}
+}
+
+if($_GET['section']=="get_hostnames_and_mac") {
+	$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+
+	try {
+		$sql = "SELECT crawl_interfaces.mac_addr, routers.hostname
+       			FROM  crawl_interfaces, routers
+			WHERE crawl_cycle_id='$last_endet_crawl_cycle[id]' AND routers.id=crawl_interfaces.router_id";
+		$result = DB::getInstance()->query($sql);
+		foreach($result as $row) {
+			echo $row['mac_addr']." ".$row['hostname']."\n";
+		}
+	}
+	catch(PDOException $e) {
+		echo $e->getMessage();
 	}
 }
 

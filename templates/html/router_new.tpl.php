@@ -37,7 +37,7 @@
 <form action="./routereditor.php?section=insert" method="POST">
 	<h2>Grunddaten</h2>
 	<p>
-		Hostname: <br><input name="hostname" type="text" size="35" maxlength="50" value="">
+		Hostname: <br><input name="hostname" type="text" size="35" maxlength="50" value="{$smarty.get.hostname}">
 	</p>
 
 	<p>
@@ -87,8 +87,8 @@
 	<p>
 		Statusaktualisierung:
 		<select name="crawl_method" onChange="getProjectInfo(this.options[this.selectedIndex].value)">
-			<option value="crawler" selected='selected'>Netmon Crawlt den Router</option>
-			<option value="router" >Der Router sendet die Daten selbstständig</option>
+			<option value="crawler" {if $smarty.get.crawl_method=='crawler'}selected='selected'{/if}>Netmon Crawlt den Router</option>
+			<option value="router" {if $smarty.get.crawl_method=='router' OR empty($smarty.get.crawl_method)}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>
 		</select>
 	</p>
 
@@ -103,11 +103,11 @@
 
 	<h2>Netmon Autozuweisung</h2>
 	<p>
-		<input name="allow_router_auto_assign" type="checkbox" value="1" {if $router_data.allow_router_auto_assign==1}checked{/if}> Erlaube automatische Router Zuweisung
+		<input name="allow_router_auto_assign" type="checkbox" value="1" {if $smarty.get.allow_router_auto_assign==1}checked{/if}> Erlaube automatische Router Zuweisung
 	</p>
 
 	<p>
-		Autozuweisungs Login: <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$router_data.router_auto_assign_login_string}">
+		Autozuweisungs Login: <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$smarty.get.router_auto_assign_login_string}">
 	</p>
 
 	<p><input type="submit" value="Absenden"></p>

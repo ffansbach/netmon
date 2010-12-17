@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 10, 2010 at 07:36 PM
+-- Generation Time: Dec 17, 2010 at 12:42 PM
 -- Server version: 5.1.49
 -- PHP Version: 5.3.3-3
 
@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `wlan_essid` varchar(40) NOT NULL,
   `wlan_bssid` varchar(40) NOT NULL,
   `wlan_tx_power` varchar(10) NOT NULL,
+  `mtu` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
@@ -413,6 +414,23 @@ CREATE TABLE IF NOT EXISTS `routers` (
   `notification_wait` int(11) NOT NULL,
   `notified` tinyint(1) NOT NULL,
   `last_notification` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `routers_not_assigned`
+--
+
+DROP TABLE IF EXISTS `routers_not_assigned`;
+CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
+  `hostname` varchar(50) NOT NULL,
+  `router_auto_assign_login_string` varchar(50) NOT NULL,
+  `interface` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
