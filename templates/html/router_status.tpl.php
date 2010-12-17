@@ -372,6 +372,11 @@
 							<b>Mac Adresse:</b> {$interface.mac_addr}
 						</li>
 					{/if}
+					{if !empty($interface.mtu)}
+						<li>
+							<b>MTU:</b> {$interface.mtu}
+						</li>
+					{/if}
 					{if !empty($interface.ipv4_addr)}
 						<li>
 							<b>IPv4 Adresse:</b> {$interface.ipv4_addr}		

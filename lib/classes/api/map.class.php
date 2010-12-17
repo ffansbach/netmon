@@ -125,11 +125,17 @@ class ApiMap {
 
 							if(!empty($router_longitude) AND !empty($router_latitude)) {
 								$originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
-								$originators = unserialize($originators['originators']);
+								//$originators = unserialize($originators['originators']);
 
 								if(!empty($originators)) {
 									foreach($originators as $originator) {
+/*echo "<pre>";
+print_r($originator);
+echo "</pre>";*/
 										$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['originator'], $last_endet_crawl_cycle['id']);
+/*echo "<pre>";
+print_r($neighbour_router);
+echo "</pre>";*/
 										$neighbour_router_longitude = $neighbour_router['longitude'];
 										$neighbour_router_latitude = $neighbour_router['latitude'];
 										$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
