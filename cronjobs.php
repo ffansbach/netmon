@@ -17,28 +17,7 @@ require_once('lib/classes/core/rrdtool.class.php');
 /**
 * Crawl cycles and offline crawls
 **/
-
-$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-
-if(strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<time()) {
-	//End actual crawl
-	$routers = Router::getRouters();
-	foreach ($routers as $router) {
-		$crawl = Router::getCrawlRouterByCrawlCycleId($actual_crawl_cycle['id'], $router['id']);
-		if(empty($crawl)) {
-			$crawl_data['status'] = "offline";
-			Crawling::insertRouterCrawl($router['id'], $crawl_data);
-		}
-	}
-
-	$online = Router::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'online');
-	$offline = Router::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'offline');
-	$unknown = (Router::countRoutersByTime(strtotime($actual_crawl_cycle['crawl_date'])))-($offline+$online);
-	$total = $unknown+$offline+$online;
-	RrdTool::updateNetmonHistoryRouterStatus($online, $offline, $unknown, $total);
-	//Initialise new crawl cycle
-	Crawling::newCrawlCycle();
-}
+Crawling::organizeCrawlCycles();
 
 /**
 * Service Crawls

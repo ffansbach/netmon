@@ -15,7 +15,8 @@ if($_GET['section']=="update") {
 }
 
 if($_GET['section']=="version") {
-	echo 9;
+	$version=9;
+	echo "success;$version";
 }
 
 if($_GET['section']=="get_standart_data") {
@@ -24,14 +25,29 @@ if($_GET['section']=="get_standart_data") {
 	} elseif ($_GET['authentificationmethod']=='user') {
 		$router_data = Router::getRouterInfo($router_id);
 	}
-	echo $router_data['router_id'].";".$router_data['router_auto_assign_hash'].";".$router_data['hostname'];
+	echo "success;".$router_data['router_id'].";".$router_data['router_auto_assign_hash'].";".$router_data['hostname'];
 }
+
+if($_GET['section']=="test_login_strings") {
+	$login_strings = explode(";", $_GET['login_strings']);
+	$exist=false;
+	foreach($login_strings as $login_string) {
+		$router_data = Router::getRouterByAutoAssignLoginString($login_string);
+		if(!empty($router_data)) {
+			$exist=true;
+			echo "success;$login_string";
+			break;
+		}
+	}
+	if(!$exist) {
+		echo "error;login_string_not_found";
+	}
+}
+
 
 if($_GET['section']=="router_auto_assign") {
 	$router_data = Router::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
-
 	if(empty($router_data)) {
-		echo "error: router $_GET[router_auto_assign_login_string] does not exist";
 		$router = RoutersNotAssigned::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
 		if (empty($router)) {
 			//Make DB Insert
@@ -42,7 +58,7 @@ if($_GET['section']=="router_auto_assign") {
 			catch(PDOException $e) {
 				echo $e->getMessage();
 			}
-			echo "error: router $_GET[router_auto_assign_login_string] has been put on netmons list of not assigned routers";
+			echo "error;new_not_assigned;;$_GET[router_auto_assign_login_string]";
 		} else {
 			try {
 				$result = DB::getInstance()->exec("UPDATE routers_not_assigned SET
@@ -52,11 +68,12 @@ if($_GET['section']=="router_auto_assign") {
 			catch(PDOException $e) {
 				echo $e->getMessage();
 			}
+			echo "error;updated_not_assigned;;$_GET[router_auto_assign_login_string]";
 		}
 	} elseif ($router_data['allow_router_auto_assign']==0) {
-		echo "error: router $_GET[router_auto_assign_login_string] does not allow autoassign";
+		echo "error;autoassign_not_allowed;$_GET[router_auto_assign_login_string]";
 	} elseif(!empty($router_data['router_auto_assign_hash'])) {
-		echo "error: router $_GET[router_auto_assign_login_string] cannot be assignet a second time";
+		echo "error;already_assigned;$_GET[router_auto_assign_login_string]";
 	} else {
 
 		//generate random string
@@ -77,7 +94,7 @@ if($_GET['section']=="router_auto_assign") {
 						WHERE id = '$router_data[router_id]'");
 
 		//Make output
-		echo $router_data['router_id'].";".$hash.";".$router_data['hostname'];
+		echo "success;".$router_data['router_id'].";".$hash.";".$router_data['hostname'];
 	}
 }
 
@@ -87,15 +104,9 @@ if($_GET['section']=="insert_crawl_interfaces_data") {
 
 	//If is owning user or if root
 	if((($_GET['authentificationmethod']=='user') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
-		echo "You successfully authenticated at netmon api nodewatcher section insert_crawl_data\n";
-		echo "Your router_id is: ".$_GET['router_id'];
-		echo "Your authentificationmethod is: ".$_GET['authentificationmethod'];
-		echo "Your netmon router_auto_assign_hash is: ".$router_data['router_auto_assign_hash'];
-		echo "Your router_auto_update_hash is: ".$_GET['router_auto_update_hash'];
+		echo "success;";
 
 		$last_crawl_cycle = Crawling::getActualCrawlCycle();
-
-		print_r($_GET);
 
 		/**Insert Router Interfaces*/
 		foreach($_GET['int'] as $sendet_interface) {
@@ -158,6 +169,7 @@ if($_GET['section']=="insert_crawl_interfaces_data") {
 			}
 		}
 	} else {
+		echo "error;";
 		echo "You FAILED! to authenticated at netmon api nodewatcher section insert_crawl_data\n";
 		echo "Your router_id is: ".$_GET['router_id'];
 		echo "Your authentificationmethod is: ".$_GET['authentificationmethod'];
@@ -171,11 +183,7 @@ if($_GET['section']=="insert_crawl_system_data") {
 
 	//If is owning user or if root
 	if((($_GET['authentificationmethod']=='user') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
-		echo "You successfully authenticated at netmon api nodewatcher section insert_crawl_data\n";
-		echo "Your router_id is: ".$_GET['router_id'];
-		echo "Your authentificationmethod is: ".$_GET['authentificationmethod'];
-		echo "Your netmon router_auto_assign_hash is: ".$router_data['router_auto_assign_hash'];
-		echo "Your router_auto_update_hash is: ".$_GET['router_auto_update_hash'];
+		echo "success;";
 
 		/**Insert Router System Data*/
 		$last_crawl_cycle = Crawling::getActualCrawlCycle();
@@ -247,6 +255,7 @@ if($_GET['section']=="insert_crawl_system_data") {
 			echo "The Batman Advanced Originators has already been crawled\n";
 		}
 	} else {
+		echo "error;";
 		echo "You FAILED! to authenticated at netmon api nodewatcher section insert_crawl_data\n";
 		echo "Your router_id is: ".$_GET['router_id'];
 		echo "Your authentificationmethod is: ".$_GET['authentificationmethod'];
