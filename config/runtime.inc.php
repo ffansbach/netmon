@@ -95,18 +95,11 @@
   require_once('lib/classes/core/logsystem.class.php');
   //Class to generate the menu
   require_once('lib/classes/core/menus.class.php');
+  //Class which organizes Crawls
+  require_once('lib/classes/core/crawling.class.php');
 
   $UserManagement =  new UserManagement;
 
-  /**
-  * PEAR EZC LIBRARY FOR GRAPHS
-  */
-/* NOT NEEDED ANYMORE 
-  require_once "ezc/Base/base.php"; // dependent on installation method, see below
-  function __autoload( $className ) {
-	ezcBase::autoload( $className );
-  }
-*/
   /**
   * ZEND FRAMEWORK LIBRARYS
   */
@@ -183,8 +176,14 @@
 	} else {
 		$smarty->assign('installation_menu', Menus::installationMenu());
  	}
-  //Give often used variables to smarty
-  $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-  $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
-  $smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
+
+	//Give often used variables to smarty
+	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
+	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
+	$smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
+
+	/**
+	* Crawl cycles and offline crawls
+	**/
+	Crawling::organizeCrawlCycles();
 ?>
