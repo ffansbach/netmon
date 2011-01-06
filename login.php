@@ -15,7 +15,7 @@
 	if(isset($_SESSION['redirect_url']))
 		header('Location: '.$_SESSION['redirect_url']);
 	else
-		header('Location: desktop.php');
+		header('Location: user.php?user_id='.$_SESSION['user_id']);
   }
   elseif ($_GET['section']=="openid_login_send"){
     if($_POST['remember']) {
@@ -51,11 +51,10 @@
 			 if(!empty($_SESSION['redirect_url'])) {
 				$redirect = $_SESSION['redirect_url'];
 				unset($_SESSION['redirect_url']);
-//				die('hallo');
 				unset($_SESSION['openid_login']);
 				header("Location: $redirect");
 			 } else {
-				header('Location: desktop.php');
+				header('Location: user.php?user_id='.$_SESSION['user_id']);
 			 }
 		} else {
 			$messages[] = array("Ihre Open-ID ist mit keinem Benutzerkonto verknüpft.", 0);
@@ -86,7 +85,7 @@
     }
 } elseif($_GET['section']=="logout") {
     $Login->user_logout($message);
-    header('Location: portal.php');
+    header('Location: index.php');
   } else {
     $_GET['section'] = "login";
     require('login.php');

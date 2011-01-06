@@ -28,9 +28,9 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once $path.'lib/classes/extern/xmpphp/XMPP.php';
-require_once $path.'lib/classes/core/crawling.class.php';
-require_once $path.'lib/classes/core/interfaces.class.php';
+require_once 'lib/classes/extern/xmpphp/XMPP.php';
+require_once 'lib/classes/core/crawling.class.php';
+require_once 'lib/classes/core/interfaces.class.php';
 
 class Service {
 	public function getServiceList() {
