@@ -9,7 +9,7 @@ $smarty->assign('message', Message::getMessage());
 
 /** History **/
 if(empty($_POST['history_hours'])) {
-	$history_hours = $GLOBALS['portal_history_hours'];
+	$history_hours = 5;
 } else {
 	$history_hours = $_POST['history_hours'];
 }

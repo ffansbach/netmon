@@ -6,6 +6,9 @@ require_once('./lib/classes/core/install.class.php');
 if ($_GET['section']=="edit") {
 	//INSTALLATION-LOCK
 	$smarty->assign('installed', $GLOBALS['installed']);
+
+	//WEBSERVER
+	$smarty->assign('url_to_netmon', $GLOBALS['url_to_netmon']);
 	
 	//MYSQL
 	$smarty->assign('mysql_host', $GLOBALS['mysql_host']);
@@ -32,16 +35,24 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
 	$smarty->assign('community_name', $GLOBALS['community_name']);
 	$smarty->assign('community_website', $GLOBALS['community_website']);
+	$smarty->assign('enable_network_policy', $GLOBALS['enable_network_policy']);
 	$smarty->assign('networkPolicy', $GLOBALS['networkPolicy']);
 	
 	//VPNKEYS
 	$smarty->assign('expiration', $GLOBALS['expiration']);
 
 	//PROJEKT
-	$smarty->assign('portal_history_hours', $GLOBALS['portal_history_hours']);
-	$smarty->assign('days_to_keep_portal_history', $GLOBALS['days_to_keep_portal_history']);
-	$smarty->assign('mysql_querry_log_time', $GLOBALS['mysql_querry_log_time']);
+	$smarty->assign('days_to_keep_mysql_crawl_data', $GLOBALS['days_to_keep_mysql_crawl_data']);
+
+	//GOOGLEMAPSAPIKEY
+	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
 	
+	//CRAWLER
+	$smarty->assign('crawl_cycle', $GLOBALS['crawl_cycle']);
+	$smarty->assign('crawler_ping_timeout', $GLOBALS['crawler_ping_timeout']);
+	$smarty->assign('crawler_curl_timeout', $GLOBALS['crawler_curl_timeout']);
+
+
 	$smarty->assign('message', Message::getMessage());
 	$smarty->display("header.tpl.php");
 	$smarty->display("config.tpl.php");
@@ -55,6 +66,12 @@ if ($_GET['section']=="edit") {
 		else
 			$configs[0] = '$GLOBALS[\'installed\'] = false;';
 		$file = Install::changeConfigSection('//INSTALLATION-LOCK', $file, $configs);
+		Install::writeEmptyFileLineByLine($config_path, $file);
+		unset($configs);
+
+		$file = Install::getFileLineByLine($config_path);
+		$configs[0] = '$GLOBALS[\'url_to_netmon\'] = "'.$_POST['url_to_netmon'].'";';
+		$file = Install::changeConfigSection('//WEBSERVER', $file, $configs);
 		Install::writeEmptyFileLineByLine($config_path, $file);
 		unset($configs);
 
@@ -92,7 +109,11 @@ if ($_GET['section']=="edit") {
 		$configs[0] = '$GLOBALS[\'net_prefix\'] = "'.$_POST['net_prefix'].'";';
 		$configs[1] = '$GLOBALS[\'community_name\'] = "'.$_POST['community_name'].'";';
 		$configs[2] = '$GLOBALS[\'community_website\'] = "'.$_POST['community_website'].'";';
-		$configs[3] = '$GLOBALS[\'networkPolicy\'] = "'.$_POST['networkPolicy'].'";';
+		if ($_POST['enable_network_policy'])
+			$configs[3] = '$GLOBALS[\'enable_network_policy\'] = true;';
+		else
+			$configs[3] = '$GLOBALS[\'enable_network_policy\'] = false;';
+		$configs[4] = '$GLOBALS[\'networkPolicy\'] = "'.$_POST['networkPolicy'].'";';
 		$file = Install::changeConfigSection('//NETWORK', $file, $configs);
 		Install::writeEmptyFileLineByLine($config_path, $file);
 		unset($configs);
@@ -104,10 +125,22 @@ if ($_GET['section']=="edit") {
 		unset($configs);
 
 		$file = Install::getFileLineByLine($config_path);
-		$configs[0] = '$GLOBALS[\'portal_history_hours\'] = '.$_POST['portal_history_hours'].';';
-		$configs[1] = '$GLOBALS[\'days_to_keep_portal_history\'] = '.$_POST['days_to_keep_portal_history'].';';
-		$configs[2] = '$GLOBALS[\'mysql_querry_log_time\'] = '.$_POST['mysql_querry_log_time'].';';
+		$configs[0] = '$GLOBALS[\'days_to_keep_mysql_crawl_data\'] = '.$_POST['days_to_keep_mysql_crawl_data'].';';
 		$file = Install::changeConfigSection('//PROJEKT', $file, $configs);
+		Install::writeEmptyFileLineByLine($config_path, $file);
+		unset($configs);
+
+		$file = Install::getFileLineByLine($config_path);
+		$configs[0] = '$GLOBALS[\'google_maps_api_key\'] = "'.$_POST['google_maps_api_key'].'";';
+		$file = Install::changeConfigSection('//GOOGLEMAPSAPIKEY', $file, $configs);
+		Install::writeEmptyFileLineByLine($config_path, $file);
+		unset($configs);
+
+		$file = Install::getFileLineByLine($config_path);
+		$configs[0] = '$GLOBALS[\'crawl_cycle\'] = '.$_POST['crawl_cycle'].';';
+		$configs[1] = '$GLOBALS[\'crawler_ping_timeout\'] = '.$_POST['crawler_ping_timeout'].';';
+		$configs[2] = '$GLOBALS[\'crawler_curl_timeout\'] = '.$_POST['crawler_curl_timeout'].';';
+		$file = Install::changeConfigSection('//CRAWLER', $file, $configs);
 		Install::writeEmptyFileLineByLine($config_path, $file);
 		unset($configs);
 

@@ -1,60 +1,51 @@
 <?php
 
 //INSTALLATION-LOCK
-$GLOBALS['installed'] = true;
+$GLOBALS['installed'] = false;
 
 //WEBSERVER
-$GLOBALS['subfolder'] = dirname($_SERVER['PHP_SELF']);
-$GLOBALS['domain'] = "netmon.freifunk-ol.de";
-$GLOBALS['monitor_root'] = $_SERVER["DOCUMENT_ROOT"].$GLOBALS['subfolder'];
-$GLOBALS['url_to_netmon'] = "netmon.freifunk-ol.de";
+$GLOBALS['url_to_netmon'] = "http://url_to_your_netmon_installation";
 
 //MYSQL
 $GLOBALS['mysql_host'] = "localhost";
-$GLOBALS['mysql_db'] = "freifunksql5";
-$GLOBALS['mysql_user'] = "freifunksql5";
-$GLOBALS['mysql_password'] = "bla";
+$GLOBALS['mysql_db'] = "your_mysql_db";
+$GLOBALS['mysql_user'] = "your_mysql_user";
+$GLOBALS['mysql_password'] = "your_mysql_password";
 
 //JABBER
-$GLOBALS['jabber_server'] = "jabber.nord-west.net";
-$GLOBALS['jabber_username'] = "netmon";
-$GLOBALS['jabber_password'] = "bla";
+$GLOBALS['jabber_server'] = "your_jabber_server";
+$GLOBALS['jabber_username'] = "your_jabber_username";
+$GLOBALS['jabber_password'] = "your_jabber_pasword";
 
 //MAIL
-$GLOBALS['mail_sending_type'] = "php_mail";
-$GLOBALS['mail_sender_adress'] = "netmon@freifunk-ol.de";
-$GLOBALS['mail_sender_name'] = "Freifunk Oldenburg";
-$GLOBALS['mail_smtp_server'] = "";
-$GLOBALS['mail_smtp_username'] = "";
-$GLOBALS['mail_smtp_password'] = "";
+$GLOBALS['mail_sending_type'] = "your_mail_sending_type"; //Can be "smtp" or "php_mail"
+$GLOBALS['mail_sender_adress'] = "your_sender_email";
+$GLOBALS['mail_sender_name'] = "name_of_your_community";
+$GLOBALS['mail_smtp_server'] = "your_smtp_server";
+$GLOBALS['mail_smtp_username'] = "your_smtp_username";
+$GLOBALS['mail_smtp_password'] = "your_smtp_password";
 $GLOBALS['mail_smtp_login_auth'] = "";
 $GLOBALS['mail_smtp_ssl'] = "";
 
 //NETWORK
 $GLOBALS['net_prefix'] = "10.18";
-$GLOBALS['community_name'] = "Freifunk Oldenburg";
-$GLOBALS['community_website'] = "http://freifunk-ol.de";
-$GLOBALS['networkPolicy'] = "http://wiki.freifunk-ol.de/index.php?title=Nutzungsvereinbarung";
+$GLOBALS['community_name'] = "name_of_your_community";
+$GLOBALS['community_website'] = "http://url_to_your_community_website";
+$GLOBALS['enable_network_policy'] = true;
+$GLOBALS['networkPolicy'] = "http://url_to_your_network_policy";
 
 //VPNKEYS
 $GLOBALS['expiration'] = 3650;
 
 //PROJEKT
-$GLOBALS['portal_history_hours'] = 5;
-$GLOBALS['days_to_keep_portal_history'] = 1;
-$GLOBALS['days_to_keep_mysql_crawl_data'] = 14;
-$GLOBALS['mysql_querry_log_time'] = 5;
+$GLOBALS['days_to_keep_mysql_crawl_data'] = 30;
 
-//Image Generator
-$GLOBALS['imggen_supported_chipsets'][] = "Fonera";
-$GLOBALS['imggen_supported_chipsets'][] = "DIR300";
+//GOOGLEMAPSAPIKEY
+$GLOBALS['google_maps_api_key'] = "your_google_maps_api_key";
 
-//Google Maps Api Key (Get one at http://code.google.com/apis/maps/signup.html)
-$GLOBALS['google_maps_api_key'] = 'ABQIAAAACRLdP-ifG9hOW_8o3tqVjBRQgDd6cF0oYEN79IHJn82DjAEhYRR0LiPE-L7piWHBnxtDHfBWT2fTBQ';
-
-//Crawler
+//CRAWLER
+$GLOBALS['crawl_cycle'] = 10;
 $GLOBALS['crawler_ping_timeout'] = 5;
 $GLOBALS['crawler_curl_timeout'] = 5;
-$GLOBALS['crawl_cycle'] = 10;
 
 ?>

@@ -3,6 +3,7 @@
   require_once('./lib/classes/core/register.class.php');
   
   $Register = new Register;
+    $smarty->assign('enable_network_policy', $GLOBALS['enable_network_policy']);
     $smarty->assign('networkpolicy', $GLOBALS['networkPolicy']);
     $smarty->assign('project_name', $GLOBALS['project_name']);
 

@@ -36,13 +36,15 @@
   }
 
   /**
-  * SET INCLUDE PATH
+  * SET INCLUDE PATH AND MONITOR_ROOT
   */
 
   if(!empty($_SERVER["DOCUMENT_ROOT"])) {
     $include_path = $_SERVER["DOCUMENT_ROOT"]."lib/classes/extern";
+    $GLOBALS['monitor_root'] = $_SERVER["DOCUMENT_ROOT"];
   } else {
     $include_path = dirname($_SERVER['PHP_SELF'])."/lib/classes/extern";
+    $GLOBALS['monitor_root'] = $_SERVER['PHP_SELF']."/";
   }
   set_include_path(get_include_path() .PATH_SEPARATOR. $include_path);
 
@@ -71,7 +73,6 @@
   $dirs[] = $GLOBALS['netmon_root_path'].'ccd/';
   $dirs[] = $GLOBALS['netmon_root_path'].'config/';
   $dirs[] = $GLOBALS['netmon_root_path'].'config/config.local.inc.php';
-  $dirs[] = $GLOBALS['netmon_root_path'].'log/';
   $dirs[] = $GLOBALS['netmon_root_path'].'tmp/';
   $dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/images/';
   $dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/configurations/';
