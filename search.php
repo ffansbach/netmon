@@ -63,10 +63,6 @@ if(!empty($search_string)) {
 		}
 
 		$smarty->assign('search_result_crawled_interfaces', $search_result_crawled_interfaces);
-		/*echo $search_string;
-		echo "<pre>";
-			print_r($search_result_crawled_interfaces);
-		echo "</pre>";*/
 	}
 
 }
