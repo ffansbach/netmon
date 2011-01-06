@@ -6,6 +6,9 @@
 	
 	<p>installed: <input name="installed" type="checkbox" value="true" {if $installed}checked{/if}></p>
 
+	<h3>//WEBSERVER</h3>
+	<p>url_to_netmon:<br><input name="url_to_netmon" type="text" size="30" value="{$url_to_netmon}"></p>
+
 	<h3>//MYSQL</h3>
 	<p>mysql_host:<br><input name="mysql_host" type="text" size="30" value="{$mysql_host}"></p>
 	<p>mysql_db:<br><input name="mysql_db" type="text" size="30" value="{$mysql_db}"></p>
@@ -31,16 +34,22 @@
 	<p>net_prefix:<br><input name="net_prefix" type="text" size="30" value="{$net_prefix}"></p>
 	<p>community_name:<br><input name="community_name" type="text" size="30" value="{$community_name}"></p>
 	<p>community_website:<br><input name="community_website" type="text" size="30" value="{$community_website}"></p>
+	<p>enable_network_policy: <input name="enable_network_policy" type="checkbox" value="true" {if $enable_network_policy}checked{/if}></p>
 	<p>networkPolicy:<br><input name="networkPolicy" type="text" size="30" value="{$networkPolicy}"></p>
 
 	<h3>//VPNKEYS</h3>
 	<p>expiration:<br><input name="expiration" type="text" size="30" value="{$expiration}"></p>
 
 	<h3>//PROJEKT</h3>
-	<p>portal_history_hours:<br><input name="portal_history_hours" type="text" size="30" value="{$portal_history_hours}"></p>
-	<p>days_to_keep_portal_history:<br><input name="days_to_keep_portal_history" type="text" size="30" value="{$days_to_keep_portal_history}"></p>
-	<p>mysql_querry_log_time:<br><input name="mysql_querry_log_time" type="text" size="30" value="{$mysql_querry_log_time}"></p>
+	<p>days_to_keep_mysql_crawl_data:<br><input name="days_to_keep_mysql_crawl_data" type="text" size="30" value="{$days_to_keep_mysql_crawl_data}"></p>
 
+	<h3>//GOOGLEMAPSAPIKEY</h3>
+	<p>google_maps_api_key:<br><input name="google_maps_api_key" type="text" size="30" value="{$google_maps_api_key}"></p>
+
+	<h3>//CRAWLER</h3>
+	<p>crawl_cycle:<br><input name="crawl_cycle" type="text" size="30" value="{$crawl_cycle}"></p>
+	<p>crawler_ping_timeout:<br><input name="crawler_ping_timeout" type="text" size="30" value="{$crawler_ping_timeout}"></p>
+	<p>crawler_curl_timeout:<br><input name="crawler_curl_timeout" type="text" size="30" value="{$crawler_curl_timeout}"></p>
 
 	<p><input type="submit" value="Absenden"></p>
 </form>

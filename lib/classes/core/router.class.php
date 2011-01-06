@@ -395,7 +395,7 @@ class Router {
 			$message = "Hallo $user_data[nickname],
 
 dein Router $router_data[hostname] ist seit dem ".date("d.m H:i", strtotime($router_crawl_history[$router_data['notification_wait']-1]['crawl_date']))." uhr offline.
-Siehe http://$GLOBALS[url_to_netmon]/router_status.php?router_id=$router_data[router_id]
+Siehe $GLOBALS[url_to_netmon]/router_status.php?router_id=$router_data[router_id]
 
 Bitte stelle den Router zur Erhaltung des Meshnetzwerkes wieder zur Verfuegung oder entferne den Router.
 
@@ -412,7 +412,7 @@ $GLOBALS[community_name]";
 		$text = "Hallo $user_data[nickname],
 
 dein Router $router_data[hostname] ist seit dem ".date("d.m H:i", strtotime($router_crawl_history[$router_data['notification_wait']-1]['crawl_date']))." uhr offline.
-Siehe http://$GLOBALS[url_to_netmon]/router_status.php?router_id=$router_data[router_id]
+Siehe $GLOBALS[url_to_netmon]/router_status.php?router_id=$router_data[router_id]
 
 Bitte stelle den Router zur Erhaltung des Meshnetzwerkes wieder zur Verfuegung oder entferne den Router.
 

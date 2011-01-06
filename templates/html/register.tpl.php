@@ -12,6 +12,8 @@ Nach Absenden deiner Daten bekommst du eine Bestätigungsmail mit deinem Benutze
   {if empty($smarty.get.openid)}<p>Passwort:<br><input name="password" type="password" size="30" value="{$smarty.post.password}"></p>
   <p>Passwort wiederholen:<br><input name="passwordchk" type="password" size="30" value="{$smarty.post.passwordchk}"></p>{/if}
   <p>Emailadresse:<br><input name="email" type="text" size="30" maxlength="60" value="{$smarty.post.email}"></p>
+  {if $enable_network_policy == 'true'}
   <p><input type="checkbox" {if isset($smarty.post.agb)}checked="checked"{/if} name="agb" value="true"> Ich habe die <a href="{$networkpolicy}">Netzwerkpolicy</a> gelesen und erkäre mich bereit den dort beschriebenen Verpflichtungen nachzukommen.</p>
+  {/if}
   <p><input type="submit" value="Absenden"></p>
 </form>

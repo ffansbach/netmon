@@ -10,7 +10,7 @@
 <h1>History der letzten {$history_hours} Stunden</h1>
 
 <form action="./networkhistory.php" method="POST" enctype="multipart/form-data">
-<p>Historie der letzten <input name="history_hours" type="text" size="1" value="24"> Stunden anzeigen <input type="submit" value="aktualisieren"></p>
+<p>Historie der letzten <input name="history_hours" type="text" size="1" value="5"> Stunden anzeigen <input type="submit" value="aktualisieren"></p>
 </form>
 
 {if !empty($history)}

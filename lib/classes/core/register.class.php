@@ -154,7 +154,7 @@ class Register {
 		    }
 		}
 		
-		if (!$agb)
+		if ($GLOBALS['enable_network_policy'] AND !$agb)
 			$message[] = array("Bitte lesen und akzeptieren Sie die Netzwerkpolicy!",2);
 		
 		//Return
@@ -194,7 +194,7 @@ Passwort: $password\n\n";
 }
 
 $text .= "Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalten.
-http://$GLOBALS[url_to_netmon]/account_activate.php?activation_hash=$activation
+$GLOBALS[url_to_netmon]/account_activate.php?activation_hash=$activation
 
 Mit freundlichen Gruessen
 $GLOBALS[community_name]";
@@ -255,7 +255,7 @@ Nickname: $nickname
 Passwort: $password
 
 Bitte bestaetige die Aenderungen mit einem Klick auf diesen Link:
-http://$GLOBALS[url_to_netmon]/set_new_password.php?user_id=$user_id&new_passwordhash=$password_md5&oldpassword_hash=$oldpassword_hash
+$GLOBALS[url_to_netmon]/set_new_password.php?user_id=$user_id&new_passwordhash=$password_md5&oldpassword_hash=$oldpassword_hash
 
 Mit freundlichen Gruessen
 $GLOBALS[community_name]";
