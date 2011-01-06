@@ -65,13 +65,10 @@ class Menus extends UserManagement {
 //      $menu[] = array('name'=>'News', 'href'=>'portal.php');
       $menu[] = array('name'=>'Map', 'href'=>'map.php');
 //      $menu[] = array('name'=>'Topologie', 'href'=>'topology.php');
-//      $menu[] = array('name'=>'Netzwerkstatus', 'href'=>'status.php');
-//      $menu[] = array('name'=>'Ipliste', 'href'=>'iplist.php');
       $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php');
       $menu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
       $menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'networkstatistic.php');
       $menu[] = array('name'=>'Suchen', 'href'=>'search.php');
-//      $menu[] = array('name'=>'Impressum', 'href'=>'impressum.php');
     }
     return $menu;
   }
@@ -80,9 +77,6 @@ class Menus extends UserManagement {
     if (UserManagement::checkPermission(8)) {
       $menu[] = array('name'=>'Mein Benutzer', 'href'=>"user.php?user_id=$_SESSION[user_id]");
       $menu[] = array('name'=>'Neuer Router', 'href'=>'routereditor.php?section=new');
-//      $menu[] = array('name'=>'Neue Ip', 'href'=>'ipeditor.php?section=new');
-//      $menu[] = array('name'=>'Mein Benutzer', 'href'=>'user.php?id='.$_SESSION['user_id']);
-//      $menu[] = array('name'=>'Benutzer ändern', 'href'=>'user_edit.php?section=edit&id='.$_SESSION['user_id']);
       $menu[] = array('name'=>'Benutzerliste', 'href'=>'userlist.php');
     }
     return $menu;
