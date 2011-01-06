@@ -93,7 +93,7 @@ if ($_GET['section']=="edit") {
 		unset($configs);
 
 		$file = Install::getFileLineByLine($config_path);
-		$configs[0] = '$GLOBALS[\'mail_sending_type\'] = "mail_sending_type";';
+		$configs[0] = '$GLOBALS[\'mail_sending_type\'] = "'.$_POST['mail_sending_type'].'";';
 		$configs[1] = '$GLOBALS[\'mail_sender_adress\'] = "'.$_POST['mail_sender_adress'].'";';
 		$configs[2] = '$GLOBALS[\'mail_sender_name\'] = "'.$_POST['mail_sender_name'].'";';
 		$configs[3] = '$GLOBALS[\'mail_smtp_server\'] = "'.$_POST['mail_smtp_server'].'";';

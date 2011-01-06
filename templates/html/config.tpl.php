@@ -21,14 +21,21 @@
 	<p>jabber_password:<br><input name="jabber_password" type="text" size="30" value="{$jabber_password}"></p>
 
 	<h3>//MAIL</h3>
-	<p>mail_sending_type:<br><input name="mail_sending_type" type="text" size="30" value="{$mail_sending_type}"></p>
+	<p>mail_sending_type: <select name="mail_sending_type" onChange="if(this.options[this.selectedIndex].value=='smtp') { document.getElementById('smtp_config').style.display = 'block'; } else { document.getElementById('smtp_config').style.display = 'none';}">
+			<option value="php_mail" {if $mail_sending_type == 'php_mail'}selected{/if}>php_mail</option>
+			<option value="smtp" {if $mail_sending_type == 'smtp'}selected{/if}>smtp</option>
+	</select>
+	</p>
+
 	<p>mail_sender_adress:<br><input name="mail_sender_adress" type="text" size="30" value="{$mail_sender_adress}"></p>
 	<p>mail_sender_name:<br><input name="mail_sender_name" type="text" size="30" value="{$mail_sender_name}"></p>
+	<span id="smtp_config" style="display: {if $mail_sending_type == 'smtp'}block{else}none{/if};">
 	<p>mail_smtp_server:<br><input name="mail_smtp_server" type="text" size="30" value="{$mail_smtp_server}"></p>
 	<p>mail_smtp_username:<br><input name="mail_smtp_username" type="text" size="30" value="{$mail_smtp_username}"></p>
 	<p>mail_smtp_password:<br><input name="mail_smtp_password" type="text" size="30" value="{$mail_smtp_password}"></p>
 	<p>mail_smtp_login_auth:<br><input name="mail_smtp_login_auth" type="text" size="30" value="{$mail_smtp_login_auth}"></p>
 	<p>mail_smtp_ssl:<br><input name="mail_smtp_ssl" type="text" size="30" value="{$mail_smtp_ssl}"></p>
+	</span>
 
 	<h3>//NETWORK</h3>
 	<p>net_prefix:<br><input name="net_prefix" type="text" size="30" value="{$net_prefix}"></p>
