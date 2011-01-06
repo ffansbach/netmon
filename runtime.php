@@ -39,13 +39,10 @@
   * SET INCLUDE PATH AND MONITOR_ROOT
   */
 
-  if(!empty($_SERVER["DOCUMENT_ROOT"])) {
-    $include_path = $_SERVER["DOCUMENT_ROOT"]."lib/classes/extern";
-    $GLOBALS['monitor_root'] = $_SERVER["DOCUMENT_ROOT"];
-  } else {
-    $include_path = dirname($_SERVER['PHP_SELF'])."/lib/classes/extern";
-    $GLOBALS['monitor_root'] = $_SERVER['PHP_SELF']."/";
-  }
+
+  $include_path = __DIR__."/lib/classes/extern/";
+  $GLOBALS['monitor_root'] = __DIR__."/";
+
   set_include_path(get_include_path() .PATH_SEPARATOR. $include_path);
 
   /**
@@ -76,6 +73,8 @@
   $dirs[] = $GLOBALS['netmon_root_path'].'tmp/';
   $dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/images/';
   $dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/configurations/';
+  $dirs[] = $GLOBALS['netmon_root_path'].'rrdtool/';
+  $dirs[] = $GLOBALS['netmon_root_path'].'rrdtool/databases/';
 
   $everything_is_writable = true;
   foreach($dirs as $dir) {
@@ -106,12 +105,8 @@
   require_once('lib/classes/core/helper.class.php');
   //Usermanagement class
   require_once('lib/classes/core/usermanagement.class.php');  
-  //Loging class
-  require_once('lib/classes/core/logsystem.class.php');
   //Class to generate the menu
   require_once('lib/classes/core/menus.class.php');
-  //Class which organizes Crawls
-  require_once('lib/classes/core/crawling.class.php');
 
   $UserManagement =  new UserManagement;
 
@@ -190,12 +185,6 @@
  	}
 
 	//Give often used variables to smarty
-	$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
 	$smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
 
-	/**
-	* Crawl cycles and offline crawls
-	**/
-	Crawling::organizeCrawlCycles();
 ?>

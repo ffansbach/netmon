@@ -1,6 +1,6 @@
 <?php
 
-	require_once('./config/runtime.inc.php');
+	require_once('runtime.php');
 	require_once('./lib/classes/core/vpn.class.php');
 	require_once('./lib/classes/core/interfaces.class.php');
 	require_once('./lib/classes/core/router.class.php');

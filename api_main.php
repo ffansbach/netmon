@@ -1,5 +1,5 @@
 <?php
-	require_once('config/runtime.inc.php');
+	require_once('runtime.php');
 	require_once('lib/classes/api/main.class.php');
 	require_once 'lib/classes/extern/Zend/Json/Server.php';
 

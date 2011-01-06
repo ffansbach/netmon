@@ -1,6 +1,6 @@
 <?php
-  require_once('./config/runtime.inc.php');
-  require_once('./lib/classes/core/register.class.php');
+  require_once('runtime.php');
+  require_once('lib/classes/core/register.class.php');
   
   $Register = new Register;
     $smarty->assign('enable_network_policy', $GLOBALS['enable_network_policy']);

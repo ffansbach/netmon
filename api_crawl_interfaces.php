@@ -1,10 +1,10 @@
 <?php
-require_once('./config/runtime.inc.php');
-require_once('./lib/classes/core/login.class.php');
-require_once('./lib/classes/core/router.class.php');
-require_once('./lib/classes/core/crawling.class.php');
-require_once('./lib/classes/core/interfaces.class.php');
-require_once('./lib/classes/core/rrdtool.class.php');
+require_once('runtime.php');
+require_once('lib/classes/core/login.class.php');
+require_once('lib/classes/core/router.class.php');
+require_once('lib/classes/core/crawling.class.php');
+require_once('lib/classes/core/interfaces.class.php');
+require_once('lib/classes/core/rrdtool.class.php');
 
 if($_GET['section']=="insert_olsr_data") {
 	$session = login::user_login($_GET['nickname'], $_GET['password']);

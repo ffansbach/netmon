@@ -8,7 +8,7 @@ if (empty($_SERVER["REQUEST_URI"])) {
 	$GLOBALS['netmon_root_path'] = $path."/";
 }
 
-require_once('config/runtime.inc.php');
+require_once('runtime.php');
 require_once('lib/classes/core/service.class.php');
 require_once('lib/classes/core/crawling.class.php');
 require_once('lib/classes/core/router.class.php');

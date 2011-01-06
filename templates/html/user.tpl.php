@@ -156,5 +156,5 @@ $(document).ready(function() {
 {/if}
 
 {if $permitted}
-<p><a href="./user_edit.php?section=edit&id={$smarty.get.id}">Benutzer editieren</a></p>
+<p><a href="./user_edit.php?section=edit&id={$smarty.get.user_id}">Benutzer editieren</a></p>
 {/if}

@@ -316,7 +316,9 @@ class History {
 		array_multisort($first, SORT_DESC, $user_history);
 
 		for($i=0; $i<6; $i++) {
-			$history_cp[] = $user_history[$i];
+			if(!empty($user_history[$i])) {
+				$history_cp[] = $user_history[$i];
+			}
 		}
 
 		return $history_cp;

@@ -1,5 +1,5 @@
 <?php
-  require_once('./config/runtime.inc.php');
+  require_once('runtime.php');
 
   require_once('./lib/classes/api/map.class.php');
   require_once('./lib/classes/api/main.class.php');

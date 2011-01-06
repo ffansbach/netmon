@@ -1,6 +1,6 @@
 <?php
-	require_once('./config/runtime.inc.php');
-	require_once('./lib/classes/api/crawl.class.php');
+	require_once('runtime.php');
+	require_once('lib/classes/api/crawl.class.php');
 	require_once 'lib/classes/extern/Zend/Json/Server.php';
 	
 	$server = new Zend_Json_Server();

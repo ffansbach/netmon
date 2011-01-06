@@ -2,8 +2,8 @@
 
 $GLOBALS['installation_mode'] = true;
 
-require_once('./config/runtime.inc.php');
-require_once('./lib/classes/core/install.class.php');
+require_once('runtime.php');
+require_once('lib/classes/core/install.class.php');
 
 $smarty->assign('installation_mode', $GLOBALS['installation_mode']);
 
@@ -18,6 +18,15 @@ if ($GLOBALS['installed']) {
     $smarty->assign('netmon_version', $GLOBALS['netmon_version']);
     $smarty->assign('netmon_codename', $GLOBALS['netmon_codename']);
 
+    if (strnatcmp(phpversion(),'5.2') >= 0)
+    {
+	$smarty->assign('php_version', true);
+    }
+    else
+    {
+	$smarty->assign('php_version', false);
+    } 
+
     $smarty->assign('pdo_loaded', extension_loaded('pdo'));
     $smarty->assign('pdo_mysql_loaded', extension_loaded('pdo_mysql'));
     $smarty->assign('json_loaded', extension_loaded('json'));
@@ -27,7 +36,6 @@ if ($GLOBALS['installed']) {
     $smarty->assign('openssl', extension_loaded('openssl'));
     $smarty->assign('ftp', extension_loaded('ftp'));
     $smarty->assign('exec', function_exists('exec'));
-    $smarty->assign('ezcomponents', class_exists('ezcBase'));
 
     $to = "noreply@noreply.org";
     $header = "From: {$to}";
@@ -35,10 +43,10 @@ if ($GLOBALS['installed']) {
     $body = "This is a Mail that was send by netmon Mailtest";
     if (mail($to, $subject, $body, $header)) {
         $smarty->assign('mail', true);
-	$_SESSION['mail'] = true;
+	$_SESSION['mail'] = "php_mail";
     } else {
         $smarty->assign('mail', false);
-	$_SESSION['mail'] = false;
+	$_SESSION['mail'] = "smtp";
     }
 
     $smarty->display("header.tpl.php");
@@ -89,29 +97,52 @@ if ($GLOBALS['installed']) {
 	Install::insertDB();
 	header('Location: ./install.php?section=messages');
 } elseif ($_GET['section']=="messages") {
-        $smarty->assign('mail', $_SESSION['mail']);
+
+        $smarty->assign('mail_sending_type', $_SESSION['mail']);
+        $smarty->assign('url_to_netmon', "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+        $smarty->assign('enable_network_policy', false);
+
 	$smarty->display("header.tpl.php");
 	$smarty->display("install_messages.tpl.php");
 	$smarty->display("footer.tpl.php");
 
 } elseif ($_GET['section']=="messages_insert") {
 	$config_path = "./config/config.local.inc.php";
-	$file = Install::getFileLineByLine($config_path);
 
+/*	$file = Install::getFileLineByLine($config_path);
+	if ($_POST['installed'])
+		$configs[0] = '$GLOBALS[\'installed\'] = true;';
+	else
+		$configs[0] = '$GLOBALS[\'installed\'] = false;';
+	$file = Install::changeConfigSection('//INSTALLATION-LOCK', $file, $configs);
+	Install::writeEmptyFileLineByLine($config_path, $file);
+	unset($configs);*/
+
+	$file = Install::getFileLineByLine($config_path);
+	$configs[0] = '$GLOBALS[\'url_to_netmon\'] = "'.$_POST['url_to_netmon'].'";';
+	$file = Install::changeConfigSection('//WEBSERVER', $file, $configs);
+	Install::writeEmptyFileLineByLine($config_path, $file);
+	unset($configs);
+
+/*	$file = Install::getFileLineByLine($config_path);
+	$configs[0] = '$GLOBALS[\'mysql_host\'] = "'.$_POST['mysql_host'].'";';
+	$configs[1] = '$GLOBALS[\'mysql_db\'] = "'.$_POST['mysql_db'].'";';
+	$configs[2] = '$GLOBALS[\'mysql_user\'] = "'.$_POST['mysql_user'].'";';
+	$configs[3] = '$GLOBALS[\'mysql_password\'] = "'.$_POST['mysql_password'].'";';
+	$file = Install::changeConfigSection('//MYSQL', $file, $configs);
+	Install::writeEmptyFileLineByLine($config_path, $file);
+	unset($configs);*/
+
+	$file = Install::getFileLineByLine($config_path);
 	$configs[0] = '$GLOBALS[\'jabber_server\'] = "'.$_POST['jabber_server'].'";';
 	$configs[1] = '$GLOBALS[\'jabber_username\'] = "'.$_POST['jabber_username'].'";';
 	$configs[2] = '$GLOBALS[\'jabber_password\'] = "'.$_POST['jabber_password'].'";';
-
 	$file = Install::changeConfigSection('//JABBER', $file, $configs);
 	Install::writeEmptyFileLineByLine($config_path, $file);
 	unset($configs);
-//----------
-	$file = Install::getFileLineByLine($config_path);
-	if ($_POST['mail_sending_type'] == "true")
-		$configs[0] = '$GLOBALS[\'mail_sending_type\'] = "smtp";';
-	else
-		$configs[0] = '$GLOBALS[\'mail_sending_type\'] = "php_mail";';
 
+	$file = Install::getFileLineByLine($config_path);
+	$configs[0] = '$GLOBALS[\'mail_sending_type\'] = "'.$_POST['mail_sending_type'].'";';
 	$configs[1] = '$GLOBALS[\'mail_sender_adress\'] = "'.$_POST['mail_sender_adress'].'";';
 	$configs[2] = '$GLOBALS[\'mail_sender_name\'] = "'.$_POST['mail_sender_name'].'";';
 	$configs[3] = '$GLOBALS[\'mail_smtp_server\'] = "'.$_POST['mail_smtp_server'].'";';
@@ -119,29 +150,49 @@ if ($GLOBALS['installed']) {
 	$configs[5] = '$GLOBALS[\'mail_smtp_password\'] = "'.$_POST['mail_smtp_password'].'";';
 	$configs[6] = '$GLOBALS[\'mail_smtp_login_auth\'] = "'.$_POST['mail_smtp_login_auth'].'";';
 	$configs[7] = '$GLOBALS[\'mail_smtp_ssl\'] = "'.$_POST['mail_smtp_ssl'].'";';
-
 	$file = Install::changeConfigSection('//MAIL', $file, $configs);
 	Install::writeEmptyFileLineByLine($config_path, $file);
 	unset($configs);
-//----------
-	header('Location: ./install.php?section=network');
-} elseif ($_GET['section']=="network") {
-	$smarty->display("header.tpl.php");
-	$smarty->display("install_network.tpl.php");
-	$smarty->display("footer.tpl.php");
-} elseif ($_GET['section']=="network_insert") {
-	$config_path = "./config/config.local.inc.php";
-	$file = Install::getFileLineByLine($config_path);
 
+	$file = Install::getFileLineByLine($config_path);
 	$configs[0] = '$GLOBALS[\'net_prefix\'] = "'.$_POST['net_prefix'].'";';
 	$configs[1] = '$GLOBALS[\'community_name\'] = "'.$_POST['community_name'].'";';
 	$configs[2] = '$GLOBALS[\'community_website\'] = "'.$_POST['community_website'].'";';
-	$configs[3] = '$GLOBALS[\'networkPolicy\'] = "'.$_POST['networkPolicy'].'";';
-
-
+	if ($_POST['enable_network_policy'])
+		$configs[3] = '$GLOBALS[\'enable_network_policy\'] = true;';
+	else
+		$configs[3] = '$GLOBALS[\'enable_network_policy\'] = false;';
+	$configs[4] = '$GLOBALS[\'networkPolicy\'] = "'.$_POST['networkPolicy'].'";';
 	$file = Install::changeConfigSection('//NETWORK', $file, $configs);
 	Install::writeEmptyFileLineByLine($config_path, $file);
 	unset($configs);
+
+	$file = Install::getFileLineByLine($config_path);
+	$configs[0] = '$GLOBALS[\'expiration\'] = '.$_POST['expiration'].';';
+	$file = Install::changeConfigSection('//VPNKEYS', $file, $configs);
+	Install::writeEmptyFileLineByLine($config_path, $file);
+	unset($configs);
+
+	$file = Install::getFileLineByLine($config_path);
+	$configs[0] = '$GLOBALS[\'days_to_keep_mysql_crawl_data\'] = '.$_POST['days_to_keep_mysql_crawl_data'].';';
+	$file = Install::changeConfigSection('//PROJEKT', $file, $configs);
+	Install::writeEmptyFileLineByLine($config_path, $file);
+	unset($configs);
+
+	$file = Install::getFileLineByLine($config_path);
+	$configs[0] = '$GLOBALS[\'google_maps_api_key\'] = "'.$_POST['google_maps_api_key'].'";';
+	$file = Install::changeConfigSection('//GOOGLEMAPSAPIKEY', $file, $configs);
+	Install::writeEmptyFileLineByLine($config_path, $file);
+	unset($configs);
+
+	$file = Install::getFileLineByLine($config_path);
+	$configs[0] = '$GLOBALS[\'crawl_cycle\'] = '.$_POST['crawl_cycle'].';';
+	$configs[1] = '$GLOBALS[\'crawler_ping_timeout\'] = '.$_POST['crawler_ping_timeout'].';';
+	$configs[2] = '$GLOBALS[\'crawler_curl_timeout\'] = '.$_POST['crawler_curl_timeout'].';';
+	$file = Install::changeConfigSection('//CRAWLER', $file, $configs);
+	Install::writeEmptyFileLineByLine($config_path, $file);
+	unset($configs);
+
 	header('Location: ./install.php?section=finish');
 } elseif ($_GET['section']=="finish") {
 	$config_path = "./config/config.local.inc.php";

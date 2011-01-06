@@ -1,5 +1,5 @@
 <?php
-  require_once('./config/runtime.inc.php');
+  require_once('runtime.php');
   require_once('./lib/classes/core/ip.class.php');
   require_once('./lib/classes/core/service.class.php');
 
