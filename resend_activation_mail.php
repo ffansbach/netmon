@@ -1,7 +1,7 @@
 <?php
-	require_once('./config/runtime.inc.php');
-	require_once('./lib/classes/core/helper.class.php');
-	require_once('./lib/classes/core/register.class.php');
+	require_once('runtime.php');
+	require_once('lib/classes/core/helper.class.php');
+	require_once('lib/classes/core/register.class.php');
 	
 	$register = new register;
 	

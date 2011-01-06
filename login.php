@@ -1,5 +1,5 @@
 <?php
-  require_once('config/runtime.inc.php');
+  require_once('runtime.php');
   require_once('lib/classes/core/login.class.php');
   require_once('lib/classes/core/user.class.php');
   require_once('lib/classes/extern/class.openid.php');
@@ -30,7 +30,7 @@
 	$openid->SetOptionalFields(array('dob','gender','postcode','country','language','timezone'));
 
 	if ($openid->GetOpenIDServer()){
-		$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].dirname($_SERVER['PHP_SELF']).'login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
+		$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].dirname($_SERVER['PHP_SELF']).'/login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
 		$openid->Redirect(); 	// This will redirect user to OpenID Server
 	}else{
 		$error = $openid->GetError();

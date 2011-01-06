@@ -7,8 +7,8 @@
 <h2>Informationen im Web</h2>
 <ul>
 <li><a href="http://oldenburg.freifunk.net/">Freifunk Oldenburg</a></li>
-<li><a href="http://wiki.freifunk-ol.de/index.php/Netmon">Netmon Wiki</a></li>
-<li><a href="https://trac.freifunk-ol.de/">Netmon Development Repository</a></li>
+<li><a href="http://wiki.freifunk-ol.de/index.php?title=Netmon">Netmon Wiki</a></li>
+<li><a href="http://trac.freifunk-ol.de/">Netmon Development Repository</a></li>
 
 </ul>
 
@@ -27,15 +27,15 @@
 		FTP: {if $ftp}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}
 	</div>
 	<div style="float:left; width: 33%;">
-		<h3>PHP-Funktionen</h3>
+		<h3>PHP-Version</h3>php_version
+		PHP Version 5.2+: {if $php_version}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}
+		<h3>PHP-Funktionen</h3> 
 		exec(): {if $exec}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 		mail(): {if $mail}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_unknown_small.png" alt="nicht aktiviert">{/if}<br>
-		<h3>Pear Klassen</h3>
-		EZ-Components: {if $ezcomponents}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 	</div>
 	<div style="float:left; width: 33%;">
 		<h3>Ergebnis</h3>
-		{if !$pdo_loaded OR !$ftp OR !$pdo_mysql_loaded OR !$openssl OR !$json_loaded OR !$zip_loaded OR !$curl_loaded OR !$gd_loaded OR !$ezcomponents OR !$exec}
+		{if !$pdo_loaded OR !$ftp OR !$pdo_mysql_loaded OR !$openssl OR !$json_loaded OR !$zip_loaded OR !$curl_loaded OR !$gd_loaded OR !$exec OR !$php_version}
 			<div class="error" style="margin: 0px;">Einige Funktionen sind inaktiv, es kann zu Problemen bei Installation und Betrieb kommen!</div>
 		{else}
 			<div class="notice" style="margin: 0px;">Alle Funktionen sind aktiv, Installation und Betrieb sollten ohne Probleme ablaufen.</div>

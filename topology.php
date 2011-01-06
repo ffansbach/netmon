@@ -1,5 +1,5 @@
 <?php
-require_once('./config/runtime.inc.php');
+require_once('runtime.php');
 
 $smarty->display("header.tpl.php");
 $smarty->display("topology.tpl.php");

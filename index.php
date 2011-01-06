@@ -30,7 +30,7 @@
 
   require_once('./config/config.local.inc.php');
   if(!$GLOBALS['installed']) {
-    header('Location: ./install.php');
+    header('Location: install.php');
   } else {
     header('Location: routerlist.php');
   }
