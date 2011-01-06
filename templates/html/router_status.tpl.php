@@ -122,10 +122,10 @@
 				<b>Processes:</b> {$router_last_crawl.processes}<br>
 			{/if}
 			{if !empty($router_last_crawl.uptime)}
-				<b>Uptime:</b> {$router_last_crawl.uptime/60/60|round:1} Stunden<br>
+				<b>Uptime:</b> {math equation="round(x,1)" x=$router_last_crawl.uptime/60/60} Stunden<br>
 			{/if}
 			{if !empty($router_last_crawl.idletime)}
-				<b>Idletime:</b> {$router_last_crawl.idletime/60/60|round:1} Stunden
+				<b>Idletime:</b> {math equation="round(x,1)" x=$router_last_crawl.idletime/60/60} Stunden
 			{/if}
 		</p>
 	</div>
@@ -177,7 +177,7 @@
 		<h2>History</h2>
 		{if !empty($router_history)}
 			<ul>
-				{foreach item=hist from=$router_history}
+				{foreach $router_history as $hist}
 					<li>
 						<b>{$hist.create_date|date_format:"%e.%m. %H:%M:%S"}:</b> 
 						{if $hist.data.action == 'status' AND $hist.data.to == 'online'}
@@ -241,7 +241,7 @@
 			<h3>Interfaces and status</h3>
 			{if !empty($crawl_batman_adv_interfaces)}
 				<ul>
-					{foreach item=interface from=$crawl_batman_adv_interfaces}
+					{foreach $crawl_batman_adv_interfaces as $interface}
 						<li>
 							<b>{$interface.name}</b> {$interface.status} ({$interface.crawl_date|date_format:"%e.%m.%Y %H:%M"})
 						</li>
@@ -254,7 +254,7 @@
 			<h3>Originators</h3>
 			{if !empty($batman_adv_originators)}
 				<ul>
-					{foreach item=originators from=$batman_adv_originators}
+					{foreach $batman_adv_originators as $originators}
 						<li>
 							<a href="search.php?search_range=mac_addr&search_string={$originators.originator}">{$originators.originator}</a> ({$originators.link_quality}) ({$originators.last_seen})
 						</li>
@@ -296,7 +296,7 @@
 		</div>
 	</div>
 	
-	{foreach item=olsrd_links from=$olsrd_crawl_data.olsrd_links}
+	{foreach $olsrd_crawl_data.olsrd_links as $olsrd_links}
 		<div id="ipitem" style="width: 370px; overflow: hidden;">
 			<div style="white-space: nowrap;">
 				{assign var="tmp" value="Remote IP"}
@@ -317,7 +317,7 @@
 
 <h2>Interface Monitoring</h2>
 {if !empty($interface_crawl_data)}
-	{foreach item=interface from=$interface_crawl_data key=schluessel}
+	{foreach $interface_crawl_data as $interface key=schluessel}
 <script type="text/javascript">
 	{literal}
 	$(document).ready(function(){

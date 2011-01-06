@@ -67,7 +67,7 @@
 </div>
 
 <h2>Interfaces</h2>
-{foreach item=interface from=$interfaces}
+{foreach $interfaces as $interface}
 <h3>{$interface.name}</h3>
 <div style="width: 100%; overflow: hidden;">
     <div style="float:left; width: 50%;">
@@ -167,7 +167,7 @@
 
 <h2>Dienste</h2>
 
-{foreach item=service from=$services}
+{foreach $services as $service}
 <a name="service_{$service.id}"></a>
 
 {if !empty($interfaces) AND !empty($service.url_prefix) AND !empty($service.port)}

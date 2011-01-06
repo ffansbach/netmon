@@ -57,8 +57,8 @@
 		Image:
 		<select name="image_id" onChange="getImageInfo(this.options[this.selectedIndex].value); getImageConfigs(this.options[this.selectedIndex].value);">
 			<option value="false" selected>Bitte wählen</option>
-			{foreach item=images from=$images}
-				<option value="{$images.image_id}">{$images.title} ({$images.nickname} am {$images.create_date})</option>
+			{foreach $images as $image}
+				<option value="{$image.image_id}">{$image.title} ({$image.nickname} am {$image.create_date})</option>
 			{/foreach}
 		</select>
 	</p>
@@ -89,7 +89,7 @@
   VPN-IP:
   <select name="vpn_ip_id">
 	<option value="false" selected>Kein VPN</option>
-		{foreach item=vpn_ip from=$vpn_ips}
+		{foreach $vpn_ips as $vpn_ip}
 			<option value="{$vpn_ip.ip_id}">{$net_prefix}.{$vpn_ip.ip} ({$vpn_ip.subnet_title})</option>
 		{/foreach}
   </select>

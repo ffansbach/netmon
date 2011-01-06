@@ -5,7 +5,7 @@
 
 <h2>Ausgabe des Build prozesses</h2>
 <p>
-	{foreach item=line from=$build_prozess_return}
+	{foreach $build_prozess_return as $line}
 		{$line}<br>
 	{/foreach}
 </p>
