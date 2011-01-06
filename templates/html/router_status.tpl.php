@@ -153,7 +153,7 @@
 					var zoom = 17;
 
 					/* Initialize Map */
-					ipmap({$service_data.service_id});
+					router_map({$router_data.router_id});
 				</script>
 			</div>
 

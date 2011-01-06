@@ -249,7 +249,7 @@ function fullmap() {
 }
 
 
-function ipmap(highlighted_service) {
+function router_map(highlight_router_id) {
 	// Handle image load errors
 	OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 	OpenLayers.Util.onImageLoadErrorColor = "transparent";
@@ -310,7 +310,7 @@ function ipmap(highlighted_service) {
 	//Add Layers
         map.addLayers([layer_conn, layer_nodes_offline, layer_nodes_online]);*/
 
-	var layer_nodes_online = loadKmlLayer('Online Knoten ', './api.php?class=apiMap&section=getOnlineRouters');
+	var layer_nodes_online = loadKmlLayer('Online Knoten ', './api.php?class=apiMap&section=getOnlineRouters&highlight_router_id='+highlight_router_id);
 	var batman_adv_conn = loadKmlLayer('Bat. Adv. Verbindungen', './api.php?class=apiMap&section=batman_advanced_conn');
 	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 	

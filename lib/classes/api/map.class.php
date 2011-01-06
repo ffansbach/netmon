@@ -129,13 +129,7 @@ class ApiMap {
 
 								if(!empty($originators)) {
 									foreach($originators as $originator) {
-/*echo "<pre>";
-print_r($originator);
-echo "</pre>";*/
 										$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['originator'], $last_endet_crawl_cycle['id']);
-/*echo "<pre>";
-print_r($neighbour_router);
-echo "</pre>";*/
 										$neighbour_router_longitude = $neighbour_router['longitude'];
 										$neighbour_router_latitude = $neighbour_router['latitude'];
 										$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
@@ -604,7 +598,7 @@ foreach($crawl_routers as $crawl_router) {
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 								$xw->endElement();
 								$xw->startElement('styleUrl');
-									if(isset($_GET['highlighted_router']) AND $_GET['highlighted_router']==$router_data['router_id'])
+									if($_GET['highlight_router_id']==$router_data['router_id'])
 										$xw->writeRaw('#sh_blue-pushpin');
 									else {
 										$xw->writeRaw('#sh_green-pushpin');
