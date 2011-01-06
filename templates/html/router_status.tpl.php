@@ -43,7 +43,7 @@
 	<div style="float:left; width: 47%;">
 		<h2>Grunddaten</h2>
 		<b>Benutzer:</b> <a href="./user.php?id={$router_data.user_id}">{$router_data.nickname}</a><br>
-		<b>Angelegt am:</b> {$router_data.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
+		<b>Angelegt am:</b> {$router_data.create_date|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
 
 		<h2>System Monitoring</h2>
 		<h3><u>Allgemein</u></h3>
@@ -56,7 +56,7 @@
 		<br>
 		<b>Zuverlässigkeit:</b> {$router_reliability.online_percent}% online<br>
 		<b>Datenquelle:</b> {if $router_data.crawl_method=='router'}Router sendet Daten{elseif $router_data.crawl_method=='crawler'}Netmon Crawler{/if}<br>
-		<b>Letzter Crawl:</b> {$router_last_crawl.crawl_date|date_format:"%e.%m.%Y %H:%M"}<br>
+		<b>Letzter Crawl:</b> {$router_last_crawl.crawl_date|date_format:"%d.%m.%Y %H:%M"}<br>
 		<b>Crawl Intervall:</b> alle {$crawl_cycle} Minuten<br>
 
 		<h3><u>Community Daten des Webinterfaces</u></h3>

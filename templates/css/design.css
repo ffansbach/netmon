@@ -4,9 +4,9 @@ background: #aaad9a;
 }
 
 /*Normaler Link*/
-A:link, A:visited, A:focus{text-decoration:none; font-weight:normal; color:black; border:0 none;}
+A:link, A:visited, A:focus{text-decoration:none; font-weight:normal; color:#010752; border:0 none;}
 /*Link während Mausover*/
-A:hover {text-decoration:none; font-weight:normal; color:#2f4d84; border:0 none;}
+A:hover {text-decoration:underline; font-weight:normal; color:#2f4d84; border:0 none;}
 /*Zurzeit angeklickter Link*/
 A:active {text-decoration:none; font-weight:normal; color:#000000; border:0 none;}
 
@@ -53,7 +53,6 @@ background: #FFFFFF;
 #content{
 border-left: 1px solid #dc0067;
 min-height: 550px;
-
 background: #FFFFFF;
 font-size: 10pt;
 text-align: left;
@@ -105,6 +104,7 @@ margin: auto;}
 
 #footer {
 width:100%;
+clear: both;
 
 color:#000000;
 text-decoration:none;
