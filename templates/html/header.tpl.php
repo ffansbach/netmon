@@ -41,7 +41,7 @@
 			{/foreach}
 				<span class="topmenubox">|</span>
 			{foreach $loginOutMenu as $menu}
-				<span class="topmenubox">{$menu.pretext} <a style="color: #FFFFFF" href="{$loginOutMenu.href}"><b>{$menu.name}</b></a></span>
+				<span class="topmenubox">{$menu.pretext} <a style="color: #FFFFFF" href="{$menu.href}"><b>{$menu.name}</b></a></span>
 			{/foreach}
 		{/if}
 	</div>

@@ -35,7 +35,21 @@
     ini_set('display_errors', 1);
   }
 
-  //Session starten
+  /**
+  * SET INCLUDE PATH
+  */
+
+  if(!empty($_SERVER["DOCUMENT_ROOT"])) {
+    $include_path = $_SERVER["DOCUMENT_ROOT"]."lib/classes/extern";
+  } else {
+    $include_path = dirname($_SERVER['PHP_SELF'])."/lib/classes/extern";
+  }
+  set_include_path(get_include_path() .PATH_SEPARATOR. $include_path);
+
+  /**
+  * Start PHP Session
+  */
+
   session_start();
 
   /**
@@ -101,17 +115,14 @@
   $UserManagement =  new UserManagement;
 
   /**
-  * ZEND FRAMEWORK LIBRARYS
+  * LOAD ZEND FRAMEWORK
   */
 
-  // load the zend Framework
-  //http://blog.bananas-playground.net/archives/66-ZendFramework-Laden.html
-  define("LIB_DIR","lib/classes/extern/");
-  $include_path = get_include_path();
-  
-  if(!ini_set('include_path',$include_path.PATH_SEPARATOR.LIB_DIR)) {
-    die('Failed to set the include path. Check you php configuration.');
-  }
+  require_once 'lib/classes/extern/Zend/Loader/Autoloader.php';
+  Zend_Loader_Autoloader::getInstance();
+
+  new Zend_Mail_Transport_Smtp();
+  new Zend_Mail();
 
   /**
   * SMARTY TEMPLATEENGINE
