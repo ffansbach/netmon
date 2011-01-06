@@ -30,14 +30,14 @@ $(document).ready(function() {
 				</tr>
 			</thead>
 			<tbody>
-				{foreach key=count item=userlist from=$userlist}
+				{foreach $userlist as $user}
 					<tr>
-						<td><a href="./user.php?user_id={$userlist.id}">{$userlist.nickname}</a></td>
-						<td>{$userlist.routercount}</td>
-						<td>{$userlist.jabber}</td>
-						<td>{$userlist.icq}</td>
-						<td>{$userlist.email}</td>
-						<td>{$userlist.create_date|date_format:"%d.%m.%Y"}</td>
+						<td><a href="./user.php?user_id={$userlist.id}">{$user.nickname}</a></td>
+						<td>{$user.routercount}</td>
+						<td>{$user.jabber}</td>
+						<td>{$user.icq}</td>
+						<td>{$user.email}</td>
+						<td>{$user.create_date|date_format:"%d.%m.%Y"}</td>
 					</tr>
 				{/foreach}
 			</tbody>

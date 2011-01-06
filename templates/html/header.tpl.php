@@ -36,12 +36,12 @@
 	</div>
 	<div id="topmenu">
 		{if !$installation_mode}
-			{foreach item=topmenu from=$top_menu}
+			{foreach $top_menu as $topmenu}
 				<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}">{$topmenu.name}</a></span>
 			{/foreach}
 				<span class="topmenubox">|</span>
-			{foreach item=loginOutMenu from=$loginOutMenu}
-				<span class="topmenubox">{$loginOutMenu.pretext} <a style="color: #FFFFFF" href="{$loginOutMenu.href}"><b>{$loginOutMenu.name}</b></a></span>
+			{foreach $loginOutMenu as $menu}
+				<span class="topmenubox">{$menu.pretext} <a style="color: #FFFFFF" href="{$loginOutMenu.href}"><b>{$menu.name}</b></a></span>
 			{/foreach}
 		{/if}
 	</div>
@@ -57,7 +57,7 @@
 				{if isset($installation_menu)}
 					&nbsp;&nbsp;&nbsp;&nbsp;<b>Installationsmenü</b>
 					<ul>
-						{foreach item=menu from=$installation_menu}
+						{foreach $installation_menu as $menu}
 							<li><a href="{$menu.href}">{$menu.name}</a></li>
 						{/foreach}
 					</ul>
@@ -68,7 +68,7 @@
 			<div class="user_menus">
 				&nbsp;&nbsp;&nbsp;&nbsp;<b>Navigation</b>
 				<ul>
-					{foreach item=normalmenu from=$normal_menu}
+					{foreach $normal_menu as $normalmenu}
 						<li><a href="{$normalmenu.href}">{$normalmenu.name}</a></li>
 					{/foreach}
 				</ul>
@@ -80,7 +80,7 @@
 				{if isset($user_menu)}
 					&nbsp;&nbsp;&nbsp;&nbsp;<b>Benutzermenü</b>
 					<ul>
-						{foreach item=usermenu from=$user_menu}
+						{foreach $user_menu as $usermenu}
 							<li><a href="{$usermenu.href}">{$usermenu.name}</a></li>
 						{/foreach}
 					</ul>
@@ -92,7 +92,7 @@
 				{if isset($admin_menu)}
 					&nbsp;&nbsp;&nbsp;&nbsp;<b>Adminmenü</b>
 					<ul>
-						{foreach item=menu from=$admin_menu}
+						{foreach $admin_menu as $menu}
 							<li><a href="{$menu.href}">{$menu.name}</a></li>
 						{/foreach}
 					</ul>
@@ -104,7 +104,7 @@
 				{if isset($root_menu)}
 					&nbsp;&nbsp;&nbsp;&nbsp;<b>Rootmenü</b>
 					<ul>
-						{foreach item=menu from=$root_menu}
+						{foreach $root_menu as $menu}
 							<li><a href="{$menu.href}">{$menu.name}</a></li>
 						{/foreach}
 					</ul>
@@ -116,7 +116,7 @@
 
   <div id="content">
     <!--Systemmeldungen-->
-    {foreach item=output from=$message}
+    {foreach $message as $output}
       {if $output.1==0}
 	<div style="background-color: #f7ce3e">{$output.0}</div>
       {/if}

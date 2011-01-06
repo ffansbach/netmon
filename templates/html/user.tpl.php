@@ -49,7 +49,7 @@ $(document).ready(function() {
 		<h2>History</h2>
 		{if !empty($user_history)}
 			<ul>
-				{foreach item=hist from=$user_history}
+				{foreach $user_history as $hist}
 					<li>
 						<b>{$hist.create_date|date_format:"%e.%m. %H:%M:%S"}:</b> <a href="./router_status.php?router_id={$hist.additional_data.router_id}">Router {$hist.additional_data.hostname}</a> 
 
@@ -87,7 +87,7 @@ $(document).ready(function() {
 				</tr>
 			</thead>
 			<tbody>
-				{foreach key=count item=router from=$routerlist}
+				{foreach $routerlist as $router}
 					<tr>
 						<td><a href="./router_status.php?router_id={$router.router_id}">{$router.hostname}</a></td>
 						<td>
@@ -101,7 +101,7 @@ $(document).ready(function() {
 						<td>{$router.chipset_name}</td>
 						<td><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></td>
 						<td>{$router.router_reliability.online_percent}% online</td>
-						<td>{$router.actual_crawl_data.uptime/60/60|round:1} Stunden</td>
+						<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60} Stunden</td>
 					</tr>
 				{/foreach}
 			</tbody>
@@ -126,7 +126,7 @@ $(document).ready(function() {
 				</tr>
 			</thead>
 			<tbody>
-				{foreach key=count item=service from=$servicelist}
+				{foreach $servicelist as $service}
 					<tr>
 						<td><a href="./router_config.php?router_id={$service.router_id}#service_{$service.service_id}">{$service.title}</a></td>
 						<td><a href="./router_config.php?router_id={$service.router_id}">{$service.hostname}</a></td>
@@ -154,57 +154,6 @@ $(document).ready(function() {
 {else}
 <p>Keine Services vorhanden</p>
 {/if}
-
-
-
-
-<!--<h2>Ips von {$user.nickname}</h2>
-{if empty($iplist)}
-<p>Dieser Benutzer besitzt keine Ips.</p>
-{else}
-<table border="1">
-	<tr>
-		<th>#</th>
-		<th>Ip-IP</th>
-		<th>Aktionen</th>
-	</tr>
-{foreach key=count item=iplist from=$iplist}
-	<tr>
-		<td>{$count+1}</td>
-		<td><a href="./ip.php?id={$iplist.id}">{$net_prefix}.{$iplist.ip}</a></td>
-		<td>
-		  {if $iplist.is_ip_owner}
-		    <a href="./ipeditor.php?section=edit&id={$iplist.id}">Editieren</a>
-		  {/if}
-		</td>
-	</tr>
-{/foreach}
-</table>
-{/if}
-
-<h2>Projekte die von {$user.nickname} verwaltet werden</h2>
-{if empty($subnetlist)}
-<p>Dieser Benutzer verwaltet keine Projekte</p>
-{else}
-<table border="1">
-	<tr>
-		<th>#</th>
-		<th>Subnet</th>
-		<th>Titel</th>
-		<th>Ips</th>
-		<th>Aktionen</th>
-	</tr>
-{foreach key=count item=subnetlist from=$subnetlist}
-	<tr>
-		<td>{$count+1}</td>
-		<td><a href="./subnet.php?id={$subnetlist.id}">{$net_prefix}.{$subnetlist.host}/{$subnetlist.netmask}</a></td>
-		<td>{$subnetlist.title}</td>
-		<td>{$subnetlist.ips_in_net}</td>
-		<td><a href="./subneteditor.php?section=edit&id={$subnetlist.id}">Editieren</a></td>
-	</tr>
-{/foreach}
-</table>
-{/if}-->
 
 {if $permitted}
 <p><a href="./user_edit.php?section=edit&id={$smarty.get.id}">Benutzer editieren</a></p>

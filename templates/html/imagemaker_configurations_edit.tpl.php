@@ -2,8 +2,8 @@
 <form action="./imagemaker.php?section=upload_config" method="POST" enctype="multipart/form-data">
 	<p>Image der Konfiguration: 
 	<select name="image_id">
-		{foreach item=images from=$images}
-			<option value="{$images.image_id}">{$images.title} ({$images.nickname} am {$images.create_date})</option>
+		{foreach $images as $image}
+			<option value="{$images.image_id}">{$image.title} ({$image.nickname} am {$image.create_date})</option>
 		{/foreach}
 	</select>
 	</p>
@@ -21,7 +21,7 @@
 
 <h2>Konfiguration bearbeiten</h2>
 <ul>
-{foreach item=config from=$configs}
+{foreach $configs as $config}
 	<li>
 		<b>{$config.title}</b> hochgeladen am {$config.create_date|date_format:"%e.%m.%Y"} von {$config.nickname} (<a href="./imagemaker.php?section=image_update&image_id={$image.image_id}">updaten</a>) (<a href="./imagemaker.php?section=image_delete&image_id={$image.image_id}">entfernen</a>)
 	</li>
