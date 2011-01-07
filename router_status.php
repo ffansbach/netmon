@@ -196,6 +196,7 @@ foreach($interface_crawl_data as $key=>$interface) {
 }
 
 $smarty->assign('interface_crawl_data', $interface_crawl_data);
+$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
 
 //Display Templates
 $smarty->display("header.tpl.php");

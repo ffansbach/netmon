@@ -4,6 +4,8 @@
   require_once('./lib/classes/core/helper.class.php');
   require_once('./lib/classes/core/projecteditor.class.php');
 
+  $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
+
     if ($_GET['section'] == "new") {
 		if (UserManagement::checkPermission(32)) {
 			$smarty->assign('message', Message::getMessage());

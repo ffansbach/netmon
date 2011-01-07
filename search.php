@@ -64,7 +64,29 @@ if(!empty($search_string)) {
 
 		$smarty->assign('search_result_crawled_interfaces', $search_result_crawled_interfaces);
 	}
+	elseif($search_range=='ipv6_addr') {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_interfaces
+					WHERE ipv6_addr LIKE '%$search_string%' OR ipv6_link_local_addr LIKE '%$search_string%'
+					GROUP BY router_id
+					ORDER BY id DESC;";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $key=>$row) {
+				$search_result_crawled_interfaces[$key] = $row;
+				$search_result_crawled_interfaces[$key]['object_type'] = 'crawled_interface';
+				$search_result_crawled_interfaces[$key]['router_data'] = Router::getRouterInfo($row['router_id']);
+				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+				$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		$smarty->assign('search_result_crawled_interfaces', $search_result_crawled_interfaces);
+	}
 }
 
 

@@ -6,6 +6,7 @@
 <select name="search_range">
 	<option value="all" >Alles durchsuchen</option>
 	<option value="mac_addr" selected>Mac Adresse</option>
+	<option value="ipv6_addr" selected>IPv6 Adresse</option>
 </select>
 <input type="submit" value="suchen">
 
