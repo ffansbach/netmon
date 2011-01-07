@@ -202,7 +202,24 @@ if($_GET['section']=="insert_crawl_system_data") {
 		} else {
 			echo "Router System Data has already been crawled\n";
 		}
+	} else {
+		echo "error;";
+		echo "You FAILED! to authenticated at netmon api nodewatcher section insert_crawl_data\n";
+		echo "Your router_id is: ".$_GET['router_id'];
+		echo "Your authentificationmethod is: ".$_GET['authentificationmethod'];
+		echo "Your netmon router_auto_assign_hash is: ".$router_data['router_auto_assign_hash'];
+		echo "Your router_auto_update_hash is: ".$_GET['router_auto_update_hash'];
+	}
+}
 
+if($_GET['section']=="insert_batman_adv_interfaces") {
+	$session = login::user_login($_GET['nickname'], $_GET['password']);
+	$router_data = Router::getRouterInfo($_GET['router_id']);
+	$last_crawl_cycle = Crawling::getActualCrawlCycle();
+
+	//If is owning user or if root
+	if((($_GET['authentificationmethod']=='user') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
+		echo "success;";
 		/**Insert Batman advanced Interfaces*/
 		foreach($_GET['bat_adv_int'] as $bat_adv_int) {
 			try {
@@ -231,23 +248,41 @@ if($_GET['section']=="insert_crawl_system_data") {
 				echo "The Batman Advanced Interface $bat_adv_int[name] has already been crawled\n";
 			}
 		}
+	} else {
+		echo "error;";
+		echo "You FAILED! to authenticated at netmon api nodewatcher section insert_crawl_data\n";
+		echo "Your router_id is: ".$_GET['router_id'];
+		echo "Your authentificationmethod is: ".$_GET['authentificationmethod'];
+		echo "Your netmon router_auto_assign_hash is: ".$router_data['router_auto_assign_hash'];
+		echo "Your router_auto_update_hash is: ".$_GET['router_auto_update_hash'];
+	}
+}
+
+if($_GET['section']=="insert_batman_adv_originators") {
+	$session = login::user_login($_GET['nickname'], $_GET['password']);
+	$router_data = Router::getRouterInfo($_GET['router_id']);
+	$last_crawl_cycle = Crawling::getActualCrawlCycle();
+
+	//If is owning user or if root
+	if((($_GET['authentificationmethod']=='user') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
+		echo "success;";
 
 		/**Insert Batman Advanced Originators*/
-		try {
-			$sql = "SELECT *
-        			FROM  crawl_batman_advanced_originators
-				WHERE router_id='$_GET[router_id]' AND crawl_cycle_id='$last_crawl_cycle[id]'";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$crawl_originators[] = $row;
+		foreach($_GET['bat_adv_orig'] as $bat_adv_orig) {
+			try {
+				$sql = "SELECT *
+        				FROM  crawl_batman_advanced_originators
+					WHERE router_id='$_GET[router_id]' AND crawl_cycle_id='$last_crawl_cycle[id]' AND originator='$bat_adv_orig[originator]'";
+				$result = DB::getInstance()->query($sql);
+				foreach($result as $row) {
+					$crawl_originators[] = $row;
+				}
 			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		
-		if(empty($crawl_originators)) {
-			foreach($_GET['bat_adv_orig'] as $bat_adv_orig) {
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+
+			if(empty($crawl_originators)) {
 				try {
 					DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, last_seen, crawl_date)
 								 VALUES ('$_GET[router_id]', '$last_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[last_seen]', NOW());");
@@ -255,10 +290,10 @@ if($_GET['section']=="insert_crawl_system_data") {
 				catch(PDOException $e) {
 					echo $e->getMessage();
 				}
+				RrdTool::updateRouterBatmanAdvOriginatorsCountHistory($_GET['router_id'], count($_GET['bat_adv_orig']));
+			} else {
+				echo "The Batman Advanced Originator $bat_adv_orig[originator] has already been crawled\n";
 			}
-			RrdTool::updateRouterBatmanAdvOriginatorsCountHistory($_GET['router_id'], count($_GET['bat_adv_orig']));
-		} else {
-			echo "The Batman Advanced Originators has already been crawled\n";
 		}
 	} else {
 		echo "error;";
