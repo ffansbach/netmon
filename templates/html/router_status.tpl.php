@@ -2,6 +2,46 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
+
+<script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
+
+<link rel="stylesheet" type="text/css" href="templates/css/jquery_data_tables.css">
+
+<script type="text/javascript">
+{literal}
+$(document).ready(function() {
+	$('#batman_adv_originator_list').dataTable( {
+		"bFilter": false,
+		"bInfo": false,
+		"bPaginate": false
+	} );
+} );
+{/literal}
+</script>
+
+{literal}
+	<script>
+		function setBatmanAdvLinqQualityPictures(originator) {
+			$(document).ready(function(){
+				document.getElementById('batman_adv_link_quality_average_12_hours').style.display = 'none';
+				document.getElementById('batman_adv_link_quality_average_1_day').style.display = 'none';
+				document.getElementById('batman_adv_link_quality_average_1_week').style.display = 'none';
+{/literal}
+	{foreach $batman_adv_originators as $originators}
+				document.getElementById('batman_adv_link_quality_{$originators.originator_file_path}_12_hours').style.display = 'none';
+				document.getElementById('batman_adv_link_quality_{$originators.originator_file_path}_1_day').style.display = 'none';
+				document.getElementById('batman_adv_link_quality_{$originators.originator_file_path}_1_week').style.display = 'none';
+	{/foreach}
+{literal}
+
+				document.getElementById('batman_adv_link_quality_'+originator+'_12_hours').style.display = 'block';
+				document.getElementById('batman_adv_link_quality_'+originator+'_1_day').style.display = 'block';
+				document.getElementById('batman_adv_link_quality_'+originator+'_1_week').style.display = 'block';
+			});
+		}
+	</script>
+{/literal}
+
 <script type="text/javascript">
 	document.body.id='tab1';
 </script>
@@ -39,7 +79,7 @@
 	</div>
 </div>
 
-<div style="width: 100%; overflow: hidden;">
+<div style="width: 100%; overflow: hidden; margin-bottom: 20px;">
 	<div style="float:left; width: 47%;">
 		<h2>Grunddaten</h2>
 		<b>Benutzer:</b> <a href="./user.php?id={$router_data.user_id}">{$router_data.nickname}</a><br>
@@ -226,63 +266,121 @@
 	</div>
 </div>
 
-	{literal}
-		<script>
-			$(document).ready(function() {
-	{/literal}
-    				$("#tabs_batman_adv").tabs();
-	{literal}
-			});
-		</script>
-	{/literal}
-	<div style="width: 100%; overflow: hidden;">
-		<div style="float:left; width: 47%;">
-			<h2>B.A.T.M.A.N advanced Monitoring</h2>
-			<h3>Interfaces and status</h3>
-			{if !empty($crawl_batman_adv_interfaces)}
-				<ul>
-					{foreach $crawl_batman_adv_interfaces as $interface}
-						<li>
-							<b>{$interface.name}</b> {$interface.status} ({$interface.crawl_date|date_format:"%e.%m.%Y %H:%M"})
-						</li>
-					{/foreach}
-				</ul>
-			{else}
-				<p>Keine Interfaces gefunden</p>
-			{/if}
-			
-			<h3>Originators</h3>
-			{if !empty($batman_adv_originators)}
-				<ul>
+{literal}
+	<script>
+		$(document).ready(function() {
+{/literal}
+			$("#tabs_batman_adv").tabs();
+{literal}
+		});
+	</script>
+{/literal}
+<div style="width: 100%; overflow: hidden;">
+	<h2>B.A.T.M.A.N advanced Monitoring</h2>
+	<div style="float:left; width: 45%; padding-right: 15px;">
+		<h3>Interfaces and status</h3>
+		{if !empty($crawl_batman_adv_interfaces)}
+			<ul>
+				{foreach $crawl_batman_adv_interfaces as $interface}
+					<li>
+						<b>{$interface.name}</b> {$interface.status} ({$interface.crawl_date|date_format:"%e.%m.%Y %H:%M"})
+					</li>
+				{/foreach}
+			</ul>
+		{else}
+			<p>Keine Interfaces gefunden</p>
+		{/if}
+		
+		<h3>Originators</h3>
+		{if !empty($batman_adv_originators)}
+			<table class="display" id="batman_adv_originator_list">
+				<thead>
+					<tr>
+						<th>Originator</th>
+						<th>Quality</th>
+						<th>Last Seen</th>
+					</tr>
+				</thead>
+				<tbody>
 					{foreach $batman_adv_originators as $originators}
-						<li>
-							<a href="search.php?search_range=mac_addr&search_string={$originators.originator}">{$originators.originator}</a> ({$originators.link_quality}) ({$originators.last_seen})
-						</li>
+						<tr>
+							<td><a href="search.php?search_range=mac_addr&search_string={$originators.originator}">{$originators.originator}</a></td>
+							<td>{$originators.link_quality}</td>
+							<td>{$originators.last_seen}</td>
+						</tr>
 					{/foreach}
-				</ul>
-			{else}
-				<p>Keine Originators gefunden</p>
-			{/if}
-		</div>
-		<div style="float:left; width: 53%;">
-			<div id="tabs_batman_adv" style="width: 96%">
-				<ul>
-				        <li><a href="#fragment-1_batman_adv"><span>12 Sunden</span></a></li>
-				        <li><a href="#fragment-2_batman_adv"><span>24 Stunden</span></a></li>
-				        <li><a href="#fragment-3_batman_adv"><span>7 Tage</span></a></li>
-				</ul>
-				<div id="fragment-1_batman_adv">
-					<img src="./tmp/router_{$router_data.router_id}_originators_12_hours.png">
-				</div>
-				<div id="fragment-2_batman_adv">
-					<img src="./tmp/router_{$router_data.router_id}_originators_1_day.png">
-				</div>
-				<div id="fragment-3_batman_adv">
-					<img src="./tmp/router_{$router_data.router_id}_originators_1_week.png">
-				</div>
+				</tbody>
+			</table>
+		{else}
+			<p>Keine Originators gefunden</p>
+		{/if}
+	</div>
+	<div style="float:left; width: 53%;">
+		<h3>Anzahl der Nachbarn</h3>
+		<div id="tabs_batman_adv" style="width: 96%">
+			<ul>
+			        <li><a href="#fragment-1_batman_adv"><span>12 Sunden</span></a></li>
+			        <li><a href="#fragment-2_batman_adv"><span>24 Stunden</span></a></li>
+			        <li><a href="#fragment-3_batman_adv"><span>7 Tage</span></a></li>
+			</ul>
+			<div id="fragment-1_batman_adv">
+				<img src="./tmp/router_{$router_data.router_id}_originators_12_hours.png">
+			</div>
+			<div id="fragment-2_batman_adv">
+				<img src="./tmp/router_{$router_data.router_id}_originators_1_day.png">
+			</div>
+			<div id="fragment-3_batman_adv">
+				<img src="./tmp/router_{$router_data.router_id}_originators_1_week.png">
 			</div>
 		</div>
+		
+		<h3>Graphic Link Quality</h3>
+		{literal}
+			<script>
+				$(document).ready(function() {
+		{/literal}
+					$("#tabs_batman_adv_link_quality_average").tabs();
+		{literal}
+				});
+			</script>
+		{/literal}
+		
+		<div id="tabs_batman_adv_link_quality_average" style="width: 96%">
+			<ul>
+	 		       <li><a href="#fragment-1_batman_adv_link_quality_average"><span>12 Sunden</span></a></li>
+	   		     <li><a href="#fragment-2_batman_adv_link_quality_average"><span>24 Stunden</span></a></li>
+	    		    <li><a href="#fragment-3_batman_adv_link_quality_average"><span>7 Tage</span></a></li>
+			</ul>
+			<div id="fragment-1_batman_adv_link_quality_average">
+				<img id="batman_adv_link_quality_average_12_hours" style="display: block;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_average_12_hours.png">
+				{foreach $batman_adv_originators as $originators}
+					<img id="batman_adv_link_quality_{$originators.originator_file_path}_12_hours" style="display: none;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_{$originators.originator_file_path}_12_hours.png">
+				{/foreach}
+			</div>
+			<div id="fragment-2_batman_adv_link_quality_average">
+				<img id="batman_adv_link_quality_average_1_day" style="display: block;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_average_1_day.png">
+				{foreach $batman_adv_originators as $originators}
+					<img id="batman_adv_link_quality_{$originators.originator_file_path}_1_day" style="display: none;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_{$originators.originator_file_path}_1_day.png">
+				{/foreach}
+			</div>
+			<div id="fragment-3_batman_adv_link_quality_average">
+				<img id="batman_adv_link_quality_average_1_week" style="display: block;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_average_1_week.png">
+				{foreach $batman_adv_originators as $originators}
+					<img id="batman_adv_link_quality_{$originators.originator_file_path}_1_week" style="display: none;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_{$originators.originator_file_path}_1_week.png">
+				{/foreach}
+			</div>
+		</div>
+		
+		<p>
+			<select name="search_range" onChange="setBatmanAdvLinqQualityPictures(this.options[this.selectedIndex].value)">
+				<option value="average" >Zeige Grafik für Average</option>
+				{foreach $batman_adv_originators as $originators}
+					<option value="{$originators.originator_file_path}" >Zeige Grafik für {$originators.originator}</option>
+				{/foreach}
+			</select>
+		</p>
 	</div>
+</div>
 
 {if !empty($router_olsr_interfaces)}
 	<div style="width: 100%; overflow: hidden;">

@@ -7,8 +7,9 @@ class BatmanAdvanced {
 					FROM crawl_batman_advanced_originators
 					WHERE router_id='$router_id' AND crawl_cycle_id='$crawl_cycle_id'";
 			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$originators[] = $row;
+			foreach($result as $key=>$row) {
+				$originators[$key] = $row;
+				$originators[$key]['originator_file_path'] = str_replace(":","_",$row['originator']);
 			}
 		}
 		catch(PDOException $e) {
