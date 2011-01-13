@@ -290,11 +290,24 @@ if($_GET['section']=="insert_batman_adv_originators") {
 				catch(PDOException $e) {
 					echo $e->getMessage();
 				}
-				RrdTool::updateRouterBatmanAdvOriginatorsCountHistory($_GET['router_id'], count($_GET['bat_adv_orig']));
+
+				RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($_GET['router_id'], $bat_adv_orig['originator'], $bat_adv_orig['link_quality'], time());
 			} else {
 				echo "The Batman Advanced Originator $bat_adv_orig[originator] has already been crawled\n";
 			}
 		}
+
+		$originator_count=count($_GET['bat_adv_orig']);
+		RrdTool::updateRouterBatmanAdvOriginatorsCountHistory($_GET['router_id'], $originator_count);
+
+		$average_link_quality = 0;
+		foreach($_GET['bat_adv_orig'] as $originator) {
+			$average_link_quality=$average_link_quality+$originator['link_quality'];
+		}
+
+		$average_link_quality=($average_link_quality/$originator_count);
+		RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($_GET['router_id'], "average", $average_link_quality, strtotime($crawl_cycle['crawl_date']));
+
 	} else {
 		echo "error;";
 		echo "You FAILED! to authenticated at netmon api nodewatcher section insert_crawl_data\n";

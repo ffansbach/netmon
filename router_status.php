@@ -95,7 +95,7 @@ $batman_adv_originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCyc
 $smarty->assign('batman_adv_originators', $batman_adv_originators);
 
 /** Make B.A.T.M.A.N advanced history graph **/
-$batman_adv_history = BatmanAdvanced::getCrawlBatmanAdvancedHistoryExceptActualCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id'], (60*24)/10);
+//$batman_adv_history = BatmanAdvanced::getCrawlBatmanAdvancedHistoryExceptActualCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id'], (60*24)/10);
 
 //Set RRD-Database and Image Path
 $rrd_path_originators = __DIR__."/rrdtool/databases/router_$_GET[router_id]_originators.rrd";
@@ -103,13 +103,38 @@ $image_path_originators_12_hours = __DIR__."/tmp/router_$_GET[router_id]_origina
 $image_path_originators_1_day = __DIR__."/tmp/router_$_GET[router_id]_originators_1_day.png";
 $image_path_originators_1_week = __DIR__."/tmp/router_$_GET[router_id]_originators_1_week.png";
 
-//Delete old Image
-@unlink($image_path_originators);
-
 //Create Image
 exec("rrdtool graph $image_path_originators_12_hours -a PNG --width 270 --title='B.A.T.M.A.N advanced Originators' --vertical-label 'Originators' --units-exponent 0 --start $history_start_12_hours --end $history_end DEF:probe2=$rrd_path_originators:originators:AVERAGE LINE2:probe2#72c2c3:'Originators'");
 exec("rrdtool graph $image_path_originators_1_day -a PNG --width 270 --title='B.A.T.M.A.N advanced Originators' --vertical-label 'Originators' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe2=$rrd_path_originators:originators:AVERAGE LINE2:probe2#72c2c3:'Originators'");
 exec("rrdtool graph $image_path_originators_1_week -a PNG --width 270 --title='B.A.T.M.A.N advanced Originators' --vertical-label 'Originators' --units-exponent 0 --start $history_start_1_week --end $history_end DEF:probe2=$rrd_path_originators:originators:AVERAGE LINE2:probe2#72c2c3:'Originators'");
+
+/** Make B.A.T.M.A.N advanced average link quality history graph **/
+//Set RRD-Database and Image Path
+$rrd_path_batman_adv_link_quality_average = __DIR__."/rrdtool/databases/router_".$_GET['router_id']."_batman_adv_link_quality_average.rrd";
+$image_path_batman_adv_link_quality_average_12_hours = __DIR__."/tmp/router_".$_GET['router_id']."_batman_adv_link_quality_average_12_hours.png";
+$image_path_batman_adv_link_quality_average_1_day = __DIR__."/tmp/router_".$_GET['router_id']."_batman_adv_link_quality_average_1_day.png";
+$image_path_batman_adv_link_quality_average_1_week = __DIR__."/tmp/router_".$_GET['router_id']."_batman_adv_link_quality_average_1_week.png";
+
+//Create Image
+exec("rrdtool graph $image_path_batman_adv_link_quality_average_12_hours -a PNG --width 270 --title='Link Quality average' --vertical-label 'Quality' --units-exponent 0 --start $history_start_12_hours --end $history_end DEF:probe1=$rrd_path_batman_adv_link_quality_average:quality:AVERAGE LINE1:probe1#72c2c3:'Quality'");
+exec("rrdtool graph $image_path_batman_adv_link_quality_average_1_day -a PNG --width 270 --title='Link Quality average' --vertical-label 'Quality' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe1=$rrd_path_batman_adv_link_quality_average:quality:AVERAGE LINE1:probe1#72c2c3:'Quality'");
+exec("rrdtool graph $image_path_batman_adv_link_quality_average_1_week -a PNG --width 270 --title='Link Quality average' --vertical-label 'Quality' --units-exponent 0 --start $history_start_1_week --end $history_end DEF:probe1=$rrd_path_batman_adv_link_quality_average:quality:AVERAGE LINE1:probe1#72c2c3:'Quality'");
+
+/** Make B.A.T.M.A.N advanced link quality history graph for each originator**/
+if(!empty($batman_adv_originators)) {
+	foreach($batman_adv_originators as $originator) {
+		//Set RRD-Database and Image Path
+		$rrd_path_batman_adv_link_quality = __DIR__."/rrdtool/databases/router_".$_GET['router_id']."_batman_adv_link_quality_".$originator['originator_file_path'].".rrd";
+		$image_path_batman_adv_link_quality_12_hours = __DIR__."/tmp/router_".$_GET['router_id']."_batman_adv_link_quality_".$originator['originator_file_path']."_12_hours.png";
+		$image_path_batman_adv_link_quality_1_day = __DIR__."/tmp/router_".$_GET['router_id']."_batman_adv_link_quality_".$originator['originator_file_path']."_1_day.png";
+		$image_path_batman_adv_link_quality_1_week = __DIR__."/tmp/router_".$_GET['router_id']."_batman_adv_link_quality_".$originator['originator_file_path']."_1_week.png";
+		
+		//Create Image
+		exec("rrdtool graph $image_path_batman_adv_link_quality_12_hours -a PNG --width 270 --title='Link Quality $originator[originator]' --vertical-label 'Quality' --units-exponent 0 --start $history_start_12_hours --end $history_end DEF:probe1=$rrd_path_batman_adv_link_quality:quality:AVERAGE LINE1:probe1#72c2c3:'Quality'");
+		exec("rrdtool graph $image_path_batman_adv_link_quality_1_day -a PNG --width 270 --title='Link Quality $originator[originator]' --vertical-label 'Quality' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe1=$rrd_path_batman_adv_link_quality:quality:AVERAGE LINE1:probe1#72c2c3:'Quality'");
+		exec("rrdtool graph $image_path_batman_adv_link_quality_1_week -a PNG --width 270 --title='Link Quality $originator[originator]' --vertical-label 'Quality' --units-exponent 0 --start $history_start_1_week --end $history_end DEF:probe1=$rrd_path_batman_adv_link_quality:quality:AVERAGE LINE1:probe1#72c2c3:'Quality'");
+	}
+}
 
 /** Get and assign actual Olsrd status **/
 $olsrd_crawl_data = Olsr::getCrawlOlsrDataByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);

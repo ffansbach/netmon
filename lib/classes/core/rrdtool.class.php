@@ -26,6 +26,19 @@ class RrdTool {
 			exec("rrdtool update $rrd_path ".time().":$originators");
 	}
 
+	public function updateRouterBatmanAdvOriginatorLinkQuality($router_id, $originator, $quality, $timestamp) {
+			$originator = str_replace(":","_",$originator);
+			//Update RRD Graph DB
+			$rrd_path = "$GLOBALS[monitor_root]/rrdtool/databases/router_".$router_id."_batman_adv_link_quality_$originator.rrd";
+			if(!file_exists($rrd_path)) {
+				//Create new RRD-Database
+				exec("rrdtool create $rrd_path --step 600 --start ".(time()-(60*60*24*30))." DS:quality:GAUGE:900:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
+			}
+
+			//Update Database
+			exec("rrdtool update $rrd_path $timestamp:$quality");
+	}
+
 	public function updateNetmonHistoryRouterStatus($online, $offline, $unknown, $total) {
 			//Update RRD Graph DB
 			$rrd_path = "$GLOBALS[monitor_root]/rrdtool/databases/netmon_history_router_status.rrd";
