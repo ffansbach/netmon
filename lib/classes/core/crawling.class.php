@@ -3,12 +3,12 @@
 require_once('lib/classes/core/history.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/rrdtool.class.php');
+require_once('lib/classes/core/clients.class.php');
 
 class Crawling {
 	public function organizeCrawlCycles()  {
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-		
-		if(strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<time()) {
+		if(strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
 			//End actual crawl
 			$routers = Router::getRouters();
 			foreach ($routers as $router) {
@@ -24,21 +24,28 @@ class Crawling {
 			$unknown = (Router::countRoutersByTime(strtotime($actual_crawl_cycle['crawl_date'])))-($offline+$online);
 			$total = $unknown+$offline+$online;
 			RrdTool::updateNetmonHistoryRouterStatus($online, $offline, $unknown, $total);
+
+			$client_count = Clients::countClientsCrawlCycle($actual_crawl_cycle['id']);
+			RrdTool::updateNetmonClientCount($client_count);
+
 			//Initialise new crawl cycle
 			Crawling::newCrawlCycle();
 		}
 	}
 
 	public function newCrawlCycle() {
-		try {
-			DB::getInstance()->exec("INSERT INTO crawl_cycle (crawl_date)
-							      VALUES (NOW());");
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
+		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+		if(strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
+			try {
+				DB::getInstance()->exec("INSERT INTO crawl_cycle (crawl_date)
+								      VALUES (NOW());");
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
 		}
 	}
-
+	
 	public function getCrawlCycleById($crawl_cycle_id) {
 		try {
 			$sql = "SELECT  *

@@ -8,6 +8,7 @@ require_once('./lib/classes/core/batmanadvanced.class.php');
 require_once('./lib/classes/core/olsr.class.php');
 require_once('./lib/classes/core/crawling.class.php');
 require_once('./lib/classes/core/history.class.php');
+require_once('./lib/classes/core/clients.class.php');
 
 /** Get crawl cycles **/
 if(!isset($_GET['crawl_cycle_id'])) {
@@ -221,6 +222,16 @@ foreach($interface_crawl_data as $key=>$interface) {
 }
 
 $smarty->assign('interface_crawl_data', $interface_crawl_data);
+
+/** Get Clients */
+
+$clients = Clients::getClientsByRouterAndCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id']);
+$smarty->assign('clients', $clients);
+
+$client_count = Clients::countClientsByRouterAndCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id']);
+$smarty->assign('client_count', $client_count);
+
+/**Google Maps API Key*/
 $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
 
 //Display Templates

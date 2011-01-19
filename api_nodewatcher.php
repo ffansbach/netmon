@@ -266,7 +266,6 @@ if($_GET['section']=="insert_batman_adv_originators") {
 	//If is owning user or if root
 	if((($_GET['authentificationmethod']=='user') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
 		echo "success;";
-
 		/**Insert Batman Advanced Originators*/
 		foreach($_GET['bat_adv_orig'] as $bat_adv_orig) {
 			try {
@@ -306,8 +305,54 @@ if($_GET['section']=="insert_batman_adv_originators") {
 		}
 
 		$average_link_quality=($average_link_quality/$originator_count);
-		RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($_GET['router_id'], "average", $average_link_quality, strtotime($crawl_cycle['crawl_date']));
+		RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($_GET['router_id'], "average", $average_link_quality, time());
 
+	} else {
+		echo "error;";
+		echo "You FAILED! to authenticated at netmon api nodewatcher section insert_crawl_data\n";
+		echo "Your router_id is: ".$_GET['router_id'];
+		echo "Your authentificationmethod is: ".$_GET['authentificationmethod'];
+		echo "Your netmon router_auto_assign_hash is: ".$router_data['router_auto_assign_hash'];
+		echo "Your router_auto_update_hash is: ".$_GET['router_auto_update_hash'];
+	}
+}
+
+if($_GET['section']=="insert_clients") {
+	$session = login::user_login($_GET['nickname'], $_GET['password']);
+	$router_data = Router::getRouterInfo($_GET['router_id']);
+	$last_crawl_cycle = Crawling::getActualCrawlCycle();
+
+	//If is owning user or if root
+	if((($_GET['authentificationmethod']=='user') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
+		echo "success;";
+		/**Insert Client Data*/
+		foreach($_GET['clients'] as $client) {
+			unset($crawl_clients);
+			try {
+				$sql = "SELECT *
+        				FROM  crawl_clients
+					WHERE router_id='$_GET[router_id]' AND crawl_cycle_id='$last_crawl_cycle[id]' AND mac_addr='$client[mac_addr]'";
+				$result = DB::getInstance()->query($sql);
+				foreach($result as $row) {
+					$crawl_clients[] = $row;
+				}
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+
+			if(empty($crawl_clients)) {
+				try {
+					DB::getInstance()->exec("INSERT INTO crawl_clients (router_id, crawl_cycle_id, crawl_date, mac_addr)
+								 VALUES ('$_GET[router_id]', '$last_crawl_cycle[id]', NOW(), '$client[mac_addr]')");
+				}
+				catch(PDOException $e) {
+					echo $e->getMessage();
+				}
+			} else {
+				echo "The Client $client[mac_addr] has already been crawled\n";
+			}
+		}
 	} else {
 		echo "error;";
 		echo "You FAILED! to authenticated at netmon api nodewatcher section insert_crawl_data\n";
