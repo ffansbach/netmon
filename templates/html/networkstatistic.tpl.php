@@ -67,6 +67,34 @@
 			<img src="./tmp/netmon_history_router_status_1_month.png">
 		</div>
 	</div>
+
+	<h2>Historie der Verbundenen Clients</h2>
+	{literal}
+		<script>
+			$(document).ready(function() {
+	{/literal}
+			$("#tabs_client_count_history").tabs();
+	{literal}
+			});
+		</script>
+	{/literal}
+	
+	<div id="tabs_client_count_history" style="width: 520px">
+		<ul>
+			<li><a href="#fragment-1_client_count_history"><span>1 Tag</span></a></li>
+			<li><a href="#fragment-2_client_count_history"><span>7 Tage</span></a></li>
+	   		<li><a href="#fragment-3_client_count_history"><span>1 Monat</span></a></li>
+		</ul>
+		<div id="fragment-1_client_count_history">
+			<img src="./tmp/netmon_history_client_count_1_day.png">
+		</div>
+		<div id="fragment-2_client_count_history">
+			<img src="./tmp/netmon_history_client_count_7_days.png">
+		</div>
+		<div id="fragment-3_client_count_history">
+			<img src="./tmp/netmon_history_client_count_1_month.png">
+		</div>
+	</div>
 {else}
 	<p>Es wurde noch kein Crawlzyklus vollständig beendet, sodass keine Daten generiert werden können</p>
 {/if}

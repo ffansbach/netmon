@@ -44,9 +44,6 @@ if(!empty($last_ended_crawl_cycle)) {
 	$image_path_status_7_days = __DIR__."/tmp/netmon_history_router_status_7_days.png";
 	$image_path_status_1_month = __DIR__."/tmp/netmon_history_router_status_1_month.png";
 	
-	//Delete old Image
-	@unlink($image_path_status);
-
 	//Create Image
 	exec("rrdtool graph $image_path_status_1_day -a PNG --title='Router status' --vertical-label 'routers' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe1=$rrd_path_status:online:AVERAGE DEF:probe2=$rrd_path_status:offline:AVERAGE DEF:probe3=$rrd_path_status:unknown:AVERAGE DEF:probe4=$rrd_path_status:total:AVERAGE LINE1:probe1#007B0F:'online' LINE1:probe2#CB0000:'offline' LINE1:probe3#F8C901:'unknown' LINE1:probe4#696969:'total'");
 	exec("rrdtool graph $image_path_status_7_days -a PNG --title='Router status' --vertical-label 'routers' --units-exponent 0 --start $history_start_7_days --end $history_end DEF:probe1=$rrd_path_status:online:AVERAGE DEF:probe2=$rrd_path_status:offline:AVERAGE DEF:probe3=$rrd_path_status:unknown:AVERAGE DEF:probe4=$rrd_path_status:total:AVERAGE LINE1:probe1#007B0F:'online' LINE1:probe2#CB0000:'offline' LINE1:probe3#F8C901:'unknown' LINE1:probe4#696969:'total'");
@@ -61,6 +58,19 @@ if(!empty($last_ended_crawl_cycle)) {
 	$smarty->assign('router_status_offline', $offline);
 	$smarty->assign('router_status_unknown', $unknown);
 	$smarty->assign('router_status_total', $total);
+
+	//Clients
+	//Set RRD-Database and Image Path
+	$rrd_path_status = __DIR__."/rrdtool/databases/netmon_hisory_client_count.rrd";
+	
+	$image_path_status_1_day = __DIR__."/tmp/netmon_history_client_count_1_day.png";
+	$image_path_status_7_days = __DIR__."/tmp/netmon_history_client_count_7_days.png";
+	$image_path_status_1_month = __DIR__."/tmp/netmon_history_client_count_1_month.png";
+	
+	//Create Image
+	exec("rrdtool graph $image_path_status_1_day -a PNG --title='Verbundene Clients' --vertical-label 'clients' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe1=$rrd_path_status:clients:AVERAGE LINE1:probe1#007B0F:'clients'");
+	exec("rrdtool graph $image_path_status_7_days -a PNG --title='Verbundene Clients' --vertical-label 'clients' --units-exponent 0 --start $history_start_7_days --end $history_end DEF:probe1=$rrd_path_status:clients:AVERAGE LINE1:probe1#007B0F:'clients'");
+	exec("rrdtool graph $image_path_status_1_month -a PNG --title='Verbundene Clients' --vertical-label 'clients' --units-exponent 0 --start $history_start_1_month --end $history_end DEF:probe1=$rrd_path_status:clients:AVERAGE LINE1:probe1#007B0F:'clients'");
 }
 /** Display templates **/
 $smarty->display("header.tpl.php");

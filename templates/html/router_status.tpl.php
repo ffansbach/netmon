@@ -80,7 +80,7 @@ $(document).ready(function() {
 </div>
 
 <div style="width: 100%; overflow: hidden; margin-bottom: 20px;">
-	<div style="float:left; width: 47%;">
+	<div style="float:left; width: 45%; padding-right: 15px;">
 		<h2>Grunddaten</h2>
 		<b>Benutzer:</b> <a href="./user.php?id={$router_data.user_id}">{$router_data.nickname}</a><br>
 		<b>Angelegt am:</b> {$router_data.create_date|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
@@ -168,6 +168,31 @@ $(document).ready(function() {
 				<b>Idletime:</b> {math equation="round(x,1)" x=$router_last_crawl.idletime/60/60} Stunden
 			{/if}
 		</p>
+		<h3><u>Clients</u></h3>
+		<p><b>Verbundene Clients:</b> {$client_count}</p>
+
+		{if !empty($clients)}
+			<table class="display" id="batman_adv_originator_list">
+				<thead>
+					<tr>
+						<th>Mad Adresse</th>
+						<th>Zuletzt gesehen</th>
+					</tr>
+				</thead>
+				<tbody>
+					{foreach $clients as $client}
+						<tr>
+							<td>{$client.mac_addr}</td>
+							<td>{$client.crawl_date|date_format:"%H:%M"} Uhr</td>
+						</tr>
+					{/foreach}
+				</tbody>
+			</table>
+		{else}
+			<p>Zu diesem Node sind keine Clients verbunden</p>
+		{/if}
+
+
 	</div>
 	<div style="float:left; width: 53%;">
 		{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}

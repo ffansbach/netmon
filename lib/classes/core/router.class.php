@@ -1,6 +1,7 @@
 <?php
 
 require_once('lib/classes/core/crawling.class.php');
+require_once('lib/classes/core/clients.class.php');
 require_once('lib/classes/extern/xmpphp/XMPP.php');
 
 class Router {
@@ -158,6 +159,7 @@ class Router {
 				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 				$row['actual_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 				$row['router_reliability'] = Router::getRouterReliability($row['router_id'], 500);
+				$row['client_count'] = Clients::countClientsByRouterAndCrawlCycle($row['router_id'], $last_endet_crawl_cycle['id']);
 				$routers[] = $row;
 			}
 		}

@@ -34,8 +34,9 @@ $(document).ready(function() {
 					<th>Stand</th>
 					<th>Technik</th>
 					<th>Benutzer</th>
-					<th>Zuverlässigkeit</th>
+					<th>Online</th>
 					<th>Uptime</th>
+					<th>Clients</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -52,8 +53,9 @@ $(document).ready(function() {
 						<td>{$router.actual_crawl_data.crawl_date|date_format:"%H:%M"} Uhr</td>
 						<td>{$router.chipset_name}</td>
 						<td><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></td>
-						<td>{$router.router_reliability.online_percent}% online</td>
+						<td>{$router.router_reliability.online_percent}%</td>
 						<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60} Stunden</td>
+						<td>{$router.client_count}</td>
 					</tr>
 				{/foreach}
 			</tbody>

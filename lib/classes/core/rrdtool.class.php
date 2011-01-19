@@ -50,6 +50,20 @@ class RrdTool {
 			//Update Database
 			exec("rrdtool update $rrd_path ".time().":$online:$offline:$unknown:$total");
 	}
+
+	public function updateNetmonClientCount($client_count) {
+			//Update RRD Graph DB
+			$rrd_path = "$GLOBALS[monitor_root]/rrdtool/databases/netmon_hisory_client_count.rrd";
+			if(!file_exists($rrd_path)) {
+				//Create new RRD-Database
+				exec("rrdtool create $rrd_path --step 600 --start ".time()." DS:clients:GAUGE:800:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
+			}
+
+			//Update Database
+			exec("rrdtool update $rrd_path ".time().":$client_count");
+	}
+
+
 }
 
 ?>
