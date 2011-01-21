@@ -146,7 +146,13 @@ $(document).ready(function() {
 				<b>Distname:</b> {$router_last_crawl.distname}<br>
 			{/if}
 			{if !empty($router_last_crawl.distversion)}
-				<b>Distversion:</b> {$router_last_crawl.distversion}
+				<b>Distversion:</b> {$router_last_crawl.distversion}<br>
+			{/if}
+			{if !empty($router_last_crawl.kernel_version)}
+				<b>Kernelversion:</b> {$router_last_crawl.kernel_version}<br>
+			{/if}
+			{if !empty($router_last_crawl.batman_advanced_version)}
+				<b>Batman advanced Version:</b> {$router_last_crawl.batman_advanced_version}
 			{/if}
 		</p>
 

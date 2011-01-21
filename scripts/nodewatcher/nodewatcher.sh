@@ -222,10 +222,6 @@ crawl() {
 		luciname=`urlencode "$luciname"`
 		lucversion=`lua -l luci.version -e 'print(luci.version.luciversion)'`
 		lucversion=`urlencode "$lucversion"`
-		distname=`lua -l luci.version -e 'print(luci.version.distname)'`
-		distname=`urlencode "$distname"`
-		distversion=`lua -l luci.version -e 'print(luci.version.distversion)'`
-		distversion=`urlencode "$distversion"`
 	fi
 	
 	#Get system data from other locations
@@ -245,8 +241,19 @@ crawl() {
 	processes=`cat /proc/loadavg | awk '{ print $4 }'`
 	loadavg=`cat /proc/loadavg | awk '{ print $1 }'`
 	
+	batman_adv_version=`batctl -v | awk '{ print $2 }'`
+	kernel_version=`uname -r`
+
+	openwrt_version_file="/etc/openwrt_release"
+	if [ -f $openwrt_version_file ]; then
+		. $openwrt_version_file
+
+		distname=$DISTRIB_ID
+		distversion=$DISTRIB_RELEASE
+	fi
+
 	#Send system data
-	command="http://$netmon_api/api_nodewatcher.php?section=insert_crawl_system_data&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&status=online&hostname=$hostname&description=$description&location=$location&latitude=$latitude&longitude=$longitude&luciname=$luciname&luciversion=$luciversion&distname=$distname&distversion=$distversion&chipset=$chipset&cpu=$cpu&memory_total=$memory_total&memory_caching=$memory_caching&memory_buffering=$memory_buffering&memory_free=$memory_free&loadavg=$loadavg&processes=$processes&uptime=$uptime&idletime=$idletime&local_time=$local_time&community_essid=$community_essid&community_nickname=$community_nickname&community_email=$community_email&community_prefix=$community_prefix"
+	command="http://$netmon_api/api_nodewatcher.php?section=insert_crawl_system_data&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&status=online&hostname=$hostname&description=$description&location=$location&latitude=$latitude&longitude=$longitude&luciname=$luciname&luciversion=$luciversion&distname=$distname&distversion=$distversion&chipset=$chipset&cpu=$cpu&memory_total=$memory_total&memory_caching=$memory_caching&memory_buffering=$memory_buffering&memory_free=$memory_free&loadavg=$loadavg&processes=$processes&uptime=$uptime&idletime=$idletime&local_time=$local_time&community_essid=$community_essid&community_nickname=$community_nickname&community_email=$community_email&community_prefix=$community_prefix&batman_advanced_version=$batman_adv_version&kernel_version=$kernel_version"
 	command="wget -q -O - "$command
 	if [ "$1" = "debug" ]; then
 		echo $command

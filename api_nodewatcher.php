@@ -21,7 +21,7 @@ if($_GET['section']=="update") {
 }
 
 if($_GET['section']=="version") {
-	$version=11;
+	$version=12;
 	echo "success;$version";
 }
 
