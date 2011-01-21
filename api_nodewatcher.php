@@ -15,13 +15,13 @@ Crawling::organizeCrawlCycles();
 
 if($_GET['section']=="update") {
 	header("Content-Type: text/plain");
-	header("Content-Disposition: attachment; filename=nodewatcher_script");
+	header("Content-Disposition: attachment; filename=nodewatcher.sh");
 
-	echo file_get_contents('./scripts/nodewatcher/nodewatcher_script');
+	echo file_get_contents('./scripts/nodewatcher/nodewatcher.sh');
 }
 
 if($_GET['section']=="version") {
-	$version=9;
+	$version=11;
 	echo "success;$version";
 }
 
