@@ -39,6 +39,19 @@ class RrdTool {
 			exec("rrdtool update $rrd_path $timestamp:$quality");
 	}
 
+	public function updateRouterClientCountHistory($router_id, $clients) {
+			//Update RRD Graph DB
+			$rrd_path = "$GLOBALS[monitor_root]/rrdtool/databases/router_".$router_id."_clients.rrd";
+			if(!file_exists($rrd_path)) {
+				//Create new RRD-Database
+				$command = "rrdtool create $rrd_path --step 600 --start ".time()." DS:clients:GAUGE:900:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240";
+				exec($command);
+			}
+
+			//Update Database
+			exec("rrdtool update $rrd_path ".time().":$clients");
+	}
+
 	public function updateNetmonHistoryRouterStatus($online, $offline, $unknown, $total) {
 			//Update RRD Graph DB
 			$rrd_path = "$GLOBALS[monitor_root]/rrdtool/databases/netmon_history_router_status.rrd";

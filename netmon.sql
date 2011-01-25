@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 21, 2011 at 08:51 PM
+-- Generation Time: Jan 25, 2011 at 10:00 PM
 -- Server version: 5.1.49
 -- PHP Version: 5.3.3-3
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
 -- Table structure for table `crawl_batman_advanced_interfaces`
 --
 -- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 21, 2011 at 08:50 PM
+-- Last update: Jan 25, 2011 at 09:55 PM
 --
 
 DROP TABLE IF EXISTS `crawl_batman_advanced_interfaces`;
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
 -- Table structure for table `crawl_batman_advanced_originators`
 --
 -- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 21, 2011 at 08:50 PM
+-- Last update: Jan 25, 2011 at 09:55 PM
 --
 
 DROP TABLE IF EXISTS `crawl_batman_advanced_originators`;
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
 -- Table structure for table `crawl_clients`
 --
 -- Creation: Jan 19, 2011 at 11:45 AM
--- Last update: Jan 21, 2011 at 08:50 PM
+-- Last update: Jan 25, 2011 at 09:55 PM
 --
 
 DROP TABLE IF EXISTS `crawl_clients`;
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `crawl_clients` (
 -- Table structure for table `crawl_cycle`
 --
 -- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 21, 2011 at 08:50 PM
+-- Last update: Jan 25, 2011 at 09:52 PM
 --
 
 DROP TABLE IF EXISTS `crawl_cycle`;
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `crawl_data` (
 -- Table structure for table `crawl_interfaces`
 --
 -- Creation: Dec 14, 2010 at 06:23 PM
--- Last update: Jan 21, 2011 at 08:50 PM
+-- Last update: Jan 25, 2011 at 09:55 PM
 --
 
 DROP TABLE IF EXISTS `crawl_interfaces`;
@@ -211,8 +211,8 @@ CREATE TABLE IF NOT EXISTS `crawl_olsr` (
 --
 -- Table structure for table `crawl_routers`
 --
--- Creation: Jan 21, 2011 at 08:40 PM
--- Last update: Jan 21, 2011 at 08:50 PM
+-- Creation: Jan 24, 2011 at 06:10 PM
+-- Last update: Jan 25, 2011 at 09:55 PM
 --
 
 DROP TABLE IF EXISTS `crawl_routers`;
@@ -249,6 +249,7 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `community_prefix` varchar(15) NOT NULL,
   `batman_advanced_version` varchar(20) NOT NULL,
   `kernel_version` varchar(30) NOT NULL,
+  `nodewatcher_version` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
@@ -258,7 +259,7 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
 -- Table structure for table `crawl_services`
 --
 -- Creation: Dec 10, 2010 at 06:03 PM
--- Last update: Jan 21, 2011 at 08:50 PM
+-- Last update: Jan 25, 2011 at 09:55 PM
 --
 
 DROP TABLE IF EXISTS `crawl_services`;
@@ -278,7 +279,7 @@ CREATE TABLE IF NOT EXISTS `crawl_services` (
 -- Table structure for table `history`
 --
 -- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 21, 2011 at 07:55 PM
+-- Last update: Jan 25, 2011 at 02:50 PM
 --
 
 DROP TABLE IF EXISTS `history`;
@@ -463,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
 -- Table structure for table `routers`
 --
 -- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 21, 2011 at 06:12 AM
+-- Last update: Jan 25, 2011 at 02:50 PM
 --
 
 DROP TABLE IF EXISTS `routers`;
@@ -585,7 +586,7 @@ CREATE TABLE IF NOT EXISTS `subnets` (
 -- Table structure for table `users`
 --
 -- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 21, 2011 at 08:50 PM
+-- Last update: Jan 25, 2011 at 10:00 PM
 --
 
 DROP TABLE IF EXISTS `users`;

@@ -278,6 +278,7 @@ $(document).ready(function() {
 			</script>
 		{/literal}
 
+		<h3>Memor</h3>
 		<div id="tabs_router_memory" style="width: 96%">
 			<ul>
 				<li><a href="#fragment-1_router_memory"><span>12 Sunden</span></a></li>
@@ -292,6 +293,34 @@ $(document).ready(function() {
 			</div>
 			<div id="fragment-3_router_memory">
 				<img src="./tmp/router_{$router_data.router_id}_memory_1_week.png">
+			</div>
+		</div>
+
+		{literal}
+			<script>
+				$(document).ready(function() {
+		{/literal}
+					$("#tabs_clients").tabs();
+		{literal}
+				});
+			</script>
+		{/literal}
+
+		<h3>Anzahl der Nachbarn</h3>
+		<div id="tabs_clients" style="width: 96%">
+			<ul>
+			        <li><a href="#fragment-1_clients"><span>12 Sunden</span></a></li>
+			        <li><a href="#fragment-2_clients"><span>24 Stunden</span></a></li>
+			        <li><a href="#fragment-3_clients"><span>7 Tage</span></a></li>
+			</ul>
+			<div id="fragment-1_clients">
+				<img src="./tmp/router_{$router_data.router_id}_clients_12_hours.png">
+			</div>
+			<div id="fragment-2_clients">
+				<img src="./tmp/router_{$router_data.router_id}_clients_1_day.png">
+			</div>
+			<div id="fragment-3_clients">
+				<img src="./tmp/router_{$router_data.router_id}_clients_1_week.png">
 			</div>
 		</div>
 	</div>
