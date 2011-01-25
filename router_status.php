@@ -49,7 +49,7 @@ $router_reliability = Router::getRouterReliability($_GET['router_id'], 500);
 $smarty->assign('router_reliability', $router_reliability);
 
 /** Get Router History **/
-$router_history = History::getRouterHistoryByRouterIdExceptActualCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id'], 6, false);
+$router_history = History::getRouterHistoryByRouterIdExceptActualCrawlCycle($_GET['router_id'], $last_ended_crawl_cycle['id'], 6, false);
 $smarty->assign('router_history', $router_history);
 
 /** Get and assign Router Informations **/
@@ -91,7 +91,7 @@ $smarty->assign('router_crawl_history', $router_crawl_history);
 /** Get and assign actual B.A.T.M.A.N advanced status **/
 $crawl_batman_adv_interfaces = BatmanAdvanced::getCrawlBatmanAdvInterfacesByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 $smarty->assign('crawl_batman_adv_interfaces', $crawl_batman_adv_interfaces);
-$batman_adv_originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
+$batman_adv_clients = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 //$batman_adv_originators['originators'] = unserialize($batman_adv_originators['originators']);
 $smarty->assign('batman_adv_originators', $batman_adv_originators);
 
@@ -225,11 +225,23 @@ $smarty->assign('interface_crawl_data', $interface_crawl_data);
 
 /** Get Clients */
 
-$clients = Clients::getClientsByRouterAndCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id']);
+$clients = Clients::getClientsByRouterAndCrawlCycle($_GET['router_id'], $last_ended_crawl_cycle['id']);
 $smarty->assign('clients', $clients);
 
-$client_count = Clients::countClientsByRouterAndCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id']);
+$client_count = Clients::countClientsByRouterAndCrawlCycle($_GET['router_id'], $last_ended_crawl_cycle['id']);
 $smarty->assign('client_count', $client_count);
+
+/** Make Clients Count History Graph */
+//Set RRD-Database and Image Path
+$rrd_path_clients = __DIR__."/rrdtool/databases/router_$_GET[router_id]_clients.rrd";
+$image_path_clients_12_hours = __DIR__."/tmp/router_$_GET[router_id]_clients_12_hours.png";
+$image_path_clients_1_day = __DIR__."/tmp/router_$_GET[router_id]_clients_1_day.png";
+$image_path_clients_1_week = __DIR__."/tmp/router_$_GET[router_id]_clients_1_week.png";
+
+//Create Image
+exec("rrdtool graph $image_path_clients_12_hours -a PNG --width 270 --title='Clients' --vertical-label 'Clients' --units-exponent 0 --start $history_start_12_hours --end $history_end DEF:probe1=$rrd_path_clients:clients:AVERAGE LINE1:probe1#72c2c3:'Clients'");
+exec("rrdtool graph $image_path_clients_1_day -a PNG --width 270 --title='Clients' --vertical-label 'Clients' --units-exponent 0 --start $history_start_1_day --end $history_end DEF:probe1=$rrd_path_clients:clients:AVERAGE LINE1:probe1#72c2c3:'Clients'");
+exec("rrdtool graph $image_path_clients_1_week -a PNG --width 270 --title='Clients' --vertical-label 'Clients' --units-exponent 0 --start $history_start_1_week --end $history_end DEF:probe1=$rrd_path_clients:clients:AVERAGE LINE1:probe1#72c2c3:'Clients'");
 
 /**Google Maps API Key*/
 $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);

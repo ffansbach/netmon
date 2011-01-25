@@ -21,7 +21,7 @@ if($_GET['section']=="update") {
 }
 
 if($_GET['section']=="version") {
-	$version=12;
+	$version=13;
 	echo "success;$version";
 }
 
@@ -353,6 +353,8 @@ if($_GET['section']=="insert_clients") {
 				echo "The Client $client[mac_addr] has already been crawled\n";
 			}
 		}
+		
+		RrdTool::updateRouterClientCountHistory($_GET['router_id'], count($_GET['clients']));
 	} else {
 		echo "error;";
 		echo "You FAILED! to authenticated at netmon api nodewatcher section insert_crawl_data\n";
