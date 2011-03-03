@@ -57,6 +57,7 @@
 	<p>
 		Chipset:
 		<select name="chipset_id">
+				<option value="9999999" {if $chipset.id==$router_data.chipset_id}selected='selected'{/if}>Unbekannt</option>
 			{foreach item=chipset from=$chipsets}
 				<option value="{$chipset.id}" {if $chipset.id==$router_data.chipset_id}selected='selected'{/if}>{$chipset.name}</option>
 			{/foreach}
@@ -87,7 +88,7 @@
 	</p>
 
 	<p>
-		Autozuweisungs Login: <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$router_data.router_auto_assign_login_string}">
+		Mac Adresse: <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$router_data.router_auto_assign_login_string}">
 	</p>
 
 	<p><input type="submit" value="Absenden"></p>

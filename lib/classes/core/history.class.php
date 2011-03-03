@@ -287,7 +287,7 @@ class History {
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-
+		if(!empty($routers)) {
 		foreach($routers as $router) {
 			try {
 				$sql = "SELECT id, object, object_id, create_date, data
@@ -319,6 +319,7 @@ class History {
 			if(!empty($user_history[$i])) {
 				$history_cp[] = $user_history[$i];
 			}
+		}
 		}
 
 		return $history_cp;

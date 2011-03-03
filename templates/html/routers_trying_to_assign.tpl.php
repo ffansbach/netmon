@@ -30,8 +30,7 @@ $(document).ready(function() {
 			<thead>
 				<tr>
 					<th>Hostname</th>
-					<th>Login String</th>
-					<th>Intercace</th>
+					<th>Mac Adresse</th>
 					<th>Erstellt</th>
 					<th>Update</th>
 					<th>Aktionen</th>
@@ -42,8 +41,7 @@ $(document).ready(function() {
 					<tr>
 						<td>{$router.hostname}</td>
 						<td>{$router.router_auto_assign_login_string}</td>
-						<td>{$router.interface}</td>
-						<td>{$router.create_date|date_format:"%H:%M"} Uhr</td>
+						<td>{$router.create_date|date_format:"%d.%m.%Y %H:%M"} Uhr</td>
 						<td>{$router.update_date|date_format:"%H:%M"} Uhr</td>
 						<td><a href="./routereditor.php?section=new&hostname={$router.hostname}&crawl_method=router&allow_router_auto_assign=1&router_auto_assign_login_string={$router.router_auto_assign_login_string}">Übernehmen</a></td>
 					</tr>

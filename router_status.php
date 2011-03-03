@@ -91,7 +91,7 @@ $smarty->assign('router_crawl_history', $router_crawl_history);
 /** Get and assign actual B.A.T.M.A.N advanced status **/
 $crawl_batman_adv_interfaces = BatmanAdvanced::getCrawlBatmanAdvInterfacesByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 $smarty->assign('crawl_batman_adv_interfaces', $crawl_batman_adv_interfaces);
-$batman_adv_clients = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
+$batman_adv_originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 //$batman_adv_originators['originators'] = unserialize($batman_adv_originators['originators']);
 $smarty->assign('batman_adv_originators', $batman_adv_originators);
 
@@ -224,11 +224,7 @@ foreach($interface_crawl_data as $key=>$interface) {
 $smarty->assign('interface_crawl_data', $interface_crawl_data);
 
 /** Get Clients */
-
-$clients = Clients::getClientsByRouterAndCrawlCycle($_GET['router_id'], $last_ended_crawl_cycle['id']);
-$smarty->assign('clients', $clients);
-
-$client_count = Clients::countClientsByRouterAndCrawlCycle($_GET['router_id'], $last_ended_crawl_cycle['id']);
+$client_count = Clients::getClientsCountByRouterAndCrawlCycle($_GET['router_id'], $last_ended_crawl_cycle['id']);
 $smarty->assign('client_count', $client_count);
 
 /** Make Clients Count History Graph */

@@ -9,7 +9,14 @@
   $smarty->assign('router_data', $router_data);
   $interfaces = Interfaces::getInterfacesByRouterId($_GET['router_id']);
   $smarty->assign('interfaces', $interfaces);
-  $services = Service::getServicesByRouterId($_GET['router_id']);
+
+  $is_logged_id = Usermanagement::isLoggedIn($SESSION['user_id']);
+  if($is_logged_id) {
+  	$view='all';
+  } else {
+  	$view='public';
+  }
+  $services = Service::getServicesByRouterId($_GET['router_id'], $view);
   $smarty->assign('services', $services);
 
   $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);

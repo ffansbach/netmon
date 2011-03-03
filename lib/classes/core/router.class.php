@@ -159,7 +159,7 @@ class Router {
 				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 				$row['actual_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 				$row['router_reliability'] = Router::getRouterReliability($row['router_id'], 500);
-				$row['client_count'] = Clients::countClientsByRouterAndCrawlCycle($row['router_id'], $last_endet_crawl_cycle['id']);
+				$row['client_count'] = Clients::getClientsCountByRouterAndCrawlCycle($row['router_id'], $last_endet_crawl_cycle['id']);
 				$routers[] = $row;
 			}
 		}
@@ -333,19 +333,20 @@ class Router {
 	public function getRouterReliability($router_id, $crawl_cycles) {
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 		$crawl_history = Router::getCrawlRouterHistoryExceptActualCrawlCycle($router_id, $actual_crawl_cycle['id'], $crawl_cycles);
-		$count = count($crawl_history);
-		$status['online_absolut']=0;
-		$status['offline_absolut']=0;
-		foreach($crawl_history as $crawl) {
-			if($crawl['status']=="online")
-				$status['online_absolut']++;
-			else
-				$status['offline_absolut']++;
+		if(!empty($crawl_history)) {
+			$count = count($crawl_history);
+			$status['online_absolut']=0;
+			$status['offline_absolut']=0;
+			foreach($crawl_history as $crawl) {
+				if($crawl['status']=="online")
+					$status['online_absolut']++;
+				else
+					$status['offline_absolut']++;
+			}
+			
+			$status['online_percent']=$status['online_absolut']/$count*100;
+			$status['offline_percent']=$status['offline_absolut']/$count*100;
 		}
-
-		$status['online_percent']=$status['online_absolut']/$count*100;
-		$status['offline_percent']=$status['offline_absolut']/$count*100;
-
 		return($status);
 	}
 
@@ -473,6 +474,4 @@ $GLOBALS[community_name]";
 		}
 		return $crawl_data;
 	}
-
-
 }

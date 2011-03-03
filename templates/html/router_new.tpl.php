@@ -37,7 +37,7 @@
 <form action="./routereditor.php?section=insert" method="POST">
 	<h2>Grunddaten</h2>
 	<p>
-		Hostname: <br><input name="hostname" type="text" size="35" maxlength="50" value="{$smarty.get.hostname}">
+		Hostname: (prägnanter Name für den Router) <br><input name="hostname" type="text" size="35" maxlength="50" value="{$smarty.get.hostname}">
 	</p>
 
 	<p>
@@ -67,6 +67,7 @@
 					Länge: <input id="longitude" name="longitude" size="15" maxlength="15" ><br>
 					Breite: <input id="latitude" name="latitude" size="15" maxlength="15" >
 				</p>
+				<p>Klicke auf die Karte um Länge und Breite einzutragen.</p>
 			</div>
 		</div>
 	</div>
@@ -77,6 +78,7 @@
 	<p>
 		Chipset:
 		<select name="chipset_id">
+				<option value="9999999" selected='selected'>Unbekannt</option>
 			{foreach item=chipset from=$chipsets}
 				<option value="{$chipset.id}">{$chipset.name}</option>
 			{/foreach}
@@ -107,7 +109,7 @@
 	</p>
 
 	<p>
-		Autozuweisungs Login: <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$smarty.get.router_auto_assign_login_string}">
+		Mac Adresse: <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$smarty.get.router_auto_assign_login_string}">
 	</p>
 
 	<p><input type="submit" value="Absenden"></p>
