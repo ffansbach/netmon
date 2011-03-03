@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.2.3
+-- version 3.3.9
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 25, 2011 at 10:00 PM
--- Server version: 5.1.49
--- PHP Version: 5.3.3-3
+-- Generation Time: Mar 03, 2011 at 01:30 PM
+-- Server version: 5.1.54
+-- PHP Version: 5.3.3-7
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -17,9 +17,6 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
 -- Table structure for table `chipsets`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Nov 20, 2010 at 08:43 PM
 --
 
 DROP TABLE IF EXISTS `chipsets`;
@@ -35,9 +32,6 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
 
 --
 -- Table structure for table `crawl_batman_advanced_interfaces`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 25, 2011 at 09:55 PM
 --
 
 DROP TABLE IF EXISTS `crawl_batman_advanced_interfaces`;
@@ -55,9 +49,6 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
 
 --
 -- Table structure for table `crawl_batman_advanced_originators`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 25, 2011 at 09:55 PM
 --
 
 DROP TABLE IF EXISTS `crawl_batman_advanced_originators`;
@@ -77,9 +68,6 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
 --
 -- Table structure for table `crawl_clients`
 --
--- Creation: Jan 19, 2011 at 11:45 AM
--- Last update: Jan 25, 2011 at 09:55 PM
---
 
 DROP TABLE IF EXISTS `crawl_clients`;
 CREATE TABLE IF NOT EXISTS `crawl_clients` (
@@ -94,10 +82,23 @@ CREATE TABLE IF NOT EXISTS `crawl_clients` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_cycle`
+-- Table structure for table `crawl_clients_count`
 --
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 25, 2011 at 09:52 PM
+
+DROP TABLE IF EXISTS `crawl_clients_count`;
+CREATE TABLE IF NOT EXISTS `crawl_clients_count` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `router_id` int(11) NOT NULL,
+  `crawl_cycle_id` int(11) NOT NULL,
+  `crawl_date` datetime NOT NULL,
+  `client_count` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `crawl_cycle`
 --
 
 DROP TABLE IF EXISTS `crawl_cycle`;
@@ -111,9 +112,6 @@ CREATE TABLE IF NOT EXISTS `crawl_cycle` (
 
 --
 -- Table structure for table `crawl_data`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Nov 20, 2010 at 08:43 PM
 --
 
 DROP TABLE IF EXISTS `crawl_data`;
@@ -155,9 +153,6 @@ CREATE TABLE IF NOT EXISTS `crawl_data` (
 --
 -- Table structure for table `crawl_interfaces`
 --
--- Creation: Dec 14, 2010 at 06:23 PM
--- Last update: Jan 25, 2011 at 09:55 PM
---
 
 DROP TABLE IF EXISTS `crawl_interfaces`;
 CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
@@ -187,9 +182,6 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
 --
 -- Table structure for table `crawl_olsr`
 --
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Nov 20, 2010 at 08:43 PM
---
 
 DROP TABLE IF EXISTS `crawl_olsr`;
 CREATE TABLE IF NOT EXISTS `crawl_olsr` (
@@ -210,9 +202,6 @@ CREATE TABLE IF NOT EXISTS `crawl_olsr` (
 
 --
 -- Table structure for table `crawl_routers`
---
--- Creation: Jan 24, 2011 at 06:10 PM
--- Last update: Jan 25, 2011 at 09:55 PM
 --
 
 DROP TABLE IF EXISTS `crawl_routers`;
@@ -258,9 +247,6 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
 --
 -- Table structure for table `crawl_services`
 --
--- Creation: Dec 10, 2010 at 06:03 PM
--- Last update: Jan 25, 2011 at 09:55 PM
---
 
 DROP TABLE IF EXISTS `crawl_services`;
 CREATE TABLE IF NOT EXISTS `crawl_services` (
@@ -277,9 +263,6 @@ CREATE TABLE IF NOT EXISTS `crawl_services` (
 
 --
 -- Table structure for table `history`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 25, 2011 at 02:50 PM
 --
 
 DROP TABLE IF EXISTS `history`;
@@ -298,9 +281,6 @@ CREATE TABLE IF NOT EXISTS `history` (
 --
 -- Table structure for table `imagemaker_configs`
 --
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Nov 20, 2010 at 08:43 PM
---
 
 DROP TABLE IF EXISTS `imagemaker_configs`;
 CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
@@ -318,9 +298,6 @@ CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
 --
 -- Table structure for table `imagemaker_images`
 --
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Nov 20, 2010 at 08:43 PM
---
 
 DROP TABLE IF EXISTS `imagemaker_images`;
 CREATE TABLE IF NOT EXISTS `imagemaker_images` (
@@ -336,9 +313,6 @@ CREATE TABLE IF NOT EXISTS `imagemaker_images` (
 
 --
 -- Table structure for table `interfaces`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Dec 14, 2010 at 01:38 PM
 --
 
 DROP TABLE IF EXISTS `interfaces`;
@@ -360,9 +334,6 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
 
 --
 -- Table structure for table `ips`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Nov 20, 2010 at 08:43 PM
 --
 
 DROP TABLE IF EXISTS `ips`;
@@ -392,9 +363,6 @@ CREATE TABLE IF NOT EXISTS `ips` (
 --
 -- Table structure for table `olsr_crawl_data`
 --
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Nov 20, 2010 at 08:43 PM
---
 
 DROP TABLE IF EXISTS `olsr_crawl_data`;
 CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
@@ -413,9 +381,6 @@ CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
 
 --
 -- Table structure for table `projects`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Nov 20, 2010 at 08:43 PM
 --
 
 DROP TABLE IF EXISTS `projects`;
@@ -463,9 +428,6 @@ CREATE TABLE IF NOT EXISTS `projects` (
 --
 -- Table structure for table `routers`
 --
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 25, 2011 at 02:50 PM
---
 
 DROP TABLE IF EXISTS `routers`;
 CREATE TABLE IF NOT EXISTS `routers` (
@@ -495,9 +457,6 @@ CREATE TABLE IF NOT EXISTS `routers` (
 --
 -- Table structure for table `routers_not_assigned`
 --
--- Creation: Dec 17, 2010 at 12:32 PM
--- Last update: Jan 09, 2011 at 12:00 AM
---
 
 DROP TABLE IF EXISTS `routers_not_assigned`;
 CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
@@ -514,9 +473,6 @@ CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
 
 --
 -- Table structure for table `services`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Nov 20, 2010 at 08:43 PM
 --
 
 DROP TABLE IF EXISTS `services`;
@@ -542,9 +498,6 @@ CREATE TABLE IF NOT EXISTS `services` (
 
 --
 -- Table structure for table `subnets`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Nov 20, 2010 at 08:43 PM
 --
 
 DROP TABLE IF EXISTS `subnets`;
@@ -584,9 +537,6 @@ CREATE TABLE IF NOT EXISTS `subnets` (
 
 --
 -- Table structure for table `users`
---
--- Creation: Nov 20, 2010 at 08:43 PM
--- Last update: Jan 25, 2011 at 10:00 PM
 --
 
 DROP TABLE IF EXISTS `users`;

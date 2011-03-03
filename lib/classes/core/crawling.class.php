@@ -101,8 +101,10 @@ class Crawling {
 		DB::getInstance()->exec("DELETE FROM crawl_olsr WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
 	}
 
-	public function insertRouterCrawl($router_id, $crawl_data) {
-		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+	public function insertRouterCrawl($router_id, $crawl_data, $actual_crawl_cycle=false) {
+		if(!$actual_crawl_cycle) {
+			$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+		}
 		$crawl_router = Router::getCrawlRouterByCrawlCycleId($actual_crawl_cycle['id'], $router_id);
 
 		if(empty($crawl_router)) {

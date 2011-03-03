@@ -7,6 +7,7 @@ require_once('lib/classes/core/routersnotassigned.class.php');
 require_once('lib/classes/core/rrdtool.class.php');
 require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/crawling.class.php');
+require_once('lib/classes/core/chipsets.class.php');
 
 /**
 * Crawl cycles and offline crawls
@@ -21,7 +22,7 @@ if($_GET['section']=="update") {
 }
 
 if($_GET['section']=="version") {
-	$version=13;
+	$version=15;
 	echo "success;$version";
 }
 
@@ -38,11 +39,13 @@ if($_GET['section']=="test_login_strings") {
 	$login_strings = explode(";", $_GET['login_strings']);
 	$exist=false;
 	foreach($login_strings as $login_string) {
-		$router_data = Router::getRouterByAutoAssignLoginString($login_string);
-		if(!empty($router_data)) {
-			$exist=true;
-			echo "success;$login_string";
-			break;
+		if(!empty($login_string)) {
+			$router_data = Router::getRouterByAutoAssignLoginString($login_string);
+			if(!empty($router_data)) {
+				$exist=true;
+				echo "success;$login_string";
+				break;
+			}
 		}
 	}
 	if(!$exist) {
@@ -196,9 +199,21 @@ if($_GET['section']=="insert_crawl_system_data") {
 		$crawl_router = Router::getCrawlRouterByCrawlCycleId($last_crawl_cycle['id'], $_GET['router_id']);
 
 		if(empty($crawl_router) AND !empty($_GET['status'])) {
+			//Insert Crawl Data into DB
 			Crawling::insertRouterCrawl($_GET['router_id'], $_GET);
 			//Update router memory rrd hostory
 			RrdTool::updateRouterMemoryHistory($_GET['router_id'], $_GET['memory_free'], $_GET['memory_caching'], $_GET['memory_buffering']);
+			//Check if Chipset is set right, if not create new chipset and assign to router
+			if($router_data['chipset_name']!=$_GET['chipset']) {
+				$chipset = Chipsets::getChipsetByName($_GET['chipset']);
+				if(empty($chipset)) {
+					$chipset = Chipsets::newChipset($router_data['user_id'], $_GET['chipset']);
+				}
+
+				DB::getInstance()->exec("UPDATE routers SET
+								chipset_id = $chipset[id]
+								WHERE id = '$_GET[router_id]'");
+			}
 		} else {
 			echo "Router System Data has already been crawled\n";
 		}
@@ -326,35 +341,32 @@ if($_GET['section']=="insert_clients") {
 	if((($_GET['authentificationmethod']=='user') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
 		echo "success;";
 		/**Insert Client Data*/
-		foreach($_GET['clients'] as $client) {
-			unset($crawl_clients);
+		try {
+			$sql = "SELECT *
+        			FROM  crawl_clients_count
+				WHERE router_id='$_GET[router_id]' AND crawl_cycle_id='$last_crawl_cycle[id]'";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$crawl_clients[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		if(empty($crawl_clients)) {
 			try {
-				$sql = "SELECT *
-        				FROM  crawl_clients
-					WHERE router_id='$_GET[router_id]' AND crawl_cycle_id='$last_crawl_cycle[id]' AND mac_addr='$client[mac_addr]'";
-				$result = DB::getInstance()->query($sql);
-				foreach($result as $row) {
-					$crawl_clients[] = $row;
-				}
+				DB::getInstance()->exec("INSERT INTO crawl_clients_count (router_id, crawl_cycle_id, crawl_date, client_count)
+							 VALUES ('$_GET[router_id]', '$last_crawl_cycle[id]', NOW(), '$_GET[client_count]')");
 			}
 			catch(PDOException $e) {
 				echo $e->getMessage();
 			}
-
-			if(empty($crawl_clients)) {
-				try {
-					DB::getInstance()->exec("INSERT INTO crawl_clients (router_id, crawl_cycle_id, crawl_date, mac_addr)
-								 VALUES ('$_GET[router_id]', '$last_crawl_cycle[id]', NOW(), '$client[mac_addr]')");
-				}
-				catch(PDOException $e) {
-					echo $e->getMessage();
-				}
-			} else {
-				echo "The Client $client[mac_addr] has already been crawled\n";
-			}
+		} else {
+			echo "The Clients have already been crawled\n";
 		}
 		
-		RrdTool::updateRouterClientCountHistory($_GET['router_id'], count($_GET['clients']));
+		RrdTool::updateRouterClientCountHistory($_GET['router_id'], $_GET['client_count']);
 	} else {
 		echo "error;";
 		echo "You FAILED! to authenticated at netmon api nodewatcher section insert_crawl_data\n";

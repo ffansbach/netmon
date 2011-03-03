@@ -23,8 +23,11 @@
 	if ($_GET['section'] == "insert") {
 		if (UserManagement::checkPermission(4)) {
 			$insert_result = RouterEditor::insertNewRouter();
-
-			header('Location: ./router_config.php?router_id='.$insert_result['router_id']);
+			if($insert_result['result']) {
+				header('Location: ./router_config.php?router_id='.$insert_result['router_id']);
+			} else {
+				header('Location: ./routereditor.php?section=new');
+			}
 		} else {
 			$message[] = array("Nur eingeloggte Benutzer dürfen einen Router anlegen oder editieren!", 2);
 			Message::setMessage($message);
@@ -80,7 +83,7 @@
 		if (UserManagement::checkPermission(4)) {
 			if($_POST['really_delete']==1) {
 				$insert_result = RouterEditor::insertDeleteRouter($_GET['router_id']);
-				header('Location: ./desktop.php');
+				header('Location: ./user.php?user_id='.$_SESSION['user_id']);
 			} else {
 				$message[] = array("Zum löschen des Routers ist eine Bestätigung erforderlich!", 2);
 				Message::setMessage($message);

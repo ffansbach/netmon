@@ -82,7 +82,7 @@ $(document).ready(function() {
 <div style="width: 100%; overflow: hidden; margin-bottom: 20px;">
 	<div style="float:left; width: 45%; padding-right: 15px;">
 		<h2>Grunddaten</h2>
-		<b>Benutzer:</b> <a href="./user.php?id={$router_data.user_id}">{$router_data.nickname}</a><br>
+		<b>Benutzer:</b> <a href="./user.php?user_id={$router_data.user_id}">{$router_data.nickname}</a><br>
 		<b>Angelegt am:</b> {$router_data.create_date|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
 
 		<h2>System Monitoring</h2>
@@ -92,9 +92,11 @@ $(document).ready(function() {
 			<img src="./templates/img/ffmap/status_up_small.png" alt="online">
 		{elseif $router_last_crawl.status=="offline"}
 			<img src="./templates/img/ffmap/status_down_small.png" alt="offline">
+		{elseif $router_last_crawl.status=="unknown"}
+			<img src="./templates/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
 		{/if}
 		<br>
-		<b>Zuverlässigkeit:</b> {$router_reliability.online_percent}% online<br>
+		<b>Zuverlässigkeit:</b> {math equation="round(x,1)" x=$router_reliability.online_percent}% online<br>
 		<b>Datenquelle:</b> {if $router_data.crawl_method=='router'}Router sendet Daten{elseif $router_data.crawl_method=='crawler'}Netmon Crawler{/if}<br>
 		<b>Letzter Crawl:</b> {$router_last_crawl.crawl_date|date_format:"%d.%m.%Y %H:%M"}<br>
 		<b>Crawl Intervall:</b> alle {$crawl_cycle} Minuten<br>
@@ -176,29 +178,6 @@ $(document).ready(function() {
 		</p>
 		<h3><u>Clients</u></h3>
 		<p><b>Verbundene Clients:</b> {$client_count}</p>
-
-		{if !empty($clients)}
-			<table class="display" id="batman_adv_originator_list">
-				<thead>
-					<tr>
-						<th>Mad Adresse</th>
-						<th>Zuletzt gesehen</th>
-					</tr>
-				</thead>
-				<tbody>
-					{foreach $clients as $client}
-						<tr>
-							<td>{$client.mac_addr}</td>
-							<td>{$client.crawl_date|date_format:"%H:%M"} Uhr</td>
-						</tr>
-					{/foreach}
-				</tbody>
-			</table>
-		{else}
-			<p>Zu diesem Node sind keine Clients verbunden</p>
-		{/if}
-
-
 	</div>
 	<div style="float:left; width: 53%;">
 		{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
@@ -306,7 +285,7 @@ $(document).ready(function() {
 			</script>
 		{/literal}
 
-		<h3>Anzahl der Nachbarn</h3>
+		<h3>Client Historie</h3>
 		<div id="tabs_clients" style="width: 96%">
 			<ul>
 			        <li><a href="#fragment-1_clients"><span>12 Sunden</span></a></li>

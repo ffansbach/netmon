@@ -14,7 +14,14 @@ $smarty->assign('user', Helper::getUserByID($_GET['user_id']));
 $routerlist = Router::getRouterListByUserId($_GET['user_id']);
 $smarty->assign('routerlist', $routerlist);
 
-$servicelist = Service::getServiceListByUserId($_GET['user_id']);
+
+$is_logged_id = Usermanagement::isLoggedIn($SESSION['user_id']);
+if($is_logged_id) {
+	$view='all';
+} else {
+	$view='public';
+}
+$servicelist = Service::getServiceListByUserId($_GET['user_id'], $view);
 $smarty->assign('servicelist', $servicelist);
 
 $user_history = History::getUserHistory($_GET['user_id'], 5);

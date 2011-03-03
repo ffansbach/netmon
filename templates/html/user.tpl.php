@@ -23,6 +23,12 @@ $(document).ready(function() {
 {/literal}
 </script>
 
+{if $permitted}
+<ul id="tabnav" style="text-align: right; padding-right: 0px; margin-right: 0px;">
+	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px; border-right: 0px;" href="./user_edit.php?section=edit&id={$smarty.get.user_id}">Benutzereinstellungen</a></li>
+</ul>
+{/if}
+
 <h1>Benutzerseite von {$user.nickname}</h1>
 
 <div style="width: 100%; overflow: hidden;">
@@ -155,6 +161,4 @@ $(document).ready(function() {
 <p>Keine Services vorhanden</p>
 {/if}
 
-{if $permitted}
-<p><a href="./user_edit.php?section=edit&id={$smarty.get.user_id}">Benutzer editieren</a></p>
-{/if}
+<br style="clear: both;">

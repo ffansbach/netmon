@@ -33,7 +33,15 @@ require_once 'lib/classes/core/crawling.class.php';
 require_once 'lib/classes/core/interfaces.class.php';
 
 class Service {
-	public function getServiceList() {
+	public function getServiceList($view) {
+		if($view=='public') {
+			$sql_add = 'WHERE visible=1';
+		} elseif($view=='all') {
+			$sql_add = '';
+		} else {
+			$sql_add = '';
+		}
+
 		$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		$servicelist = array();
 		try {
@@ -44,7 +52,8 @@ class Service {
 					FROM services
 					LEFT JOIN routers on (routers.id=services.router_id)
 					LEFT JOIN users on (users.id=routers.user_id)
-					LEFT JOIN crawl_routers on (crawl_routers.crawl_cycle_id='$last_ended_crawl_cycle[id]' AND crawl_routers.router_id=services.router_id)";
+					LEFT JOIN crawl_routers on (crawl_routers.crawl_cycle_id='$last_ended_crawl_cycle[id]' AND crawl_routers.router_id=services.router_id)
+				$sql_add";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $key=>$row) {
 				$interfaces = Interfaces::getIPv4InterfacesByRouterId($row['router_id']);
@@ -65,7 +74,15 @@ class Service {
 		return $servicelist;
 	}
 
-	public function getServiceListByUserId($user_id) {
+	public function getServiceListByUserId($user_id, $view) {
+		if($view=='public') {
+			$sql_add = 'AND services.visible=1';
+		} elseif($view=='all') {
+			$sql_add = '';
+		} else {
+			$sql_add = '';
+		}
+
 		$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		$servicelist = array();
 		try {
@@ -77,7 +94,7 @@ class Service {
 					LEFT JOIN routers on (routers.id=services.router_id)
 					LEFT JOIN users on (users.id=routers.user_id)
 					LEFT JOIN crawl_routers on (crawl_routers.crawl_cycle_id='$last_ended_crawl_cycle[id]' AND crawl_routers.router_id=services.router_id)
-					WHERE routers.user_id='$user_id'";
+					WHERE routers.user_id='$user_id' $sql_add";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $key=>$row) {
 				$interfaces = Interfaces::getIPv4InterfacesByRouterId($row['router_id']);
@@ -112,12 +129,20 @@ class Service {
 		return $service_data;
 	}
 
-	public function getServicesByRouterId($router_id) {
+	public function getServicesByRouterId($router_id, $view) {
+		if($view=='public') {
+			$sql_add = 'AND visible=1';
+		} elseif($view=='all') {
+			$sql_add = '';
+		} else {
+			$sql_add = '';
+		}
+
 		$servicelist = array();
 		try {
 			$sql = "SELECT  *
 					FROM services
-					WHERE router_id='$router_id'";
+					WHERE router_id='$router_id' $sql_add";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$servicelist[] = $row;

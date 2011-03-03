@@ -32,7 +32,7 @@ $(document).ready(function() {
 			<tbody>
 				{foreach $userlist as $user}
 					<tr>
-						<td><a href="./user.php?user_id={$userlist.id}">{$user.nickname}</a></td>
+						<td><a href="./user.php?user_id={$user.id}">{$user.nickname}</a></td>
 						<td>{$user.routercount}</td>
 						<td>{$user.jabber}</td>
 						<td>{$user.icq}</td>

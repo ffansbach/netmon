@@ -3,17 +3,29 @@
 require_once($path.'lib/classes/core/interfaces.class.php');
 require_once($path.'lib/classes/core/service.class.php');
 require_once($path.'lib/classes/core/serviceeditor.class.php');
+require_once($path.'lib/classes/core/crawling.class.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
-		DB::getInstance()->exec("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, router_auto_assign_login_string, description, location, latitude, longitude, chipset_id, notify, notification_wait)
+		if(!empty($_POST['hostname'])) {
+			DB::getInstance()->exec("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, router_auto_assign_login_string, description, location, latitude, longitude, chipset_id, notify, notification_wait)
 						      VALUES ('$_SESSION[user_id]', NOW(), NOW(), '$_POST[crawl_method]', '$_POST[hostname]', '$_POST[allow_router_auto_assign]', '$_POST[router_auto_assign_login_string]', '$_POST[description]', '$_POST[location]', '$_POST[latitude]', '$_POST[longitude]', '$_POST[chipset_id]', '$_POST[notify]', '$_POST[notification_wait]');");
-		$router_id = DB::getInstance()->lastInsertId();
-		
-		$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
-		Message::setMessage($message);
-		
-		return array("result"=>true, "router_id"=>$router_id);
+			$router_id = DB::getInstance()->lastInsertId();
+
+			$crawl_data['status'] = "unknown";
+			$crawl_cycle_id = Crawling::getLastEndedCrawlCycle();
+			Crawling::insertRouterCrawl($router_id, $crawl_data, $crawl_cycle_id);
+
+			$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
+			Message::setMessage($message);
+			
+			return array("result"=>true, "router_id"=>$router_id);
+		} else {
+			$message[] = array("Der Router konnte nicht angelegt werden.", 2);
+			$message[] = array("Bitte geben sie einen Hostname an.", 2);
+			Message::setMessage($message);
+			return array("result"=>false, "router_id"=>$router_id);
+		}
 	}
 
 	public function resetRouterAutoAssignHash($router_id) {

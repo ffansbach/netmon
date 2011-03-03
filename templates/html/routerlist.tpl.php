@@ -48,12 +48,14 @@ $(document).ready(function() {
 								<img src="./templates/img/ffmap/status_up_small.png" title="online" alt="online">
 							{elseif $router.actual_crawl_data.status=="offline"}
 								<img src="./templates/img/ffmap/status_down_small.png" title="offline" alt="offline">
+							{elseif $router.actual_crawl_data.status=="unknown"}
+								<img src="./templates/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
 							{/if}
 						</td>
 						<td>{$router.actual_crawl_data.crawl_date|date_format:"%H:%M"} Uhr</td>
 						<td>{$router.chipset_name}</td>
 						<td><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></td>
-						<td>{$router.router_reliability.online_percent}%</td>
+						<td>{math equation="round(x,1)" x=$router.router_reliability.online_percent}%</td>
 						<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60} Stunden</td>
 						<td>{$router.client_count}</td>
 					</tr>
@@ -64,3 +66,5 @@ $(document).ready(function() {
 {else}
 <p>Keine Router vorhanden</p>
 {/if}
+
+<br style="clear: both;">

@@ -590,11 +590,13 @@ foreach($crawl_routers as $crawl_router) {
 									$xw->writeRaw("<![CDATA[Router <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
-										$box_inhalt = "<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>
-												   <b>Benutzer:</b> <a href='./user.php?id=$router_data[user_id]'>$router_data[nickname]</a><br>
-												   <b>Standortbeschreibung:</b> $location<br>
-												   <b>Letzter Crawl:</b> ".$crawl_router['crawl_date']."<br><br>";
-												   
+										$box_inhalt = "<b>Status:</b> $crawl_router[status]<br>
+										<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>
+												   <b>Benutzer:</b> <a href='./user.php?user_id=$router_data[user_id]'>$router_data[nickname]</a><br>";
+												   if(!empty($location)) {
+													   $box_inhalt .= "<b>Standortbeschreibung:</b> $location<br>";
+												   }
+												   $box_inhalt .= "<b>Letztes Update:</b> ".$crawl_router['crawl_date']."<br><br>";
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 								$xw->endElement();
 								$xw->startElement('styleUrl');
