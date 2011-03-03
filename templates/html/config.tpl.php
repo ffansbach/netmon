@@ -1,7 +1,14 @@
+<script type="text/javascript">
+	document.body.id='tab1';
+</script>
+
+<ul id="tabnav">
+	<li class="tab1"><a href="./config.php?section=edit">Netmon</a></li>
+	<li class="tab2"><a href="./config.php?section=edit_twitter">Twitter</a></li>
+</ul>
+
 <h1>Netmon Konfiguration</h1>
 <form action="./config.php?section=insert_edit" method="POST">
-
-
 	<h2>Installationsroutine</h2>
 	<p>Gesperrt: <input name="installed" type="checkbox" value="true" {if $installed}checked{/if}></p>
 

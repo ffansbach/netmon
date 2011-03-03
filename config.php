@@ -2,6 +2,11 @@
 
 require_once('runtime.php');
 require_once('./lib/classes/core/install.class.php');
+require_once('./lib/classes/core/config.class.php');
+require_once('lib/classes/extern/Zend/Oauth/Consumer.php');
+
+
+$config_path = "./config/config.local.inc.php";
 
 if ($_GET['section']=="edit") {
 	//INSTALLATION-LOCK
@@ -58,8 +63,6 @@ if ($_GET['section']=="edit") {
 	$smarty->display("config.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif ($_GET['section']=="insert_edit") {
-		$config_path = "./config/config.local.inc.php";
-
 		$file = Install::getFileLineByLine($config_path);
 		if ($_POST['installed'])
 			$configs[0] = '$GLOBALS[\'installed\'] = true;';
@@ -148,6 +151,102 @@ if ($_GET['section']=="edit") {
 		Message::setMessage($message);
 
 		header('Location: ./config.php?section=edit');
+} elseif($_GET['section']=="edit_twitter") {
+	//MAIL
+	$smarty->assign('twitter_consumer_key', $GLOBALS['twitter_consumer_key']);
+	$smarty->assign('twitter_consumer_secret', $GLOBALS['twitter_consumer_secret']);
+	$smarty->assign('twitter_username', $GLOBALS['twitter_username']);
+	
+	$smarty->assign('message', Message::getMessage());
+	$smarty->display("header.tpl.php");
+	$smarty->display("config_twitter.tpl.php");
+	$smarty->display("footer.tpl.php");
+} elseif($_GET['section']=="insert_edit_twitter_application_data") {
+		$file = Install::getFileLineByLine($config_path);
+		$configs[0] = '$GLOBALS[\'twitter_consumer_key\'] = "'.$_POST['twitter_consumer_key'].'";';
+		$configs[1] = '$GLOBALS[\'twitter_consumer_secret\'] = "'.$_POST['twitter_consumer_secret'].'";';
+		$configs[2] = '$GLOBALS[\'twitter_username\'] = "'.$GLOBALS['twitter_username'].'";';
+		$file = Install::changeConfigSection('//TWITTER', $file, $configs);
+		Install::writeEmptyFileLineByLine($config_path, $file);
+		unset($configs);
+
+		$message[] = array('Die Twitter Anwendungsdaten wurden gespeichert.', 1);
+		Message::setMessage($message);
+
+		header('Location: ./config.php?section=edit_twitter');
+} elseif($_GET['section']=="insert_edit_twitter_username") {
+		$file = Install::getFileLineByLine($config_path);
+		$configs[0] = '$GLOBALS[\'twitter_consumer_key\'] = "'.$GLOBALS['twitter_consumer_key'].'";';
+		$configs[1] = '$GLOBALS[\'twitter_consumer_secret\'] = "'.$GLOBALS['twitter_consumer_secret'].'";';
+		$configs[2] = '$GLOBALS[\'twitter_username\'] = "'.$_POST['twitter_username'].'";';
+		$file = Install::changeConfigSection('//TWITTER', $file, $configs);
+		Install::writeEmptyFileLineByLine($config_path, $file);
+		unset($configs);
+
+		$message[] = array('Der Twitter Benutzername wurde gespeichert.', 1);
+		Message::setMessage($message);
+
+		header('Location: ./config.php?section=edit_twitter');
+} elseif($_GET['section']=="recieve_twitter_token") {
+		$config = array(
+			'callbackUrl' => 'http://netmon.freifunk-ol.de/config.php?section=recieve_twitter_token',
+			'siteUrl' => 'http://twitter.com/oauth',
+			'consumerKey' => $GLOBALS['twitter_consumer_key'],
+			'consumerSecret' => $GLOBALS['twitter_consumer_secret']
+		);
+		$consumer = new Zend_Oauth_Consumer($config);
+		
+		if (!empty($_GET) && isset($_SESSION['TWITTER_REQUEST_TOKEN'])) {
+			$token = $consumer->getAccessToken(
+				$_GET,
+					unserialize($_SESSION['TWITTER_REQUEST_TOKEN'])
+				);
+			$_SESSION['TWITTER_ACCESS_TOKEN'] = serialize($token);
+			
+			// Now that we have an Access Token, we can discard the Request Token
+			$_SESSION['TWITTER_REQUEST_TOKEN'] = null;
+		} else {
+			// Mistaken request? Some malfeasant trying something?
+	 		exit('Invalid callback request. Oops. Sorry.');
+		}
+
+		$twitter_token = Config::getConfigLineByName('twitter_token');
+
+		if(empty($twitter_token)) {
+			try {
+				DB::getInstance()->exec("INSERT INTO config (name, value)
+							 VALUES ('twitter_token', '$_SESSION[TWITTER_ACCESS_TOKEN]');");
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+		} else {
+			$result = DB::getInstance()->exec("UPDATE config SET
+								value='$_SESSION[TWITTER_ACCESS_TOKEN]'
+							   WHERE name = 'twitter_token'");
+		}
+
+		$message[] = array('Ein neuer Twitter token wurde erstellt und gespeichert.', 1);
+		Message::setMessage($message);
+
+		header('Location: ./config.php?section=edit_twitter');
+} elseif($_GET['section']=="get_twitter_token") {
+	$config = array(
+		'callbackUrl' => 'http://netmon.freifunk-ol.de/config.php?section=recieve_twitter_token',
+		'siteUrl' => 'http://twitter.com/oauth',
+		'consumerKey' => $GLOBALS['twitter_consumer_key'],
+		'consumerSecret' => $GLOBALS['twitter_consumer_secret']
+	);
+	$consumer = new Zend_Oauth_Consumer($config);
+	
+	// fetch a request token
+	$token = $consumer->getRequestToken();
+	
+	// persist the token to storage
+	$_SESSION['TWITTER_REQUEST_TOKEN'] = serialize($token);
+	
+	// redirect the user
+	$consumer->redirect();
 }
 
 ?>

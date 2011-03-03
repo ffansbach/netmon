@@ -88,7 +88,7 @@ $(document).ready(function() {
 					<th>Stand</th>
 					<th>Technik</th>
 					<th>Benutzer</th>
-					<th>Zuverlässigkeit</th>
+					<th>Online</th>
 					<th>Uptime</th>
 				</tr>
 			</thead>
@@ -106,7 +106,7 @@ $(document).ready(function() {
 						<td>{$router.actual_crawl_data.crawl_date|date_format:"%H:%M"} Uhr</td>
 						<td>{$router.chipset_name}</td>
 						<td><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></td>
-						<td>{$router.router_reliability.online_percent}% online</td>
+						<td>{math equation="round(x,1)" x=$router.router_reliability.online_percent}%</td>
 						<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60} Stunden</td>
 					</tr>
 				{/foreach}
@@ -116,6 +116,8 @@ $(document).ready(function() {
 {else}
 <p>Keine Router vorhanden</p>
 {/if}
+
+<br style="clear: both;">
 
 <h2>Dienste von {$user.nickname}</h2>
 {if !empty($servicelist)}

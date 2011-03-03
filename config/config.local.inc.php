@@ -17,6 +17,11 @@ $GLOBALS['jabber_server'] = "your_jabber_server";
 $GLOBALS['jabber_username'] = "your_jabber_username";
 $GLOBALS['jabber_password'] = "your_jabber_pasword";
 
+//TWITTER
+$GLOBALS['twitter_consumer_key'] = "your_twitter_consumer_key";
+$GLOBALS['twitter_consumer_secret'] = "your_twitter_consumer_secret";
+$GLOBALS['twitter_username'] = "your_twitter_username";
+
 //MAIL
 $GLOBALS['mail_sending_type'] = "your_mail_sending_type"; //Can be "smtp" or "php_mail"
 $GLOBALS['mail_sender_adress'] = "your_sender_email";

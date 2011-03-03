@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 03, 2011 at 01:30 PM
+-- Generation Time: Mar 03, 2011 at 11:34 PM
 -- Server version: 5.1.54
 -- PHP Version: 5.3.3-7
 
@@ -25,6 +25,20 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
   `user_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `config`
+--
+
+DROP TABLE IF EXISTS `config`;
+CREATE TABLE IF NOT EXISTS `config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `value` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
