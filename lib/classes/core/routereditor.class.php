@@ -4,6 +4,8 @@ require_once($path.'lib/classes/core/interfaces.class.php');
 require_once($path.'lib/classes/core/service.class.php');
 require_once($path.'lib/classes/core/serviceeditor.class.php');
 require_once($path.'lib/classes/core/crawling.class.php');
+require_once($path.'lib/classes/core/config.class.php');
+require_once($path.'lib/classes/extern/Zend/Service/Twitter.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
@@ -17,6 +19,28 @@ class RouterEditor {
 			Crawling::insertRouterCrawl($router_id, $crawl_data, $crawl_cycle_id);
 
 			$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
+
+			//Send Message to twitter
+			$config_line = Config::getConfigLineByName('twitter_token');
+			if(!empty($GLOBALS['twitter_username']) AND !empty($config_line)) {
+				$config = array(
+					'callbackUrl' => 'http://example.com/callback.php',
+					'siteUrl' => 'http://twitter.com/oauth',
+					'consumerKey' => $GLOBALS['twitter_consumer_key'],
+					'consumerSecret' => $GLOBALS['twitter_consumer_secret']
+				);
+				
+				$statusMessage = "Neuer #Freifunk Knoten in #Oldenburg! Wo? Schau nach: http://netmon.freifunk-ol.de/router_status.php?router_id=$router_id";
+				
+				$token = unserialize($config_line['value']);
+				$client = $token->getHttpClient($config);
+				$client->setUri('http://twitter.com/statuses/update.json');
+				$client->setMethod(Zend_Http_Client::POST);
+				$client->setParameterPost('status', $statusMessage);
+				$response = $client->request();
+				$message[] = array("Der neue Router wird auf dem Twitteraccount von <a href=\"http://twitter.com/$GLOBALS[twitter_username]\">$GLOBALS[twitter_username]</a> angekündigt.", 1);
+			}
+
 			Message::setMessage($message);
 			
 			return array("result"=>true, "router_id"=>$router_id);
