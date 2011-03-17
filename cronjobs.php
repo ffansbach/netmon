@@ -8,6 +8,10 @@ if (empty($_SERVER["REQUEST_URI"])) {
 	$GLOBALS['netmon_root_path'] = $path."/";
 }
 
+if(!empty($_SERVER['REMOTE_ADDR'])) {
+	die("This script can only be run by the server directly.");
+}
+
 require_once('runtime.php');
 require_once('lib/classes/core/service.class.php');
 require_once('lib/classes/core/crawling.class.php');

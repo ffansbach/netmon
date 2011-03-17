@@ -34,8 +34,8 @@ require_once("lib/classes/core/login.class.php");
 
 class User {
 	function userInsertEdit() {
-		if ($this->checkUserEditData($_GET['id'], $_POST['changepassword'], $_POST['oldpassword'], $_POST['newpassword'], $_POST['newpasswordchk'], $_POST['email'])) {
-			$user = Helper::getUserByID($_GET['id']);
+		if ($this->checkUserEditData($_GET['user_id'], $_POST['changepassword'], $_POST['oldpassword'], $_POST['newpassword'], $_POST['newpasswordchk'], $_POST['email'])) {
+			$user = Helper::getUserByID($_GET['user_id']);
 			if (!$_POST['changepassword']) {
 				$password = $user['password'];
 			} else {
@@ -68,7 +68,7 @@ class User {
 							  website = '$_POST[website]',
 							  about = '$_POST[about]',
 							  notification_method = '$_POST[notification_method]'
-							  WHERE id = '$_GET[id]'";
+							  WHERE id = '$_GET[user_id]'";
 			DB::getInstance()->exec($sqlinsert);
 			
 			$message[] = array("Die Daten von $user[nickname] wurden geändert", 1);

@@ -358,7 +358,7 @@ class Router {
 
 			$user_data = Helper::getUserByID($router_data['user_id']);
 			$router_crawl_history = Router::getCrawlRouterHistoryExceptActualCrawlCycle($router_id, $actual_crawl_cycle['id'], $router_data['notification_wait']);
-			if (!empty($router_crawl_history) AND (count($router_crawl_history)>=$router_data['notifiaction_wait'])) {
+			if (!empty($router_crawl_history) AND (count($router_crawl_history)>=$router_data['notification_wait'])) {
 				//Wenn der Serivice in der notification_wait einmal online gecrawlt wurde, beende.
 				$online = false;
 				foreach($router_crawl_history as $hist) {

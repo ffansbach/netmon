@@ -20,10 +20,10 @@ $(document).ready(function() {
 </script>
 <ul id="tabnav">
 	<li class="tab1"><a href="./routerlist.php">Routerliste</a></li>
-	<li class="tab2"><a href="./routers_trying_to_assign.php">Nicht angemeldete Router</a></li>
+	<li class="tab2"><a href="./routers_trying_to_assign.php">Neue Router</a></li>
 </ul>
 
-<h1>Liste der Router die noch nicht zugewiesen sind</h1>
+<h1>Liste der neuen Router</h1>
 {if !empty($routerlist)}
 	<div style="display: block; float: left;">
 		<table class="display" id="routerlist">
@@ -50,5 +50,5 @@ $(document).ready(function() {
 		</table>
 	</div>
 {else}
-<p>Keine Router vorhanden</p>
+<p>In der Liste der neuen Router ist derzeit kein Router eingetragen.</p>
 {/if}

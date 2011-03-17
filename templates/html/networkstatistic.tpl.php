@@ -33,10 +33,31 @@
 		</tr>
 	</table>
 	
-	<h2>Router by Type</h2>
+	<h2>Router nach Chipset</h2>
 	<p>
 	{foreach item=router_chipset from=$router_chipsets}
 		<b>{$router_chipset.chipset_name}:</b> {$router_chipset.count}<br>
+	{/foreach}
+	</p>
+
+	<h2>Router nach Batman adv. version</h2>
+	<p>
+	{foreach item=batman_advanced_version_count from=$batman_advanced_versions_count}
+		<b>{$batman_advanced_version_count.batman_advanced_version}:</b> {$batman_advanced_version_count.count}<br>
+	{/foreach}
+	</p>
+
+	<h2>Router nach Kernel Version</h2>
+	<p>
+	{foreach item=kernel_version_count from=$kernel_versions_count}
+		<b>{$kernel_version_count.kernel_version}:</b> {$kernel_version_count.count}<br>
+	{/foreach}
+	</p>
+
+	<h2>Router nach Firmware Version</h2>
+	<p>
+	{foreach item=firmware_version_count from=$firmware_versions_count}
+		<b>{$firmware_version_count.firmware_version}:</b> {$firmware_version_count.count}<br>
 	{/foreach}
 	</p>
 	

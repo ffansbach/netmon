@@ -3,9 +3,14 @@ require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/crawling.class.php');
 
 class History {
-	public function makeRouterHistoryEntry($current_crawl_data, $router_id){
-		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+	public function makeRouterHistoryEntry($current_crawl_data, $router_id, $actual_crawl_cycle=array(), $last_endet_crawl_cycle=array()){
+		if(empty($actual_crawl_cycle)) {
+			$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+		}
+		if(empty($last_endet_crawl_cycle)) {
+			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+		}
+
 		$last_crawl_data = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router_id);
 		if($last_crawl_data['status']!="online") {
 			$last_online_crawl_data = Router::getLastOnlineCrawlByRouterId($router_id);
@@ -326,12 +331,14 @@ class History {
 	}
 
 	public function getHistory($countlimit, $hourlimit) {
+		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 		if($countlimit)
 			$range = "
+					  WHERE history.crawl_cycle_id!=$actual_crawl_cycle[id]
 					  ORDER BY history.create_date desc
 					  LIMIT 0, $countlimit";
 		elseif ($hourlimit)
-			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR
+			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR AND history.crawl_cycle_id!=$actual_crawl_cycle[id]
 					  ORDER BY history.create_date desc";
 		try {
 			$sql = "SELECT id, object, object_id, create_date, data

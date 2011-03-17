@@ -10,35 +10,42 @@ require_once($path.'lib/classes/extern/Zend/Service/Twitter.php');
 class RouterEditor {
 	public function insertNewRouter() {
 		if(!empty($_POST['hostname'])) {
-			DB::getInstance()->exec("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, router_auto_assign_login_string, description, location, latitude, longitude, chipset_id, notify, notification_wait)
-						      VALUES ('$_SESSION[user_id]', NOW(), NOW(), '$_POST[crawl_method]', '$_POST[hostname]', '$_POST[allow_router_auto_assign]', '$_POST[router_auto_assign_login_string]', '$_POST[description]', '$_POST[location]', '$_POST[latitude]', '$_POST[longitude]', '$_POST[chipset_id]', '$_POST[notify]', '$_POST[notification_wait]');");
-			$router_id = DB::getInstance()->lastInsertId();
-
-			$crawl_data['status'] = "unknown";
-			$crawl_cycle_id = Crawling::getLastEndedCrawlCycle();
-			Crawling::insertRouterCrawl($router_id, $crawl_data, $crawl_cycle_id);
-
-			$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
-
-			//Send Message to twitter
-			$config_line = Config::getConfigLineByName('twitter_token');
-			if(!empty($GLOBALS['twitter_username']) AND !empty($config_line)) {
-				$config = array(
-					'callbackUrl' => 'http://example.com/callback.php',
-					'siteUrl' => 'http://twitter.com/oauth',
-					'consumerKey' => $GLOBALS['twitter_consumer_key'],
-					'consumerSecret' => $GLOBALS['twitter_consumer_secret']
-				);
+			//Check if hostname is valid
+			if (preg_match('/^([a-zA-Z0-9])+$/i', $_POST['hostname'])) {
+				DB::getInstance()->exec("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, router_auto_assign_login_string, description, location, latitude, longitude, chipset_id, notify, notification_wait)
+							      VALUES ('$_SESSION[user_id]', NOW(), NOW(), '$_POST[crawl_method]', '$_POST[hostname]', '$_POST[allow_router_auto_assign]', '$_POST[router_auto_assign_login_string]', '$_POST[description]', '$_POST[location]', '$_POST[latitude]', '$_POST[longitude]', '$_POST[chipset_id]', '$_POST[notify]', '$_POST[notification_wait]');");
+				$router_id = DB::getInstance()->lastInsertId();
 				
-				$statusMessage = "Neuer #Freifunk Knoten in #Oldenburg! Wo? Schau nach: http://netmon.freifunk-ol.de/router_status.php?router_id=$router_id";
+				$crawl_data['status'] = "unknown";
+				$crawl_cycle_id = Crawling::getLastEndedCrawlCycle();
+				Crawling::insertRouterCrawl($router_id, $crawl_data, $crawl_cycle_id);
 				
-				$token = unserialize($config_line['value']);
-				$client = $token->getHttpClient($config);
-				$client->setUri('http://twitter.com/statuses/update.json');
-				$client->setMethod(Zend_Http_Client::POST);
-				$client->setParameterPost('status', $statusMessage);
-				$response = $client->request();
-				$message[] = array("Der neue Router wird auf dem Twitteraccount von <a href=\"http://twitter.com/$GLOBALS[twitter_username]\">$GLOBALS[twitter_username]</a> angekündigt.", 1);
+				$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
+				
+				//Send Message to twitter
+				$config_line = Config::getConfigLineByName('twitter_token');
+				if(!empty($GLOBALS['twitter_username']) AND !empty($config_line)) {
+					$config = array(
+						'callbackUrl' => 'http://example.com/callback.php',
+						'siteUrl' => 'http://twitter.com/oauth',
+						'consumerKey' => $GLOBALS['twitter_consumer_key'],
+						'consumerSecret' => $GLOBALS['twitter_consumer_secret']
+					);
+					
+					$statusMessage = "Neuer #Freifunk Knoten in #Oldenburg! Wo? Schau nach: http://netmon.freifunk-ol.de/router_status.php?router_id=$router_id";
+					
+					$token = unserialize($config_line['value']);
+					$client = $token->getHttpClient($config);
+					$client->setUri('http://twitter.com/statuses/update.json');
+					$client->setMethod(Zend_Http_Client::POST);
+					$client->setParameterPost('status', $statusMessage);
+					$response = $client->request();
+					$message[] = array("Der neue Router wird auf dem Twitteraccount von <a href=\"http://twitter.com/$GLOBALS[twitter_username]\">$GLOBALS[twitter_username]</a> angekündigt.", 1);
+				}
+			} else {
+				$message[] = array("Der Hostname enthält ein oder mehr ungültige Zeichen", 2);
+				Message::setMessage($message);
+				return array("result"=>false, "router_id"=>$router_id);
 			}
 
 			Message::setMessage($message);

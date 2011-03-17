@@ -49,7 +49,7 @@ $router_reliability = Router::getRouterReliability($_GET['router_id'], 500);
 $smarty->assign('router_reliability', $router_reliability);
 
 /** Get Router History **/
-$router_history = History::getRouterHistoryByRouterIdExceptActualCrawlCycle($_GET['router_id'], $last_ended_crawl_cycle['id'], 6, false);
+$router_history = History::getRouterHistoryByRouterIdExceptActualCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id'], 6, false);
 $smarty->assign('router_history', $router_history);
 
 /** Get and assign Router Informations **/

@@ -14,8 +14,15 @@ $smarty->assign('user', Helper::getUserByID($_GET['user_id']));
 $routerlist = Router::getRouterListByUserId($_GET['user_id']);
 $smarty->assign('routerlist', $routerlist);
 
+if($_GET['user_id']==$_SESSION['user_id'] AND empty($routerlist)) {
+  $smarty->assign('show_routersnotassigned_list', true);
+  require_once('lib/classes/core/routersnotassigned.class.php');
+  
+  $routersnotassigned_list = RoutersNotAssigned::getRouters();
+  $smarty->assign('routersnotassigned_list', $routersnotassigned_list);
+}
 
-$is_logged_id = Usermanagement::isLoggedIn($SESSION['user_id']);
+$is_logged_id = Usermanagement::isLoggedIn($_SESSION['user_id']);
 if($is_logged_id) {
 	$view='all';
 } else {

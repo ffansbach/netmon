@@ -25,7 +25,7 @@ $(document).ready(function() {
 
 {if $permitted}
 <ul id="tabnav" style="text-align: right; padding-right: 0px; margin-right: 0px;">
-	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px; border-right: 0px;" href="./user_edit.php?section=edit&id={$smarty.get.user_id}">Benutzereinstellungen</a></li>
+	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px; border-right: 0px;" href="./user_edit.php?section=edit&user_id={$smarty.get.user_id}">Benutzereinstellungen</a></li>
 </ul>
 {/if}
 
@@ -76,6 +76,43 @@ $(document).ready(function() {
 		{/if}
 	</div>
 </div>
+
+{if $show_routersnotassigned_list}
+<h2>Neu bei Freifunk?</h2>
+<p>Du hast noch keine Router angelegt. Wenn dein Router schon angeschlossen ist, kannst du ihn
+aus dieser Liste übernehmen. Wenn dein Router trotzdem noch nicht in dieser Liste auftaucht,
+versuche die Seite in ein paar Minuten (5-10) noch einmal neu zu laden.</p>
+
+{if !empty($routersnotassigned_list)}
+	<div style="display: block; float: left;">
+		<table class="display" id="routerlist">
+			<thead>
+				<tr>
+					<th>Hostname</th>
+					<th>Mac Adresse</th>
+					<th>Erstellt</th>
+					<th>Update</th>
+					<th>Aktionen</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach key=count item=router from=$routersnotassigned_list}
+					<tr>
+						<td>{$router.hostname}</td>
+						<td>{$router.router_auto_assign_login_string}</td>
+						<td>{$router.create_date|date_format:"%d.%m.%Y %H:%M"} Uhr</td>
+						<td>{$router.update_date|date_format:"%H:%M"} Uhr</td>
+						<td><a href="./routereditor.php?section=new&hostname={$router.hostname}&crawl_method=router&allow_router_auto_assign=1&router_auto_assign_login_string={$router.router_auto_assign_login_string}">Übernehmen</a></td>
+					</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	</div>
+<br style="clear: both;">
+{else}
+<p>In der Liste der neuen Router ist derzeit kein Router eingetragen.</p>
+{/if}
+{/if}
 
 <h2>Router von {$user.nickname}</h2>
 {if !empty($routerlist)}
