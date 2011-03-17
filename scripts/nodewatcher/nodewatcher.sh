@@ -253,8 +253,15 @@ crawl() {
 		distversion=$DISTRIB_RELEASE
 	fi
 
+	firmware_version_file="/etc/firmware_release"
+	if [ -f $firmware_version_file ]; then
+		. $firmware_version_file
+
+		firmware_version=$FIRMWARE_VERSION
+	fi
+
 	#Send system data
-	command="http://$netmon_api/api_nodewatcher.php?section=insert_crawl_system_data&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&status=online&hostname=$hostname&description=$description&location=$location&latitude=$latitude&longitude=$longitude&luciname=$luciname&luciversion=$luciversion&distname=$distname&distversion=$distversion&chipset=$chipset&cpu=$cpu&memory_total=$memory_total&memory_caching=$memory_caching&memory_buffering=$memory_buffering&memory_free=$memory_free&loadavg=$loadavg&processes=$processes&uptime=$uptime&idletime=$idletime&local_time=$local_time&community_essid=$community_essid&community_nickname=$community_nickname&community_email=$community_email&community_prefix=$community_prefix&batman_advanced_version=$batman_adv_version&kernel_version=$kernel_version&nodewatcher_version=$nodewatcher_version"
+	command="http://$netmon_api/api_nodewatcher.php?section=insert_crawl_system_data&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&status=online&hostname=$hostname&description=$description&location=$location&latitude=$latitude&longitude=$longitude&luciname=$luciname&luciversion=$luciversion&distname=$distname&distversion=$distversion&chipset=$chipset&cpu=$cpu&memory_total=$memory_total&memory_caching=$memory_caching&memory_buffering=$memory_buffering&memory_free=$memory_free&loadavg=$loadavg&processes=$processes&uptime=$uptime&idletime=$idletime&local_time=$local_time&community_essid=$community_essid&community_nickname=$community_nickname&community_email=$community_email&community_prefix=$community_prefix&batman_advanced_version=$batman_adv_version&kernel_version=$kernel_version&nodewatcher_version=$nodewatcher_version&firmware_version=$firmware_version"
 	command="wget -q -O - "$command
 	if [ "$1" = "debug" ]; then
 		echo $command
@@ -448,12 +455,12 @@ crawl() {
 	CLIENT_MACS=`brctl showmacs $MESHDEVICE | sed -e "$SEDDEV" | awk '{if ($3 != "yes" && $1 == "ath0") print $2}'`
 	i=0
 	for client in $CLIENT_MACS; do
-		clients=$clients"clients[$i][mac_addr]=$client&"
+#		clients=$clients"clients[$i][mac_addr]=$client&"
 		i=`expr $i + 1`  #Zähler um eins erhöhen
-
 	done
+	client_count=$i
 
-	command="wget -q -O - http://$netmon_api/api_nodewatcher.php?section=insert_clients&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&$clients"
+	command="wget -q -O - http://$netmon_api/api_nodewatcher.php?section=insert_clients&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&client_count=$client_count"
 	if [ "$1" = "debug" ]; then
 		echo $command
 		else

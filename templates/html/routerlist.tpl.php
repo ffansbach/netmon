@@ -56,7 +56,7 @@ $(document).ready(function() {
 						<td>{$router.chipset_name}</td>
 						<td><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></td>
 						<td>{math equation="round(x,1)" x=$router.router_reliability.online_percent}%</td>
-						<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60} Stunden</td>
+						<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60} Std.</td>
 						<td>{$router.client_count}</td>
 					</tr>
 				{/foreach}

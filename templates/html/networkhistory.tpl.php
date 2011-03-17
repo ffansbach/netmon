@@ -19,14 +19,15 @@
 			<li>
 				{if $hist.object == 'router'}
 					<b>{$hist.create_date|date_format:"%e.%m.%Y %H:%M"}:</b> 
+					<a href="./router_status.php?router_id={$hist.additional_data.router_id}">{$hist.additional_data.hostname}</a> (<a href="./user.php?user_id={$hist.additional_data.user_id}">{$hist.additional_data.nickname}</a>)
 					{if $hist.data.action == 'status' AND $hist.data.to == 'online'}
-						{$hist.additional_data.hostname} ({$hist.additional_data.nickname}) geht <span style="color: #007B0F;">online</span>
+						geht <span style="color: #007B0F;">online</span>
 					{/if}
 					{if $hist.data.action == 'status' AND $hist.data.to == 'offline'}
-						{$hist.additional_data.hostname} ({$hist.additional_data.nickname}) geht <span style="color: #CB0000;">offline</span>
+						geht <span style="color: #CB0000;">offline</span>
 					{/if}
 					{if $hist.data.action == 'reboot'}
-						{$hist.additional_data.hostname} ({$hist.additional_data.nickname}) wurde <span style="color: #000f9c;">Rebootet</span>
+						wurde <span style="color: #000f9c;">Rebootet</span>
 					{/if}
 				{/if}
 <!--	{if $hist.object == 'router'}

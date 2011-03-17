@@ -15,7 +15,6 @@ if(empty($_POST['history_hours'])) {
 }
 
 $history = History::getHistory(false, $history_hours);
-
 $smarty->assign('history_hours', $history_hours);
 $smarty->assign('history', $history);
 

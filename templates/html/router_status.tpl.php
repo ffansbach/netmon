@@ -154,7 +154,13 @@ $(document).ready(function() {
 				<b>Kernelversion:</b> {$router_last_crawl.kernel_version}<br>
 			{/if}
 			{if !empty($router_last_crawl.batman_advanced_version)}
-				<b>Batman advanced Version:</b> {$router_last_crawl.batman_advanced_version}
+				<b>Batman advanced Version:</b> {$router_last_crawl.batman_advanced_version}<br>
+			{/if}
+			{if !empty($router_last_crawl.nodewatcher_version)}
+				<b>Nodewatcher Version:</b> {$router_last_crawl.nodewatcher_version}<br>
+			{/if}
+			{if !empty($router_last_crawl.firmware_version)}
+				<b>Firmware Version:</b> {$router_last_crawl.firmware_version}
 			{/if}
 		</p>
 

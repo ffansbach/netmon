@@ -1,4 +1,4 @@
-<form action="./user_edit.php?section=insert_edit&id={$user.id}" method="POST">
+<form action="./user_edit.php?section=insert_edit&user_id={$user.id}" method="POST">
 
   <h1>Daten von {$user.nickname} ändern</h1>
   
