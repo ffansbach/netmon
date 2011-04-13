@@ -31,6 +31,12 @@
 			});
 		}
 	</script>
+	
+	<script type="text/javascript">
+		var longitude;
+		var latitude;
+		var location;
+	</script>
 {/literal}
 
 <h1>Einen neuen Router anlegen:</h1>
@@ -46,33 +52,55 @@
 
 	<div>
 		<h2>Standort</h2>
-		<div style="width: 100%; overflow: hidden;">
-			<div style="float:left; width: 55%;">
-				<script type="text/javascript" src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
-				<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
-				<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
-				<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
-				
-				<div id="map" style="height:200px; width:400px; border:solid 1px black;font-size:9pt;">
+		<p>
+			<input onChange="
 					{literal}
-						<script type="text/javascript">
-							new_ip_map();
-						</script>
-					{/literal}
+						if(document.getElementById('no_location').checked) {
+							document.getElementById('section_location').style.display = 'none';
+							this.longitude = document.getElementById('longitude').value;
+							this.latitude = document.getElementById('latitude').value;
+							this.location = document.getElementById('location').value;
+							
+							document.getElementById('longitude').value = '';
+							document.getElementById('latitude').value = '';
+							document.getElementById('location').value = '';
+						} else {
+							document.getElementById('section_location').style.display = 'block';
+							document.getElementById('longitude').value = this.longitude;
+							document.getElementById('latitude').value = this.latitude;
+							document.getElementById('location').value = this.location;
+						}
+					{/literal}" name="no_location" id="no_location" type="checkbox" value="1"> Ich möchte nicht, dass Standortdaten gespeichert werden.
+		</p>
+
+		<div id="section_location">
+			<div style="width: 100%; overflow: hidden;" class="section_location">
+				<div style="float:left; width: 55%;">
+					<script type="text/javascript" src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
+					<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+					<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
+					<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+					
+					<div id="map" style="height:200px; width:400px; border:solid 1px black;font-size:9pt;">
+						{literal}
+							<script type="text/javascript">
+								new_ip_map();
+							</script>
+						{/literal}
+					</div>
+				</div>
+				
+				<div style="float:left; width: 45%;">
+					<p>
+						Länge: <input id="longitude" name="longitude" size="15" maxlength="15" value="{$router_data.longitude}"><br>
+						Breite: <input id="latitude" name="latitude" size="15" maxlength="15" value="{$router_data.latitude}">
+					</p>
 				</div>
 			</div>
-		
-			<div style="float:left; width: 45%;">
-				<p>
-					Länge: <input id="longitude" name="longitude" size="15" maxlength="15" ><br>
-					Breite: <input id="latitude" name="latitude" size="15" maxlength="15" >
-				</p>
-				<p>Klicke auf die Karte um Länge und Breite einzutragen.</p>
-			</div>
+			
+			<p>Kurze Beschreibung des Standorts:<br><input id="location" name="location" type="text" size="60" maxlength="60" value="{$router_data.location}"></p>
 		</div>
 	</div>
-	
-	<p>Kurze Beschreibung des Standorts:<br><input name="location" type="text" size="60" maxlength="60" value=""></p>
 
 	<h2>Hardware</h2>
 	<p>

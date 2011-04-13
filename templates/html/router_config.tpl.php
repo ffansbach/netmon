@@ -36,6 +36,7 @@
 
       <div style="float:left; width: 50%;">
 		<h2>Standort</h2>
+		{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
 		<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 		<script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
 		
@@ -63,6 +64,9 @@
 			<br><br>
 			{$router_data.location}
 		</p>
+		{else}
+			<p>Keine Standortdaten verfügbar</p>
+		{/if}
 	</div>
 </div>
 

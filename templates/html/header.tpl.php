@@ -31,9 +31,16 @@
 <!--Banner-->
 <div id="banner" style="background-image: url(./templates/img/header/hafen_oldenburg_nacht.jpg);">
 	<!--Top-Menü-->
+	<div style="float:left">
 	<div id="time">
 		Serverzeit: {$zeit}
 	</div>
+	<br style="clear:both;">
+	<div id="time_next_crawl">
+		Crawl Ende: {$actual_crawl_cycle.crawl_date_end|date_format:"%H:%M"} Uhr (noch {$actual_crawl_cycle.crawl_date_end_minutes} Minuten)
+	</div>
+	</div>
+
 	<div id="topmenu">
 		{if !$installation_mode}
 			{foreach $top_menu as $topmenu}

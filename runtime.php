@@ -187,4 +187,13 @@
 	//Give often used variables to smarty
 	$smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
 
+	require_once('lib/classes/core/crawling.class.php');
+
+	$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+	$actual_crawl_cycle['crawl_date_end'] = strtotime($actual_crawl_cycle['crawl_date'])+$GLOBALS['crawl_cycle']*60;
+	$actual_crawl_cycle['crawl_date_end_minutes'] = floor(($actual_crawl_cycle['crawl_date_end']-time())/60).':'.(($actual_crawl_cycle['crawl_date_end']-time()) % 60);
+
+	$smarty->assign('last_ended_crawl_cycle', $last_ended_crawl_cycle);
+	$smarty->assign('actual_crawl_cycle', $actual_crawl_cycle);
+
 ?>

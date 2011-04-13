@@ -1,10 +1,10 @@
 <?php
 	require_once('runtime.php');
-	require_once('lib/classes/core/service.class.php');
+	require_once('lib/classes/api/service.class.php');
 	require_once 'lib/classes/extern/Zend/Json/Server.php';
 
 	$server = new Zend_Json_Server();
-	$server->setClass('Service');
+	$server->setClass('ApiService');
 	
 	if ('GET' == $_SERVER['REQUEST_METHOD']) {
 		// Indicate the URL endpoint, and the JSON-RPC version used:

@@ -35,7 +35,12 @@ class ServiceEditor {
 		DB::getInstance()->exec("INSERT INTO services (router_id, title, description, port, url_prefix, visible, notify, notification_wait, use_netmons_url, url, create_date)
 					 VALUES ('$router_id', '$title', '$description', '$port', '$url_prefix', '$visible', '$notify', '$notification_wait', '$use_netmons_url', '$url', NOW());");
 		$service_id = DB::getInstance()->lastInsertId();
+
+		$router_id = DB::getInstance()->lastInsertId();
 		
+		$crawl_cycle = Crawling::getLastEndedCrawlCycle();
+		Service::insertCrawl($service_id, "unknown", "", $crawl_cycle);
+
 		try {
 			$sql = "select hostname FROM routers WHERE id='$router_id'";
 			$result = DB::getInstance()->query($sql);

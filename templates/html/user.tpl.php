@@ -164,8 +164,8 @@ versuche die Seite in ein paar Minuten (5-10) noch einmal neu zu laden.</p>
 				<tr>
 					<th>Title</th>
 					<th>Router</th>
-					<th>R-Status</th>
-					<th>S-Status</th>
+					<th>Server</th>
+					<th>Dienst</th>
 					<th>Benutzer</th>
 					<th>Link</th>
 				</tr>

@@ -186,8 +186,8 @@ $(document).ready(function() {
 		<p><b>Verbundene Clients:</b> {$client_count}</p>
 	</div>
 	<div style="float:left; width: 53%;">
+		<h2>Standort ({if !empty($router_last_crawl.latitude)}crawl{else}Netmon{/if})</h2>
 		{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
-			<h2>Standort ({if !empty($router_last_crawl.latitude)}crawl{else}Netmon{/if})</h2>
 			<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 			<script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
 			
@@ -228,6 +228,8 @@ $(document).ready(function() {
 					{$router_last_crawl.location}
 				{/if}
 			</p>
+		{else}
+			<p>Keine Standortdaten verfügbar</p>
 		{/if}
 
 		<h2>History</h2>
@@ -263,7 +265,7 @@ $(document).ready(function() {
 			</script>
 		{/literal}
 
-		<h3>Memor</h3>
+		<h3>Memory</h3>
 		<div id="tabs_router_memory" style="width: 96%">
 			<ul>
 				<li><a href="#fragment-1_router_memory"><span>12 Sunden</span></a></li>
@@ -362,24 +364,29 @@ $(document).ready(function() {
 	</div>
 	<div style="float:left; width: 53%;">
 		<h3>Anzahl der Nachbarn</h3>
-		<div id="tabs_batman_adv" style="width: 96%">
-			<ul>
-			        <li><a href="#fragment-1_batman_adv"><span>12 Sunden</span></a></li>
-			        <li><a href="#fragment-2_batman_adv"><span>24 Stunden</span></a></li>
-			        <li><a href="#fragment-3_batman_adv"><span>7 Tage</span></a></li>
-			</ul>
-			<div id="fragment-1_batman_adv">
-				<img src="./tmp/router_{$router_data.router_id}_originators_12_hours.png">
+		{if $rrd_originators_db_exists}
+			<div id="tabs_batman_adv" style="width: 96%">
+				<ul>
+				        <li><a href="#fragment-1_batman_adv"><span>12 Sunden</span></a></li>
+					<li><a href="#fragment-2_batman_adv"><span>24 Stunden</span></a></li>
+			        	<li><a href="#fragment-3_batman_adv"><span>7 Tage</span></a></li>
+				</ul>
+				<div id="fragment-1_batman_adv">
+					<img src="./tmp/router_{$router_data.router_id}_originators_12_hours.png">
+				</div>
+				<div id="fragment-2_batman_adv">
+					<img src="./tmp/router_{$router_data.router_id}_originators_1_day.png">
+				</div>
+				<div id="fragment-3_batman_adv">
+					<img src="./tmp/router_{$router_data.router_id}_originators_1_week.png">
+				</div>
 			</div>
-			<div id="fragment-2_batman_adv">
-				<img src="./tmp/router_{$router_data.router_id}_originators_1_day.png">
-			</div>
-			<div id="fragment-3_batman_adv">
-				<img src="./tmp/router_{$router_data.router_id}_originators_1_week.png">
-			</div>
-		</div>
+		{else}
+			<p>Keine Grafik zum anzeigen vorhanden</p>
+		{/if}
 		
 		<h3>Graphic Link Quality</h3>
+		{if $rrd_link_quality_db_exists}
 		{literal}
 			<script>
 				$(document).ready(function() {
@@ -424,6 +431,10 @@ $(document).ready(function() {
 				{/foreach}
 			</select>
 		</p>
+		{else}
+			<p>Keine Grafik zum anzeigen vorhanden</p>
+		{/if}
+
 	</div>
 </div>
 
