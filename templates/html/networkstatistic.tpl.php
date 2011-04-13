@@ -15,13 +15,13 @@
 	<h2>Crawl Status</h2>
 	<h3>Aktueller Crawl</h3>
 	<p>
-		<b>Beginn:</b> {$actual_crawl_cycle.crawl_date|date_format:"%e.%m.%Y %H:%M"}<br>
-		<b>Vorraussichtliches Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} (noch {$actual_crawl_cycle.crawl_date_end_minutes} Minuten)
+		<b>Beginn:</b> {$actual_crawl_cycle.crawl_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
+		<b>Vorraussichtliches Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr (noch {$actual_crawl_cycle.crawl_date_end_minutes} Minuten)
 	</p>
 	<h3>Letzter Crawl</h3>
 	<p>
-		<b>Beginn:</b> {$last_ended_crawl_cycle.crawl_date}<br>
-		<b>Ende:</b> {$last_ended_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"}
+		<b>Beginn:</b> {$last_ended_crawl_cycle.crawl_date} Uhr<br>
+		<b>Ende:</b> {$last_ended_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr
 	</p>
 	
 	<h2>Router Status</h2>

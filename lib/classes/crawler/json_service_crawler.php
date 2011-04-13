@@ -77,13 +77,11 @@ class JsonDataCollector {
 		//get services
 		$api_service = new jsonRPCClient($GLOBALS['netmon_url']."api_json_service.php");
 		try {
-			$services = $api_service->getServiceList();
+			$services = $api_service->getServiceList("all");
 		} catch (Exception $e) {
 			echo nl2br($e->getMessage());
 		}
-	      
-
-
+		
 		foreach ($services as $key=>$service) {
 			if (!empty($service['service_ipv4_addr']) AND is_numeric($service['port'])) {
 				$portcheck =  @fsockopen($service['service_ipv4_addr'], $service['port'], $errno, $errstr, 2);

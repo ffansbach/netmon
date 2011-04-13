@@ -166,7 +166,7 @@ function fullmap() {
 
 	// Add the map layer(s)
 	var layerMapnik = new OpenLayers.Layer.OSM.Mapnik(
-                "OpenStreetMap",
+                "Open Street Map",
                 {sphericalMercator:true, numZoomLevels: 20}
         );
 
@@ -190,7 +190,7 @@ function fullmap() {
 		{sphericalMercator:true, type: G_HYBRID_MAP, numZoomLevels: 20}
 	);
 
-        var bstreet = new OpenLayers.Layer.VirtualEarth(
+/*        var bstreet = new OpenLayers.Layer.VirtualEarth(
 		"Bing Streets",
 		{sphericalMercator:true, type: VEMapStyle.Shaded, numZoomLevels: 20}
 	);
@@ -203,9 +203,10 @@ function fullmap() {
         var bsatelite = new OpenLayers.Layer.VirtualEarth(
 		"Bing Satelite",
 		{sphericalMercator:true, type: VEMapStyle.Aerial, numZoomLevels: 20}
-	);
+	);*/
 
-  	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid, bstreet, bhybrid, bsatelite]);
+//  	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid, bstreet, bhybrid, bsatelite]);
+  	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid]);
 
 	// Set map center
 	point = new OpenLayers.LonLat(lon, lat);
@@ -221,7 +222,8 @@ function fullmap() {
 	//Make Layers
 //	var layer_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 //	var layer_nodes_offline = loadKmlLayer('Offline Knoten', './api.php?class=apiMap&section=getOfflineServiceKML');
-	var layer_nodes_online = loadKmlLayer('Online Knoten ', './api.php?class=apiMap&section=getOnlineRouters');
+	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters');
+//	var layer_nodes_offline = loadKmlLayer('Offline Knoten ', './api.php?class=apiMap&section=getOfflineRouters');
 	var batman_adv_conn = loadKmlLayer('Bat. Adv. Verbindungen', './api.php?class=apiMap&section=batman_advanced_conn');
 	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 	
@@ -239,11 +241,11 @@ function fullmap() {
 	*/
 	
 	//Add Layers
-        map.addLayers([layer_nodes_online, batman_adv_conn, olsr_conn]);
+        map.addLayers([layer_nodes, batman_adv_conn, olsr_conn]);
 
 	
 	// Define bubbles
-	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes_online], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
+	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
 	selectControl.activate();
 }
@@ -267,7 +269,7 @@ function router_map(highlight_router_id) {
 
 	// Add the map layer(s)
 	var layerMapnik = new OpenLayers.Layer.OSM.Mapnik(
-                "OpenStreetMap",
+                "Open Street Map",
                 {sphericalMercator:true, numZoomLevels: 20}
         );
 
@@ -310,15 +312,15 @@ function router_map(highlight_router_id) {
 	//Add Layers
         map.addLayers([layer_conn, layer_nodes_offline, layer_nodes_online]);*/
 
-	var layer_nodes_online = loadKmlLayer('Online Knoten ', './api.php?class=apiMap&section=getOnlineRouters&highlight_router_id='+highlight_router_id);
+	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters&highlight_router_id='+highlight_router_id);
 	var batman_adv_conn = loadKmlLayer('Bat. Adv. Verbindungen', './api.php?class=apiMap&section=batman_advanced_conn');
 	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 	
 	//Add Layers
-        map.addLayers([layer_nodes_online, batman_adv_conn, olsr_conn]);
+        map.addLayers([layer_nodes, batman_adv_conn, olsr_conn]);
 	
 	// Define bubbles
-	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes_online], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
+	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
 	selectControl.activate();
 }
@@ -341,7 +343,7 @@ function subnetmap(subnet_id) {
 
 	// Add the map layer(s)
 	var layerMapnik = new OpenLayers.Layer.OSM.Mapnik(
-                "OpenStreetMap",
+                "Open Street Map",
                 {sphericalMercator:true, numZoomLevels: 20}
         );
 
@@ -380,13 +382,13 @@ function subnetmap(subnet_id) {
 	var layer_subnet = loadKmlLayer('Netzwerklocation', './api.php?class=apiMap&section=getSubnetPolygons&subnet_id='+subnet_id);
 	var layer_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 	var layer_nodes_offline = loadKmlLayer('Offline Knoten', './api.php?class=apiMap&section=getOfflineServiceKML&highlighted_subnet='+subnet_id);
-	var layer_nodes_online = loadKmlLayer('Online Knoten ', './api.php?class=apiMap&section=getOnlineServiceKML&highlighted_subnet='+subnet_id);
+	var layer_nodes = loadKmlLayer('Online Knoten ', './api.php?class=apiMap&section=getOnlineServiceKML&highlighted_subnet='+subnet_id);
 
 	//Add Layers
-        map.addLayers([layer_subnet, layer_conn, layer_nodes_offline, layer_nodes_online]);
+        map.addLayers([layer_subnet, layer_conn, layer_nodes_offline, layer_nodes]);
 
 	// Define bubbles
-	selectControl = new OpenLayers.Control.SelectFeature([layer_conn, layer_nodes_offline, layer_nodes_online], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
+	selectControl = new OpenLayers.Control.SelectFeature([layer_conn, layer_nodes_offline, layer_nodes], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
 	selectControl.activate();
 }
@@ -410,9 +412,8 @@ function newsubnet_map() {
 
 
 	// Add the map layer(s)
-	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Open Street Map");
 //	layerOsmarender = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
-	layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
 
          var gsat = new OpenLayers.Layer.Google(
                 "Google Satellite",
@@ -428,7 +429,7 @@ function newsubnet_map() {
 
 	var vectors = new OpenLayers.Layer.Vector("Vector Layer");
 
-  	map.addLayers([layerMapnik, layerCycleMap, gsat, vectors]);
+  	map.addLayers([layerMapnik, gsat, vectors]);
 
 	// Set map center
 	point = new OpenLayers.LonLat(lon, lat);
@@ -471,9 +472,8 @@ function newproject_map() {
 
 
 	// Add the map layer(s)
-	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Open Street Map");
 //	layerOsmarender = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
-	layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
 
          var gsat = new OpenLayers.Layer.Google(
                 "Google Satellite",
@@ -489,7 +489,7 @@ function newproject_map() {
 
 	var vectors = new OpenLayers.Layer.Vector("Vector Layer");
 
-  	map.addLayers([layerMapnik, layerCycleMap, gsat, vectors]);
+  	map.addLayers([layerMapnik, gsat, vectors]);
 
 	// Set map center
 	point = new OpenLayers.LonLat(lon, lat);
@@ -532,14 +532,13 @@ function new_ip_map() {
 
 
 	// Add the map layer(s)
-	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-	layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
+	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Open Street Map");
           var gsat = new OpenLayers.Layer.Google(
                 "Google Satellite",
                 {sphericalMercator:true, type: G_SATELLITE_MAP, numZoomLevels: 20}
             );
 
-  	map.addLayers([layerMapnik, layerCycleMap, gsat]);
+  	map.addLayers([layerMapnik, gsat]);
 
 	// Set map center
 	point = new OpenLayers.LonLat(lon, lat);

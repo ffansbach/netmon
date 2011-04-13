@@ -30,7 +30,7 @@ $(document).ready(function() {
 			<thead>
 				<tr>
 					<th>Hostname</th>
-					<th>Status</th>
+					<th>O</th>
 					<th>Stand</th>
 					<th>Technik</th>
 					<th>Benutzer</th>
@@ -53,7 +53,7 @@ $(document).ready(function() {
 							{/if}
 						</td>
 						<td>{$router.actual_crawl_data.crawl_date|date_format:"%H:%M"} Uhr</td>
-						<td>{$router.chipset_name}</td>
+						<td>{$router.short_chipset_name}{if $router.short_chipset_name!=$router.chipset_name}...{/if}</td>
 						<td><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></td>
 						<td>{math equation="round(x,1)" x=$router.router_reliability.online_percent}%</td>
 						<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60} Std.</td>

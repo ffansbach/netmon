@@ -103,6 +103,23 @@ class Router {
 		return $routers;
 	}
 
+	public function getCrawlRoutersByCrawlCycleId($crawl_cycle_id) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_routers
+					WHERE crawl_cycle_id='$crawl_cycle_id'
+					ORDER BY status ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$routers[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $routers;
+	}
+
 	public function getLastOnlineCrawlByRouterId($router_id) {
 		try {
 			$sql = "SELECT  *
@@ -155,6 +172,16 @@ class Router {
 					$shorttext.= $var[0];
 				} 
 				$row['short_location'] = $shorttext;
+
+				$text=$row['chipset_name'];
+				$shorttext=$text;
+				$length = 16;
+				if(strlen($text)>$length){
+					$shorttext = substr($text, 0, $length-1);
+					$var= explode(" ",substr($text, $length, strlen($text)));
+					$shorttext.= $var[0];
+				} 
+				$row['short_chipset_name'] = $shorttext;
 
 				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 				$row['actual_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);

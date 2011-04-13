@@ -23,9 +23,9 @@ $(document).ready(function() {
 				<tr>
 					<th>Title</th>
 					<th>Router</th>
-					<th>R-Status</th>
-					<th>S-Status</th>
-					<th>Benutzer</th>
+					<th>Server</th>
+					<th>Dienst</th>
+					<th>Stand</th>
 					<th>Link</th>
 				</tr>
 			</thead>
@@ -39,6 +39,8 @@ $(document).ready(function() {
 								<img src="./templates/img/ffmap/status_up_small.png" alt="online">
 							{elseif $service.router_status=="offline"}
 								<img src="./templates/img/ffmap/status_down_small.png" alt="offline">
+							{elseif $service.router_status=="unknown"}
+								<img src="./templates/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
 							{/if}
 						</td>
 						<td>
@@ -46,9 +48,11 @@ $(document).ready(function() {
 								<img src="./templates/img/ffmap/status_up_small.png" alt="online">
 							{elseif $service.service_status=="offline"}
 								<img src="./templates/img/ffmap/status_down_small.png" alt="offline">
+							{elseif $service.service_status=="unknown"}
+								<img src="./templates/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
 							{/if}
 						</td>
-						<td><a href="./user.php?user_id={$service.user_id}">{$service.nickname}</a></td>
+						<td>{$service.service_status_crawl_date|date_format:"%H:%M"} Uhr</td>
 						<td><a href="{$service.combined_url_to_service}">{$service.combined_url_to_service}</a></td>
 					</tr>
 				{/foreach}

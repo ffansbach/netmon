@@ -28,23 +28,47 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+require_once($path.'lib/classes/core/config.class.php');
+require_once($path.'lib/classes/extern/Zend/Service/Twitter.php');
+
 class Message {
-  public function getMessage() {
-    $messages = $_SESSION['system_messages'];
-    unset($_SESSION['system_messages']);
-    return $messages;
-  }
+	/*This are the internal status messages of netmon*/
+	public function getMessage() {
+		$messages = $_SESSION['system_messages'];
+		unset($_SESSION['system_messages']);
+		return $messages;
+	}
+	
+	public function getMessageWithoutDelete() {
+		$messages = $_SESSION['system_messages'];
+		return $messages;
+	}
+	
+	public function setMessage($message) {
+		foreach ($message as $value) {
+			$_SESSION['system_messages'][] = $value;
+		}
+	}
 
-  public function getMessageWithoutDelete() {
-    $messages = $_SESSION['system_messages'];
-    return $messages;
-  }
-
-  public function setMessage($message) {
-    foreach ($message as $value) {
-      $_SESSION['system_messages'][] = $value;
-    }
-  }
+	public function postTwitterMessage($statusMessage) {
+		//Send Message to twitter
+		$config_line = Config::getConfigLineByName('twitter_token');
+		if(!empty($GLOBALS['twitter_username']) AND !empty($config_line)) {
+			$config = array(
+				'callbackUrl' => 'http://example.com/callback.php',
+				'siteUrl' => 'http://twitter.com/oauth',
+				'consumerKey' => $GLOBALS['twitter_consumer_key'],
+				'consumerSecret' => $GLOBALS['twitter_consumer_secret']
+			);
+			
+			$token = unserialize($config_line['value']);
+			$client = $token->getHttpClient($config);
+			$client->setUri('http://twitter.com/statuses/update.json');
+			$client->setMethod(Zend_Http_Client::POST);
+			$client->setParameterPost('status', $statusMessage);
+			$response = $client->request();
+		}
+	}
 }
 
 ?>

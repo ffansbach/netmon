@@ -1,3 +1,30 @@
+<script language="JavaScript">
+<!--
+function Uhr_anzeigen(){
+var Datum = new Date()
+var std = Datum.getHours()
+var min = Datum.getMinutes()
+var sec = Datum.getSeconds()
+Zeit = ((std < 10) ? " 0" : " ") + std
+Zeit += ((min < 10) ? ":0" : ":") + min
+Zeit += ((sec < 10) ? ":0" : ":") + sec
+Zeit += " Uhr"
+document.uhr.zeit.value = Zeit
+
+timerid = setTimeout("Uhr_anzeigen()",1000)
+}
+// -->
+</script>
+<form name="uhr">
+<input type="text" name="zeit" size=10 value ="">
+</form>
+<script language="javascript">
+//<!--
+Uhr_anzeigen();
+//-->
+</script>
+
+
 <h1>News</h1>
 
 {if empty($rss_exception)}

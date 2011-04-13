@@ -43,6 +43,9 @@ $(document).ready(function() {
 			</tbody>
 		</table>
 	</div>
+	<br style="clear: both">
+
+<p><a href="./userlist.php?section=export_vcard30">Emailadressen als vCcard 3.0 exportieren</a></p>
 {else}
 <p>Keine Benutzer vorhanden</p>
 {/if}

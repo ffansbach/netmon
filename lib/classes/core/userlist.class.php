@@ -29,11 +29,11 @@
  */
 
 class UserList {
-	function getList() {
+	public function getList() {
 		try {
-			$sql = "SELECT u.id, u.nickname, jabber, icq, website, email, create_date
-					FROM users u
-					ORDER BY u.create_date DESC";
+			$sql = "SELECT id, nickname, vorname, nachname, jabber, icq, website, email, create_date
+					FROM users
+					ORDER BY create_date DESC";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$userlist[] = $row;
@@ -42,6 +42,7 @@ class UserList {
 		catch(PDOException $e) {
 			echo $e->getMessage();
 		}
+		
 		foreach ($userlist as $key=>$user){
 			try {
 				$sql = "SELECT count(*) as routercount
@@ -57,6 +58,22 @@ class UserList {
 			$userlist[$key]['routercount'] = $count['routercount'];
 		}
 		return $userlist;
+	}
+
+	public function exportUserListAsvCard30() {
+		$userlist = UserList::getList();
+		foreach($userlist as $user) {
+			$vcardlist .= "BEGIN:VCARD\n";
+			$vcardlist .= "NICKNAME:$user[nickname]\n";
+			$vcardlist .= "EMAIL:$user[email]\n";
+			if(!empty($user['vorname']) AND !empty($user['nachname'])) {
+				$vcardlist .= "FN:$user[vorname] $user[nachname]\n";
+				$vcardlist .= "N:$user[nachname];$user[vorname];;;\n";
+			}
+			$vcardlist .= "VERSION:3.0\n";
+			$vcardlist .= "END:VCARD\n\n";
+		}
+		return $vcardlist;
 	}
 }
 
