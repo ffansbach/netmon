@@ -22,7 +22,7 @@ if($_GET['section']=="update") {
 }
 
 if($_GET['section']=="version") {
-	$version=15;
+	$version=16;
 	echo "success;$version";
 }
 
@@ -387,6 +387,24 @@ if($_GET['section']=="get_hostnames_and_mac") {
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
 			echo $row['mac_addr']." ".$row['hostname']."\n";
+		}
+	}
+	catch(PDOException $e) {
+		echo $e->getMessage();
+	}
+}
+
+if($_GET['section']=="get_hostnames_and_ipv6_adresses") {
+	$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+
+	try {
+		$sql = "SELECT crawl_interfaces.ipv6_link_local_addr, routers.hostname
+       			FROM  crawl_interfaces, routers
+			WHERE crawl_cycle_id='$last_endet_crawl_cycle[id]' AND crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id";
+		$result = DB::getInstance()->query($sql);
+		foreach($result as $row) {
+			$row['ipv6_link_local_addr'] = explode("/",$row['ipv6_link_local_addr']);
+			echo $row['ipv6_link_local_addr'][0]." ".$row['hostname']."\n";
 		}
 	}
 	catch(PDOException $e) {

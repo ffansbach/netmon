@@ -6,6 +6,10 @@ require_once('lib/classes/extern/class.openid.php');
 
 $Login = new Login;
 
+if($_SESSION['last_page'] != $_SESSION['current_page'] AND empty($_SESSION['redirect_after_login_url'])) {
+	$_SESSION['redirect_after_login_url'] = $_SESSION['last_page'];
+}
+
 if ($_GET['section']=="login") {
 	$smarty->assign('message', Message::getMessage());
 
@@ -13,8 +17,8 @@ if ($_GET['section']=="login") {
 	$smarty->display("login.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif ($_GET['section']=="login_send" AND $Login->user_login($_POST['nickname'], $_POST['password'], $_POST['remember'])) {
-	if(isset($_SESSION['redirect_url'])) {
-		header('Location: '.$_SESSION['redirect_url']);
+	if(!empty($_SESSION['redirect_after_login_url'])) {
+		header("Location: .$_SESSION[redirect_after_login_url]");
 	} else {
 		header('Location: user.php?user_id='.$_SESSION['user_id']);
 	}
@@ -58,11 +62,9 @@ if ($_GET['section']=="login") {
 			$short_openid = substr($_GET['openid_identity'], 7);
 			if (User::checkIfOpenIdHasUser($short_openid)) {
 				login::user_login (false, false, $_SESSION['openid_login_remember'], false, $short_openid);
-				if(!empty($_SESSION['redirect_url'])) {
-					$redirect = $_SESSION['redirect_url'];
-					unset($_SESSION['redirect_url']);
+				if(!empty($_SESSION['redirect_after_login_url'])) {
 					unset($_SESSION['openid_login']);
-					header("Location: $redirect");
+					header("Location: .$_SESSION[redirect_after_login_url]");
 				} else {
 					header('Location: ./user.php?user_id='.$_SESSION['user_id']);
 				}

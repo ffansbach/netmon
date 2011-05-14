@@ -138,6 +138,8 @@ versuche die Seite in ein paar Minuten (5-10) noch einmal neu zu laden.</p>
 								<img src="./templates/img/ffmap/status_up_small.png" title="online" alt="online">
 							{elseif $router.actual_crawl_data.status=="offline"}
 								<img src="./templates/img/ffmap/status_down_small.png" title="offline" alt="offline">
+							{elseif $router.actual_crawl_data.status=="unknown"}
+								<img src="./templates/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
 							{/if}
 						</td>
 						<td>{$router.actual_crawl_data.crawl_date|date_format:"%H:%M"} Uhr</td>

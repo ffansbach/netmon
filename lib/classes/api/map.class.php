@@ -232,6 +232,16 @@ class ApiMap {
 				$xw->endElement();
 				$xw->startElement('ListStyle');
 				$xw->endElement();
+				$xw->startElement('Style');
+					$xw->writeAttribute( 'id', 'sh_yellow-pushpin');
+					$xw->startElement('IconStyle');
+						$xw->writeRaw('<scale>0.5</scale>');
+						$xw->startElement('Icon');
+								$xw->writeRaw('<href>./templates/img/ffmap/ip_unknown.png</href>');
+						$xw->endElement();
+					$xw->endElement();
+				$xw->endElement();
+
 
 
 				$xw->startElement('ListStyle');
@@ -307,6 +317,8 @@ class ApiMap {
 										$xw->writeRaw('#sh_green-pushpin');
 									} elseif($crawl_router['status']=='offline') {
 										$xw->writeRaw('#sh_red-pushpin');
+									} elseif($crawl_router['status']=='unknown') {
+										$xw->writeRaw('#sh_yellow-pushpin');
 									}
 								$xw->endElement();
 								$xw->startElement('Point');

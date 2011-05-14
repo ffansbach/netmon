@@ -12,7 +12,11 @@ if($is_logged_id) {
 }
 
 $servicelist = Service::getServiceList($view);
+$servicelist_all = Service::getServiceList('all');
 $smarty->assign('servicelist', $servicelist);
+
+$hidden_service_count = count($servicelist_all)-count($servicelist);
+$smarty->assign('hidden_service_count', $hidden_service_count);
 
 $smarty->display("header.tpl.php");
 $smarty->display("servicelist.tpl.php");

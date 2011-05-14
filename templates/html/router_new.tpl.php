@@ -47,7 +47,7 @@
 	</p>
 
 	<p>
-		Anmerkungen: <br><textarea name="description" cols="40" rows="3"></textarea>
+		Anmerkungen: <br><textarea name="description" cols="60" rows="6"></textarea>
 	</p>
 
 	<div>
@@ -75,28 +75,29 @@
 
 		<div id="section_location">
 			<div style="width: 100%; overflow: hidden;" class="section_location">
-				<div style="float:left; width: 55%;">
-					<script type="text/javascript" src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
-					<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
-					<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
-					<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
-					
-					<div id="map" style="height:200px; width:400px; border:solid 1px black;font-size:9pt;">
-						{literal}
-							<script type="text/javascript">
-								new_ip_map();
-							</script>
-						{/literal}
-					</div>
-				</div>
+				<script type="text/javascript" src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
+				<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+				<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
+				<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 				
-				<div style="float:left; width: 45%;">
-					<p>
-						Länge: <input id="longitude" name="longitude" size="15" maxlength="15" value="{$router_data.longitude}"><br>
-						Breite: <input id="latitude" name="latitude" size="15" maxlength="15" value="{$router_data.latitude}">
-					</p>
+				<div id="map" style="height:400px; width:600px; border:solid 1px black;font-size:9pt;">
+					{literal}
+						<script type="text/javascript">
+							new_ip_map();
+						</script>
+					{/literal}
 				</div>
 			</div>
+			
+			<p>
+				<div style="float: right; width: 60%;">
+					Länge:<br><input id="longitude" name="longitude" size="20" maxlength="15" value="Klick auf die Karte!">
+				</div>
+				<div style="width: 40%;">
+					Breite:<br><input id="latitude" name="latitude" size="20" maxlength="15" value="Klick auf die Karte!">
+				</div>
+				<br style="clear:both;">
+			</p>
 			
 			<p>Kurze Beschreibung des Standorts:<br><input id="location" name="location" type="text" size="60" maxlength="60" value="{$router_data.location}"></p>
 		</div>
@@ -122,14 +123,9 @@
 		</select>
 	</p>
 
-	<h2>Offline Benachrichtigung</h2>
-	<p>
-		Möchtest du benachrichtigt werden, wenn dieser Router <input name="notification_wait" type="text" size="1" maxlength="5" value="6"> Crawlzyklen offline ist?
-		<select name="notify">
-			<option value="1" selected='selected'>Ja</option>
-			<option value="0" >Nein</option>
-		</select>
-	</p>
+	<h2>Benachrichtigungen</h2>
+	<p><input name="twitter_notification" type="checkbox" value="1" checked> Freifunker Per Twitter über den neuen Router informieren.</p>
+	<p><input name="notify" type="checkbox" value="1" checked> Ich möchte benachrichtigt werden, wenn dieser Router <input name="notification_wait" type="text" size="1" maxlength="5" value="6"> Crawlzyklen offline ist.</p>
 
 	<h2>Netmon Autozuweisung</h2>
 	<p>
