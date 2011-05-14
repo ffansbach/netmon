@@ -1,7 +1,35 @@
 #!/bin/sh
-#
-# NodeWatcher wrapper
-# 
+# Netmon Nodewatcher (C) 2010-2011 Freifunk Oldenburg
+# Lizenz: GPL
+
+if [ -f /etc/config/nodewatcher ];then
+	API_IPV4_ADRESS=`uci get nodewatcher.@api[0].ipv4_address`
+	API_IPV6_ADRESS=`uci get nodewatcher.@api[0].ipv6_address`
+	API_IPV6_INTERFACE=`uci get nodewatcher.@api[0].ipv6_interface`
+	API_TIMEOUT=`uci get nodewatcher.@api[0].timeout`
+	API_RETRY=`uci get nodewatcher.@api[0].retry`
+	SCRIPT_VERSION=`uci get nodewatcher.@script[0].version`
+	SCRIPT_ERROR_LEVEL=`uci get nodewatcher.@script[0].error_level`
+	SCRIPT_LOGFILE=`uci get nodewatcher.@script[0].logfile`
+	CRAWL_METHOD=`uci get nodewatcher.@crawl[0].method`
+	CRAWL_ROUTER_ID=`uci get nodewatcher.@crawl[0].router_id`
+	CRAWL_UPDATE_HASH=`uci get nodewatcher.@crawl[0].update_hash`
+	CRAWL_NICKNAME=`uci get nodewatcher.@crawl[0].nickname`
+	CRAWL_PASSWORD=`uci get nodewatcher.@crawl[0].password`
+	UPDATE_AUTOUPDATE=`uci get nodewatcher.@update[0].autoupdate`
+else
+	. /etc/nodewatcher_config
+fi
+
+#Set default values if nothing is set
+if [ -n $API_TIMEOUT ]; then
+	API_TIMEOUT="3"
+fi
+if [ -n $API_RETRY ]; then
+	API_RETRY="3"
+fi
+
+API_RETRY=$(($API_RETRY - 1))
 
 delete_log() {
 	if [ -f $logfile ]; then
@@ -36,19 +64,19 @@ convert_space() {
 }
 
 get_url() {
-	if [[ `uci get nodewatcher.@api[0].ipv4_address` != "1" ]]; then
-		url=`uci get nodewatcher.@api[0].ipv4_address`
+	if [[ $API_IPV4_ADRESS != "1" ]]; then
+		url=$API_IPV4_ADRESS
 	else
-		url="[`uci get nodewatcher.@api[0].ipv6_address`"%"`uci get nodewatcher.@api[0].ipv6_interface`]"
+		url="[$API_IPV6_ADRESS"%"$API_IPV6_INTERFACE]"
 	fi
 	echo $url
 }
 
 do_ping() {
-	if [[ `uci get nodewatcher.@api[0].ipv4_address` != "1" ]]; then
-		command="ping -c 2 "`uci get nodewatcher.@api[0].ipv4_address`
+	if [[ $API_IPV4_ADRESS != "1" ]]; then
+		command="ping -c 2 "$API_IPV4_ADRESS
 	else
-		command="ping -c 2 -I "`uci get nodewatcher.@api[0].ipv6_interface`" "`uci get nodewatcher.@api[0].ipv6_address`
+		command="ping -c 2 -I "$API_IPV6_INTERFACE" "$API_IPV6_ADRESS
 	fi
 
 	if [ $error_level -gt "1" ]; then
@@ -68,12 +96,12 @@ update() {
 	fi
 	netmon_api=`get_url`
 	command="wget -q -O - http://$netmon_api/api_nodewatcher.php?section=version"
-	ergebnis=`$command`
+	ergebnis=`$command&sleep $API_TIMEOUT; kill $!`
 	return=`echo $ergebnis| cut '-d;' -f1`
 	version=`echo $ergebnis| cut '-d;' -f2`
 
-	if [[ $return = "success" ]]; then
-		if [[ $version -gt `uci get nodewatcher.@script[0].version` ]]; then
+	if [[ "$return" = "success" ]]; then
+		if [[ $version -gt $SCRIPT_VERSION ]]; then
 			if [ $error_level -gt "1" ]; then
 				echo "`date`: Eine neue Version ist Verfügbar, script wird geupdated" >> $logfile
 			fi
@@ -99,7 +127,7 @@ assign() {
 	#Choose right login String
 	login_strings="$(ifconfig br-mesh | grep HWaddr | awk '{ print $5 }'|sed -e 's/://g');$(ifconfig eth0 | grep HWaddr | awk '{ print $5 }'|sed -e 's/://g');$(ifconfig ath0 | grep HWaddr | awk '{ print $5 }'|sed -e 's/://g')"
 	command="wget -q -O - http://$netmon_api/api_nodewatcher.php?section=test_login_strings&login_strings=$login_strings"
-	ergebnis=`$command`
+	ergebnis=`$command&sleep $API_TIMEOUT; kill $!`
 	if [ `echo $ergebnis| cut '-d;' -f1` = "success" ]; then
 		router_auto_assign_login_string=`echo $ergebnis| cut '-d;' -f2`
 		if [ $error_level -gt "1" ]; then
@@ -115,7 +143,7 @@ assign() {
 
 	#Try to assign Router with choosen login string
 	command="wget -q -O - http://$netmon_api/api_nodewatcher.php?section=router_auto_assign&router_auto_assign_login_string=$router_auto_assign_login_string&hostname=$hostname"
-	ergebnis=`$command`
+	ergebnis=`$command&sleep $API_TIMEOUT; kill $!`
 	if [ `echo $ergebnis| cut '-d;' -f1` != "success" ]; then
 		if [ `echo $ergebnis| cut '-d;' -f2` = "already_assigned" ]; then
 			if [ $error_level -gt "0" ]; then
@@ -146,6 +174,12 @@ assign() {
 		fi
 		uci commit
 
+		CRAWL_METHOD=`uci get nodewatcher.@crawl[0].method`
+		CRAWL_ROUTER_ID=`uci get nodewatcher.@crawl[0].router_id`
+		CRAWL_UPDATE_HASH=`uci get nodewatcher.@crawl[0].update_hash`
+		CRAWL_NICKNAME=`uci get nodewatcher.@crawl[0].nickname`
+		CRAWL_PASSWORD=`uci get nodewatcher.@crawl[0].password`
+
 		configure
 
 		can_crawl=1
@@ -154,12 +188,12 @@ assign() {
 
 configure() {
 	netmon_api=`get_url`
-	authentificationmethod=`uci get nodewatcher.@crawl[0].method`
-	router_id=`uci get nodewatcher.@crawl[0].router_id`
-	router_auto_update_hash=`uci get nodewatcher.@crawl[0].update_hash`
+	authentificationmethod=$CRAWL_METHOD
+	router_id=$CRAWL_ROUTER_ID
+	router_auto_update_hash=$CRAWL_UPDATE_HASH
 	
 	command="wget -q -O - http://$netmon_api/api_nodewatcher.php?section=get_standart_data&authentificationmethod=$authentificationmethod&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id"
-	ergebnis=`$command`
+	ergebnis=`$command&sleep $API_TIMEOUT; kill $!`
 
 	if [ `echo $ergebnis| cut '-d;' -f1` = "success" ]; then
 		#uci set freifunk.contact.location=`echo $ergebnis| cut '-d;' -f3`
@@ -189,11 +223,11 @@ configure() {
 crawl() {
 	#Get API and authentication configuration
 	netmon_api=`get_url`
-	authentificationmethod=`uci get nodewatcher.@crawl[0].method`
-	nickname=`uci get nodewatcher.@crawl[0].nickname`
-	password=`uci get nodewatcher.@crawl[0].password`
-	router_id=`uci get nodewatcher.@crawl[0].router_id`
-	router_auto_update_hash=`uci get nodewatcher.@crawl[0].update_hash`
+	authentificationmethod=$CRAWL_METHOD
+	nickname=$CRAWL_NICKNAME
+	password=$CRAWL_PASSWORD
+	router_id=$CRAWL_ROUTER_ID
+	router_auto_update_hash=$CRAWL_UPDATE_HASH
 
 	#Get system data from UCI
 	if which uci >/dev/null; then
@@ -234,16 +268,22 @@ crawl() {
 	memory_buffering=`cat /proc/meminfo | grep 'Buffers' | awk '{ print $2 }'`
 	memory_free=`cat /proc/meminfo | grep 'MemFree' | awk '{ print $2 }'`
 	cpu=`grep -m 1 "cpu model" /proc/cpuinfo | cut -d ":" -f 2`
+	if [ -n $cpu ]; then
+		cpu=`grep -m 1 "model name" /proc/cpuinfo | cut -d ":" -f 2`
+	fi
 	cpu=`urlencode "$cpu"`
+
 	chipset=`grep -m 1 "system type" /proc/cpuinfo | cut -d ":" -f 2`
 	chipset=`urlencode "$chipset"`
 	local_time="`date +%s`"
 	processes=`cat /proc/loadavg | awk '{ print $4 }'`
 	loadavg=`cat /proc/loadavg | awk '{ print $1 }'`
-	
-	batman_adv_version=`batctl -v | awk '{ print $2 }'`
+
+	if which batctl >/dev/null; then
+		batman_adv_version=`batctl -v | awk '{ print $2 }'`
+	fi
 	kernel_version=`uname -r`
-	nodewatcher_version=`uci get nodewatcher.@script[0].version`
+	nodewatcher_version=$SCRIPT_VERSION
 
 	openwrt_version_file="/etc/openwrt_release"
 	if [ -f $openwrt_version_file ]; then
@@ -267,11 +307,11 @@ crawl() {
 		echo $command
 	else
 		i=0
-		while [ $i -le 5 ]
+		while [ $i -le $API_RETRY ]
 		do
-			return_interface=`$command`
+			return_interface=`$command&sleep $API_TIMEOUT; kill $!`
 
-			if [ `echo $return_interface | cut '-d;' -f1` = "success" ]; then
+			if [ "`echo $return_interface | cut '-d;' -f1`" = "success" ]; then
 				if [ $error_level -gt "1" ]; then
 					echo "`date`: Das Senden der System und Batman Statusdaten war nach dem `expr $i + 1`. Mal erfolgreich" >> $logfile
 				fi
@@ -334,14 +374,15 @@ crawl() {
 				#Send interface status data 
 				command="http://$netmon_api/api_nodewatcher.php?section=insert_crawl_interfaces_data&authentificationmethod=$authentificationmethod&nickname=$nickname&password=$password&router_auto_update_hash=$router_auto_update_hash&router_id=$router_id&$int"
 				command="wget -q -O - "$command
+
 				if [ "$1" = "debug" ]; then
 					echo $command
 				else
 					i=0
-					while [ $i -le 5 ]
+					while [ $i -le $API_RETRY ]
 					do
-						return_interface=`$command`
-						if [ `echo $return_interface | cut '-d;' -f1` = "success" ]; then
+						return_interface=`$command&sleep $API_TIMEOUT; kill $!`
+						if [ "`echo $return_interface | cut '-d;' -f1`" = "success" ]; then
 							if [ $error_level -gt "1" ]; then
 								echo "`date`: Das Senden der Interface Statusdaten ($name) war nach dem `expr $i + 1`. Mal erfolgreich" >> $logfile
 							fi
@@ -349,7 +390,6 @@ crawl() {
 						else
 							if [ $error_level -gt "0" ]; then
 								echo "`date`: Error! Das Senden der Interface Statusdaten ($name) war nach dem `expr $i + 1`. Mal nicht erfolgreich: $return_interface" >> $logfile
-								echo "`date`: $command" >> $logfile
 							fi
 						fi
 						i=`expr $i + 1`  #Zähler um eins erhöhen
@@ -380,11 +420,11 @@ crawl() {
 					echo $command
 				else
 					i=0
-					while [ $i -le 5 ]
+					while [ $i -le $API_RETRY ]
 					do
-						return_interface="`$command`"
+						return_interface="`$command&sleep $API_TIMEOUT; kill $!`"
 						
-						if [ `echo $return_interface | cut '-d;' -f1` = "success" ]; then
+						if [ "`echo $return_interface | cut '-d;' -f1`" = "success" ]; then
 							if [ $error_level -gt "1" ]; then
 								echo "`date`: Das Senden des Batman Advanced Interfaces ($device_name) war nach dem `expr $i + 1`. Mal erfolgreich" >> $logfile
 							fi
@@ -424,11 +464,11 @@ crawl() {
 						echo $command
 					else
 						i=0
-						while [ $i -le 5 ]
+						while [ $i -le $API_RETRY ]
 						do
-							return_interface="`$command`"
+							return_interface="`$command&sleep $API_TIMEOUT; kill $!`"
 				
-							if [ `echo $return_interface | cut '-d;' -f1` = "success" ]; then
+							if [ "`echo $return_interface | cut '-d;' -f1`" = "success" ]; then
 								if [ $error_level -gt "1" ]; then
 									echo "`date`: Das Senden der Batman Advaned Originator Daten war nach dem `expr $i + 1`. Mal erfolgreich" >> $logfile
 								fi
@@ -465,10 +505,10 @@ crawl() {
 		echo $command
 		else
 		i=0
-		while [ $i -le 5 ]
+		while [ $i -le $API_RETRY ]
 		do
-			return_interface="`$command`"
-			if [ `echo $return_interface | cut '-d;' -f1` = "success" ]; then
+			return_interface="`$command&sleep $API_TIMEOUT; kill $!`"
+			if [ "`echo $return_interface | cut '-d;' -f1`" = "success" ]; then
 				if [ $error_level -gt "1" ]; then
 					echo "`date`: Das Senden der Client Daten war nach dem `expr $i + 1`. Mal erfolgreich" >> $logfile
 				fi
@@ -488,10 +528,10 @@ crawl() {
 LANG=C
 
 SCRIPT_DIR=`dirname $0`
-error_level=`uci get nodewatcher.@script[0].error_level`
-logfile=`uci get nodewatcher.@script[0].logfile`
+error_level=$SCRIPT_ERROR_LEVEL
+logfile=$SCRIPT_LOGFILE
 
-if [[ `uci get nodewatcher.@update[0].autoupdate` == '1' ]]; then
+if [[ $UPDATE_AUTOUPDATE == '1' ]]; then
 	if [ $error_level -gt "1" ]; then
 		echo "`date`: Autoupdate ist an" >> $logfile
 	fi
@@ -516,18 +556,16 @@ if [ $error_level -gt "1" ]; then
 fi
 
 can_crawl=1
-if [ `uci get nodewatcher.@crawl[0].method` == "login" ]; then
+if [ $CRAWL_METHOD == "login" ]; then
 	if [ $error_level -gt "1" ]; then  
 		echo "`date`: Authentifizierungsmethode ist: Username und Passwort" >> $logfile
 	fi
-	authentificationmethod="user"
-elif [ `uci get nodewatcher.@crawl[0].method` == "hash" ]; then
+elif [ $CRAWL_METHOD == "hash" ]; then
 	if [ $error_level -gt "1" ]; then
 		echo "`date`: Authentifizierungsmethode ist: Autoassign und Hash" >> $logfile
 		echo "`date`: Prüfe ob Roter schon mit Netmon verknüpft ist" >> $logfile
 	fi
-	authentificationmethod="hash"
-	if [ `uci get nodewatcher.@crawl[0].update_hash` == "1" ]; then
+	if [ $CRAWL_UPDATE_HASH == "1" ]; then
 		can_crawl=0
 		if [ $error_level -gt "1" ]; then
 			echo "`date`: Der Router ist noch NICHT mit Netmon verknüpft" >> $logfile

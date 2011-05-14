@@ -59,6 +59,12 @@ $(document).ready(function() {
 			</tbody>
 		</table>
 	</div>
+
+	{if $hidden_service_count!=0}
+		<p>Hinweis: {$hidden_service_count} Dienste wurden versteckt und werden nur <a href="./login.php?section=login">eingeloggten</a> Benutzern angezeigt.</p>
+	{/if}
 {else}
-<p>Keine Services vorhanden</p>
+	<p>Keine Services vorhanden</p>
 {/if}
+
+<br style="clear: both;">

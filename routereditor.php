@@ -58,8 +58,11 @@
 	if ($_GET['section'] == "insert_edit") {
 		if (UserManagement::checkPermission(4)) {
 			$insert_result = RouterEditor::insertEditRouter();
-
-			header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+			if($insert_result) {
+				header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+			} else {
+				header('Location: ./routereditor.php?section=edit&router_id='.$_GET['router_id']);
+			}
 		} else {
 			$message[] = array("Nur eingeloggte Benutzer dürfen einen Router anlegen oder editieren!", 2);
 			Message::setMessage($message);

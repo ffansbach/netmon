@@ -196,4 +196,8 @@
 	$smarty->assign('last_ended_crawl_cycle', $last_ended_crawl_cycle);
 	$smarty->assign('actual_crawl_cycle', $actual_crawl_cycle);
 
+	//This is used for redirection after login
+	$_SESSION['last_page'] = $_SESSION['current_page'];
+	$_SESSION['current_page'] = $_SERVER['REQUEST_URI'];
+
 ?>
