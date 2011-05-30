@@ -23,7 +23,7 @@ class BatmanAdvanced {
 			$sql = "SELECT  *
 					FROM crawl_batman_advanced_originators
 					WHERE router_id='$router_id' AND crawl_cycle_id!='$actual_crawl_cycle_id'
-					ORDER BY crawl_date desc
+					ORDER BY id desc
 					LIMIT $limit";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {

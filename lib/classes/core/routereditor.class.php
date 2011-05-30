@@ -8,7 +8,9 @@ require_once($path.'lib/classes/core/crawling.class.php');
 class RouterEditor {
 	public function insertNewRouter() {
 		$check_router_hostname_exist = Router::getRouterByHostname($_POST['hostname']);
-		$check_router_auto_assign_login_string = Router::getRouterByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
+		if(!empty($_POST['router_auto_assign_login_string'])) {
+			$check_router_auto_assign_login_string = Router::getRouterByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
+		}
 
 		if(empty($_POST['hostname'])) {
 			$message[] = array("Bitte geben sie einen Hostname an.", 2);

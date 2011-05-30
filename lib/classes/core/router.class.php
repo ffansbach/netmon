@@ -152,15 +152,23 @@ class Router {
 		return $routers;
 	}
 
-	public function getRouterList() {
+	public function getRouterList($where, $operator, $value) {
+		if(!empty($where) AND !empty($value)) {
+			$sql_append = "WHERE ".$where.urldecode($operator)."'$value'";
+		}
+
+		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		try {
 			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.description, routers.location, routers.latitude, routers.longitude,
 					chipsets.name as chipset_name,
-					users.nickname
+					users.nickname,
+					crawl_routers.status, crawl_routers.nodewatcher_version
 
 					FROM routers
 					LEFT JOIN chipsets on (chipsets.id=routers.chipset_id)
-					LEFT JOIN users on (users.id=routers.user_id)";
+					LEFT JOIN users on (users.id=routers.user_id)
+					LEFT JOIN crawl_routers on (crawl_routers.router_id=routers.id AND crawl_routers.crawl_cycle_id='$last_endet_crawl_cycle[id]')
+					$sql_append";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$text=$row['location'];
@@ -183,7 +191,6 @@ class Router {
 				} 
 				$row['short_chipset_name'] = $shorttext;
 
-				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 				$row['actual_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 				$row['router_reliability'] = Router::getRouterReliability($row['router_id'], 500);
 				$row['client_count'] = Clients::getClientsCountByRouterAndCrawlCycle($row['router_id'], $last_endet_crawl_cycle['id']);
@@ -251,7 +258,7 @@ class Router {
 			$sql = "SELECT  *
 					FROM crawl_routers
 					WHERE router_id='$router_id' AND crawl_cycle_id!='$actual_crawl_cycle_id'
-					ORDER BY crawl_date desc
+					ORDER BY id desc
 					LIMIT $limit";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {

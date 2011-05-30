@@ -109,6 +109,29 @@ class Crawling {
 		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_interfaces WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
 		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_originators WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
 		DB::getInstance()->exec("DELETE FROM crawl_olsr WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
+		DB::getInstance()->exec("DELETE FROM crawl_services WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
+		DB::getInstance()->exec("DELETE FROM crawl_clients_count WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
+		DB::getInstance()->exec("DELETE FROM history WHERE TO_DAYS(create_date) < TO_DAYS(NOW())-$days");
+	}
+
+	//Returns true if router has already been crawled
+	public function checkIfRouterHasBeenCrawled($router_id, $crawl_cycle_id) {
+		try {
+			$sql = "SELECT  *
+					FROM crawl_routers
+					WHERE router_id='$router_id' AND crawl_cycle_id='$crawl_cycle_id'";
+			$result = DB::getInstance()->query($sql);
+			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		if(!empty($crawl_data)) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public function insertRouterCrawl($router_id, $crawl_data, $actual_crawl_cycle=array(), $last_endet_crawl_cycle=array()) {
@@ -157,7 +180,7 @@ class Crawling {
 		try {
 			$sql = "SELECT  *
 					FROM crawl_cycle
-					ORDER BY crawl_date desc
+					ORDER BY id desc
 					LIMIT 1,1";
 			$result = DB::getInstance()->query($sql);
 			$count_data = $result->fetch(PDO::FETCH_ASSOC);
@@ -170,10 +193,12 @@ class Crawling {
 
 	public function getActualCrawlCycle() {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_cycle
-					ORDER BY crawl_date desc
-					LIMIT 1";
+			$sql = "SELECT *
+				FROM crawl_cycle AS t1
+				WHERE id = (
+						SELECT max( id )
+						FROM crawl_cycle AS t2
+					   )";
 			$result = DB::getInstance()->query($sql);
 			$count_data = $result->fetch(PDO::FETCH_ASSOC);
 		}
