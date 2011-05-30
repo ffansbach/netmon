@@ -17,7 +17,7 @@ if($_GET['section']=="insert_olsr_data") {
 		try {
 			$sql = "SELECT *
 			        FROM  crawl_cycle
-	        		ORDER BY crawl_date desc
+	        		ORDER BY id desc
 				LIMIT 1;";
 			$result = DB::getInstance()->query($sql);
 			$last_crawl_cycle = $result->fetch(PDO::FETCH_ASSOC);

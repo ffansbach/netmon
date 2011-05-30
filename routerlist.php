@@ -2,7 +2,7 @@
   require_once('runtime.php');
   require_once('./lib/classes/core/router.class.php');
 
-  $routerlist = Router::getRouterList();
+  $routerlist = Router::getRouterList($_GET['where'], $_GET['operator'], $_GET['value']);
   $smarty->assign('routerlist', $routerlist);
 
   $smarty->display("header.tpl.php");

@@ -26,7 +26,7 @@
 			if($insert_result['result']) {
 				header('Location: ./router_config.php?router_id='.$insert_result['router_id']);
 			} else {
-				header('Location: ./routereditor.php?section=new');
+				header("Location: ./routereditor.php?section=new&router_auto_assign_login_string=$_POST[router_auto_assign_login_string]&hostname=$_POST[hostname]");
 			}
 		} else {
 			$message[] = array("Nur eingeloggte Benutzer dürfen einen Router anlegen oder editieren!", 2);

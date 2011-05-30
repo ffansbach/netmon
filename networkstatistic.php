@@ -137,6 +137,42 @@ if(!empty($last_ended_crawl_cycle)) {
 	}
 
 	$smarty->assign('firmware_versions_count', $firmware_versions_count);
+
+	/**Get number of routers by nodewatcher version **/
+	try {
+		$sql = "SELECT  nodewatcher_version  
+				FROM crawl_routers
+			WHERE crawl_cycle_id=$last_ended_crawl_cycle[id]
+			GROUP BY nodewatcher_version";
+		$result = DB::getInstance()->query($sql);
+		foreach($result as $row) {
+			if(!empty($row['nodewatcher_version'])) {
+				$nodewatcher_versions[] = $row;
+			}
+		}
+	}
+	catch(PDOException $e) {
+		echo $e->getMessage();
+	}
+
+	foreach($nodewatcher_versions as $key=>$nodewatcher_version) {
+		$nodewatcher_versions_count[$key]['nodewatcher_version'] = $nodewatcher_version['nodewatcher_version'];
+
+		try {
+			$sql = "SELECT  COUNT(*) as count
+					FROM crawl_routers
+				WHERE crawl_cycle_id=$last_ended_crawl_cycle[id] AND status='online' AND nodewatcher_version='".$nodewatcher_versions_count[$key]['nodewatcher_version']."'";
+			$result = DB::getInstance()->query($sql);
+			$count = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		$nodewatcher_versions_count[$key]['count'] = $count['count'];
+	}
+
+	$smarty->assign('nodewatcher_versions_count', $nodewatcher_versions_count);
 	
 	/**Set history time window**/
 	$history_start_1_day = time()-(60*60*24*1);

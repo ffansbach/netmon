@@ -57,7 +57,14 @@
 	<h2>Router nach Firmware Version</h2>
 	<p>
 	{foreach item=firmware_version_count from=$firmware_versions_count}
-		<b>{$firmware_version_count.firmware_version}:</b> {$firmware_version_count.count}<br>
+		<a href="./routerlist.php?where=crawl_routers.firmware_version&operator=%3D&value={$firmware_version_count.firmware_version}"><b>{$firmware_version_count.firmware_version}:</b> {$firmware_version_count.count}</a><br>
+	{/foreach}
+	</p>
+
+	<h2>Router nach Nodewatcher Version</h2>
+	<p>
+	{foreach item=nodewatcher_version_count from=$nodewatcher_versions_count}
+		<a href="./routerlist.php?where=crawl_routers.nodewatcher_version&operator=%3D&value={$nodewatcher_version_count.nodewatcher_version}"><b>{$nodewatcher_version_count.nodewatcher_version}:</b> {$nodewatcher_version_count.count}</a><br>
 	{/foreach}
 	</p>
 	

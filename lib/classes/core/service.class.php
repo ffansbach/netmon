@@ -197,7 +197,7 @@ class Service {
 				DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
 				$message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
 				
-				DB::getInstance()->exec("DELETE FROM crawl_data WHERE service_id='$service_id';");
+				DB::getInstance()->exec("DELETE FROM crawl_services WHERE service_id='$service_id';");
 				$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurden gelöscht.",1);
 
 				DB::getInstance()->exec("DELETE FROM history WHERE object='service' AND object_id='$service_id';");
@@ -212,25 +212,6 @@ class Service {
 			Message::setMessage($message);
 			return false;
 		}
-	}
-
-
-
-	public function getCrawlHistory($service_id, $count) {
-		$last_crawl = array();
-		try {
-			$sql = "SELECT * FROM crawl_data
-					WHERE service_id='$service_id' ORDER BY id DESC LIMIT $count";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$last_crawl[] = $row;
-			}
-		 }
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-
-		return $last_crawl;
 	}
 
 	public function insertCrawl($service_id, $status, $crawled_ipv4_addr, $crawl_cycle=array()) {
