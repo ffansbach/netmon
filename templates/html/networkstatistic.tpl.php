@@ -2,10 +2,59 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
+<!-- Javascript for the graphs -->
+<script type="text/javascript" src="lib/classes/extern/javascriptrrd/binaryXHR.js"></script>
+<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFile.js"></script>
+<!-- rrdFlot class needs the following four include files !-->
+<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlotSupport.js"></script>
+<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlot.js"></script>
+<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.selection.js"></script>
+
+{literal}
+<script type="text/javascript">
+	// This function updates the Web Page with the data from the RRD archive header
+	// when a new file is selected
+	function update_fname(html_graph_id) {
+		var graph_opts={legend: {position:"ne", noColumns:2} };
+		var ds_graph_opts={'online':{checked:true, color: "#007B0F", 
+					lines: { show: true, fill: false, fillColor:""} },
+				'offline':{checked:true, color: "#CB0000", 
+					lines: { show: true, fill: false, fillColor:""} },
+				'unknown':{checked:true, color: "#F8C901", 
+					lines: { show: true, fill: false, fillColor:""} },
+				'total':{checked:true, color: "#696969", 
+					lines: { show: true, fill: false, fillColor:""} },
+				'clients':{checked:true, color: "#43c02e", 
+					lines: { show: true, fill: false} } };
+		
+		// the rrdFlot object creates and handles the graph
+		var f=new rrdFlot(html_graph_id,rrd_data,graph_opts,ds_graph_opts);
+	}
+	
+	// This is the callback function that,
+	// given a binary file object,
+	// verifies that it is a valid RRD archive
+	// and performs the update of the Web page
+	function update_fname_handler(bf, html_graph_id) {
+		var i_rrd_data=undefined;
+		try {
+			var i_rrd_data=new RRDFile(bf);            
+		} catch(err) {
+			alert("File "+fname+" is not a valid RRD archive!");
+		}
+		if (i_rrd_data!=undefined) {
+			rrd_data=i_rrd_data;
+			update_fname(html_graph_id)
+		}
+	}
+</script>
 
 <script type="text/javascript">
 	document.body.id='tab1';
 </script>
+{/literal}
+
 <ul id="tabnav">
 	<li class="tab1"><a href="./networkstatistic.php">Netzwerkstatistik</a></li>
 	<li class="tab2"><a href="./networkhistory.php">Historie</a></li>
@@ -69,7 +118,17 @@
 	</p>
 	
 	<h2>Router status History</h2>
-	{literal}
+	<script type="text/javascript">
+		fname='./rrdtool/databases/netmon_history_router_status.rrd';
+		html_graph_id="routers_status_graph"
+		try {
+			FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+		} catch (err) {
+			alert("Failed loading "+fname+"\n"+err);
+		}
+	</script>
+	<div id="routers_status_graph" style="float:left; width: 100%;"></div>
+<!--	{literal}
 		<script>
 			$(document).ready(function() {
 	{/literal}
@@ -94,9 +153,21 @@
 		<div id="fragment-3_router_history">
 			<img src="./tmp/netmon_history_router_status_1_month.png">
 		</div>
-	</div>
+	</div>-->
 
 	<h2>Historie der Verbundenen Clients</h2>
+	<script type="text/javascript">
+		fname='./rrdtool/databases/netmon_hisory_client_count.rrd';
+		html_graph_id="client_count_graph"
+		try {
+			FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+		} catch (err) {
+			alert("Failed loading "+fname+"\n"+err);
+		}
+	</script>
+	<div id="client_count_graph" style="float:left; width: 100%;"></div>
+
+<!--
 	{literal}
 		<script>
 			$(document).ready(function() {
@@ -122,7 +193,8 @@
 		<div id="fragment-3_client_count_history">
 			<img src="./tmp/netmon_history_client_count_1_month.png">
 		</div>
-	</div>
+	</div>-->
 {else}
 	<p>Es wurde noch kein Crawlzyklus vollständig beendet, sodass keine Daten generiert werden können</p>
 {/if}
+<br style="clear: both;">

@@ -200,4 +200,6 @@
 	$_SESSION['last_page'] = $_SESSION['current_page'];
 	$_SESSION['current_page'] = $_SERVER['REQUEST_URI'];
 
+	/**Google Maps API Key*/
+	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
 ?>
