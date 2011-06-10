@@ -2,10 +2,18 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
-
 <script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
 
 <link rel="stylesheet" type="text/css" href="templates/css/jquery_data_tables.css">
+
+<!-- Javascript for the graphs -->
+<script type="text/javascript" src="lib/classes/extern/javascriptrrd/binaryXHR.js"></script>
+<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFile.js"></script>
+<!-- rrdFlot class needs the following four include files !-->
+<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlotSupport.js"></script>
+<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlot.js"></script>
+<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.selection.js"></script>
 
 <script type="text/javascript">
 {literal}
@@ -23,20 +31,14 @@ $(document).ready(function() {
 	<script>
 		function setBatmanAdvLinqQualityPictures(originator) {
 			$(document).ready(function(){
-				document.getElementById('batman_adv_link_quality_average_12_hours').style.display = 'none';
-				document.getElementById('batman_adv_link_quality_average_1_day').style.display = 'none';
-				document.getElementById('batman_adv_link_quality_average_1_week').style.display = 'none';
+				document.getElementById('batman_adv_link_quality_average_graphic').style.display = 'none';
 {/literal}
 	{foreach $batman_adv_originators as $originators}
-				document.getElementById('batman_adv_link_quality_{$originators.originator_file_path}_12_hours').style.display = 'none';
-				document.getElementById('batman_adv_link_quality_{$originators.originator_file_path}_1_day').style.display = 'none';
-				document.getElementById('batman_adv_link_quality_{$originators.originator_file_path}_1_week').style.display = 'none';
+				document.getElementById('batman_adv_link_quality_{$originators.originator_file_path}_graphic').style.display = 'none';
 	{/foreach}
 {literal}
-
-				document.getElementById('batman_adv_link_quality_'+originator+'_12_hours').style.display = 'block';
-				document.getElementById('batman_adv_link_quality_'+originator+'_1_day').style.display = 'block';
-				document.getElementById('batman_adv_link_quality_'+originator+'_1_week').style.display = 'block';
+				document.getElementById('batman_adv_link_quality_'+originator+'_graphic').style.display = 'block';
+				document.getElementById('batman_adv_link_quality_title').innerText = originator;
 			});
 		}
 	</script>
@@ -45,6 +47,52 @@ $(document).ready(function() {
 <script type="text/javascript">
 	document.body.id='tab1';
 </script>
+
+{literal}
+    <script type="text/javascript">
+      // This function updates the Web Page with the data from the RRD archive header
+      // when a new file is selected
+      function update_fname(html_graph_id) {
+        var graph_opts={legend: {position:"ne", noColumns:2} };
+        var ds_graph_opts={'traffic_rx':{checked:true, color: "#3118c3", 
+                                         lines: { show: true, fill: true, fillColor:""} },
+                           'traffic_tx':{checked:true, color: "#ef2700", 
+                                         lines: { show: true, fill: true, fillColor:""} },
+			   'memory_caching':{checked:true, color: "#e30f0f", 
+					 lines: { show: true, fill: true, fillColor:""} },
+			   'memory_buffering':{checked:true, color: "#56f5e4", 
+					 lines: { show: true, fill: true, fillColor:""} },
+			    'memory_free':{checked:true, color: "#0009c3", 
+					 lines: { show: true, fill: true, fillColor:""} },
+			    'clients':{checked:true, color: "#43c02e", 
+					 lines: { show: true, fill: false} },
+			    'originators':{checked:true, color: "#46ddd4", 
+					 lines: { show: true, fill: false} },
+			    'quality':{checked:true, color: "#3118c3", 
+					 lines: { show: true, fill: true, fillColor:""} } };
+
+        // the rrdFlot object creates and handles the graph
+        var f=new rrdFlot(html_graph_id,rrd_data,graph_opts,ds_graph_opts);
+      }
+
+      // This is the callback function that,
+      // given a binary file object,
+      // verifies that it is a valid RRD archive
+      // and performs the update of the Web page
+      function update_fname_handler(bf, html_graph_id) {
+          var i_rrd_data=undefined;
+          try {
+            var i_rrd_data=new RRDFile(bf);            
+          } catch(err) {
+            alert("File "+fname+" is not a valid RRD archive!");
+          }
+          if (i_rrd_data!=undefined) {
+            rrd_data=i_rrd_data;
+            update_fname(html_graph_id)
+          }
+      }
+</script>
+{/literal}
 
 <ul id="tabnav">
 	<li class="tab1"><a href="./router_status.php?router_id={$router_data.router_id}">Router Status</a></li>
@@ -255,73 +303,32 @@ $(document).ready(function() {
 		{/if}
 
 		<h2>Grafische Historie</h2>
-		{literal}
-			<script>
-				$(document).ready(function() {
-		{/literal}
-				$("#tabs_router_memory").tabs();
-		{literal}
-				});
-			</script>
-		{/literal}
-
 		<h3>Memory</h3>
-		<div id="tabs_router_memory" style="width: 96%">
-			<ul>
-				<li><a href="#fragment-1_router_memory"><span>12 Sunden</span></a></li>
-				<li><a href="#fragment-2_router_memory"><span>24 Stunden</span></a></li>
-				<li><a href="#fragment-3_router_memory"><span>7 Tage</span></a></li>
-			</ul>
-			<div id="fragment-1_router_memory">
-				<img src="./tmp/router_{$router_data.router_id}_memory_12_hours.png">
-			</div>
-			<div id="fragment-2_router_memory">
-				<img src="./tmp/router_{$router_data.router_id}_memory_1_day.png">
-			</div>
-			<div id="fragment-3_router_memory">
-				<img src="./tmp/router_{$router_data.router_id}_memory_1_week.png">
-			</div>
-		</div>
-
-		{literal}
-			<script>
-				$(document).ready(function() {
-		{/literal}
-					$("#tabs_clients").tabs();
-		{literal}
-				});
-			</script>
-		{/literal}
+		<script type="text/javascript">
+			fname='./rrdtool/databases/router_{$router_data.router_id}_memory.rrd';
+			html_graph_id="memory_graph"
+			try {
+				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+			} catch (err) {
+				alert("Failed loading "+fname+"\n"+err);
+			}
+		</script>
+		<div id="memory_graph" style="float:left; width: 100%;"></div>
 
 		<h3>Client Historie</h3>
-		<div id="tabs_clients" style="width: 96%">
-			<ul>
-			        <li><a href="#fragment-1_clients"><span>12 Sunden</span></a></li>
-			        <li><a href="#fragment-2_clients"><span>24 Stunden</span></a></li>
-			        <li><a href="#fragment-3_clients"><span>7 Tage</span></a></li>
-			</ul>
-			<div id="fragment-1_clients">
-				<img src="./tmp/router_{$router_data.router_id}_clients_12_hours.png">
-			</div>
-			<div id="fragment-2_clients">
-				<img src="./tmp/router_{$router_data.router_id}_clients_1_day.png">
-			</div>
-			<div id="fragment-3_clients">
-				<img src="./tmp/router_{$router_data.router_id}_clients_1_week.png">
-			</div>
-		</div>
+		<script type="text/javascript">
+			fname='./rrdtool/databases/router_{$router_data.router_id}_clients.rrd';
+			html_graph_id="client_history_graph"
+			try {
+				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+			} catch (err) {
+				alert("Failed loading "+fname+"\n"+err);
+			}
+		</script> 
+		<div id="client_history_graph" style="float:left; width: 100%;"></div>
 	</div>
 </div>
 
-{literal}
-	<script>
-		$(document).ready(function() {
-{/literal}
-			$("#tabs_batman_adv").tabs();
-{literal}
-		});
-	</script>
-{/literal}
 <div style="width: 100%; overflow: hidden;">
 	<h2>B.A.T.M.A.N advanced Monitoring</h2>
 	<div style="float:left; width: 45%; padding-right: 15px;">
@@ -365,76 +372,57 @@ $(document).ready(function() {
 	<div style="float:left; width: 53%;">
 		<h3>Anzahl der Nachbarn</h3>
 		{if $rrd_originators_db_exists}
-			<div id="tabs_batman_adv" style="width: 96%">
-				<ul>
-				        <li><a href="#fragment-1_batman_adv"><span>12 Sunden</span></a></li>
-					<li><a href="#fragment-2_batman_adv"><span>24 Stunden</span></a></li>
-			        	<li><a href="#fragment-3_batman_adv"><span>7 Tage</span></a></li>
-				</ul>
-				<div id="fragment-1_batman_adv">
-					<img src="./tmp/router_{$router_data.router_id}_originators_12_hours.png">
-				</div>
-				<div id="fragment-2_batman_adv">
-					<img src="./tmp/router_{$router_data.router_id}_originators_1_day.png">
-				</div>
-				<div id="fragment-3_batman_adv">
-					<img src="./tmp/router_{$router_data.router_id}_originators_1_week.png">
-				</div>
-			</div>
-		{else}
-			<p>Keine Grafik zum anzeigen vorhanden</p>
-		{/if}
-		
-		<h3>Graphic Link Quality</h3>
-		{if $rrd_link_quality_db_exists}
-		{literal}
-			<script>
-				$(document).ready(function() {
-		{/literal}
-					$("#tabs_batman_adv_link_quality_average").tabs();
-		{literal}
-				});
-			</script>
-		{/literal}
-		
-		<div id="tabs_batman_adv_link_quality_average" style="width: 96%">
-			<ul>
-	 		       <li><a href="#fragment-1_batman_adv_link_quality_average"><span>12 Sunden</span></a></li>
-	   		     <li><a href="#fragment-2_batman_adv_link_quality_average"><span>24 Stunden</span></a></li>
-	    		    <li><a href="#fragment-3_batman_adv_link_quality_average"><span>7 Tage</span></a></li>
-			</ul>
-			<div id="fragment-1_batman_adv_link_quality_average">
-				<img id="batman_adv_link_quality_average_12_hours" style="display: block;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_average_12_hours.png">
-				{foreach $batman_adv_originators as $originators}
-					<img id="batman_adv_link_quality_{$originators.originator_file_path}_12_hours" style="display: none;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_{$originators.originator_file_path}_12_hours.png">
-				{/foreach}
-			</div>
-			<div id="fragment-2_batman_adv_link_quality_average">
-				<img id="batman_adv_link_quality_average_1_day" style="display: block;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_average_1_day.png">
-				{foreach $batman_adv_originators as $originators}
-					<img id="batman_adv_link_quality_{$originators.originator_file_path}_1_day" style="display: none;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_{$originators.originator_file_path}_1_day.png">
-				{/foreach}
-			</div>
-			<div id="fragment-3_batman_adv_link_quality_average">
-				<img id="batman_adv_link_quality_average_1_week" style="display: block;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_average_1_week.png">
-				{foreach $batman_adv_originators as $originators}
-					<img id="batman_adv_link_quality_{$originators.originator_file_path}_1_week" style="display: none;" src="tmp/router_{$router_data.router_id}_batman_adv_link_quality_{$originators.originator_file_path}_1_week.png">
-				{/foreach}
-			</div>
-		</div>
-		
-		<p>
-			<select name="search_range" onChange="setBatmanAdvLinqQualityPictures(this.options[this.selectedIndex].value)">
-				<option value="average" >Zeige Grafik für Average</option>
-				{foreach $batman_adv_originators as $originators}
-					<option value="{$originators.originator_file_path}" >Zeige Grafik für {$originators.originator}</option>
-				{/foreach}
-			</select>
-		</p>
+			<script type="text/javascript">
+				fname='./rrdtool/databases/router_{$router_data.router_id}_originators.rrd';
+				html_graph_id="batman_adv_originator_graphic"
+				try {
+					FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+				} catch (err) {
+					alert("Failed loading "+fname+"\n"+err);
+				}
+			</script> 
+			<div id="batman_adv_originator_graphic" style="float:left; width: 100%;"></div>
 		{else}
 			<p>Keine Grafik zum anzeigen vorhanden</p>
 		{/if}
 
+		<h3>Graphic Link Quality für <span id="batman_adv_link_quality_title">average</span></h3>
+		{if $rrd_link_quality_db_exists}
+			<script type="text/javascript">
+				fname='./rrdtool/databases/router_{$router_data.router_id}_batman_adv_link_quality_average.rrd';
+				html_graph_id="batman_adv_link_quality_average_graphic"
+				try {
+					FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+				} catch (err) {
+					alert("Failed loading "+fname+"\n"+err);
+				}
+			</script> 
+			<div id="batman_adv_link_quality_average_graphic" style="float:left; width: 100%;"></div>
+			
+			{foreach $batman_adv_originators as $originators}
+				<script type="text/javascript">
+					fname='./rrdtool/databases/router_{$router_data.router_id}_batman_adv_link_quality_{$originators.originator_file_path}.rrd';
+					html_graph_id="batman_adv_link_quality_{$originators.originator_file_path}_graphic"
+					try {
+						FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+					} catch (err) {
+						alert("Failed loading "+fname+"\n"+err);
+					}
+				</script> 
+				<div id="batman_adv_link_quality_{$originators.originator_file_path}_graphic" style="float:left; width: 100%; display: none;"></div>
+			{/foreach}
+			
+			<p>
+				<select name="search_range" onChange="setBatmanAdvLinqQualityPictures(this.options[this.selectedIndex].value)">
+					<option value="average" >Zeige Grafik für Average</option>
+					{foreach $batman_adv_originators as $originators}
+						<option value="{$originators.originator_file_path}" >Zeige Grafik für {$originators.originator}</option>
+					{/foreach}
+				</select>
+			</p>
+		{else}
+			<p>Keine Grafik zum anzeigen vorhanden</p>
+		{/if}
 	</div>
 </div>
 
@@ -472,43 +460,38 @@ $(document).ready(function() {
 <h2>Interface Monitoring</h2>
 {if !empty($interface_crawl_data)}
 	{foreach $interface_crawl_data as $interface key=schluessel}
-<script type="text/javascript">
-	{literal}
-	$(document).ready(function(){
-		var selectedEffect = 'blind';
-		var options = {direction: 'vertical'};
-	{/literal}
-		{if empty($interface.wlan_frequency) AND $interface.is_vpn!='true'}
-			$('#traffic_{$schluessel}').hide(); // Hide div by default
-			document.getElementById('traffic_title_arrow_up_{$schluessel}').style.display = 'inline';
-			document.getElementById('traffic_title_arrow_down_{$schluessel}').style.display = 'none';
-		{else}
-			document.getElementById('traffic_title_arrow_up_{$schluessel}').style.display = 'none';
-			document.getElementById('traffic_title_arrow_down_{$schluessel}').style.display = 'inline';
-		{/if}
-		$('#traffic_title_{$schluessel}').click(function(){literal} { {/literal}
+		<script type="text/javascript">
+			fname='./rrdtool/databases/router_{$router_data.router_id}_interface_{$interface.name}_traffic_rx.rrd';
+			html_graph_id="jrrd_{$schluessel}"
+			try {
+				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+			} catch (err) {
+				alert("Failed loading "+fname+"\n"+err);
+			}
+		</script> 
+		
+		<script type="text/javascript">
+			{literal}
+				$(document).ready(function(){
+					var selectedEffect = 'blind';
+					var options = {direction: 'vertical'};
+			{/literal}
+			{if empty($interface.wlan_frequency) AND $interface.is_vpn!='true'}
+				$('#traffic_{$schluessel}').hide(); // Hide div by default
+				document.getElementById('traffic_title_arrow_up_{$schluessel}').style.display = 'inline';
+				document.getElementById('traffic_title_arrow_down_{$schluessel}').style.display = 'none';
+			{else}
+				document.getElementById('traffic_title_arrow_up_{$schluessel}').style.display = 'none';
+				document.getElementById('traffic_title_arrow_down_{$schluessel}').style.display = 'inline';
+			{/if}
+			$('#traffic_title_{$schluessel}').click(function(){literal} { {/literal}
 			$('#traffic_{$schluessel}').toggle(selectedEffect,options,650); // First click should toggle to 'show'
 			return false;
-		{literal} } );
-	});
-	{/literal}
-</script> 
-
-
-
-		{literal}
-			<script>
-				$(document).ready(function() {
-		{/literal}
-					$("#tabs_{$schluessel}").tabs();
-		{literal}
+			{literal} } );
 				});
-			</script>
-		{/literal}
-<!--onClick="$('#traffic_{$schluessel}').slideToggle(800);"-->
-
-
-
+			{/literal}
+		</script> 
+		
 		<div onclick="var el = document.getElementById('traffic_title_arrow_up_{$schluessel}'); var el2 = document.getElementById('traffic_title_arrow_down_{$schluessel}'); {literal} if (el.style.display == 'none') {el.style.display = 'inline'; el2.style.display = 'none';} else {el.style.display = 'none'; el2.style.display = 'inline';} {/literal}" id="traffic_title_{$schluessel}" style="width: 98%; background: #81b59e;" >
 			<h3><span id="traffic_title_arrow_up_{$schluessel}">↑</span><span id="traffic_title_arrow_down_{$schluessel}">↓</span> | {$interface.name} {if !empty($interface.wlan_frequency)}(Wlan Interface){/if} {if $interface.is_vpn=='true'}(VPN Interface){/if}</h3>
 		</div>
@@ -588,26 +571,8 @@ $(document).ready(function() {
 					</ul>
 				{/if}
 			</div>
-			<div style="float:left; width: 53%;">
-				<div id="tabs_{$schluessel}" style="width: 96%">
-					<ul>
-						<li><a href="#fragment-1_{$schluessel}"><span>12 Sunden</span></a></li>
-					        <li><a href="#fragment-2_{$schluessel}"><span>24 Stunden</span></a></li>
-					        <li><a href="#fragment-3_{$schluessel}"><span>7 Tage</span></a></li>
-					</ul>
-					<div id="fragment-1_{$schluessel}">
-						<img src="./tmp/router_{$router_data.router_id}_interface_{$interface.name}_traffic_rx_12_hours.png">
-					</div>
-					<div id="fragment-2_{$schluessel}">
-						<img src="./tmp/router_{$router_data.router_id}_interface_{$interface.name}_traffic_rx_1_day.png">
-					</div>
-					<div id="fragment-3_{$schluessel}">
-						<img src="./tmp/router_{$router_data.router_id}_interface_{$interface.name}_traffic_rx_1_week.png">
-					</div>
-				</div>
-			</div>
+			<div id="jrrd_{$schluessel}" style="float:left; width: 53%;"></div>
 		</div>
-
 	{/foreach}
 {else}
 	<p>Keine Daten zu Interfaces vorhanden</p>
