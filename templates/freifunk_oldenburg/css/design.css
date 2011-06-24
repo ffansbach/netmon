@@ -1,0 +1,213 @@
+Body {
+font-family: sans-serif;
+background: #aaad9a;
+}
+
+/*Normaler Link*/
+A:link, A:visited, A:focus{text-decoration:none; font-weight:normal; color:#010752; border:0 none;}
+/*Link während Mausover*/
+A:hover {text-decoration:underline; font-weight:normal; color:#2f4d84; border:0 none;}
+/*Zurzeit angeklickter Link*/
+A:active {text-decoration:none; font-weight:normal; color:#000000; border:0 none;}
+
+
+
+
+#banner {
+margin: auto; max-width: 1280px; height: 182px; background-position: left; background-repeat: no-repeat;
+}
+
+#topmenu {
+  display: block;
+  float:right;
+  color: #FFFFFF;
+  font-size: 10pt;
+  font-weight: bold;
+  height: 25px;
+}
+
+#time {
+  margin-left: 5px;
+  display: block;
+  float:left;
+  color: #a8a8a8;
+  font-size: 10pt;
+  font-weight: normal;
+}
+
+#time_next_crawl {
+  margin-left: 5px;
+  display: block;
+  float:left;
+  color: #a8a8a8;
+  font-size: 10pt;
+  font-weight: normal;
+}
+
+.topmenubox {
+  font-weight:normal;
+  vertical-align: top;
+  float: left;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+#main {
+margin: auto;
+max-width:1280px;
+background: #FFFFFF;
+}
+
+#content{
+border-left: 1px solid #dc0067;
+min-height: 550px;
+background: #FFFFFF;
+font-size: 10pt;
+text-align: left;
+margin-left: 200px;
+margin-right: 0px;
+padding-left: 10px;
+padding-top: 16px;
+padding-bottom: 20px;
+}
+
+#ipitem
+{border-width:1px; border-style:solid; 
+}
+
+#left_menu {
+width:200px;
+float:left;
+color:#000000;
+text-decoration:none;
+font-weight: normal;
+font-family: sans-serif;
+font-size: 12pt;
+background: #FFFFFF;
+line-height : 100.01%;
+text-align: left;
+vertical-align: top;
+
+padding-top: 16px;
+padding-bottom: 20px;
+
+margin: auto;}
+
+.user_menus {
+width:200px;
+
+color:#000000;
+text-decoration:none;
+font-weight: normal;
+font-family: sans-serif;
+font-size: 12pt;
+background: #FFFFFF;
+line-height : 100.01%;
+text-align: left;
+vertical-align: top;
+
+padding-bottom: 20px;
+margin: auto;}
+
+
+#footer {
+width:100%;
+clear: both;
+
+color:#000000;
+text-decoration:none;
+font-weight: normal;
+font-family: Verdana, "Bitstream Vera Sans", sans-serif;
+font-size: 10pt;
+background: #FFFFFF;
+text-align: center;
+vertical-align: top;
+
+border: #000000;
+border-style: dotted;
+border-top-width: 1px;
+border-bottom-width: 1px;
+border-right-width: 0px;
+border-left-width: 0px;
+
+padding-top: 4px;
+padding-bottom: 4px;
+margin-top: 10px;}
+
+.error
+{
+  width: 80%;
+  margin: 20px;
+  padding: 5px;
+  border: 1px solid #CD2D1D;
+  background-color: #FFEBE9;
+  color: #930E00;
+  text-align: center;
+}
+
+.notice {
+  width: 80%;
+  margin: 20px;
+  padding: 5px;
+  border: 1px solid #95DA3A;
+  background-color: #E1FFB8;
+  color: #3D6744;
+  text-align: center;
+}
+
+.unknown {
+  width: 80%;
+  margin: 20px;
+  padding: 5px;
+  border: 1px solid #e3c936;
+  background-color: #fff3af;
+  color: #3D6744;
+  text-align: center;
+}
+
+
+
+
+/* begin css tabs */
+
+ul#tabnav { /* general settings */
+text-align: left; /* set to left, right or center */
+margin: 1em 0 1em 0; /* set margins as desired */
+font: bold 11px verdana, arial, sans-serif; /* set font as desired */
+border-bottom: 1px solid #6c6; /* set border COLOR as desired */
+list-style-type: none;
+padding: 3px 10px 3px 10px; /* THIRD number must change with respect to padding-top (X) below */
+}
+
+ul#tabnav li { /* do not change */
+display: inline;
+}
+
+body#tab1 li.tab1, body#tab2 li.tab2, body#tab3 li.tab3, body#tab4 li.tab4 { /* settings for selected tab */
+border-bottom: 1px solid #fff; /* set border color to page background color */
+background-color: #fff; /* set background color to match above border color */
+}
+
+body#tab1 li.tab1 a, body#tab2 li.tab2 a, body#tab3 li.tab3 a, body#tab4 li.tab4 a { /* settings for selected tab link */
+background-color: #fff; /* set selected tab background color as desired */
+color: #000; /* set selected tab link color as desired */
+position: relative;
+top: 1px;
+padding-top: 4px; /* must change with respect to padding (X) above and below */
+}
+
+ul#tabnav li a { /* settings for all tab links */
+padding: 3px 4px; /* set padding (tab size) as desired; FIRST number must change with respect to padding-top (X) above */
+border: 1px solid #6c6; /* set border COLOR as desired; usually matches border color specified in #tabnav */
+background-color: #cfc; /* set unselected tab background color as desired */
+color: #666; /* set unselected tab link color as desired */
+margin-right: 0px; /* set additional spacing between tabs as desired */
+text-decoration: none;
+border-bottom: none;
+}
+
+ul#tabnav a:hover { /* settings for hover effect */
+background: #fff; /* set desired hover color */
+}
+
+/* end css tabs */
