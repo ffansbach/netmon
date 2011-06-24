@@ -87,7 +87,7 @@
 	</script>
 {/literal}
 
-<h1>Device hinzufügen:</h1>
+<h1>Interface zum Router {$router_data.hostname} hinzufügen:</h1>
 <form action="./interfaceeditor.php?section=insert_add&router_id={$smarty.get.router_id}" method="POST">
 	<h2>Projekt</h2>
 	<p>

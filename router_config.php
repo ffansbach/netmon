@@ -16,7 +16,7 @@
   } else {
   	$view='public';
   }
-  $services = Service::getServicesByRouterId($_GET['router_id'], $view);
+  $services = Service::getServiceList($view="", false, $_GET['router_id']);
   $smarty->assign('services', $services);
 
   $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);

@@ -160,7 +160,7 @@ class Router {
 		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		try {
 			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.description, routers.location, routers.latitude, routers.longitude,
-					chipsets.name as chipset_name,
+					chipsets.name as chipset_name, chipsets.hardware_name,
 					users.nickname,
 					crawl_routers.status, crawl_routers.nodewatcher_version
 

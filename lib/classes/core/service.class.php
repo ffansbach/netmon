@@ -33,13 +33,29 @@ require_once 'lib/classes/core/crawling.class.php';
 require_once 'lib/classes/core/interfaces.class.php';
 
 class Service {
-	public function getServiceList($view="") {
+	public function getServiceList($view="", $user_id=false, $router_id=false) {
 		if($view=='public') {
 			$sql_add = 'WHERE visible=1';
-		} elseif($view=='all') {
+		} elseif($view=='all' OR empty($view)) {
 			$sql_add = '';
-		} else {
-			$sql_add = '';
+		}
+
+		if ($user_id!=false) {
+			if ($sql_add=='') {
+				$sql_add.=' WHERE ';
+			} else {
+				$sql_add.=' AND ';
+			}
+			$sql_add.="routers.user_id='$user_id'";
+		}
+
+		if ($router_id!=false) {
+			if ($sql_add=='') {
+				$sql_add.=' WHERE ';
+			} else {
+				$sql_add.=' AND ';
+			}
+			$sql_add.="routers.id='$router_id'";
 		}
 
 		$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
@@ -81,47 +97,6 @@ class Service {
 		return $servicelist;
 	}
 
-	public function getServiceListByUserId($user_id, $view) {
-		if($view=='public') {
-			$sql_add = 'AND services.visible=1';
-		} elseif($view=='all') {
-			$sql_add = '';
-		} else {
-			$sql_add = '';
-		}
-
-		$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-		$servicelist = array();
-		try {
-			$sql = "SELECT  services.id as service_id, services.router_id, services.title, services.description, services.port, services.url_prefix, services.visible, services.notify, services.notification_wait, services.notified, services.last_notification, services.use_netmons_url, services.url, services.create_date,
-					routers.hostname, routers.user_id,
-					users.id as user_id, users.nickname,
-					crawl_routers.status as router_status
-					FROM services
-					LEFT JOIN routers on (routers.id=services.router_id)
-					LEFT JOIN users on (users.id=routers.user_id)
-					LEFT JOIN crawl_routers on (crawl_routers.crawl_cycle_id='$last_ended_crawl_cycle[id]' AND crawl_routers.router_id=services.router_id)
-					WHERE routers.user_id='$user_id' $sql_add";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $key=>$row) {
-				$interfaces = Interfaces::getIPv4InterfacesByRouterId($row['router_id']);
-				if(!empty($interfaces) AND !empty($row['url_prefix']) AND !empty($row['port'])) {
-					$row['service_ipv4_addr'] = $interfaces[0]['ipv4_addr'];
-					$row['combined_url_to_service'] = $row['url_prefix'].$interfaces[0]['ipv4_addr'].":".$row['port'];
-					$service_crawl = Service::getCrawlServiceByCrawlCycleId($last_ended_crawl_cycle['id'], $row['service_id']);
-					$row['service_status'] = $service_crawl['status'];
-					$row['service_status_crawled_ipv4_addr'] = $service_crawl['crawled_ipv4_addr'];
-				}
-
-				$servicelist[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $servicelist;
-	}
-
 	public function getServiceByServiceId($service_id) {
 		try {
 			$sql = "SELECT  *
@@ -135,33 +110,6 @@ class Service {
 		}
 		return $service_data;
 	}
-
-	public function getServicesByRouterId($router_id, $view) {
-		if($view=='public') {
-			$sql_add = 'AND visible=1';
-		} elseif($view=='all') {
-			$sql_add = '';
-		} else {
-			$sql_add = '';
-		}
-
-		$servicelist = array();
-		try {
-			$sql = "SELECT  *
-					FROM services
-					WHERE router_id='$router_id' $sql_add";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$servicelist[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $servicelist;
-	}
-
-
 
 	public function insertEditService($service_id, $typ, $crawler, $title, $description, $visible, $notify, $notification_wait, $use_netmons_url, $url) {
 		DB::getInstance()->exec("UPDATE services SET

@@ -21,8 +21,8 @@
 // +---------------------------------------------------------------------------+/
 
 require_once('runtime.php');
-require_once('./lib/classes/core/router.class.php');
-require_once('./lib/classes/core/crawling.class.php');
+
+require_once('./lib/classes/core/search.class.php');
 
 $smarty->assign('message', Message::getMessage());
 
@@ -40,52 +40,12 @@ if(!empty($_POST['search_range'])) {
 
 if(!empty($search_string)) {
 	if($search_range=='all') {
-
+		$smarty->assign('search_result_crawled_interfaces', Search::searchAll($search_string));
 	} elseif($search_range=='mac_addr') {
-		try {
-			$sql = "SELECT  *
-					FROM crawl_interfaces
-					WHERE mac_addr = '$search_string'
-					GROUP BY router_id
-					ORDER BY id DESC;";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $key=>$row) {
-				$search_result_crawled_interfaces[$key] = $row;
-				$search_result_crawled_interfaces[$key]['object_type'] = 'crawled_interface';
-				$search_result_crawled_interfaces[$key]['router_data'] = Router::getRouterInfo($row['router_id']);
-				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-				$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
-
-			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-
-		$smarty->assign('search_result_crawled_interfaces', $search_result_crawled_interfaces);
+		$smarty->assign('search_result_crawled_interfaces', Search::searchForMacAddress($search_string));
 	}
 	elseif($search_range=='ipv6_addr') {
-		try {
-			$sql = "SELECT  *
-					FROM crawl_interfaces
-					WHERE ipv6_addr LIKE '%$search_string%' OR ipv6_link_local_addr LIKE '%$search_string%'
-					GROUP BY router_id
-					ORDER BY id DESC;";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $key=>$row) {
-				$search_result_crawled_interfaces[$key] = $row;
-				$search_result_crawled_interfaces[$key]['object_type'] = 'crawled_interface';
-				$search_result_crawled_interfaces[$key]['router_data'] = Router::getRouterInfo($row['router_id']);
-				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-				$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
-
-			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-
-		$smarty->assign('search_result_crawled_interfaces', $search_result_crawled_interfaces);
+		$smarty->assign('search_result_crawled_interfaces', Search::searchForIPv6Address($search_string));
 	}
 }
 

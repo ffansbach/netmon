@@ -195,7 +195,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/img/ffmap/ip.png</href>');
+							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -204,7 +204,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted.png</href>');
+							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_highlighted.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -215,7 +215,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/img/ffmap/ip_online_highlighted_1.png</href>');
+							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_online_highlighted_1.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -226,7 +226,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-								$xw->writeRaw('<href>./templates/img/ffmap/ip_offline.png</href>');
+								$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_offline.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -237,7 +237,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-								$xw->writeRaw('<href>./templates/img/ffmap/ip_unknown.png</href>');
+								$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_unknown.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -351,7 +351,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/img/ffmap/ip.png</href>');
+							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -360,7 +360,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/img/ffmap/ip_highlighted.png</href>');
+							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_highlighted.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -371,7 +371,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/img/ffmap/ip_online_highlighted_1.png</href>');
+							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_online_highlighted_1.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -382,7 +382,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-								$xw->writeRaw('<href>./templates/img/ffmap/ip_offline.png</href>');
+								$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_offline.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();

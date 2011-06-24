@@ -40,9 +40,9 @@ class Login {
 
 			try {
 				if ($openid!=false) {
-					$sql = "select id , nickname, activated, permission, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE openid='$openid'";
+					$sql = "select id , nickname, activated, permission from users WHERE openid='$openid'";
 				} else {
-					$sql = "select id , nickname, activated, permission, DATE_FORMAT(last_login, '%D %M %Y um %H:%i:%s Uhr') as last_login from users WHERE nickname='$nickname' and password='$password'";
+					$sql = "select id , nickname, activated, permission from users WHERE nickname='$nickname' and password='$password'";
 				}
 				$result = DB::getInstance()->query($sql);
 				$user_data = $result->fetch(PDO::FETCH_ASSOC);
@@ -57,13 +57,10 @@ class Login {
 					return false;
 				} else {
 					$session_id = session_id();
-					DB::getInstance()->query("UPDATE users SET session_id='$session_id', last_login = NOW() where id=".$user_data['id']);
+					DB::getInstance()->query("UPDATE users SET session_id='$session_id' where id=".$user_data['id']);
 					$_SESSION['user_id'] = $user_data['id'];
-					if (isset($user_data['last_login'])) {
-						$last_login = " Ihr letzter Login war am ".$user_data['last_login'];
-					}
 					
-					$messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'].$last_login, 1);
+					$messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'], 1);
 					Message::setMessage($messages);
 
 					//Autologin (remember me)
