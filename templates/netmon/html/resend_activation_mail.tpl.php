@@ -1,0 +1,4 @@
+<form action="./resend_activation_mail.php" method="POST">
+  <p>Deine Emailadresse:<br><input name="email" type="text" size="30" maxlength="50"></p>
+  <p><input type="submit" value="Aktivierungsmail erneut zusenden"></p>
+</form>
