@@ -127,16 +127,19 @@ class RouterEditor {
 	public function insertDeleteRouter($router_id) {
 		$router_data=Router::getRouterInfo($router_id);
 
+		//Delete all Interfaces of the router
 		$interfaces = Interfaces::getInterfacesByRouterId($router_id);
 		foreach($interfaces as $interface) {
 			Interfaces::deleteInterface($interface['interface_id']);
 		}
 
+		//Delete all services of the router
 		$services = Service::getServicesByRouterId($router_id);
 		foreach($services as $service) {
 			ServiceEditor::deleteService($service['id']);
 		}
 
+		//Delete the router itself
 		DB::getInstance()->exec("DELETE FROM routers WHERE id='$router_id';");
 
 		$message[] = array("Der Router $router_data[hostname] wurde gelöscht.", 1);

@@ -9,6 +9,7 @@ require_once('./lib/classes/core/olsr.class.php');
 require_once('./lib/classes/core/crawling.class.php');
 require_once('./lib/classes/core/history.class.php');
 require_once('./lib/classes/core/clients.class.php');
+require_once('./lib/classes/core/service.class.php');
 
 /** Get crawl cycles **/
 if(!isset($_GET['crawl_cycle_id'])) {
@@ -143,6 +144,22 @@ $smarty->assign('interface_crawl_data', $interface_crawl_data);
 /** Get Clients */
 $client_count = Clients::getClientsCountByRouterAndCrawlCycle($_GET['router_id'], $last_ended_crawl_cycle['id']);
 $smarty->assign('client_count', $client_count);
+$smarty->assign('clients_rrd_file_exists', file_exists("./rrdtool/databases/router_$_GET[router_id]_clients.rrd"));
+
+/**Memory */
+$smarty->assign('memory_rrd_file_exists', file_exists("./rrdtool/databases/router_$_GET[router_id]_memory.rrd"));
+
+
+/** Get Services */
+$is_logged_id = Usermanagement::isLoggedIn($SESSION['user_id']);
+if($is_logged_id) {
+	$view='all';
+} else {
+	$view='public';
+}
+
+$servicelist = Service::getServiceList($view, false, $_GET['router_id']);
+$smarty->assign('servicelist', $servicelist);
 
 //Display Templates
 $smarty->display("header.tpl.php");

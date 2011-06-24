@@ -31,7 +31,7 @@ if($_GET['section']=="update") {
 		header("Content-Disposition: attachment; filename=nodewatcher.sh");
 		
 		echo file_get_contents('./scripts/nodewatcher/fake_version_21/nodewatcher.sh');
-	} elseif ($_GET['nodewatcher_version']==21) {
+	} elseif ($_GET['nodewatcher_version']>=21) {
 		header("Content-Type: text/plain");
 		header("Content-Disposition: attachment; filename=nodewatcher.sh");
 		
@@ -40,6 +40,8 @@ if($_GET['section']=="update") {
 }
 
 if($_GET['section']=="version") {
+//	DB::getInstance()->exec("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data) VALUES ('', 'api_check_for_nodewatcher_update', '', NOW(), '$_SERVER[REMOTE_ADDR]');");
+
 	if(empty($_GET['nodewatcher_version']) OR $_GET['nodewatcher_version']<18) {
 		$version=18;
 		echo "success;$version";
@@ -53,7 +55,7 @@ if($_GET['section']=="version") {
 		$version=22;
 		echo "success;$version";
 	} elseif ($_GET['nodewatcher_version']==22) {
-		$version=22;
+		$version=23;
 		echo "success;$version";
 	}
 }

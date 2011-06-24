@@ -2,6 +2,112 @@
             "http://www.w3.org/TR/html4/strict.dtd">
 
 <html>
+<head>
+    <title>Freifunk Oldenburg | Netmon</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link href="./templates/{$template}/css/central_netmon.css" rel="stylesheet" type="text/css"/>
+    <!--[if lte IE 7]>
+    <link href="css/central_patches.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+</head>
+<body>
+
+<div id="page_margins">
+	<div id="page">
+		<div id="header">
+			<div id="topnav">
+				<!-- start: skip link navigation -->
+				<a class="skip" href="#navigation" title="skip link">Skip to the navigation</a><span class="hideme">.</span>
+				<a class="skip" href="#content" title="skip link">Skip to the content</a><span class="hideme">.</span>
+				<!-- end: skip link navigation -->
+				<span>
+					{if !$installation_mode}
+<!--						{foreach $top_menu as $topmenu}
+							<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}">{$topmenu.name}</a></span>
+						{/foreach}-->
+						{foreach $loginOutMenu as $menu}
+							| {$menu.pretext} <a style="color: #FFFFFF" href="{$menu.href}"><b>{$menu.name}</b></a>
+						{/foreach}
+					{/if}
+					<!--<a href="http://wiki.freifunk-ol.de/index.php?title=Kontakt">Kontakt</a> | <a href="http://wiki.freifunk-ol.de/index.php?title=Freifunk_OL_Wiki:Impressum">Impressum</a>-->
+				</span>
+			</div>
+		    <div id="headerbg">
+		    </div>
+			<h1>Freifunk Oldenburg | Netmon</h1>
+			<span>Die freie WLAN-Community aus Oldenburg &#8226; Freie Netze für alle!</span>
+		</div>				
+		<!-- begin: main navigation #nav -->
+		<div id="nav"> <a id="navigation" name="navigation"></a>
+			<!-- skiplink anchor: navigation -->
+			<div id="nav_main">
+				<ul>
+					<li><a href="http://blog.freifunk-ol.de/">Neues</a></li>
+					<li><a href="http://wiki.freifunk-ol.de/">Wiki</a></li>
+					<li id="current"><a href="#">Netmon</a></li>
+					<li><a href="http://trac.freifunk-ol.de/">Entwicklung</a></li>
+				</ul>
+
+				<div class="searchbox">
+                  <form id="searchForm" name="searchForm" action="./search.php" method="POST">
+                    <input class="suchBox" type="text" onblur="this.value='Suchbegriff eingeben...'" onclick="this.value=''" value="Suchbegriff eingeben..." name="search_string"/>
+                    <input type="hidden" value="all" name="search_range"/>
+                  </form>
+                </div>
+			</div>
+			<div id="nav_sub">
+					{if $installation_mode}
+						{if isset($installation_menu)}
+							<ul>
+								{foreach $installation_menu as $menu}
+									<li><a href="{$menu.href}">{$menu.name}</a></li>
+								{/foreach}
+							</ul>
+						{/if}
+					{/if}
+					{if !$installation_mode}
+						<ul>
+							{foreach $normal_menu as $normalmenu}
+								<li><a {if $normalmenu.selected=='true'}class="selected"{/if} href="{$normalmenu.href}">{$normalmenu.name}</a>{$normalmenu.selected}</li>
+							{/foreach}
+						</ul>
+					{/if}
+			
+					{if !$installation_mode}
+						{if isset($user_menu)}
+							<ul>
+								{foreach $user_menu as $usermenu}
+									<li><a {if $usermenu.selected=='true'}class="selected"{/if} href="{$usermenu.href}">{$usermenu.name}</a></li>
+								{/foreach}
+							</ul>
+						{/if}
+					{/if}
+					{if !$installation_mode}
+						{if isset($admin_menu)}
+							<ul>
+								{foreach $admin_menu as $menu}
+									<li><a {if $menu.selected=='true'}class="selected"{/if} href="{$menu.href}">{$menu.name}</a></li>
+								{/foreach}
+							</ul>
+						{/if}
+					{/if}
+					{if !$installation_mode}
+						{if isset($root_menu)}
+							<ul>
+								{foreach $root_menu as $menu}
+									<li><a {if $menu.selected=='true'}class="selected"{/if} href="{$menu.href}">{$menu.name}</a></li>
+								{/foreach}
+							</ul>
+						{/if}
+					{/if}
+			</div>
+		</div>
+		<!-- end: main navigation -->
+		<!-- begin: main content area #main -->
+
+
+
+<!--
   <head>
     <TITLE>
       {$site_title}
@@ -10,27 +116,18 @@
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
     
     
-    <!--<link rel="alternate" type="application/rss+xml"  href="./index.php?get=rss">
->
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="description" content="{$globals_homepage_description}">
-    <meta name="keywords" content="{$globals_homepage_keywords}">
-    <meta name="author" content="{$globals_homepage_author}">
-    <meta name="robots" content="index,follow">
-    <meta http-equiv="content-language" content="{$globals_homepage_language}">
--->
 
     {$html_head}
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-	<link rel="stylesheet" type="text/css" href="./templates/css/design.css">
+	<link rel="stylesheet" type="text/css" href="./templates/{$template}/css/central_netmon.css">
   </head>
   
   <body>
 
-<!--Banner-->
-<div id="banner" style="background-image: url(./templates/img/header/hafen_oldenburg_nacht.jpg);">
-	<!--Top-Menü-->
+
+<div id="banner" style="background-image: url(./templates/{$template}/img/header/hafen_oldenburg_nacht.jpg);">
+
 	<div style="float:left">
 	<div id="time">
 		Serverzeit: {$zeit}
@@ -53,12 +150,12 @@
 		{/if}
 	</div>
 </div>
-
+-->
 
 
 <div id="main">
 	<!--Linkes Menü-->
-	<div id="left_menu">
+<!--	<div id="left_menu">
 		{if $installation_mode}
 			<div class="user_menus">
 				{if isset($installation_menu)}
@@ -119,7 +216,7 @@
 			</div>
 		{/if}
 
-	</div>
+	</div>-->
 
   <div id="content">
     <!--Systemmeldungen-->

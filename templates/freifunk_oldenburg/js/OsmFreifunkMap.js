@@ -513,8 +513,7 @@ polycontrol.activate();
 
 }
 
-function new_ip_map() {
-
+function new_router_map() {
 	// Handle image load errors
 	OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 	OpenLayers.Util.onImageLoadErrorColor = "transparent";
@@ -553,17 +552,12 @@ function new_ip_map() {
 	map.addControl(new OpenLayers.Control.Attribution());
 
 	map.events.register('click', map, function (e) {
-
-	var lonlat = map.getLonLatFromPixel(e.xy).transform(
-				    new
-OpenLayers.Projection("EPSG:900913"), new
-OpenLayers.Projection("EPSG:4326")
-				);
-
-
-            document.getElementById('longitude').value = lonlat.lon;
-            document.getElementById('latitude').value = lonlat.lat;
-	    });
-
-
+		var lonlat = map.getLonLatFromPixel(e.xy).transform(
+			new OpenLayers.Projection("EPSG:900913"),
+			new OpenLayers.Projection("EPSG:4326")
+		);
+	
+		document.getElementById('longitude').value = lonlat.lon;
+		document.getElementById('latitude').value = lonlat.lat;
+	});
 }

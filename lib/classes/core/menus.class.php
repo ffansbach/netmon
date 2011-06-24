@@ -57,6 +57,7 @@ class Menus extends UserManagement {
       $menu[] = array('name'=>'Nachrichten', 'href'=>'install.php?section=messages');
       $menu[] = array('name'=>'Netzwerk', 'href'=>'install.php?section=network');
       $menu[] = array('name'=>'Beenden', 'href'=>'install.php?section=finish');
+    $menu = Menus::checkIfSelected($menu);
     return $menu;
   }
 
@@ -65,20 +66,23 @@ class Menus extends UserManagement {
 //      $menu[] = array('name'=>'News', 'href'=>'portal.php');
       $menu[] = array('name'=>'Map', 'href'=>'map.php');
 //      $menu[] = array('name'=>'Topologie', 'href'=>'topology.php');
-      $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php');
+      $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php', 'selected'=>$selected);
       $menu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
       $menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'networkstatistic.php');
       $menu[] = array('name'=>'Suchen', 'href'=>'search.php');
     }
+
+    $menu = Menus::checkIfSelected($menu);
     return $menu;
   }
 
   function userMenu() {
     if (UserManagement::checkPermission(8)) {
-      $menu[] = array('name'=>'Mein Benutzer', 'href'=>"user.php?user_id=$_SESSION[user_id]");
+//      $menu[] = array('name'=>'Mein Benutzer', 'href'=>"user.php?user_id=$_SESSION[user_id]");
       $menu[] = array('name'=>'Neuer Router', 'href'=>'routereditor.php?section=new');
       $menu[] = array('name'=>'Benutzerliste', 'href'=>'userlist.php');
     }
+    $menu = Menus::checkIfSelected($menu);
     return $menu;
   }
 
@@ -90,14 +94,28 @@ class Menus extends UserManagement {
 //      $menu[] = array('name'=>'CCD regenerieren', 'href'=>'vpn.php?section=regenerate_ccd_subnet');
       $menu[] = array('name'=>'Projektliste', 'href'=>'projectlist.php');
     }
+    $menu = Menus::checkIfSelected($menu);
     return $menu;
   }
   function rootMenu() {
     if (UserManagement::checkPermission(64)) {
       $menu[] = array('name'=>'Konfiguration', 'href'=>'config.php?section=edit');
     }
+    $menu = Menus::checkIfSelected($menu);
     return $menu;
   }
+
+	public function checkIfSelected($menu) {
+		foreach($menu as $key=>$m) {
+			if (stristr($_SERVER["REQUEST_URI"], $menu[$key]['href'])!==FALSE) {
+				$menu[$key]['selected'] = true;
+			} else {
+				$menu[$key]['selected'] = false;
+			}
+		}
+
+		return $menu;
+	}
 
 }
 

@@ -12,7 +12,7 @@
 	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px; border-right: 0px;" href="./serviceeditor.php?section=add&router_id={$router_data.router_id}">Dienst hinzufügen</a></li>
 </ul>
 
-<h1>Netmon Konfiguration des Routers {$router_data.hostname}</h1>
+<h1>Konfiguration des Routers {$router_data.hostname}</h1>
 
 <div style="width: 100%; overflow: hidden;">
     <div style="float:left; width: 50%;">
@@ -42,8 +42,8 @@
 		
 		<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 		
-		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
-		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+		<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
+		<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 
 		<div id="map" style="height:300px; width:300px; border:solid 1px black;font-size:9pt;">
 			<script type="text/javascript">
@@ -167,7 +167,7 @@
 <h2>Dienste</h2>
 {if !empty($services)}
 	{foreach $services as $service}
-		<a name="service_{$service.id}"></a>
+		<a name="service_{$service.service_id}"></a>
 		{if !empty($interfaces) AND !empty($service.url_prefix) AND !empty($service.port)}
 			<a href="{$service.url_prefix}{$interfaces.0.ipv4_addr}:{$service.port}">
 		{/if}
@@ -194,8 +194,8 @@
 		</div>
 		<div style="float:left; width: 50%;">
 			<p>
-				<a href="./serviceeditor.php?section=edit&service_id={$service.id}">Dienst editieren</a><br>
-				<a href="./serviceeditor.php?section=delete&service_id={$service.id}">Dienst entfernen</a>
+				<a href="./serviceeditor.php?section=edit&service_id={$service.service_id}">Dienst editieren</a><br>
+				<a href="./serviceeditor.php?section=delete&service_id={$service.service_id}">Dienst entfernen</a>
 			</p>
 		</div>
 	</div>

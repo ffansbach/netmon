@@ -28,7 +28,7 @@ if($is_logged_id) {
 } else {
 	$view='public';
 }
-$servicelist = Service::getServiceListByUserId($_GET['user_id'], $view);
+$servicelist = Service::getServiceList($view="", $_GET['user_id']);
 $smarty->assign('servicelist', $servicelist);
 
 $user_history = History::getUserHistory($_GET['user_id'], 5);

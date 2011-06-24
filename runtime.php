@@ -133,7 +133,7 @@
   //Set debugging site off
   $smarty->debugging = false;
   //Templatefolder
-  $smarty->template_dir = "templates/html";
+  $smarty->template_dir = "templates/$GLOBALS[template]/html";
   //Compilefolder
   $smarty->compile_dir = 'templates_c';
 
@@ -202,4 +202,8 @@
 
 	/**Google Maps API Key*/
 	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
+
+	/**Template*/
+	$smarty->assign('template', $GLOBALS['template']);
+
 ?>

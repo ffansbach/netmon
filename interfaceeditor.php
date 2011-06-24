@@ -12,6 +12,7 @@
 		if (UserManagement::checkPermission(32)) {
 			$smarty->assign('message', Message::getMessage());
 			$smarty->assign('projects', Project::getProjects());
+			$smarty->assign('router_data', Router::getRouterInfo($_GET['router_id']));
 
 			$smarty->display("header.tpl.php");
 			$smarty->display("interface_add.tpl.php");

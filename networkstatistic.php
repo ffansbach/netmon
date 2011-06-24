@@ -24,7 +24,9 @@ if(!empty($last_ended_crawl_cycle)) {
 	/**Get number of routers by chipset **/
 	$chipsets = Helper::getChipsets();
 	foreach ($chipsets as $key=>$chipset) {
+		$router_chipsets[$key]['chipset_id'] = $chipset['id'];
 		$router_chipsets[$key]['chipset_name'] = $chipset['name'];
+		$router_chipsets[$key]['hardware_name'] = $chipset['hardware_name'];
 		$router_chipsets[$key]['count'] = Router::countRoutersByChipsetId($chipset['id']);;
 	}
 	
