@@ -14,48 +14,21 @@ require_once('lib/classes/core/chipsets.class.php');
 **/
 Crawling::organizeCrawlCycles();
 
+#needs to be fixed
+
 if($_GET['section']=="update") {
-	if(empty($_GET['nodewatcher_version']) OR $_GET['nodewatcher_version']<18) {
+	if(empty($_GET['nodewatcher_version']) OR $_GET['nodewatcher_version']<20) {
 		header("Content-Type: text/plain");
 		header("Content-Disposition: attachment; filename=nodewatcher.sh");
 		
-//		echo file_get_contents('./scripts/nodewatcher/version_17/nodewatcher.sh');
-		echo file_get_contents('./scripts/nodewatcher/fake_version_18/nodewatcher.sh');
-	} elseif ($_GET['nodewatcher_version']>17 AND $_GET['nodewatcher_version']<20) {
-		header("Content-Type: text/plain");
-		header("Content-Disposition: attachment; filename=nodewatcher.sh");
-		
-		echo file_get_contents('./scripts/nodewatcher/version_19_and_higher/nodewatcher.sh');
-	} elseif ($_GET['nodewatcher_version']==20) {
-		header("Content-Type: text/plain");
-		header("Content-Disposition: attachment; filename=nodewatcher.sh");
-		
-		echo file_get_contents('./scripts/nodewatcher/fake_version_21/nodewatcher.sh');
-	} elseif ($_GET['nodewatcher_version']>=21) {
-		header("Content-Type: text/plain");
-		header("Content-Disposition: attachment; filename=nodewatcher.sh");
-		
-		echo file_get_contents('./scripts/nodewatcher/version_19_and_higher/nodewatcher.sh');
 	}
 }
 
 if($_GET['section']=="version") {
 //	DB::getInstance()->exec("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data) VALUES ('', 'api_check_for_nodewatcher_update', '', NOW(), '$_SERVER[REMOTE_ADDR]');");
 
-	if(empty($_GET['nodewatcher_version']) OR $_GET['nodewatcher_version']<18) {
-		$version=18;
-		echo "success;$version";
-	} elseif ($_GET['nodewatcher_version']>17 AND $_GET['nodewatcher_version']<20) {
-		$version=20;
-		echo "success;$version";
-	} elseif ($_GET['nodewatcher_version']==20) {
-		$version=21;
-		echo "success;$version";
-	} elseif ($_GET['nodewatcher_version']==21) {
-		$version=22;
-		echo "success;$version";
-	} elseif ($_GET['nodewatcher_version']==22) {
-		$version=23;
+	if(empty($_GET['nodewatcher_version']) OR $_GET['nodewatcher_version']<20) {
+		$version=25;
 		echo "success;$version";
 	}
 }
@@ -147,7 +120,7 @@ if($_GET['section']=="insert_crawl_interfaces_data") {
 
 	//If is owning user or if root
 	if((($_GET['authentificationmethod']=='login') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
-		echo "success;";
+		echo "success;".$router_data['hostname'].";23;";
 
 		$last_crawl_cycle = Crawling::getActualCrawlCycle();
 		$router_has_been_crawled = Crawling::checkIfRouterHasBeenCrawled($_GET['router_id'], $last_crawl_cycle['id']);
@@ -417,9 +390,12 @@ if($_GET['section']=="get_hostnames_and_ipv6_adresses") {
 	$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 
 	try {
-		$sql = "SELECT crawl_interfaces.ipv6_link_local_addr, routers.hostname
-       			FROM  crawl_interfaces, routers
-			WHERE crawl_cycle_id='$last_endet_crawl_cycle[id]' AND crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id";
+//		$sql = "SELECT crawl_interfaces.ipv6_link_local_addr, routers.hostname
+//       			FROM  crawl_interfaces, routers
+//			WHERE crawl_cycle_id='$last_endet_crawl_cycle[id]' AND crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id";
+		$sql = " SELECT DISTINCT crawl_interfaces.ipv6_link_local_addr, routers.hostname
+		                        FROM  crawl_interfaces, routers
+		                                                WHERE crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id";
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
 			$row['ipv6_link_local_addr'] = explode("/",$row['ipv6_link_local_addr']);
@@ -431,6 +407,26 @@ if($_GET['section']=="get_hostnames_and_ipv6_adresses") {
 	}
 }
 
+if($_GET['section']=="get_hostnames_and_ipv6_adresses_2") {
+	$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+
+	try {
+		$sql = "SELECT ips.ip, routers.hostname
+			FROM ips
+			LEFT JOIN interface_ips ON ips.id=interface_ips.ip_id
+			LEFT JOIN interfaces ON interface_ips.interface_id=interfaces.id
+			LEFT JOIN routers ON interfaces.router_id=routers.id
+			WHERE ips.ipv=6
+			GROUP BY ips.ip";
+		$result = DB::getInstance()->query($sql);
+		foreach($result as $row) {
+			echo $row['ip']." ".$row['hostname']."\n";
+		}
+	}
+	catch(PDOException $e) {
+		echo $e->getMessage();
+	}
+}
 
 
 /** Nodewatcher Version >18 */
@@ -441,7 +437,7 @@ if($_GET['section']=="insert_crawl_data") {
 
 	//If is owning user or if root
 	if((($_POST['authentificationmethod']=='login') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_POST['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_POST['router_auto_update_hash']))) {
-		echo "success;";
+		echo "success;".$router_data['hostname'].";";
 
 
 		$last_crawl_cycle = Crawling::getActualCrawlCycle();
@@ -517,16 +513,18 @@ if($_GET['section']=="insert_crawl_data") {
 			}
 
 			/**Insert Batman Advanced Originators*/
-			foreach($_POST['bat_adv_orig'] as $bat_adv_orig) {
-				try {
-					DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, last_seen, crawl_date)
-								 VALUES ('$_POST[router_id]', '$last_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[last_seen]', NOW());");
+			if(!empty($_POST['bat_adv_orig'])) {
+				foreach($_POST['bat_adv_orig'] as $bat_adv_orig) {
+					try {
+						DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, last_seen, crawl_date)
+									 VALUES ('$_POST[router_id]', '$last_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[last_seen]', NOW());");
+					}
+					catch(PDOException $e) {
+						echo $e->getMessage();
+					}
+					
+					RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($_POST['router_id'], $bat_adv_orig['originator'], $bat_adv_orig['link_quality'], time());
 				}
-				catch(PDOException $e) {
-					echo $e->getMessage();
-				}
-				
-				RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($_POST['router_id'], $bat_adv_orig['originator'], $bat_adv_orig['link_quality'], time());
 			}
 			
 			$originator_count=count($_POST['bat_adv_orig']);

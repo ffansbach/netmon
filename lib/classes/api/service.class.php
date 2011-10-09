@@ -40,6 +40,8 @@ class ApiService {
 		if(UserManagement::isThisUserOwner($service_data['user_id'], $session['user_id']) OR $session['permission']==120) {
 			Service::insertCrawl($service_id, $status, $crawled_ipv4_addr);
 		}
+
+		return(array('status'=>"success", 'error_message'=>""));
 	}
 
 	public function getServiceList($view) {

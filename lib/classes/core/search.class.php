@@ -79,9 +79,18 @@ class Search {
 	}
 
 	public function searchAll($search_string) {
-		$result = Search::searchForMacAddress($search_string);
-		$result = Search::searchForIPv6Address($search_string);
-		return $result;
+		$result[] = Search::searchForMacAddress($search_string);
+		$result[] = Search::searchForIPv6Address($search_string);
+		$return = array();
+		if(!empty($result)) {
+			foreach($result as $r) {
+				if(is_array($r)) {
+					$return = array_merge($return, $r);
+				}
+			}
+		}
+
+		return $return;
 	}
 
 }

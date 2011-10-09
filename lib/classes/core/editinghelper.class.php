@@ -28,24 +28,25 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-  require_once('lib/classes/core/subnet.class.php');
-  require_once('lib/classes/core/subnetcalculator.class.php');
-  require_once('lib/classes/core/project.class.php');
+  require_once($GLOBALS['monitor_root'].'lib/classes/core/subnet.class.php');
+  require_once($GLOBALS['monitor_root'].'lib/classes/core/subnetcalculator.class.php');
+  require_once($GLOBALS['monitor_root'].'lib/classes/core/project.class.php');
+  require_once($GLOBALS['monitor_root'].'lib/classes/core/ip.class.php');
 
 class EditingHelper {
-	public function getAFreeIP($subnet_id, $zone_start=false, $zone_end=false) {
+/*	public function getAFreeIP($subnet_id, $zone_start=false, $zone_end=false) {
 		//Get all IP´s which already exist in subnet (ips and dhcp-zones!)
 		$existingips = EditingHelper::getExistingIpsAndRanges($subnet_id);
 
-//Delete only of edit subnet is working
-/*		//Für den Ip bestimmte Range den Existierenden IP's hinzufügen
-		if ($zone_start AND $zone_end) {
+		//Delete only of edit subnet is working
+		//Für den Ip bestimmte Range den Existierenden IP's hinzufügen
+		/*if ($zone_start AND $zone_end) {
 			for ($i=$zone_start; $i<=$zone_end; $i++) {
 				array_push($existingips, $i);
 			}
 		}*/
 
-		//Get first free IP in subnet
+/*		//Get first free IP in subnet
 		$subnet_data = Subnet::getSubnet($subnet_id);
 		$first_ip = explode(".", $subnet_data['first_ip']);
 		$last_ip = explode(".", $subnet_data['last_ip']);
@@ -64,9 +65,9 @@ class EditingHelper {
 		} else {
 			return false;
 		}
-	}
+	}*/
 
-	public function getExistingSubnets() {
+/*	public function getExistingSubnets() {
 		$subnets = array();
 		try {
 			$sql = "select * FROM subnets ORDER BY host ASC";
@@ -94,9 +95,9 @@ class EditingHelper {
 			echo $e->getMessage();
 		}
 		return $ips;
-	}
+	}*/
 
-	public function getExistingRanges($subnet_id) {
+/*	public function getExistingRanges($subnet_id) {
 		$services = Helper::getServiceseBySubnetId($subnet_id);
 		$zones = array();
 		foreach ($services as $service) {
@@ -149,7 +150,7 @@ class EditingHelper {
 		}
 
 	return $free_ips;
-	}
+	}*/
 
 	public function checkIfIpIsFree($ip, $subnet_id) {
 		$free_ips = EditingHelper::getFreeIpsInSubnet($subnet_id);
@@ -220,45 +221,6 @@ class EditingHelper {
 			}
 		} else {
 			return array('start'=>"NULL", 'end'=>"NULL");
-		}
-	}
-	
-	public function getAFreeIPv4IPByProjectId($project_id) {
-		$existingips = Helper::getExistingIPv4Ips();
-
-		$project_data = Project::getProjectData($project_id);
-		$first_ip = SubnetCalculator::getDqFirstIp($project_data['ipv4_host'], $project_data['ipv4_netmask']);
-		$last_ip = SubnetCalculator::getDqLastIp($project_data['ipv4_host'], $project_data['ipv4_netmask']);
-
-		//Get first free IP in subnet
-		$first_ip = explode(".", $first_ip);
-		$last_ip = explode(".", $last_ip);
-
-		for($i=$first_ip[0]; $i<=$last_ip[0]; $i++) {
-			for($ii=$first_ip[1]; $ii<=$last_ip[1]; $ii++) {
-				for($iii=$first_ip[2]; $iii<=$last_ip[2]; $iii++) {
-					for($iiii=$first_ip[3]; $iiii<=$last_ip[3]; $iiii++) {
-						if(!in_array("$i.$ii.$iii.$iiii", $existingips, TRUE)) {
-							$available_ip = "$i.$ii.$iii.$iiii";
-							break;
-						}
-					}
-					if(!empty($available_ip)) {
-						break;
-					}
-				}
-				if(!empty($available_ip)) {
-					break;
-				}
-			}
-			if(!empty($available_ip)) {
-				break;
-			}
-		}
-		if (isset($available_ip)) {
-			return $available_ip;
-		} else {
-			return false;
 		}
 	}
 }

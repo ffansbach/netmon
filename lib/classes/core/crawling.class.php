@@ -1,9 +1,9 @@
 <?php
 
-require_once('lib/classes/core/history.class.php');
-require_once('lib/classes/core/router.class.php');
-require_once('lib/classes/core/rrdtool.class.php');
-require_once('lib/classes/core/clients.class.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/history.class.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/router.class.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/rrdtool.class.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/clients.class.php');
 
 class Crawling {
 	public function organizeCrawlCycles()  {
@@ -102,16 +102,19 @@ class Crawling {
 		return $count_data;
 	}
 
-	public function deleteOldCrawlData($days) {
-		DB::getInstance()->exec("DELETE FROM crawl_cycle WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
-		DB::getInstance()->exec("DELETE FROM crawl_routers WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
-		DB::getInstance()->exec("DELETE FROM crawl_interfaces WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
-		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_interfaces WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
-		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_originators WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
-		DB::getInstance()->exec("DELETE FROM crawl_olsr WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
-		DB::getInstance()->exec("DELETE FROM crawl_services WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
-		DB::getInstance()->exec("DELETE FROM crawl_clients_count WHERE TO_DAYS(crawl_date) < TO_DAYS(NOW())-$days");
-		DB::getInstance()->exec("DELETE FROM history WHERE TO_DAYS(create_date) < TO_DAYS(NOW())-$days");
+	public function deleteOldCrawlData($seconds) {
+		DB::getInstance()->exec("DELETE FROM crawl_cycle WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+		DB::getInstance()->exec("DELETE FROM crawl_routers WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+		DB::getInstance()->exec("DELETE FROM crawl_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_originators WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+		DB::getInstance()->exec("DELETE FROM crawl_olsr WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+		DB::getInstance()->exec("DELETE FROM crawl_services WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+		DB::getInstance()->exec("DELETE FROM crawl_clients_count WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+	}
+
+	public function deleteOldHistoryData($seconds) {
+		DB::getInstance()->exec("DELETE FROM history WHERE UNIX_TIMESTAMP(create_date) < UNIX_TIMESTAMP(NOW())-$seconds");
 	}
 
 	//Returns true if router has already been crawled
@@ -206,6 +209,12 @@ class Crawling {
 			echo $e->getMessage();
 		}
 		return $count_data;
+	}
+
+	public function crawlRouter($crawl_data, $router_id) {
+
+
+
 	}
 }
 

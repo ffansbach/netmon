@@ -1,41 +1,5 @@
 <?php
 
-// +---------------------------------------------------------------------------+
-// index.php
-// Netmon, Freifunk Netzverwaltung und Monitoring Software
-//
-// Copyright (c) 2009 Clemens John <clemens-john@gmx.de>
-// +---------------------------------------------------------------------------+
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 3
-// of the License, or any later version.
-// +---------------------------------------------------------------------------+
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-// +---------------------------------------------------------------------------+/
-
-/**
- * This file contains the class to crawl the IP's from the database
- *
- * @author	Clemens John <clemens-john@gmx.de>
- * @version	0.1
- * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
- */
-
-
-
-//For Informations take a look at: http://luci.freifunk-halle.net/Documentation/JsonRpcHowTo
-
-/**
-* Configuration
-*/
-
 //The URL to your Netmon installation
 $GLOBALS['netmon_url'] = "http://netmon.freifunk-ol.de/";
 
@@ -44,75 +8,87 @@ $GLOBALS['netmon_url'] = "http://netmon.freifunk-ol.de/";
 $GLOBALS['nickname'] = "crawler";
 $GLOBALS['password'] = "ff26ol";
 
-$crawler = new JsonDataCollector;
-$crawler->crawl();
+$GLOBALS['ipv6_interface'] = "batvpn";
 
-/**
-* Crawl class
-*/
-
-class JsonDataCollector {
-	function file_get_contents_curl($url, $curl_timeout) {
-		$curl_handle=curl_init();
-		curl_setopt($curl_handle,CURLOPT_URL,$url);
-		curl_setopt($curl_handle,CURLOPT_CONNECTTIMEOUT,$curl_timeout);
-		curl_setopt($curl_handle,CURLOPT_RETURNTRANSFER,1);
-		$data = curl_exec($curl_handle);
-		curl_close($curl_handle);
-		return $data;
+class XmlIPv6Crawler {
+public function simplexml2array($xml) {
+	if (!is_string($xml) AND (get_class($xml) == 'SimpleXMLElement')) {
+		$attributes = $xml->attributes();
+		foreach($attributes as $k=>$v) {
+			if ($v) $a[$k] = (string) $v;
+		}
+		$x = $xml;
+		$xml = get_object_vars($xml);
 	}
-
-	function getJason($url, $curl_timeout) {
-		$string = $this->file_get_contents_curl($url, $curl_timeout);
-		return json_decode($string);
+	if (is_array($xml)) {
+		if (count($xml) == 0) return (string) $x; // for CDATA
+		foreach($xml as $key=>$value) {
+			$r[$key] = XmlIPv6Crawler::simplexml2array($value);
+		}
+		if (isset($a)) $r['@attributes'] = $a;    // Attributes
+		return $r;
 	}
+	return (string) $xml;
+}
 
 	public function crawl() {
-		//get communkty informations
-		$api_router_config = new jsonRPCClient($GLOBALS['netmon_url']."api_router_config.php");
+		//get routers to crawl
+		$api_crawl = new jsonRPCClient($GLOBALS['netmon_url']."api_json_crawl.php");
 		try {
-			$community_info = $api_router_config->getCommunityInfo();
-			$GLOBALS['net_prefix'] = $community_info['net_prefix'];
+			$routers = $api_crawl->getRoutersForCrawl();
 		} catch (Exception $e) {
 			echo nl2br($e->getMessage());
 		}
 
-		//get services
-		$api_service = new jsonRPCClient($GLOBALS['netmon_url']."api_json_service.php");
-		try {
-			$services = $api_service->getServiceList("all");
-		} catch (Exception $e) {
-			echo nl2br($e->getMessage());
-		}
-		
-print_r($services);
+		foreach($routers as $router) {
+			if(!empty($router['interfaces'])) {
+				foreach($router['interfaces'] as $interface) {
+					if(!empty($interface['ip_addresses'])) {
+						foreach($interface['ip_addresses'] as $key=>$ip_address) {
+							if($ip_address['ipv']==6) {
+								unset($return_string);
+								unset($xml_array);
+								unset($xml);
 
-		foreach ($services as $key=>$service) {
-			if (!empty($service['service_ipv4_addr']) AND is_numeric($service['port'])) {
-				$portcheck =  @fsockopen($service['service_ipv4_addr'], $service['port'], $errno, $errstr, 2);
-				if ($portcheck) {
-					$status = "online";
-				} else {
-					$status = "offline";
+								$ipv6_address = explode("/", $ip_address['ip']);
+								$return = array();
+								$command = "wget_return=`busybox wget -q -O - http://[$ipv6_address[0]%$GLOBALS[ipv6_interface]]/node.data & sleep 10; kill $!`
+echo \$wget_return";
+echo $command;
+								exec($command, $return);
+								$return_string = "";
+								foreach($return as $string) {
+									$return_string .= $string;
+								}
+
+								if(!empty($return_string)) {
+									$xml = new SimpleXMLElement($return_string);
+									$xml_array = XmlIPv6Crawler::simplexml2array($xml);
+								} else {
+									$xml_array['system_data']['status'] = "offline";
+								}
+								$xml_array['router_id'] = $router['id'];
+								//get routers to crawl
+								$api_crawl = new jsonRPCClient($GLOBALS['netmon_url']."api_json_crawl.php");
+								try {
+									$result = $api_crawl->insertCrawlData($xml_array);
+									print_r($result);
+								} catch (Exception $e) {
+									echo nl2br($e->getMessage());
+								}
+							}
+						}
+					}
 				}
-
-				$result = $api_service->insertCrawl($GLOBALS['nickname'], $GLOBALS['password'], $service['service_id'], $status, $service['service_ipv4_addr']);
-print_r($result);
 			}
 		}
-	}
-
-	function object2array($object) {
-		if (is_object($object) || is_array($object)) {
-			foreach ($object as $key => $value) {
-				$array[$key] = JsonDataCollector::object2array($value);
-			}
-		}else {
-			$array = $object;
-		}
-		return $array;
 	}
 }
+
+XmlIPv6Crawler::crawl();
+
+
+
 
 /*
 					COPYRIGHT

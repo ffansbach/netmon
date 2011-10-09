@@ -32,7 +32,9 @@ require_once("./lib/classes/core/vpn.class.php");
  */
 
 class IpEditor {
-  public function insertNewIp() {
+
+//Deprecated
+/*  public function insertNewIp() {
 	$subnet = Helper::getSubnetById($_POST['subnet_id']);
 
 	//Get an ip or check if ip is free
@@ -131,7 +133,7 @@ class IpEditor {
 	DB::getInstance()->exec("DELETE FROM ips WHERE id='$ip_id';");
 	$message[] = array("Die IP $GLOBALS[net_prefix].$ip_data[ip] wurde gelöscht.",1);
 	Message::setMessage($message);
-  }
+  }*/
   
 }
 
