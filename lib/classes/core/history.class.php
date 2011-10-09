@@ -1,6 +1,6 @@
 <?php
-require_once('lib/classes/core/router.class.php');
-require_once('lib/classes/core/crawling.class.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/router.class.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/crawling.class.php');
 
 class History {
 	public function makeRouterHistoryEntry($current_crawl_data, $router_id, $actual_crawl_cycle=array(), $last_endet_crawl_cycle=array()){

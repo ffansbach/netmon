@@ -5,6 +5,7 @@ require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/project.class.php');
 require_once('lib/classes/core/imagemaker.class.php');
 require_once('lib/classes/core/editinghelper.class.php');
+require_once('lib/classes/core/ip.class.php');
 
 class Main {
 	public function login($nickname, $password){
@@ -49,7 +50,11 @@ class Main {
 	}
 
 	public function getAFreeIPv4IPByProjectId($project_id) {
-		return(EditingHelper::getAFreeIPv4IPByProjectId($project_id));
+		return(Ip::getAFreeIPv4IPByProjectId($project_id));
+	}
+
+	public function getFreeIpRangeByProjectId($project_id, $range, $ip="") {
+		return(Ip::getFreeIpRangeByProjectId($project_id, $range, $ip));
 	}
 
 	public function getRoutersForCrawl() {

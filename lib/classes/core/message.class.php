@@ -28,8 +28,8 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once($path.'lib/classes/core/config.class.php');
-require_once($path.'lib/classes/extern/Zend/Service/Twitter.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/config.class.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/extern/Zend/Service/Twitter.php');
 
 class Message {
 	/*This are the internal status messages of netmon*/

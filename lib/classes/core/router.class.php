@@ -1,8 +1,9 @@
 <?php
 
-require_once('lib/classes/core/crawling.class.php');
-require_once('lib/classes/core/clients.class.php');
-require_once('lib/classes/extern/xmpphp/XMPP.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/crawling.class.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/clients.class.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/interfaces.class.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/extern/xmpphp/XMPP.php');
 
 class Router {
 	public function getRouterInfo($router_id) {
@@ -244,6 +245,7 @@ class Router {
 				WHERE crawl_method='crawler'";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
+				$row['interfaces'] = Interfaces::getInterfacesByRouterId($row['id']);
 				$routers[] = $row;
 			}
 		}
@@ -507,5 +509,33 @@ $GLOBALS[community_name]";
 			echo $e->getMessage();
 		}
 		return $crawl_data;
+	}
+
+	public function getRouterByIpId($ip_id) {
+		try {
+			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.chipset_id, routers.notify, routers.notification_wait, routers.notified, routers.last_notification
+					FROM routers, interfaces, interface_ips
+				WHERE interface_ips.ip_id='$ip_id' AND interface_ips.interface_id=interfaces.id AND routers.id=interfaces.router_id";
+			$result = DB::getInstance()->query($sql);
+			$router = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $router;
+	}
+
+	public function getRouterByInterfaceId($interface_id) {
+		try {
+			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.chipset_id, routers.notify, routers.notification_wait, routers.notified, routers.last_notification
+					FROM routers, interfaces
+				WHERE interfaces.id='$interface_id' AND routers.id=interfaces.router_id";
+			$result = DB::getInstance()->query($sql);
+			$router = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $router;
 	}
 }

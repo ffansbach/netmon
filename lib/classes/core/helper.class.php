@@ -29,7 +29,7 @@
  */
 
 class Helper {
-	public function getIpInfo($id) {
+/*	public function getIpInfo($id) {
 		try {
 			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.dhcp_host, ips.dhcp_netmask, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.location, ips.longitude, ips.latitude, ips.chipset, ips.create_date,
 						   users.nickname,
@@ -46,7 +46,7 @@ class Helper {
 		}
 		$ip['is_ip_owner'] = UserManagement::isThisUserOwner($ip['user_id']);
 		return $ip;
-	}
+	}*/
 
 	public function getChipsets() {
 		try {
@@ -103,7 +103,7 @@ class Helper {
 	}
 
 
-	public function getIpsByUserIDThatCanVPN($user_id) {
+/*	public function getIpsByUserIDThatCanVPN($user_id) {
 		try {
 			$sql = "SELECT ips.id as ip_id, ips.ip, subnets.title as subnet_title
 					FROM ips
@@ -118,9 +118,9 @@ class Helper {
 			echo $e->getMessage();
 		}
 		return $ips;
-	}
+	}*/
   
-  public function getIpDataByIpId($id) {
+/*  public function getIpDataByIpId($id) {
     try {
       $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.radius, ips.vpn_client_cert, ips.vpn_client_key, ips.location, ips.longitude, ips.latitude, ips.chipset, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
 				      users.nickname, users.email,
@@ -169,7 +169,7 @@ class Helper {
 		}
 		
 		return $ip['ip'];
-	}
+	}*/
 
   public function getIpIdByServiceId($service_id) {
 	try {
@@ -188,7 +188,7 @@ class Helper {
   }
 
 
-  public function getIpsByUserId($user_id) {
+/*  public function getIpsByUserId($user_id) {
     $ips = array();
 	try {
 		$sql = "select ips.id, ips.ip, ips.user_id, subnets.host as subnet_host, subnets.netmask as subnet_netmask FROM ips LEFT JOIN subnets on (subnets.id = ips.subnet_id) WHERE ips.user_id='$user_id' ORDER BY subnets.host, ips.ip;";
@@ -260,9 +260,9 @@ class Helper {
 	}
 
     return $services;
-  }
+  }*/
 
-  public function getServicesByUserId($user_id) {
+/*  public function getServicesByUserId($user_id) {
     //Get only services that the user is allowed to see
     if (!UserManagement::checkPermission(4))
       $visible = "AND visible = 1";
@@ -399,7 +399,7 @@ class Helper {
 			echo $e->getMessage();
 		}
 		return $subnet;
-	}
+	}*/
 
 	function getUserByID($id) {
 		try {
@@ -427,7 +427,7 @@ class Helper {
 		return $user;
 	}
 
-	function getIplistByUserID($id) {
+/*	function getIplistByUserID($id) {
 		try {
 			$sql = "SELECT ips.id, ips.user_id, ips.ip, ips.subnet_id,
 						   users.nickname,
@@ -479,7 +479,7 @@ class Helper {
 			echo $e->getMessage();
 		}
 		return $ips;
-	}
+	}*/
 
 	public function getExistingIPv4IpsByProjectId($project_id) {
 		$ips = array();
@@ -515,7 +515,7 @@ class Helper {
 		return $ips;
 	}
 
-	public function getExistingRangesBySubnetId($subnet_id) {
+/*	public function getExistingRangesBySubnetId($subnet_id) {
 		$rangelist = array();
 		$subnet_data = Helper::getSubnetById($subnet_id);
 		if ($subnet_data['dhcp_kind']=='ips') {
@@ -562,7 +562,7 @@ class Helper {
 			}
 		}
 		return $rangelist;
-	}
+	}*/
 	
 	function object2array($object) {
 		if (is_object($object) || is_array($object)) {
@@ -664,7 +664,7 @@ class Helper {
 		return Helper::getServicesByIpId($ipId);
 	}
 
-	public function makeSmoothIplistTime($timestamp) {
+/*	public function makeSmoothIplistTime($timestamp) {
 		if (empty($timestamp)) {
 			$time = "unbekannt";
 		} elseif (date("d.m.Y", $timestamp)==date("d.m.Y", time()-86400)) {
@@ -676,7 +676,7 @@ class Helper {
 		}
 
 		return $time;
-	}
+	}*/
 
 	public function countServiceStatusByType($type) {
 		$result['online']=0;

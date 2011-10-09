@@ -168,9 +168,9 @@ class ApiMap {
 		return true;
 	}
 
-	public function getSubnetPolygons() {
+	public function getProjectGeoPolygons() {
 		try {
-			$sql = "select polygons FROM subnets WHERE id='$_GET[subnet_id]';";
+			$sql = "select geo_polygons FROM projects WHERE id='$_GET[project_id]';";
 			$result = DB::getInstance()->query($sql);
 			$poligons = $result->fetch(PDO::FETCH_ASSOC);
 		}
@@ -178,8 +178,7 @@ class ApiMap {
 			echo $e->getMessage();
 		}
 		
-		echo $poligons['polygons'];
-
+		echo $poligons['geo_polygons'];
 	}
 
 	public function getRouters() {

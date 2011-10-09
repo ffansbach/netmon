@@ -41,9 +41,11 @@
 
 
   $include_path = __DIR__."/lib/classes/extern/";
-  $GLOBALS['monitor_root'] = __DIR__."/";
-
   set_include_path(get_include_path() .PATH_SEPARATOR. $include_path);
+
+  if(empty($GLOBALS['monitor_root'])) {
+	$GLOBALS['monitor_root'] = __DIR__."/";
+  }
 
   /**
   * Start PHP Session
@@ -66,6 +68,9 @@
   /**
   * Check if dirs a writable
   */
+  
+  $GLOBALS['netmon_root_path'] = __DIR__."/";
+
   $dirs[] = $GLOBALS['netmon_root_path'].'templates_c/';
   $dirs[] = $GLOBALS['netmon_root_path'].'ccd/';
   $dirs[] = $GLOBALS['netmon_root_path'].'config/';
@@ -205,5 +210,8 @@
 
 	/**Template*/
 	$smarty->assign('template', $GLOBALS['template']);
+
+	/**Globals*/
+	$smarty->assign('globals', $GLOBALS);
 
 ?>

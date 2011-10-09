@@ -1,26 +1,26 @@
 <?php
 
 //INSTALLATION-LOCK
-$GLOBALS['installed'] = false;
+$GLOBALS['installed'] = true;
 
 //WEBSERVER
-$GLOBALS['url_to_netmon'] = "http://url_to_your_netmon_installation";
+$GLOBALS['url_to_netmon'] = "http://netmon.freifunk-ol.de";
 
 //MYSQL
 $GLOBALS['mysql_host'] = "localhost";
-$GLOBALS['mysql_db'] = "your_mysql_db";
-$GLOBALS['mysql_user'] = "your_mysql_user";
-$GLOBALS['mysql_password'] = "your_mysql_password";
+$GLOBALS['mysql_db'] = "freifunksql5";
+$GLOBALS['mysql_user'] = "freifunksql5";
+$GLOBALS['mysql_password'] = "5fac80ba3895";
 
 //JABBER
-$GLOBALS['jabber_server'] = "your_jabber_server";
-$GLOBALS['jabber_username'] = "your_jabber_username";
-$GLOBALS['jabber_password'] = "your_jabber_pasword";
+$GLOBALS['jabber_server'] = "jabber.nord-west.net";
+$GLOBALS['jabber_username'] = "netmon";
+$GLOBALS['jabber_password'] = "8832e25ac256";
 
 //TWITTER
-$GLOBALS['twitter_consumer_key'] = "your_twitter_consumer_key";
-$GLOBALS['twitter_consumer_secret'] = "your_twitter_consumer_secret";
-$GLOBALS['twitter_username'] = "your_twitter_username";
+$GLOBALS['twitter_consumer_key'] = "UwDrOCWxNv6i29ulmTZgmA";
+$GLOBALS['twitter_consumer_secret'] = "CD1AFt7pbc50HqJvplirI4YeTxrZMzoCJn3Kpgt0eBg";
+$GLOBALS['twitter_username'] = "ff_ol";
 
 //MAIL
 $GLOBALS['mail_sending_type'] = "php_mail";
@@ -43,7 +43,9 @@ $GLOBALS['networkPolicy'] = "http://wiki.freifunk-ol.de/index.php?title=Nutzungs
 $GLOBALS['expiration'] = 3650;
 
 //PROJEKT
-$GLOBALS['days_to_keep_mysql_crawl_data'] = 1;
+//$GLOBALS['days_to_keep_mysql_crawl_data'] = 1;
+$GLOBALS['hours_to_keep_mysql_crawl_data'] = 5;
+$GLOBALS['hours_to_keep_history_table'] = 48;
 
 //GOOGLEMAPSAPIKEY
 $GLOBALS['google_maps_api_key'] = 'ABQIAAAACRLdP-ifG9hOW_8o3tqVjBTYNVZxCa8VDwolhiZjPiQmiWfAkxS6Oz2etgffSmqk2L962Xvxv9msQw';
@@ -55,5 +57,10 @@ $GLOBALS['crawler_curl_timeout'] = 5;
 
 //TEMPLATE
 $GLOBALS['template'] = 'freifunk_oldenburg';
+
+//NETWORK_CONNECTION
+$GLOBALS['netmon_is_connected_to_network_by_ipv6'] = true;
+$GLOBALS['netmon_ipv6_interface'] = "batvpn";
+$GLOBALS['netmon_is_connected_to_network_by_ipv4'] = true;
 
 ?>

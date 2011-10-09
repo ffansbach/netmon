@@ -1,7 +1,11 @@
 <?php
 
 //Please put your own links here
-$GLOBALS['topMenu'][] = array('name'=>'Netmon Handbuch', 'href'=> 'http://wiki.freifunk-ol.de/index.php?title=Netmon');
-//$GLOBALS['topMenu'][] = array('name'=>'Your Website Name', 'href'=> 'http://YourWebsiteURL');
+$GLOBALS['topMenu'][] = array('name'=>'Wiki', 'href'=> 'http://wiki.freifunk-ol.de');
+$GLOBALS['topMenu'][] = array('name'=>'Blog', 'href'=>'http://blog.freifunk-ol.de'); 
+$GLOBALS['topMenu'][] = array('name'=>'Mailingliste', 'href'=>'http://lists.nord-west.net/mailman/listinfo/freifunk-ol');
+//$GLOBALS['topMenu'][] = array('name'=>'OLSR', 'href'=>'http://olsr.freifunk-ol.de:8888');
+$GLOBALS['topMenu'][] = array('name'=>'Trac', 'href'=>'http://trac.freifunk-ol.de');
+$GLOBALS['topMenu'][] = array('name'=>'Repository', 'href' => 'http://dev.freifunk-ol.de/');
 
 ?>
