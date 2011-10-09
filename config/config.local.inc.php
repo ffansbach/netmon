@@ -10,16 +10,16 @@ $GLOBALS['url_to_netmon'] = "http://netmon.freifunk-ol.de";
 $GLOBALS['mysql_host'] = "localhost";
 $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
-$GLOBALS['mysql_password'] = "5fac80ba3895";
+$GLOBALS['mysql_password'] = "DONOTPUTTHISINSVNSTUPIDKID";
 
 //JABBER
 $GLOBALS['jabber_server'] = "jabber.nord-west.net";
 $GLOBALS['jabber_username'] = "netmon";
-$GLOBALS['jabber_password'] = "8832e25ac256";
+$GLOBALS['jabber_password'] = "DONOTPUTTHISINSVNSTUPIDKID";
 
 //TWITTER
-$GLOBALS['twitter_consumer_key'] = "UwDrOCWxNv6i29ulmTZgmA";
-$GLOBALS['twitter_consumer_secret'] = "CD1AFt7pbc50HqJvplirI4YeTxrZMzoCJn3Kpgt0eBg";
+$GLOBALS['twitter_consumer_key'] = "DONOTPUTTHISINSVNSTUPIDKID";
+$GLOBALS['twitter_consumer_secret'] = "DONOTPUTTHISINSVNSTUPIDKID";
 $GLOBALS['twitter_username'] = "ff_ol";
 
 //MAIL
@@ -48,7 +48,7 @@ $GLOBALS['hours_to_keep_mysql_crawl_data'] = 5;
 $GLOBALS['hours_to_keep_history_table'] = 48;
 
 //GOOGLEMAPSAPIKEY
-$GLOBALS['google_maps_api_key'] = 'ABQIAAAACRLdP-ifG9hOW_8o3tqVjBTYNVZxCa8VDwolhiZjPiQmiWfAkxS6Oz2etgffSmqk2L962Xvxv9msQw';
+$GLOBALS['google_maps_api_key'] = 'DONOTPUTTHISINSVNSTUPIDKID';
 
 //CRAWLER
 $GLOBALS['crawl_cycle'] = 10;
