@@ -75,6 +75,22 @@ class Helper {
 					ORDER BY name asc";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
+				switch($row['wlan_frequency']) {
+					case "2.412": $row['wlan_channel'] = 1; break; 
+					case "2.417": $row['wlan_channel'] = 2; break;
+					case "2.422": $row['wlan_channel'] = 3; break;
+					case "2.427": $row['wlan_channel'] = 4; break;
+					case "2.432": $row['wlan_channel'] = 5; break;
+					case "2.437": $row['wlan_channel'] = 6; break;
+					case "2.442": $row['wlan_channel'] = 7; break;
+					case "2.447": $row['wlan_channel'] = 8; break;
+					case "2.452": $row['wlan_channel'] = 9; break;
+					case "2.457": $row['wlan_channel'] = 10; break;
+					case "2.462": $row['wlan_channel'] = 11; break;
+					case "2.467": $row['wlan_channel'] = 12; break;
+					case "2.472": $row['wlan_channel'] = 13; break;
+					case "2.484": $row['wlan_channel'] = 14; break;
+				}
 				$interfaces[] = $row;
 			}
 		}

@@ -3,21 +3,21 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 10, 2011 at 12:17 PM
--- Server version: 5.1.57
--- PHP Version: 5.3.6-10
+-- Erstellungszeit: 05. Nov 2011 um 13:11
+-- Server Version: 5.1.58
+-- PHP-Version: 5.3.8-2
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Database: `freifunksql5`
+-- Datenbank: `freifunksql5`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `chipsets`
+-- Tabellenstruktur für Tabelle `chipsets`
 --
 
 CREATE TABLE IF NOT EXISTS `chipsets` (
@@ -25,13 +25,14 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
   `user_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `name` varchar(100) NOT NULL,
+  `hardware_name` varchar(200) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `config`
+-- Tabellenstruktur für Tabelle `config`
 --
 
 CREATE TABLE IF NOT EXISTS `config` (
@@ -44,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_batman_advanced_interfaces`
+-- Tabellenstruktur für Tabelle `crawl_batman_advanced_interfaces`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
@@ -60,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_batman_advanced_originators`
+-- Tabellenstruktur für Tabelle `crawl_batman_advanced_originators`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
@@ -77,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_clients_count`
+-- Tabellenstruktur für Tabelle `crawl_clients_count`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_clients_count` (
@@ -92,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `crawl_clients_count` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_cycle`
+-- Tabellenstruktur für Tabelle `crawl_cycle`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_cycle` (
@@ -105,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `crawl_cycle` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_interfaces`
+-- Tabellenstruktur für Tabelle `crawl_interfaces`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
@@ -133,7 +134,22 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_olsr`
+-- Tabellenstruktur für Tabelle `crawl_ips`
+--
+
+CREATE TABLE IF NOT EXISTS `crawl_ips` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ip_id` int(11) NOT NULL,
+  `crawl_cycle_id` int(11) NOT NULL,
+  `crawl_date` datetime NOT NULL,
+  `ping_avg` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `crawl_olsr`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_olsr` (
@@ -153,7 +169,7 @@ CREATE TABLE IF NOT EXISTS `crawl_olsr` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_routers`
+-- Tabellenstruktur für Tabelle `crawl_routers`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_routers` (
@@ -198,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_services`
+-- Tabellenstruktur für Tabelle `crawl_services`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_services` (
@@ -214,7 +230,7 @@ CREATE TABLE IF NOT EXISTS `crawl_services` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `history`
+-- Tabellenstruktur für Tabelle `history`
 --
 
 CREATE TABLE IF NOT EXISTS `history` (
@@ -230,7 +246,7 @@ CREATE TABLE IF NOT EXISTS `history` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `imagemaker_configs`
+-- Tabellenstruktur für Tabelle `imagemaker_configs`
 --
 
 CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
@@ -246,7 +262,7 @@ CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `imagemaker_images`
+-- Tabellenstruktur für Tabelle `imagemaker_images`
 --
 
 CREATE TABLE IF NOT EXISTS `imagemaker_images` (
@@ -261,7 +277,7 @@ CREATE TABLE IF NOT EXISTS `imagemaker_images` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `interfaces`
+-- Tabellenstruktur für Tabelle `interfaces`
 --
 
 CREATE TABLE IF NOT EXISTS `interfaces` (
@@ -271,8 +287,6 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
   `create_date` datetime NOT NULL,
   `name` varchar(100) NOT NULL,
   `mac_addr` varchar(150) NOT NULL,
-  `ipv4_addr` varchar(40) NOT NULL,
-  `ipv6_addr` varchar(150) NOT NULL,
   `vpn_client_cert` text NOT NULL,
   `vpn_client_key` text NOT NULL,
   PRIMARY KEY (`id`)
@@ -281,26 +295,28 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ips`
+-- Tabellenstruktur für Tabelle `interface_ips`
+--
+
+CREATE TABLE IF NOT EXISTS `interface_ips` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `interface_id` int(11) NOT NULL,
+  `ip_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `ips`
 --
 
 CREATE TABLE IF NOT EXISTS `ips` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
   `router_id` int(11) NOT NULL,
-  `subnet_id` int(3) NOT NULL,
-  `ip` varchar(7) NOT NULL,
-  `zone_start` varchar(7) NOT NULL,
-  `zone_end` varchar(7) NOT NULL,
-  `dhcp_host` varchar(15) NOT NULL,
-  `dhcp_netmask` int(11) NOT NULL,
-  `radius` int(11) NOT NULL,
-  `vpn_client_cert` text NOT NULL,
-  `vpn_client_key` text NOT NULL,
-  `location` varchar(200) NOT NULL,
-  `longitude` varchar(30) NOT NULL,
-  `latitude` varchar(30) NOT NULL,
-  `chipset` varchar(40) NOT NULL,
+  `project_id` int(11) NOT NULL,
+  `ip` varchar(100) NOT NULL,
+  `ipv` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
@@ -308,7 +324,24 @@ CREATE TABLE IF NOT EXISTS `ips` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `olsr_crawl_data`
+-- Tabellenstruktur für Tabelle `ip_ranges`
+--
+
+CREATE TABLE IF NOT EXISTS `ip_ranges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `project_id` int(11) NOT NULL,
+  `interface_id` int(11) NOT NULL,
+  `router_id` int(11) NOT NULL,
+  `ip_start` varchar(100) NOT NULL,
+  `ip_end` varchar(100) NOT NULL,
+  `create_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `olsr_crawl_data`
 --
 
 CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
@@ -326,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `projects`
+-- Tabellenstruktur für Tabelle `projects`
 --
 
 CREATE TABLE IF NOT EXISTS `projects` (
@@ -371,7 +404,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `routers`
+-- Tabellenstruktur für Tabelle `routers`
 --
 
 CREATE TABLE IF NOT EXISTS `routers` (
@@ -399,7 +432,7 @@ CREATE TABLE IF NOT EXISTS `routers` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `routers_not_assigned`
+-- Tabellenstruktur für Tabelle `routers_not_assigned`
 --
 
 CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
@@ -415,7 +448,7 @@ CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `services`
+-- Tabellenstruktur für Tabelle `services`
 --
 
 CREATE TABLE IF NOT EXISTS `services` (
@@ -439,7 +472,20 @@ CREATE TABLE IF NOT EXISTS `services` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `subnets`
+-- Tabellenstruktur für Tabelle `service_ips`
+--
+
+CREATE TABLE IF NOT EXISTS `service_ips` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `service_id` int(11) NOT NULL,
+  `ip_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `subnets`
 --
 
 CREATE TABLE IF NOT EXISTS `subnets` (
@@ -477,7 +523,7 @@ CREATE TABLE IF NOT EXISTS `subnets` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Tabellenstruktur für Tabelle `users`
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
@@ -502,6 +548,5 @@ CREATE TABLE IF NOT EXISTS `users` (
   `permission` varchar(20) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
   `activated` varchar(32) DEFAULT NULL,
-  `last_login` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;

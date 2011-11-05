@@ -10,16 +10,16 @@ $GLOBALS['url_to_netmon'] = "http://netmon.freifunk-ol.de";
 $GLOBALS['mysql_host'] = "localhost";
 $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
-$GLOBALS['mysql_password'] = "DONOTPUTTHISINSVNSTUPIDKID";
+$GLOBALS['mysql_password'] = "passwort";
 
 //JABBER
 $GLOBALS['jabber_server'] = "jabber.nord-west.net";
 $GLOBALS['jabber_username'] = "netmon";
-$GLOBALS['jabber_password'] = "DONOTPUTTHISINSVNSTUPIDKID";
+$GLOBALS['jabber_password'] = "passwort";
 
 //TWITTER
-$GLOBALS['twitter_consumer_key'] = "DONOTPUTTHISINSVNSTUPIDKID";
-$GLOBALS['twitter_consumer_secret'] = "DONOTPUTTHISINSVNSTUPIDKID";
+$GLOBALS['twitter_consumer_key'] = "secret";
+$GLOBALS['twitter_consumer_secret'] = "secret";
 $GLOBALS['twitter_username'] = "ff_ol";
 
 //MAIL
@@ -48,7 +48,7 @@ $GLOBALS['hours_to_keep_mysql_crawl_data'] = 5;
 $GLOBALS['hours_to_keep_history_table'] = 48;
 
 //GOOGLEMAPSAPIKEY
-$GLOBALS['google_maps_api_key'] = 'DONOTPUTTHISINSVNSTUPIDKID';
+$GLOBALS['google_maps_api_key'] = 'api_key';
 
 //CRAWLER
 $GLOBALS['crawl_cycle'] = 10;

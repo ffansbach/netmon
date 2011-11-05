@@ -83,6 +83,17 @@ class Crawl {
 				exec("rrdtool update $rrd_path_traffic_rx $crawl_time:".$interface_crawl_data['traffic_info']['traffic_rx_per_second_kilobyte'].":".$interface_crawl_data['traffic_info']['traffic_tx_per_second_kilobyte']);
 			}
 
+			/**Insert IP crawl data*/
+			foreach($data['ip_data'] as $ip_data) {
+				try {
+					DB::getInstance()->exec("INSERT INTO crawl_ips (ip_id, crawl_cycle_id, crawl_date, ping_avg)
+								 VALUES ('$ip_data[ip_id]', '$last_crawl_cycle[id]', NOW(), '$ip_data[ping_avg]');");
+				}
+				catch(PDOException $e) {
+					echo $e->getMessage();
+				}
+			}
+
 			/**Insert Batman advanced Interfaces*/
 			foreach($data['batman_adv_interfaces'] as $bat_adv_int) {
 				try {

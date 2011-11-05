@@ -25,8 +25,8 @@
 <!--						{foreach $top_menu as $topmenu}
 							<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}">{$topmenu.name}</a></span>
 						{/foreach}-->
-						{foreach $loginOutMenu as $menu}
-							| {$menu.pretext} <a style="color: #FFFFFF" href="{$menu.href}"><b>{$menu.name}</b></a>
+						{foreach $loginOutMenu as $menu key=count}
+							{if $count != 0}| {/if}<a href="{$menu.href}">{$menu.name}</a>
 						{/foreach}
 					{/if}
 					<!--<a href="http://wiki.freifunk-ol.de/index.php?title=Kontakt">Kontakt</a> | <a href="http://wiki.freifunk-ol.de/index.php?title=Freifunk_OL_Wiki:Impressum">Impressum</a>-->

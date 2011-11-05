@@ -35,7 +35,7 @@ require_once($GLOBALS['netmon_root_path'].'lib/classes/crawler/json_service_craw
 
 //Delete old Crawls
 //Crawling::deleteOldCrawlData($GLOBALS['days_to_keep_mysql_crawl_data']);
-Crawling::deleteOldCrawlData(($GLOBALS['hours_to_keep_mysql_crawl_data']*60*60));
+Crawling::deleteOldCrawlDataExceptLastOnlineCrawl(($GLOBALS['hours_to_keep_mysql_crawl_data']*60*60));
 Crawling::deleteOldHistoryData(($GLOBALS['hours_to_keep_history_table']*60*60));
 
 
