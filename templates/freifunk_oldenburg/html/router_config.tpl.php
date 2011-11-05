@@ -19,6 +19,7 @@
 		<h2>Grunddaten</h2>
 		<b>Benutzer:</b> <a href="./user.php?id={$router_data.user_id}">{$router_data.nickname}</a><br>
 		<b>Angelegt am:</b> {$router_data.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
+		{if !empty($router_data.description)}<b>Beschreibung:</b> {$router_data.description}<br>{/if}
 
 		<h2>Router Konfiguration</h2>
 
@@ -71,39 +72,51 @@
 </div>
 
 <h2>Interfaces</h2>
-{if !empty($services)}
+{if !empty($interfaces)}
 	{foreach $interfaces as $interface}
 		<h3>{$interface.name}</h3>
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 50%;">
-				{if $interface.is_ipv4=='1'}
+				{foreach $interface.ip_addresses as $ip_address}
+					{if $ip_address.ipv=='4'}
+						<ul>
+							<li>
+								<b>IPv4 Adresse:</b> {$ip_address.ip} {if $globals.netmon_is_connected_to_network_by_ipv4=='true'}(<a href="./ping_ip.php?ip={$ip_address.ip}&ipv=4">Ping</a>){/if}
+							</li>
+							<li>
+								<b>IPv4 Netmask:</b> {$interface.ipv4_netmask_dot}		
+							</li>
+							<li>
+								<b>IPv4 Broadcast:</b> {$interface.ipv4_bcast}		
+							</li>
+							<li>
+								<b>IPv4 DHCP:</b> {$interface.ipv4_dhcp_kind}		
+							</li>
+							{if $interface.ipv4_dhcp_kind=='range'}
+								<li>
+									<b>DHCP-Range:</b> {$interface.ipv4_dhcp_range_start} - {$interface.ipv4_dhcp_range_end}
+								</li>
+							{/if}
+						</ul>
+					{/if}
+					{if $ip_address.ipv=='6'}
+						<ul>
+							<li>
+								<b>IPv6 Adresse:</b> {$ip_address.ip} {if $globals.netmon_is_connected_to_network_by_ipv6=='true'}(<a href="./ping_ip.php?ip={$ip_address.ip}&ipv=6">Ping</a>){/if}
+							</li>
+						</ul>
+					{/if}
+					<li>
+						<a href="./ipeditor.php?section=delete&ip_id={$ip_address.ip_id}&router_id={$router_data.router_id}">IP-Adresse entfernen</a>
+					</li>
+				{/foreach}
+				{if $interface.ipv=='no' OR empty($interface.ip_addresses)}
 					<ul>
 						<li>
-							<b>IPv4 Adresse:</b> {$interface.ipv4_addr}		
-						</li>
-						<li>
-							<b>IPv4 Netmask:</b> {$interface.ipv4_netmask_dot}		
-						</li>
-						<li>
-							<b>IPv4 Broadcast:</b> {$interface.ipv4_bcast}		
+							<b>IP Adresse:</b> Keine (Layer 2)
 						</li>
 					</ul>
 				{/if}
-				{if $interface.is_ipv6=='ipv6' OR !empty($interface.ipv6_addr)}
-					<ul>
-						<li>
-							<b>IPv6 Adresse:</b> {$interface.ipv6_addr}		
-						</li>
-					</ul>
-				{/if}
-	<!--	{if $interface.ipv=='no'}
-		<ul>
-		
-			<li>
-				<b>IP Adresse:</b> Keine (Layer 2)
-			</li>
-		</ul>
-		{/if}-->
 			
 				{if $interface.is_wlan=='1'}
 					<ul>
@@ -154,6 +167,7 @@
 					</p>
 				{/if}
 				<p>
+					<a href="./ipeditor.php?section=add&router_id={$router_data.router_id}&interface_id={$interface.interface_id}">IP hinzufügen</a><br>
 					<a href="./interfaceeditor.php?section=delete&interface_id={$interface.interface_id}">Interface entfernen</a>
 				</p>
 			</div>

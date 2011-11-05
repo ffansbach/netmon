@@ -12,7 +12,7 @@
 	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px; border-right: 0px;" href="./serviceeditor.php?section=add&router_id={$router_data.router_id}">Dienst hinzufügen</a></li>
 </ul>
 
-<h1>Netmon Konfiguration des Routers {$router_data.hostname}</h1>
+<h1>Konfiguration des Routers {$router_data.hostname}</h1>
 
 <div style="width: 100%; overflow: hidden;">
     <div style="float:left; width: 50%;">
@@ -70,32 +70,34 @@
 	</div>
 </div>
 
-<h2>Interfaces</h2>
+<h2>Interface</h2>
 {if !empty($services)}
 	{foreach $interfaces as $interface}
 		<h3>{$interface.name}</h3>
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 50%;">
-				{if $interface.is_ipv4=='1'}
-					<ul>
-						<li>
-							<b>IPv4 Adresse:</b> {$interface.ipv4_addr}		
-						</li>
-						<li>
-							<b>IPv4 Netmask:</b> {$interface.ipv4_netmask_dot}		
-						</li>
-						<li>
-							<b>IPv4 Broadcast:</b> {$interface.ipv4_bcast}		
-						</li>
-					</ul>
-				{/if}
-				{if $interface.is_ipv6=='ipv6' OR !empty($interface.ipv6_addr)}
-					<ul>
-						<li>
-							<b>IPv6 Adresse:</b> {$interface.ipv6_addr}		
-						</li>
-					</ul>
-				{/if}
+				{foreach $interface.ip_addresses as $ip_address}
+					{if $ip_address.ipv=='4'}
+						<ul>
+							<li>
+								<b>IPv4 Adresse:</b> {$ip_address.ip}		
+							</li>
+							<li>
+								<b>IPv4 Netmask:</b> {$interface.ipv4_netmask_dot}		
+							</li>
+							<li>
+								<b>IPv4 Broadcast:</b> {$interface.ipv4_bcast}		
+							</li>
+						</ul>
+					{/if}
+					{if $ip_address.ipv=='6'}
+						<ul>
+							<li>
+								<b>IPv6 Adresse:</b> {$ip_address.ip}
+							</li>
+						</ul>
+					{/if}
+				{/foreach}
 	<!--	{if $interface.ipv=='no'}
 		<ul>
 		
@@ -167,7 +169,7 @@
 <h2>Dienste</h2>
 {if !empty($services)}
 	{foreach $services as $service}
-		<a name="service_{$service.id}"></a>
+		<a name="service_{$service.service_id}"></a>
 		{if !empty($interfaces) AND !empty($service.url_prefix) AND !empty($service.port)}
 			<a href="{$service.url_prefix}{$interfaces.0.ipv4_addr}:{$service.port}">
 		{/if}
@@ -194,8 +196,8 @@
 		</div>
 		<div style="float:left; width: 50%;">
 			<p>
-				<a href="./serviceeditor.php?section=edit&service_id={$service.id}">Dienst editieren</a><br>
-				<a href="./serviceeditor.php?section=delete&service_id={$service.id}">Dienst entfernen</a>
+				<a href="./serviceeditor.php?section=edit&service_id={$service.service_id}">Dienst editieren</a><br>
+				<a href="./serviceeditor.php?section=delete&service_id={$service.service_id}">Dienst entfernen</a>
 			</p>
 		</div>
 	</div>

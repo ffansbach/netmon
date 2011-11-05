@@ -9,8 +9,8 @@
 		<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 
 
-		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
-		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+		<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
+		<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 		
 		<div id="map" style="height:600px; width:100%; border:solid 1px black;font-size:9pt;">
 			<script type="text/javascript">

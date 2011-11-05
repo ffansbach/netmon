@@ -23,13 +23,13 @@
     {$html_head}
 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-	<link rel="stylesheet" type="text/css" href="./templates/css/design.css">
+	<link rel="stylesheet" type="text/css" href="./templates/{$template}/css/design.css">
   </head>
   
   <body>
 
 <!--Banner-->
-<div id="banner" style="background-image: url(./templates/img/header/hafen_oldenburg_nacht.jpg);">
+<div id="banner" style="background-image: url(./templates/{$template}/img/header/hafen_oldenburg_nacht.jpg);">
 	<!--Top-Menü-->
 	<div style="float:left">
 	<div id="time">

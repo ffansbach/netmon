@@ -113,6 +113,45 @@ class Crawling {
 		DB::getInstance()->exec("DELETE FROM crawl_clients_count WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
 	}
 
+	public function deleteOldCrawlDataExceptLastOnlineCrawl($seconds) {
+		//Get last online CrawlCycleId of every router
+		$last_online_crawl_cycle_ids = array();
+		try {
+			$sql = "SELECT crawl_cycle_id, router_id FROM 
+					(SELECT * FROM crawl_routers
+						WHERE crawl_routers.status='online'
+						ORDER BY crawl_cycle_id DESC)
+				AS s
+				GROUP BY router_id;";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$last_online_crawl_cycles[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		//Make an Where string that excludes the last online crawl cycles from query
+		$except = "";
+		$except_crawl_cycle_ids = "";
+		foreach ($last_online_crawl_cycles as $key=>$last_online_crawl_cycle) {
+			$except .= " AND (router_id!=$last_online_crawl_cycle[router_id] AND crawl_cycle_id!=$last_online_crawl_cycle[crawl_cycle_id])";
+			$except_crawl_cycle_ids .= " AND id!=$last_online_crawl_cycle[crawl_cycle_id]";
+		}
+
+		DB::getInstance()->exec("DELETE FROM crawl_cycle WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except_crawl_cycle_ids");
+		DB::getInstance()->exec("DELETE FROM crawl_routers WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
+		DB::getInstance()->exec("DELETE FROM crawl_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
+		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
+		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_originators WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
+		DB::getInstance()->exec("DELETE FROM crawl_olsr WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
+		DB::getInstance()->exec("DELETE FROM crawl_clients_count WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
+
+		//Normal delete
+		DB::getInstance()->exec("DELETE FROM crawl_services WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+	}
+
 	public function deleteOldHistoryData($seconds) {
 		DB::getInstance()->exec("DELETE FROM history WHERE UNIX_TIMESTAMP(create_date) < UNIX_TIMESTAMP(NOW())-$seconds");
 	}

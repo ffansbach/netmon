@@ -118,8 +118,8 @@
 	<p>
 		Statusaktualisierung:
 		<select name="crawl_method" onChange="getProjectInfo(this.options[this.selectedIndex].value)">
-			<option value="crawler" {if $smarty.get.crawl_method=='crawler'}selected='selected'{/if}>Netmon Crawlt den Router</option>
-			<option value="router" {if $smarty.get.crawl_method=='router' OR empty($smarty.get.crawl_method)}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>
+			<option value="crawler" {if $smarty.get.crawl_method=='crawler' OR empty($smarty.get.crawl_method)}selected='selected'{/if}>Netmon Crawlt den Router</option>
+			<option value="router" {if $smarty.get.crawl_method=='router'}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>
 		</select>
 	</p>
 

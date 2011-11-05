@@ -4,7 +4,7 @@
 
 <script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
 
-<link rel="stylesheet" type="text/css" href="templates/css/jquery_data_tables.css">
+<link rel="stylesheet" type="text/css" href="templates/{$template}/css/jquery_data_tables.css">
 
 <!-- Javascript for the graphs -->
 <script type="text/javascript" src="lib/classes/extern/javascriptrrd/binaryXHR.js"></script>
@@ -99,7 +99,7 @@ $(document).ready(function() {
 	<li class="tab2"><a href="./router_config.php?router_id={$router_data.router_id}">Router Konfiguration</a></li>
 </ul>
 
-<h1>Daten des Routers {$router_data.hostname}</h1>
+<h1>Statusdaten des Routers {$router_data.hostname}</h1>
 
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 47%;">
@@ -137,11 +137,11 @@ $(document).ready(function() {
 		<h3><u>Allgemein</u></h3>
 		<b>Status:</b> 
 		{if $router_last_crawl.status=="online"}
-			<img src="./templates/img/ffmap/status_up_small.png" alt="online">
+			<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
 		{elseif $router_last_crawl.status=="offline"}
-			<img src="./templates/img/ffmap/status_down_small.png" alt="offline">
+			<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">
 		{elseif $router_last_crawl.status=="unknown"}
-			<img src="./templates/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
+			<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
 		{/if}
 		<br>
 		<b>Zuverlässigkeit:</b> {math equation="round(x,1)" x=$router_reliability.online_percent}% online<br>
@@ -241,8 +241,8 @@ $(document).ready(function() {
 			
 			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 			
-			<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
-			<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+			<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
+			<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 			<div id="map" style="height:220px; width:400px; border:solid 1px black;font-size:9pt;">
 				<script type="text/javascript">
 					{if !empty($router_last_crawl.latitude)}
@@ -304,6 +304,7 @@ $(document).ready(function() {
 
 		<h2>Grafische Historie</h2>
 		<h3>Memory</h3>
+		{if $memory_rrd_file_exists}
 		<script type="text/javascript">
 			fname='./rrdtool/databases/router_{$router_data.router_id}_memory.rrd';
 			html_graph_id="memory_graph"
@@ -314,8 +315,10 @@ $(document).ready(function() {
 			}
 		</script>
 		<div id="memory_graph" style="float:left; width: 100%;"></div>
+		{/if}
 
 		<h3>Client Historie</h3>
+		{if $clients_rrd_file_exists}
 		<script type="text/javascript">
 			fname='./rrdtool/databases/router_{$router_data.router_id}_clients.rrd';
 			html_graph_id="client_history_graph"
@@ -326,6 +329,7 @@ $(document).ready(function() {
 			}
 		</script> 
 		<div id="client_history_graph" style="float:left; width: 100%;"></div>
+		{/if}
 	</div>
 </div>
 
@@ -476,7 +480,7 @@ $(document).ready(function() {
 					var selectedEffect = 'blind';
 					var options = {direction: 'vertical'};
 			{/literal}
-			{if empty($interface.wlan_frequency) AND $interface.is_vpn!='true'}
+			{if empty($interface.wlan_frequency) AND $interface.is_vpn!='true' AND $interface.name!='br-mesh'}
 				$('#traffic_{$schluessel}').hide(); // Hide div by default
 				document.getElementById('traffic_title_arrow_up_{$schluessel}').style.display = 'inline';
 				document.getElementById('traffic_title_arrow_down_{$schluessel}').style.display = 'none';
@@ -578,6 +582,50 @@ $(document).ready(function() {
 	<p>Keine Daten zu Interfaces vorhanden</p>
 {/if}
 
+<h2>Dienste auf diesem Router</h2>
+{if !empty($servicelist)}
+	{foreach $servicelist as $service}
+		<a name="service_{$service.service_id}"></a>
+		{if !empty($service.service_ipv4_addr) AND !empty($service.url_prefix) AND !empty($service.port)}
+			<a href="{$service.url_prefix}{$service.service_ipv4_addr}:{$service.port}">
+		{/if}
+		<h3>{$service.title}</h3>
+		{if !empty($service.service_ipv4_addr) AND !empty($service.url_prefix) AND !empty($service.port)}
+			</a>
+		{/if}
+		<div style="width: 100%; overflow: hidden;">
+			<ul>
+				<li>
+					<b>Beschreibung: </b> {$service.description}
+				</li>
+				<li>
+					<b>Port: </b> {$service.port}
+				</li>
+				<li>
+					<b>Status: </b> {if $service.service_status=="online"}
+						<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
+					{elseif $service.service_status=="offline"}
+						<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">
+					{elseif $service.service_status=="unknown"}
+						<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
+					{/if}
+				</li>
+			</ul>
+		</div>
+		<hr>
+	{/foreach}
+
+
+
+{else}
+	<p>Auf diesem Ruter laufen keine Dienste</p>
+{/if}
+
+{if $hidden_service_count!=0}
+	<p>Hinweis: {$hidden_service_count} Dienste wurden versteckt und werden nur <a href="./login.php?section=login">eingeloggten</a> Benutzern angezeigt.</p>
+{/if}
+
+
 {if $ip.is_ip_owner}
 	<h2>Aktionen</h2>
 	<p>
@@ -598,3 +646,5 @@ $(document).ready(function() {
 		<a href="./vpn.php?section=download&ip_id={$ip.ip_id}">VPN-Zertifikate und Config-Datei downloaden</a><br>
 	</p>
 {/if}
+
+<br style="clear: both">

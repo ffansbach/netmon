@@ -9,6 +9,12 @@
 	<script type="text/javascript" src="lib/classes/extern/zend_framework_json-rpc/json2.js"></script>
 	<script type="text/javascript" src="lib/classes/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></script>
 	<script type="text/javascript">
+		function getIpRange(range) {
+			free_ipv4_range = api_main.getFreeIpRangeByProjectId(document.getElementById('project_id').options[document.getElementById('project_id').selectedIndex].value, range, document.getElementById('ipv4_addr_input').value);
+			document.getElementById('ipv4_dhcp_range_first_ip').innerHTML = free_ipv4_range.start;
+			document.getElementById('ipv4_dhcp_range_last_ip').innerHTML = free_ipv4_range.end;
+		}
+
 		function getProjectInfo(project_id) {
 			$(document).ready(function(){
 				api_main = jQuery.Zend.jsonrpc({url: 'api_main.php'});
@@ -82,6 +88,17 @@
 				}  else if(project.ipv4_dhcp_kind=='no') {
 					document.getElementById('section_ipv4_dhcp').style.display = 'none';
 				}
+
+				if(project.is_geo_specific=='1') {
+					document.getElementById("geo_polygon_map").innerHTML = "";
+					new_interface_projectmap(project.project_id);
+					document.getElementById('geo_polygon_map').style.display = 'block';
+					document.getElementById('geo_polygon_hint').style.display = 'block';
+				}  else {
+					document.getElementById('geo_polygon_map').style.display = 'none';
+					document.getElementById('geo_polygon_hint').style.display = 'none';
+				}
+				
 			});
 		}
 	</script>
@@ -90,21 +107,39 @@
 <h1>Interface zum Router {$router_data.hostname} hinzufügen:</h1>
 <form action="./interfaceeditor.php?section=insert_add&router_id={$smarty.get.router_id}" method="POST">
 	<h2>Projekt</h2>
-	<p>
-		Device im Projekt:
-		<select name="project_id" onChange="getProjectInfo(this.options[this.selectedIndex].value)">
-			<option value="false" selected='selected'>Bitte wählen</option>
-			{foreach item=project from=$projects}
-				<option value="{$project.id}">{$project.title}</option>
-			{/foreach}
-		</select> anlegen.
-	</p>
-	
-	<p><b>Projektbescheibung: </b><span id="project_description"></span></p>
+	<div style="width: 100%; overflow: hidden;">
+		<div style="float:left; width: 45%;">
+			Device im Projekt:
+			<select id="project_id" name="project_id" onChange="getProjectInfo(this.options[this.selectedIndex].value)">
+				<option value="false" selected='selected'>Bitte wählen</option>
+				{foreach item=project from=$projects}
+					<option value="{$project.id}">{$project.title}</option>
+				{/foreach}
+			</select> anlegen.
+			
+			<p>
+				<b>Projektbescheibung:</b><br>
+				<span id="project_description"></span>
+			</p>
+			<p id="geo_polygon_hint" style="display: none;">
+				<b>Hinweis:</b><br>
+				Dieses Projekt ist lokal begrenzt. Bitte fügen sie Ihrem Router nur ein Interface dieses Projekts zu, wenn sich ihr Router im Bereich der Markierung auf der Karte befindet!
+			</p>
+		</div>
+		<div style="float:left; width: 55%;">
+			<script type="text/javascript" src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
+			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+			<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
+			<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
+			
+			<div id="geo_polygon_map" style="display: none; height:150px; width:350px; border:solid 1px black;font-size:9pt;">
+
+			</div>
+		</div>
+	</div>
 
 	<h2>Deviceeigenschaften</h2>
-	<p>Wenn Sie das Device im Projekt <b><span id="project_title"></span></b> anlegen, erhält es folgende Eigenschaften:</p>
-
+	<p>Wenn Sie das Device im Projekt <b><span id="project_title"></span></b> anlegen, erhält es folgende Eigenschaften:</p>	
 	<div>
 		<h2>Bezeichnung</h2>
 		<ul>
@@ -175,7 +210,7 @@
 				<b>IPv4: </b> Ja
 			</li>
 			<li>
-				<b>IP-Adresse: </b> <span id="ipv4_addr"></span>
+				<b>IPv4-Adresse: </b> <span id="ipv4_addr"></span>
 				<input id="ipv4_addr_input" name="ipv4_addr" type="hidden">
 			</li>
 			<li>
@@ -195,8 +230,7 @@
 		<div>
 			<ul>
 				<li>
-					<b>Zu reservierender Adressraum </b> <span id="ipv4_dhcp_range_first_ip"></span>
-									     <span id="ipv4_dhcp_range_last_ip"></span>
+					<b>Vorraussichtlich reservierter Adressraum: </b> <span id="ipv4_dhcp_range_first_ip"></span> - <span id="ipv4_dhcp_range_last_ip"></span>
 				</li>
 			<ul>
 		</div>
@@ -207,6 +241,9 @@
 		<ul>
 			<li>
 				<b>IPv6: </b> Ja
+			</li>
+			<li>
+				<b>IPv6-Adresse: </b> <input id="ipv6_addr_input" name="ipv6_addr">
 			</li>
 		<ul>
 	</div>

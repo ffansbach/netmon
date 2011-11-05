@@ -101,7 +101,7 @@
 {/literal}
 {literal}
 	<input type="checkbox" id="is_ipv4" name="is_ipv4" value="1" onChange="if(document.getElementById('is_ipv4').checked) {document.getElementById('ipv4').style.display = 'block';} else {document.getElementById('ipv4').style.display = 'none';}">Diese Projekt ist ein IPv4 Projekt<br>
-
+{/literal}
 	<div id="ipv4" style="display:none">
 	<h4>IPv4 Einstellungen</h4>
 	<p>Subnet Host:<br> <input name="ipv4_host" type="text" size="15"></p>
@@ -127,21 +127,23 @@
 				<option value="nat">Genattetes Subnet</option>
 			    </select></p>
 	</div>
-
+	{literal}
 	<input type="checkbox" id="is_ipv6" name="is_ipv6" value="1" onChange="if(document.getElementById('is_ipv6').checked) {document.getElementById('ipv6').style.display = 'block';} else {document.getElementById('ipv6').style.display = 'none';}">Diese Projekt ist ein IPv6 Projekt<br>
-
+	{/literal}
 
 
 	<h3>Sonstiges</h3>
+	{literal}
 	<input type="checkbox" id="is_geo_specific" name="is_geo_specific" value="1" onChange="if(document.getElementById('is_geo_specific').checked) {document.getElementById('geo_specific').style.display = 'block';} else {document.getElementById('geo_specific').style.display = 'none';}">Diese Projekt ist lokal begrenzt<br>
+	{/literal}
 	<div id="geo_specific" style="display:none">
-	<h4>Lokale Begrenzung des Projekts</h4>
+		<h4>Lokale Begrenzung des Projekts</h4>
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 55%;">
-				<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
+				<script type="text/javascript" src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 				<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
-				<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
-				<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+				<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
+				<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 				
 				<div id="map" style="height:200px; width:400px; border:solid 1px black;font-size:9pt;">
 					<script type="text/javascript">
@@ -152,10 +154,9 @@
 			<div style="float:left; width: 45%;">
 				<input  id="polygon_location" name="geo_polygons" type="hidden">
 				Sie können das Projekt lokal eingenzen indem Sie auf die Karte Klicken und den Bereich des Projektes abstecken.<br>Ein Doppelklick beendet die Bearbeitung.
-		        </div>
+	        </div>
 		</div>
 	</div>
-{/literal}
 	<p>DNS Server (durch Leerzeichen getrennt):<br>
 		<input name="dns_server" type="text" size="50">
 

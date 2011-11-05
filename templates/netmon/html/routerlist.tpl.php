@@ -1,7 +1,7 @@
 <script src="lib/classes/extern/jquery/jquery.js"></script>
 <script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
 
-<link rel="stylesheet" type="text/css" href="templates/css/jquery_data_tables.css">
+<link rel="stylesheet" type="text/css" href="templates/{$template}/css/jquery_data_tables.css">
 
 <script type="text/javascript">
 {literal}
@@ -9,7 +9,8 @@ $(document).ready(function() {
 	$('#routerlist').dataTable( {
 		"bFilter": false,
 		"bInfo": false,
-		"bPaginate": false
+		"bPaginate": false,
+		"aaSorting": [[ 0, "asc" ]]
 	} );
 } );
 {/literal}
@@ -45,11 +46,11 @@ $(document).ready(function() {
 						<td><a href="./router_status.php?router_id={$router.router_id}">{$router.hostname}</a></td>
 						<td>
 							{if $router.actual_crawl_data.status=="online"}
-								<img src="./templates/img/ffmap/status_up_small.png" title="online" alt="online">
+								<img src="./templates/{$template}/img/ffmap/status_up_small.png" title="online" alt="online">
 							{elseif $router.actual_crawl_data.status=="offline"}
-								<img src="./templates/img/ffmap/status_down_small.png" title="offline" alt="offline">
+								<img src="./templates/{$template}/img/ffmap/status_down_small.png" title="offline" alt="offline">
 							{elseif $router.actual_crawl_data.status=="unknown"}
-								<img src="./templates/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
+								<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
 							{/if}
 						</td>
 						<td>{$router.actual_crawl_data.crawl_date|date_format:"%H:%M"} Uhr</td>

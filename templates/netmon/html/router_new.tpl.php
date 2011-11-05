@@ -77,13 +77,13 @@
 			<div style="width: 100%; overflow: hidden;" class="section_location">
 				<script type="text/javascript" src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 				<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
-				<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
-				<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
+				<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
+				<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 				
 				<div id="map" style="height:400px; width:600px; border:solid 1px black;font-size:9pt;">
 					{literal}
 						<script type="text/javascript">
-							new_ip_map();
+							new_router_map();
 						</script>
 					{/literal}
 				</div>
@@ -133,7 +133,7 @@
 	</p>
 
 	<p>
-		Mac Adresse: <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$smarty.get.router_auto_assign_login_string}">
+		Mac Adresse (ohne Bindestriche oder Doppelpunkte): <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$smarty.get.router_auto_assign_login_string}">
 	</p>
 
 	<p><input type="submit" value="Absenden"></p>

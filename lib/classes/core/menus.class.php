@@ -65,10 +65,10 @@ class Menus extends UserManagement {
     if (UserManagement::checkPermission(1)) {
 //      $menu[] = array('name'=>'News', 'href'=>'portal.php');
       $menu[] = array('name'=>'Map', 'href'=>'map.php');
-//      $menu[] = array('name'=>'Topologie', 'href'=>'topology.php');
       $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php', 'selected'=>$selected);
       $menu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
       $menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'networkstatistic.php');
+      $menu[] = array('name'=>'Topologie', 'href'=>'http://dev.freifunk-ol.de/topo/batvpn.png');
       $menu[] = array('name'=>'Suchen', 'href'=>'search.php');
     }
 

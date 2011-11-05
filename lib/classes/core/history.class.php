@@ -33,6 +33,9 @@ class History {
 			if (!empty($current_crawl_data['distversion']) AND !empty($last_online_crawl_data['distversion']) AND $current_crawl_data['distversion']!=$last_online_crawl_data['distversion']) {
 				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'distversion', 'from'=>$last_crawl_data['distversion'], 'to'=>$current_crawl_data['distversion']));
 			}
+			if (!empty($current_crawl_data['batman_advanced_version']) AND !empty($last_online_crawl_data['batman_advanced_version']) AND $current_crawl_data['batman_advanced_version']!=$last_online_crawl_data['batman_advanced_version']) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'batman_advanced_version', 'from'=>$last_crawl_data['batman_advanced_version'], 'to'=>$current_crawl_data['batman_advanced_version']));
+			}
 		}
 
 		if($current_crawl_data['status']=='online' AND $last_crawl_data['status']=='online') {
