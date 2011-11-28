@@ -136,13 +136,16 @@ class Crawling {
 		$except = "";
 		$except_crawl_cycle_ids = "";
 		foreach ($last_online_crawl_cycles as $key=>$last_online_crawl_cycle) {
-			$except .= " AND (router_id!=$last_online_crawl_cycle[router_id] AND crawl_cycle_id!=$last_online_crawl_cycle[crawl_cycle_id])";
+//			$except .= " AND (router_id!=$last_online_crawl_cycle[router_id] AND crawl_cycle_id!=$last_online_crawl_cycle[crawl_cycle_id])";
+			$except .= " AND crawl_cycle_id!=$last_online_crawl_cycle[crawl_cycle_id]";
 			$except_crawl_cycle_ids .= " AND id!=$last_online_crawl_cycle[crawl_cycle_id]";
 		}
 
 		DB::getInstance()->exec("DELETE FROM crawl_cycle WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except_crawl_cycle_ids");
+
 		DB::getInstance()->exec("DELETE FROM crawl_routers WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
 		DB::getInstance()->exec("DELETE FROM crawl_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
+		DB::getInstance()->exec("DELETE FROM crawl_ips WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
 		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
 		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_originators WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
 		DB::getInstance()->exec("DELETE FROM crawl_olsr WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
