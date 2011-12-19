@@ -7,15 +7,17 @@ require_once($GLOBALS['monitor_root'].'lib/classes/core/clients.class.php');
 
 class Crawling {
 	public function organizeCrawlCycles()  {
+		exec("echo \"organizeCrawlCycles \"`date`\" \"`whoami` >> /var/kunden/webs/freifunk/netmon/rrdtool/databases/whoamitest.txt", $return);
 		//Get actual crawl cycle
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 		//Get last ended crawl cycle
 		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 
+		echo "prüfe ob neuer Crawl cycle eingerichtet werden kann\n";
 		if(strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
 			//Initialise new crawl cycle before closing old crawl cycle
 			Crawling::newCrawlCycle();
-			
+
 			//Close old Crawl cycle
 			$result = DB::getInstance()->exec("UPDATE crawl_cycle SET
 								  crawl_date_end = NOW()
@@ -24,8 +26,10 @@ class Crawling {
 			//Set all routers in old crawl cycle that have not been crawled yet to status offline
 			$routers = Router::getRouters();
 			foreach ($routers as $router) {
+				echo "prüfe router id: ".$router['id'];
 				$crawl = Router::getCrawlRouterByCrawlCycleId($actual_crawl_cycle['id'], $router['id']);
 				if(empty($crawl)) {
+					echo $router['id']." wird als offline markiert";
 					$crawl_data['status'] = "offline";
 					Crawling::insertRouterCrawl($router['id'], $crawl_data, $actual_crawl_cycle, $last_endet_crawl_cycle);
 				}

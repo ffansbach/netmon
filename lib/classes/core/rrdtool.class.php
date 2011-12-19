@@ -53,27 +53,38 @@ class RrdTool {
 	}
 
 	public function updateNetmonHistoryRouterStatus($online, $offline, $unknown, $total) {
+			exec("echo \"rrdtool.class\"`date`\" \"`whoami` >> /var/kunden/webs/freifunk/netmon/rrdtool/databases/whoamitest.txt", $return);
 			//Update RRD Graph DB
 			$rrd_path = "$GLOBALS[monitor_root]/rrdtool/databases/netmon_history_router_status.rrd";
+			echo $rrd_path."\n";
 			if(!file_exists($rrd_path)) {
 				//Create new RRD-Database
-				exec("rrdtool create $rrd_path --step 600 --start ".time()." DS:online:GAUGE:800:U:U DS:offline:GAUGE:800:U:U DS:unknown:GAUGE:800:U:U DS:total:GAUGE:800:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
+				$command = "rrdtool create $rrd_path --step 600 --start ".(time()-1)." DS:online:GAUGE:800:U:U DS:offline:GAUGE:800:U:U DS:unknown:GAUGE:800:U:U DS:total:GAUGE:800:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240";
+				exec($command);
+				echo $command."\n";
 			}
 
 			//Update Database
-			exec("rrdtool update $rrd_path ".time().":$online:$offline:$unknown:$total");
+			$command = "rrdtool update $rrd_path ".time().":$online:$offline:$unknown:$total";
+			exec($command);
+			echo $command."\n";
 	}
 
 	public function updateNetmonClientCount($client_count) {
 			//Update RRD Graph DB
-			$rrd_path = "$GLOBALS[monitor_root]/rrdtool/databases/netmon_hisory_client_count.rrd";
+			$rrd_path = "$GLOBALS[monitor_root]/rrdtool/databases/netmon_history_client_count.rrd";
+			echo $rrd_path."\n";
 			if(!file_exists($rrd_path)) {
 				//Create new RRD-Database
-				exec("rrdtool create $rrd_path --step 600 --start ".time()." DS:clients:GAUGE:800:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
+				$command = "rrdtool create $rrd_path --step 600 --start ".(time()-1)." DS:clients:GAUGE:800:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240";
+				exec($command);
+				echo $command."\n";
 			}
 
 			//Update Database
-			exec("rrdtool update $rrd_path ".time().":$client_count");
+			$command = "rrdtool update $rrd_path ".time().":$client_count";
+			exec($command);
+			echo $command."\n";
 	}
 
 

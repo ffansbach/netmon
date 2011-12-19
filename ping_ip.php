@@ -1,12 +1,15 @@
 <?php
 /** Include Classes **/
 require_once('runtime.php');
+require_once($GLOBALS['monitor_root'].'lib/classes/core/ip.class.php');
 
-if ($_GET['ipv']=='6') {
-	$ipv6_address = explode("/", $_GET['ip']);
+$ip = Ip::getIpById($_GET['ip_id']);
+
+if ($ip['ipv']=='6') {
+	$ipv6_address = explode("/", $ip['ip']);
 	$command = "ping6 -c 4 -I $GLOBALS[netmon_ipv6_interface] $ipv6_address[0]";
-} elseif ($_GET['ipv']=='4') {
-	$command = "ping -c 4 $_GET[ip]";
+} elseif ($ip['ipv']=='4') {
+	$command = "ping -c 4 $ip[ip]";
 }
 
 $return = array();

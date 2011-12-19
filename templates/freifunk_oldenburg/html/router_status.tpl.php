@@ -356,6 +356,7 @@ $(document).ready(function() {
 					<tr>
 						<th>Originator</th>
 						<th>Quality</th>
+						<th>Outgoing Interface</th>
 						<th>Last Seen</th>
 					</tr>
 				</thead>
@@ -364,6 +365,7 @@ $(document).ready(function() {
 						<tr>
 							<td><a href="search.php?search_range=mac_addr&search_string={$originators.originator}">{$originators.originator}</a></td>
 							<td>{$originators.link_quality}</td>
+							<td>{$originators.outgoing_interface}</td>
 							<td>{$originators.last_seen}</td>
 						</tr>
 					{/foreach}
