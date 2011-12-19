@@ -29,6 +29,11 @@ class RouterEditor {
 			Message::setMessage($message);
 			return array("result"=>false, "router_id"=>$router_id);
 		} else {
+			if(!is_numeric($_POST['latitude']) OR !is_numeric($_POST['longitude'])) {
+				$_POST['latitude'] = 0;
+				$_POST['longitude'] = 0;
+			}
+
 			DB::getInstance()->exec("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, router_auto_assign_login_string, description, location, latitude, longitude, chipset_id, notify, notification_wait)
 						      VALUES ('$_SESSION[user_id]', NOW(), NOW(), '$_POST[crawl_method]', '$_POST[hostname]', '$_POST[allow_router_auto_assign]', '$_POST[router_auto_assign_login_string]', '$_POST[description]', '$_POST[location]', '$_POST[latitude]', '$_POST[longitude]', '$_POST[chipset_id]', '$_POST[notify]', '$_POST[notification_wait]');");
 			$router_id = DB::getInstance()->lastInsertId();
@@ -98,6 +103,10 @@ class RouterEditor {
 			Message::setMessage($message);
 			return false;
 		} else {
+			if(!is_numeric($_POST['latitude']) OR !is_numeric($_POST['longitude'])) {
+				$_POST['latitude'] = 0;
+				$_POST['longitude'] = 0;
+			}
 			$result = DB::getInstance()->exec("UPDATE routers SET
 								update_date=NOW(),
 								crawl_method='$_POST[crawl_method]',

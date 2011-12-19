@@ -12,9 +12,9 @@ require_once('lib/classes/core/chipsets.class.php');
 /**
 * Crawl cycles and offline crawls
 **/
-Crawling::organizeCrawlCycles();
+//Crawling::organizeCrawlCycles();
 
-#needs to be fixed
+//needs to be fixed
 
 if($_GET['section']=="update") {
 	if(empty($_GET['nodewatcher_version']) OR $_GET['nodewatcher_version']<20) {

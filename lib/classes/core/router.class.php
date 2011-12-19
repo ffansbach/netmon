@@ -425,7 +425,7 @@ class Router {
 	}
 
 	public function routerNotifyOverJabberIfDown($router_data, $user_data, $router_crawl_history) {
-		$conn = new XMPPHP_XMPP($GLOBALS['jabber_server'], 5222, $GLOBALS['jabber_username'], $GLOBALS['jabber_password'], 'xmpphp', $server=null, $printlog=false, $loglevel=XMPPHP_Log::LEVEL_INFO);
+/*		$conn = new XMPPHP_XMPP($GLOBALS['jabber_server'], 5222, $GLOBALS['jabber_username'], $GLOBALS['jabber_password'], 'xmpphp', $server=null, $printlog=false, $loglevel=XMPPHP_Log::LEVEL_INFO);
 		
 		try {
 			$conn->connect();
@@ -475,7 +475,7 @@ $GLOBALS[community_name]";
 		$mail->addTo($user_data['email']);
 		$mail->setSubject("Service offline $GLOBALS[community_name]");
 		$mail->setBodyText($text);
-		$mail->send($transport);
+		$mail->send($transport);*/
 	}
 
 

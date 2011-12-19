@@ -132,7 +132,7 @@
 
 	<h2>Historie der Verbundenen Clients</h2>
 	<script type="text/javascript">
-		fname='./rrdtool/databases/netmon_hisory_client_count.rrd';
+		fname='./rrdtool/databases/netmon_history_client_count.rrd';
 		html_graph_id="client_count_graph"
 		try {
 			FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
