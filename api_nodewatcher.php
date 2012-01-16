@@ -371,11 +371,18 @@ if($_GET['section']=="insert_clients") {
 
 if($_GET['section']=="get_hostnames_and_mac") {
 	$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+//echo "<pre>";
 
+	$interfaces = array();
 	try {
-		$sql = "SELECT crawl_interfaces.mac_addr, routers.hostname
-       			FROM  crawl_interfaces, routers
-			WHERE crawl_cycle_id='$last_endet_crawl_cycle[id]' AND routers.id=crawl_interfaces.router_id";
+		$sql = "SELECT  crawl_batman_advanced_interfaces.name, routers.hostname, crawl_interfaces.mac_addr
+				FROM crawl_batman_advanced_interfaces, routers, crawl_interfaces
+				WHERE crawl_batman_advanced_interfaces.crawl_cycle_id='$last_endet_crawl_cycle[id]' AND 
+				      routers.id=crawl_batman_advanced_interfaces.router_id AND 
+				      crawl_interfaces.crawl_cycle_id='$last_endet_crawl_cycle[id]' AND 
+				      crawl_interfaces.router_id=crawl_batman_advanced_interfaces.router_id AND
+				      crawl_interfaces.name LIKE crawl_batman_advanced_interfaces.name
+				GROUP BY crawl_interfaces.mac_addr";
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
 			echo $row['mac_addr']." ".$row['hostname']."\n";
@@ -394,8 +401,8 @@ if($_GET['section']=="get_hostnames_and_ipv6_adresses") {
 //       			FROM  crawl_interfaces, routers
 //			WHERE crawl_cycle_id='$last_endet_crawl_cycle[id]' AND crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id";
 		$sql = " SELECT DISTINCT crawl_interfaces.ipv6_link_local_addr, routers.hostname
-		                        FROM  crawl_interfaces, routers
-		                                                WHERE crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id";
+		                        FROM  crawl_interfaces, crawl_routers, routers
+		                                                WHERE crawl_routers.status='online' AND crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id";
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
 			$row['ipv6_link_local_addr'] = explode("/",$row['ipv6_link_local_addr']);
@@ -516,8 +523,8 @@ if($_GET['section']=="insert_crawl_data") {
 			if(!empty($_POST['bat_adv_orig'])) {
 				foreach($_POST['bat_adv_orig'] as $bat_adv_orig) {
 					try {
-						DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, last_seen, crawl_date)
-									 VALUES ('$_POST[router_id]', '$last_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[last_seen]', NOW());");
+						DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, nexthop, outgoing_interface, last_seen, crawl_date)
+									 VALUES ('$_POST[router_id]', '$last_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[nexthop]', '$bat_adv_orig[outgoing_interface]', '$bat_adv_orig[last_seen]', NOW());");
 					}
 					catch(PDOException $e) {
 						echo $e->getMessage();
