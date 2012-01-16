@@ -72,7 +72,16 @@ class Service {
 				$sql_add";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $key=>$row) {
-				$interfaces = Interfaces::getIPv4InterfacesByRouterId($row['router_id']);
+				//Get ip addresses assigned to the service
+				$sql2 = "SELECT ips.ip, ips.ipv
+					FROM ips, service_ips
+					WHERE ips.id=service_ips.ip_id AND service_ips.service_id='$row[service_id]';";
+				$result2 = DB::getInstance()->query($sql2);
+				foreach($result2 as $key2=>$row2) {
+					$row['ips'][] = $row2;
+				}
+
+/*deprecated				$interfaces = Interfaces::getIPv4InterfacesByRouterId($row['router_id']);
 				if(!empty($interfaces)) {
 					$row['service_ipv4_addr'] = $interfaces[0]['ipv4_addr'];
 				}
@@ -86,7 +95,7 @@ class Service {
 
 				if(!empty($row['service_ipv4_addr']) AND !empty($row['url_prefix']) AND !empty($row['port'])) {
 					$row['combined_url_to_service'] = $row['url_prefix'].$interfaces[0]['ipv4_addr'].":".$row['port'];
-				}
+				}*/
 
 				$servicelist[] = $row;
 			}
@@ -94,6 +103,7 @@ class Service {
 		catch(PDOException $e) {
 		  echo $e->getMessage();
 		}
+
 		return $servicelist;
 	}
 

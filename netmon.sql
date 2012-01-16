@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 05. Nov 2011 um 13:11
--- Server Version: 5.1.58
--- PHP-Version: 5.3.8-2
+-- Erstellungszeit: 16. Jan 2012 um 01:58
+-- Server Version: 5.5.17
+-- PHP-Version: 5.3.9-1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -70,6 +70,8 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
   `crawl_cycle_id` int(11) NOT NULL,
   `originator` varchar(100) NOT NULL,
   `link_quality` int(11) NOT NULL,
+  `nexthop` varchar(100) NOT NULL,
+  `outgoing_interface` varchar(20) NOT NULL,
   `last_seen` varchar(20) NOT NULL,
   `crawl_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -207,6 +209,9 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `kernel_version` varchar(30) NOT NULL,
   `nodewatcher_version` int(11) NOT NULL,
   `firmware_version` varchar(20) NOT NULL,
+  `firmware_revision` int(11) NOT NULL,
+  `openwrt_core_revision` int(11) NOT NULL,
+  `openwrt_feeds_packages_revision` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
@@ -480,7 +485,7 @@ CREATE TABLE IF NOT EXISTS `service_ips` (
   `service_id` int(11) NOT NULL,
   `ip_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

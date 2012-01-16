@@ -10,6 +10,7 @@
 		//Root and owning user can add service to router
 		if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
+			$smarty->assign('ips', Ip::getIpAddressesByRouterId($_GET['router_id']));
 
 			$smarty->assign('router_data', Router::getRouterInfo($_GET['router_id']));	
 			$smarty->display("header.tpl.php");
@@ -26,7 +27,7 @@
 		$router_data = Router::getRouterInfo($_GET['router_id']);
 		//Root and owning user can add service to router
 		if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
-			$add_result = ServiceEditor::addService($_GET['router_id'], $_POST['title'], $_POST['description'], $_POST['port'], $_POST['url_prefix'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait'], $_POST['use_netmons_url'], $_POST['url']);
+			$add_result = ServiceEditor::addService($_GET['router_id'], $_POST['title'], $_POST['description'], $_POST['ip_addresses'], $_POST['port'], $_POST['url_prefix'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait'], $_POST['use_netmons_url'], $_POST['url']);
 			if($add_result['result']) {
 				header('Location: ./router_config.php?router_id='.$add_result['router_id']);
 			} else {

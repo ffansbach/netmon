@@ -198,6 +198,12 @@ $(document).ready(function() {
 			{if !empty($router_last_crawl.distversion)}
 				<b>Distversion:</b> {$router_last_crawl.distversion}<br>
 			{/if}
+			{if !empty($router_last_crawl.openwrt_core_revision)}
+				<b>OpenWrt Core Revision:</b> {$router_last_crawl.openwrt_core_revision}<br>
+			{/if}
+			{if !empty($router_last_crawl.openwrt_feeds_packages_revision)}
+				<b>OpenWrt Package Feed revision:</b> {$router_last_crawl.openwrt_feeds_packages_revision}<br>
+			{/if}
 			{if !empty($router_last_crawl.kernel_version)}
 				<b>Kernelversion:</b> {$router_last_crawl.kernel_version}<br>
 			{/if}
@@ -208,7 +214,10 @@ $(document).ready(function() {
 				<b>Nodewatcher Version:</b> {$router_last_crawl.nodewatcher_version}<br>
 			{/if}
 			{if !empty($router_last_crawl.firmware_version)}
-				<b>Firmware Version:</b> {$router_last_crawl.firmware_version}
+				<b>Firmware Version:</b> {$router_last_crawl.firmware_version}<br>
+			{/if}
+			{if !empty($router_last_crawl.firmware_revision)}
+				<b>Firmware Revision:</b> {$router_last_crawl.firmware_revision}
 			{/if}
 		</p>
 
@@ -227,7 +236,10 @@ $(document).ready(function() {
 				<b>Uptime:</b> {math equation="round(x,1)" x=$router_last_crawl.uptime/60/60} Stunden<br>
 			{/if}
 			{if !empty($router_last_crawl.idletime)}
-				<b>Idletime:</b> {math equation="round(x,1)" x=$router_last_crawl.idletime/60/60} Stunden
+				<b>Idletime:</b> {math equation="round(x,1)" x=$router_last_crawl.idletime/60/60} Stunden<br>
+			{/if}
+			{if !empty($router_last_crawl.local_time)}
+				<b>Zeit auf dem Router:</b> {$router_last_crawl.local_time|date_format:"%d.%m.%Y %H:%M"} Uhr
 			{/if}
 		</p>
 		<h3><u>Clients</u></h3>
@@ -355,18 +367,20 @@ $(document).ready(function() {
 				<thead>
 					<tr>
 						<th>Originator</th>
-						<th>Quality</th>
-						<th>Outgoing Interface</th>
 						<th>Last Seen</th>
+						<th>Quality</th>
+						<th>Nexthop</th>
+						<th>Outgoing Interface</th>
 					</tr>
 				</thead>
 				<tbody>
 					{foreach $batman_adv_originators as $originators}
 						<tr>
 							<td><a href="search.php?search_range=mac_addr&search_string={$originators.originator}">{$originators.originator}</a></td>
-							<td>{$originators.link_quality}</td>
-							<td>{$originators.outgoing_interface}</td>
 							<td>{$originators.last_seen}</td>
+							<td>{$originators.link_quality}</td>
+							<td>{$originators.nexthop}</td>
+							<td>{$originators.outgoing_interface}</td>
 						</tr>
 					{/foreach}
 				</tbody>
@@ -603,6 +617,10 @@ $(document).ready(function() {
 				</li>
 				<li>
 					<b>Port: </b> {$service.port}
+				</li>
+				<li>
+					<b>Ip Adressen: </b> {foreach $service.ips as $ip}
+{if !empty($service.url_prefix) AND $ip.ipv!='6'}<a href="{$service.url_prefix}{$ip.ip}:{$service.port}" target="_blank">{$ip.ip}</a>{else}{$ip.ip}{/if} {/foreach}
 				</li>
 				<li>
 					<b>Status: </b> {if $service.service_status=="online"}

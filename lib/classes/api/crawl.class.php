@@ -109,8 +109,8 @@ class Crawl {
 			if(!empty($data['batman_adv_originators'])) {
 				foreach($data['batman_adv_originators'] as $bat_adv_orig) {
 					try {
-						DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, outgoing_interface, last_seen, crawl_date)
-									 VALUES ('$data[router_id]', '$last_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[outgoing_interface]', '$bat_adv_orig[last_seen]', NOW());");
+						DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, nexthop, outgoing_interface, last_seen, crawl_date)
+									 VALUES ('$data[router_id]', '$last_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[nexthop]', '$bat_adv_orig[outgoing_interface]', '$bat_adv_orig[last_seen]', NOW());");
 					}
 					catch(PDOException $e) {
 						echo $e->getMessage();

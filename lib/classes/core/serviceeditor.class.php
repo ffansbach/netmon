@@ -31,13 +31,19 @@
 require_once $path.'lib/classes/core/service.class.php';
 
 class ServiceEditor {
-	public function addService($router_id, $title, $description, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {
+	public function addService($router_id, $title, $description, $ip_addresses, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {
+		//Create service in the database
 		DB::getInstance()->exec("INSERT INTO services (router_id, title, description, port, url_prefix, visible, notify, notification_wait, use_netmons_url, url, create_date)
 					 VALUES ('$router_id', '$title', '$description', '$port', '$url_prefix', '$visible', '$notify', '$notification_wait', '$use_netmons_url', '$url', NOW());");
 		$service_id = DB::getInstance()->lastInsertId();
 
-		$router_id = DB::getInstance()->lastInsertId();
-		
+		//Link selected ip addresses to the service
+		foreach($ip_addresses as $ip_id) {
+			DB::getInstance()->exec("INSERT INTO service_ips (service_id, ip_id)
+						VALUES ('$service_id', '$ip_id');");
+		}
+
+		//Create first crawl entry for the service with status unknown
 		$crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		Service::insertCrawl($service_id, "unknown", "", $crawl_cycle);
 

@@ -157,6 +157,21 @@ class Ip {
 		}
 		return $ip;
 	}
+
+	public function getIpAddressesByRouterId($router_id) {
+		$ips = array();
+		try {
+			$sql = "SELECT ips.id as ip_id, ips.ip, ips.ipv FROM ips WHERE ips.router_id=$router_id";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$ips[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $ips;
+	}
 	
 	public function getIpAdressesByInterfaceId($interface_id) {
 		$ips = array();

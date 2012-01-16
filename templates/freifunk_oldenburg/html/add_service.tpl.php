@@ -26,6 +26,14 @@ window.onload = function()
 <h1>Dienst zum Router <i>{$router_data.hostname}</i> hinzufügen</h1>
 
 <form action="./serviceeditor.php?section=insert_add&router_id={$smarty.get.router_id}" method="POST">
+	<h2>IP-Adressen auf denen der Dienst laufen soll</h2>
+	<select name="ip_addresses[]" size="5" multiple>
+		{foreach key=count item=ip from=$ips}
+			<option value="{$ip.ip_id}">{$ip.ip}</option>
+		{/foreach}
+	</select>
+
+
 	<h2>Port und URL</h2>
 	<p>
 		Portnummer: <input name="port" type="text" size="5" maxlength="10" value="">
