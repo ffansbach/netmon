@@ -6,6 +6,7 @@ require_once('lib/classes/core/project.class.php');
 require_once('lib/classes/core/imagemaker.class.php');
 require_once('lib/classes/core/editinghelper.class.php');
 require_once('lib/classes/core/ip.class.php');
+require_once('lib/classes/core/user.class.php');
 
 class Main {
 	public function login($nickname, $password){
@@ -13,7 +14,7 @@ class Main {
 	}
 
 	public function public_user_info($user_id) {
-		return(Helper::getPlublicUserInfoByID($user_id));
+		return(User::getPlublicUserInfoByID($user_id));
 	}
 
 	public function subnet_info($subnet_id) {

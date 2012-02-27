@@ -29,8 +29,25 @@
 					{if $hist.data.action == 'reboot'}
 						wurde <span style="color: #000f9c;">Rebootet</span>
 					{/if}
+					{if $hist.data.action == 'new'}
+						wurde Netmon hinzugefügt
+					{/if}
+					{if $hist.data.action == 'batman_advanced_version'}
+						änderte Batman adv. Version von {$hist.data.from} zu {$hist.data.to}</span>
+					{/if}
+					{if $hist.data.action == 'firmware_version'}
+						änderte Firmware Version von {$hist.data.from} zu {$hist.data.to}</span>
+					{/if}
 				{/if}
-<!--	{if $hist.object == 'router'}
+				{if $hist.object == 'not_assigned_router'}
+					<b>{$hist.create_date|date_format:"%e.%m.%Y %H:%M"}:</b> 
+					{$hist.data.router_auto_assign_login_string} 
+					{if $hist.data.action == 'new'}
+						 erscheint in der <a href="./routers_trying_to_assign.php">Liste der neuen, nicht zugewiesenen Router</a>
+					{/if}
+				{/if}
+				
+				<!--	{if $hist.object == 'router'}
 		{if $hist.data.action == 'status'}
 			{if $hist.data.from=='offline'}
 				{$hist.create_date}: {$hist.additional_data.hostname} ({$hist.additional_data.nickname}) geht online.<br>

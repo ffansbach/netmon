@@ -4,6 +4,7 @@
 require_once('runtime.php');
 require_once('./lib/classes/core/router.class.php');
 require_once('./lib/classes/core/crawling.class.php');
+require_once('./lib/classes/core/chipsets.class.php');
 
 /** Get and assign global messages **/
 $smarty->assign('message', Message::getMessage());
@@ -22,7 +23,7 @@ if(!empty($last_ended_crawl_cycle)) {
 	$smarty->assign('actual_crawl_cycle', $actual_crawl_cycle);
 	
 	/**Get number of routers by chipset **/
-	$chipsets = Helper::getChipsets();
+	$chipsets = Chipsets::getChipsets();
 	foreach ($chipsets as $key=>$chipset) {
 		$router_chipsets[$key]['chipset_id'] = $chipset['id'];
 		$router_chipsets[$key]['chipset_name'] = $chipset['name'];

@@ -85,14 +85,14 @@ class Service {
 				if(!empty($interfaces)) {
 					$row['service_ipv4_addr'] = $interfaces[0]['ipv4_addr'];
 				}
+*/
 
-				if(!empty($row['service_ipv4_addr'])) {
-					$service_crawl = Service::getCrawlServiceByCrawlCycleId($last_ended_crawl_cycle['id'], $row['service_id']);
-					$row['service_status'] = $service_crawl['status'];
-					$row['service_status_crawled_ipv4_addr'] = $service_crawl['crawled_ipv4_addr'];
-					$row['service_status_crawl_date'] = $service_crawl['crawl_date'];
-				}
+				$service_crawl = Service::getCrawlServiceByCrawlCycleId($last_ended_crawl_cycle['id'], $row['service_id']);
+				$row['service_status'] = $service_crawl['status'];
+				$row['service_status_crawled_ipv4_addr'] = $service_crawl['crawled_ipv4_addr'];
+				$row['service_status_crawl_date'] = $service_crawl['crawl_date'];
 
+/*
 				if(!empty($row['service_ipv4_addr']) AND !empty($row['url_prefix']) AND !empty($row['port'])) {
 					$row['combined_url_to_service'] = $row['url_prefix'].$interfaces[0]['ipv4_addr'].":".$row['port'];
 				}*/

@@ -42,6 +42,13 @@ if($_GET['section']=="router_auto_assign") {
 			catch(PDOException $e) {
 				echo $e->getMessage();
 			}
+			$not_assigned_id = DB::getInstance()->lastInsertId();
+			
+			//Make history
+			$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+			$history_data = serialize(array('router_auto_assign_login_string'=>$_GET['router_auto_assign_login_string'], 'action'=>'new'));
+			DB::getInstance()->exec("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data) VALUES ('$actual_crawl_cycle[id]', 'not_assigned_router', '$not_assigned_id', NOW(), '$history_data');");
+			
 			echo "error;new_not_assigned;;$_GET[router_auto_assign_login_string]";
 		} else {
 			try {
@@ -57,6 +64,19 @@ if($_GET['section']=="router_auto_assign") {
 	} elseif ($router_data['allow_router_auto_assign']==0) {
 		echo "error;autoassign_not_allowed;$_GET[router_auto_assign_login_string]";
 	} elseif(!empty($router_data['router_auto_assign_hash'])) {
+		if(!empty($_GET['router_auto_assign_login_string']) AND ($router_data['trying_to_assign_notified']!=1 OR strtotime($router_data['trying_to_assign_last_notification_time'])<=(time()-60*60*$GLOBALS['hours_to_prevent_from_sending_new_auto_assign_mail']))) {
+			$user_data = User::getUserByID($router_data['user_id']);
+			Router::NotifyAboutRouterTryingToAssign($router_data, $user_data);
+			try {
+				$result = DB::getInstance()->exec("UPDATE routers SET
+									  trying_to_assign_notified = 1,
+									  trying_to_assign_last_notification_time = NOW()
+								   WHERE id = '$router_data[router_id]'");
+			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+		}
 		echo "error;already_assigned;$_GET[router_auto_assign_login_string]";
 	} else {
 

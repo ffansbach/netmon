@@ -74,6 +74,7 @@ if($_GET['section']=="router_auto_assign") {
 			catch(PDOException $e) {
 				echo $e->getMessage();
 			}
+			
 			echo "error;new_not_assigned;;$_GET[router_auto_assign_login_string]";
 		} else {
 			try {
@@ -375,7 +376,7 @@ if($_GET['section']=="get_hostnames_and_mac") {
 
 	$interfaces = array();
 	try {
-		$sql = "SELECT  crawl_batman_advanced_interfaces.name, routers.hostname, crawl_interfaces.mac_addr
+		$sql = "SELECT DISTINCT crawl_batman_advanced_interfaces.name, routers.hostname, crawl_interfaces.mac_addr
 				FROM crawl_batman_advanced_interfaces, routers, crawl_interfaces
 				WHERE crawl_batman_advanced_interfaces.crawl_cycle_id='$last_endet_crawl_cycle[id]' AND 
 				      routers.id=crawl_batman_advanced_interfaces.router_id AND 
@@ -385,7 +386,7 @@ if($_GET['section']=="get_hostnames_and_mac") {
 				GROUP BY crawl_interfaces.mac_addr";
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
-			echo $row['mac_addr']." ".$row['hostname']."\n";
+			echo $row['mac_addr']." ".$row['hostname']."_".$row['name']."\n";
 		}
 	}
 	catch(PDOException $e) {

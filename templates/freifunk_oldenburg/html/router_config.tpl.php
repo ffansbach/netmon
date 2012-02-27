@@ -77,11 +77,16 @@
 		<h3>{$interface.name}</h3>
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 50%;">
+			<ul>
+				<li>
+					<b>Angelegt am:</b> {$interface.create_date|date_format:"%e.%m.%Y %H:%M"}
+				</li>
+			</ul>
 				{foreach $interface.ip_addresses as $ip_address}
 					{if $ip_address.ipv=='4'}
 						<ul>
 							<li>
-								<b>IPv4 Adresse:</b> {$ip_address.ip} {if $globals.netmon_is_connected_to_network_by_ipv4=='true'}(<a href="./show_crawl_data.php?ip_id={$ip_address.ip_id}">Ping</a>, <a href="./ping_ip.php?ip_id={$ip_address.ip_id}">Crawl Daten</a>){/if}
+								<b>IPv4 Adresse:</b> {$ip_address.ip} {if $globals.netmon_is_connected_to_network_by_ipv4=='true'}(<a href="./ping_ip.php?ip_id={$ip_address.ip_id}">Ping</a>, <a href="./show_crawl_data.php?ip_id={$ip_address.ip_id}">Crawl Daten</a>){/if}
 							</li>
 							<li>
 								<b>IPv4 Netmask:</b> {$interface.ipv4_netmask_dot}		

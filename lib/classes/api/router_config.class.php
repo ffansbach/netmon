@@ -1,6 +1,7 @@
 <?php
 
 require_once($path.'lib/classes/core/subnetcalculator.class.php');
+require_once($path.'lib/classes/core/user.class.php');
 
 class RouterConfig {
 	public function getIpDataByIpId($ip_id){
@@ -16,7 +17,7 @@ class RouterConfig {
 	}
 
 	public function getPlublicUserInfoByID($ip){
-		return(Helper::getPlublicUserInfoByID($ip));
+		return(User::getPlublicUserInfoByID($ip));
 	}
 
 	public function getCommunityInfo() {

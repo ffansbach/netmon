@@ -126,6 +126,12 @@
   new Zend_Mail();
 
   /**
+  * Default Setting
+  */
+  if(!isset($GLOBALS['installation_mode']))
+    $GLOBALS['installation_mode'] = false;
+
+  /**
   * SMARTY TEMPLATEENGINE
   */
 
@@ -197,7 +203,7 @@
 	$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 	$actual_crawl_cycle['crawl_date_end'] = strtotime($actual_crawl_cycle['crawl_date'])+$GLOBALS['crawl_cycle']*60;
 	$actual_crawl_cycle['crawl_date_end_minutes'] = floor(($actual_crawl_cycle['crawl_date_end']-time())/60).':'.(($actual_crawl_cycle['crawl_date_end']-time()) % 60);
-
+	$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 	$smarty->assign('last_ended_crawl_cycle', $last_ended_crawl_cycle);
 	$smarty->assign('actual_crawl_cycle', $actual_crawl_cycle);
 
@@ -213,5 +219,12 @@
 
 	/**Globals*/
 	$smarty->assign('globals', $GLOBALS);
+
+	$smarty->assign('installation_mode', $GLOBALS['installation_mode']);
+
+	if(!isset($messages)) {
+		$message = array();
+		$smarty->assign('message', $message);
+	}
 
 ?>

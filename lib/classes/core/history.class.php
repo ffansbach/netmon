@@ -36,6 +36,9 @@ class History {
 			if (!empty($current_crawl_data['batman_advanced_version']) AND !empty($last_online_crawl_data['batman_advanced_version']) AND $current_crawl_data['batman_advanced_version']!=$last_online_crawl_data['batman_advanced_version']) {
 				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'batman_advanced_version', 'from'=>$last_crawl_data['batman_advanced_version'], 'to'=>$current_crawl_data['batman_advanced_version']));
 			}
+			if (!empty($current_crawl_data['firmware_version']) AND !empty($last_online_crawl_data['firmware_version']) AND $current_crawl_data['firmware_version']!=$last_online_crawl_data['firmware_version']) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'firmware_version', 'from'=>$last_crawl_data['firmware_version'], 'to'=>$current_crawl_data['firmware_version']));
+			}
 		}
 
 		if($current_crawl_data['status']=='online' AND $last_crawl_data['status']=='online') {

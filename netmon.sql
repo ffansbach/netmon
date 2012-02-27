@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 16. Jan 2012 um 01:58
+-- Erstellungszeit: 27. Feb 2012 um 20:57
 -- Server Version: 5.5.17
--- PHP-Version: 5.3.9-1
+-- PHP-Version: 5.3.10-1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -123,7 +123,9 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `ipv6_addr` varchar(200) NOT NULL,
   `ipv6_link_local_addr` varchar(200) NOT NULL,
   `traffic_rx` bigint(30) NOT NULL,
+  `traffic_rx_avg` bigint(30) NOT NULL,
   `traffic_tx` bigint(30) NOT NULL,
+  `traffic_tx_avg` bigint(30) NOT NULL,
   `wlan_mode` varchar(20) NOT NULL,
   `wlan_frequency` varchar(10) NOT NULL,
   `wlan_essid` varchar(50) NOT NULL,
@@ -431,6 +433,8 @@ CREATE TABLE IF NOT EXISTS `routers` (
   `notification_wait` int(11) NOT NULL,
   `notified` tinyint(1) NOT NULL,
   `last_notification` datetime NOT NULL,
+  `trying_to_assign_notified` tinyint(1) NOT NULL,
+  `trying_to_assign_last_notification_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 

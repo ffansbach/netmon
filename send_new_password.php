@@ -3,6 +3,7 @@
   require_once('runtime.php');
   require_once('./lib/classes/core/helper.class.php');
   require_once('./lib/classes/core/register.class.php');
+  require_once('./lib/classes/core/user.class.php');
   
   $Register = new Register;
 
@@ -12,7 +13,7 @@
     $smarty->display("send_new_password.tpl.php");
     $smarty->display("footer.tpl.php");
   } else {
-    $user = Helper::getUserByEmail($_POST['email']);
+    $user = User::getUserByEmail($_POST['email']);
     if ($user) {
 		$new_password = Helper::randomPassword(8);
 		$new_password_md5 = md5($new_password);

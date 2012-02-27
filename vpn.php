@@ -4,6 +4,7 @@
 	require_once('./lib/classes/core/vpn.class.php');
 	require_once('./lib/classes/core/interfaces.class.php');
 	require_once('./lib/classes/core/router.class.php');
+	require_once('./lib/classes/core/user.class.php');
 	require_once('./lib/classes/core/project.class.php');
 
 	$smarty->assign('message', Message::getMessage());
@@ -12,7 +13,7 @@
 		$interface = Interfaces::getInterfaceByInterfaceId($_GET['interface_id']);
 		$router = Router::getRouterInfo($interface['router_id']);
 		$project = Project::getProjectData($interface['project_id']);
-		$user = Helper::getUserByID($router['user_id']);
+		$user = User::getUserByID($router['user_id']);
 
 		$smarty->assign('interface', $interface);
 		$smarty->assign('router', $router);

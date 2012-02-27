@@ -35,7 +35,7 @@ require_once("lib/classes/core/login.class.php");
 class User {
 	function userInsertEdit() {
 		if ($this->checkUserEditData($_GET['user_id'], $_POST['changepassword'], $_POST['oldpassword'], $_POST['newpassword'], $_POST['newpasswordchk'], $_POST['email'])) {
-			$user = Helper::getUserByID($_GET['user_id']);
+			$user = User::getUserByID($_GET['user_id']);
 			if (!$_POST['changepassword']) {
 				$password = $user['password'];
 			} else {
@@ -196,6 +196,46 @@ class User {
 			message::setMessage($message);
 			return false;
 		}
+	}
+
+	function getUserByID($id) {
+		try {
+			$sql = "SELECT * FROM users WHERE id=$id";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$user = $row;
+			}
+		}
+		catch(PDOException $e) {
+		  echo $e->getMessage();
+		}
+		return $user;
+	}
+
+	function getPlublicUserInfoByID($id) {
+		try {
+			$sql = "SELECT nickname, vorname, nachname, strasse, plz, ort, telefon, email, jabber, icq, website, about FROM users WHERE id=$id";
+			$result = DB::getInstance()->query($sql);
+			$user = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+		  echo $e->getMessage();
+		}
+		return $user;
+	}
+
+	public function getUserByEmail($email) {
+		try {
+			$sql = "SELECT * FROM  users WHERE email='$email'";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$user = $row;
+			}
+		}
+		catch(PDOException $e) {
+		  echo $e->getMessage();
+		};
+		return $user;
 	}
 
 	public function checkIfOpenIdHasUser($openid) {

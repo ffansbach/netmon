@@ -3,13 +3,14 @@ require_once('runtime.php');
 require_once('lib/classes/core/helper.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/service.class.php');
+require_once('lib/classes/core/user.class.php');
   
 $smarty->assign('message', Message::getMessage());
   
 if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
 	$smarty->assign('permitted', true);
 
-$smarty->assign('user', Helper::getUserByID($_GET['user_id']));
+$smarty->assign('user', User::getUserByID($_GET['user_id']));
 
 $routerlist = Router::getRouterListByUserId($_GET['user_id']);
 $smarty->assign('routerlist', $routerlist);

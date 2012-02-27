@@ -3,6 +3,7 @@
 	require_once('./lib/classes/core/router.class.php');
 	require_once('./lib/classes/core/routereditor.class.php');
 	require_once('./lib/classes/core/editinghelper.class.php');
+	require_once('./lib/classes/core/chipsets.class.php');
 	
 	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
 	
@@ -10,7 +11,7 @@
 		//Logged in users can add a new router
 		if (UserManagement::checkPermission(4)) {
 			$smarty->assign('message', Message::getMessage());
-			$smarty->assign('chipsets', Helper::getChipsets());
+			$smarty->assign('chipsets', Chipsets::getChipsets());
 			
 			$smarty->display("header.tpl.php");
 			$smarty->display("router_new.tpl.php");
@@ -45,7 +46,7 @@
 			$smarty->assign('message', Message::getMessage());
 
 			/** Get and assign Router Informations **/
-			$smarty->assign('chipsets', Helper::getChipsets());
+			$smarty->assign('chipsets', Chipsets::getChipsets());
 			
 			$smarty->display("header.tpl.php");
 			$smarty->display("router_edit.tpl.php");

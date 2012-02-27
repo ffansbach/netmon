@@ -88,6 +88,13 @@ echo \$wget_return";
 										echo "Crawl Daten bekommen, node wird als online markiert\n";
 										$xml = new SimpleXMLElement($return_string);
 										$xml_array = IntegratedXmlIPv6Crawler::simplexml2array($xml);
+
+										$xml_array['ip_data'] = $ip_data;
+										
+										$xml_array['router_id'] = $router['id'];
+		//								print_r($xml_array);
+										echo "Speichere Crawl daten\n";
+										$return = Crawl::insertCrawlData($xml_array);
 									} else {
 										echo "keine Crawl Daten bekommen, node wird als offline markiert\n";
 										$xml_array['system_data']['status'] = "offline";
@@ -97,12 +104,13 @@ echo \$wget_return";
 									$xml_array['system_data']['status'] = "offline";
 								}
 								
-								$xml_array['ip_data'] = $ip_data;
+/*								$xml_array['ip_data'] = $ip_data;
 								
 								$xml_array['router_id'] = $router['id'];
 //								print_r($xml_array);
 								echo "Speichere Crawl daten\n";
-								$return = Crawl::insertCrawlData($xml_array);
+								$return = Crawl::insertCrawlData($xml_array);*/
+
 //echo "HOSTNAME: ".$xml_array['system_data']['hostname']."\n";
 //echo "status: ".$xml_array['system_data']['status']."\n";
 //								print_r($return);

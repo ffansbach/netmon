@@ -24,11 +24,6 @@ require_once('lib/classes/core/rrdtool.class.php');
 echo "Beende alten Crawl Cycle und starte neuen\n";
 Crawling::organizeCrawlCycles();
 //exec("echo \"cronjobs.php \"`date`\" \"`whoami` >> /var/kunden/webs/freifunk/netmon/rrdtool/databases/whoamitest.txt", $return);
-/**
-* Service Crawls
-**/
-
-//require_once($GLOBALS['netmon_root_path'].'lib/classes/crawler/json_service_crawler.php');
 
 /**
 * Clean database
@@ -61,9 +56,13 @@ foreach($files as $file) {
 /**
 * Crawl
 **/
-echo "Crawle...\n";
+echo "Crawle Router...\n";
 require_once('integrated_xml_ipv6_crawler.php');
 
-echo "Beende\n";
+/**
+* Service Crawls
+**/
+echo "Crawle Services...\n";
+require_once($GLOBALS['netmon_root_path'].'lib/classes/crawler/json_service_crawler.php');
 
 ?>
