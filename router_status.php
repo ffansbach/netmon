@@ -106,15 +106,17 @@ $smarty->assign('olsrd_crawl_data', $olsrd_crawl_data);*/
 
 /** Get and assign Crawled interfaces **/
 //Get actual crawled interfaces
-$interface_crawl_data = Helper::getInterfacesCrawlByCrawlCycle($last_ended_crawl_cycle['id'], $_GET['router_id']);
+$interface_crawl_data = Interfaces::getInterfacesCrawlByCrawlCycle($last_ended_crawl_cycle['id'], $_GET['router_id']);
 
 //add traffic informations to 
 foreach($interface_crawl_data as $key=>$interface) {
 	//Get interface history
-	$interface_crawl_data[$key]['crawl_history'] = Helper::getCrawlInterfaceHistoryByRouterIdAndInterfaceNameExceptActualCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id'], $interface['name'], (60*24*1)/10);
+	$if_crawl_data_now = Interfaces::getInterfaceCrawlByCrawlCycleAndRouterIdAndInterfaceName($last_ended_crawl_cycle['id'], $_GET['router_id'], $interface['name']);
+	$if_crawl_data_previous = Interfaces::getInterfaceCrawlByCrawlCycleAndRouterIdAndInterfaceName($last_ended_crawl_cycle['id']-1, $_GET['router_id'], $interface['name']);
 
 	//add RECEIVED traffic informations
-	$interface_crawl_data[$key]['traffic_info']['traffic_rx_per_second_byte'] = ($interface_crawl_data[$key]['crawl_history'][0]['traffic_rx']-$interface_crawl_data[$key]['crawl_history'][1]['traffic_rx'])/$GLOBALS['crawl_cycle']/60;
+	$interface_crawl_data[$key]['traffic_info']['traffic_rx_per_second_byte'] = ($if_crawl_data_now['traffic_rx']-$if_crawl_data_previous['traffic_rx'])/$GLOBALS['crawl_cycle']/60;
+
 	//Set negative values to 0
 	if ($interface_crawl_data[$key]['traffic_info']['traffic_rx_per_second_byte']<0) {
 		$interface_crawl_data[$key]['traffic_info']['traffic_rx_per_second_byte']=0;
@@ -123,7 +125,7 @@ foreach($interface_crawl_data as $key=>$interface) {
 	$interface_crawl_data[$key]['traffic_info']['traffic_rx_per_second_kilobyte'] = round($interface_crawl_data[$key]['traffic_info']['traffic_rx_per_second_byte']/1000, 2);
 
 	//add TRANSMITTED traffic informations
-	$interface_crawl_data[$key]['traffic_info']['traffic_tx_per_second_byte'] = ($interface_crawl_data[$key]['crawl_history'][0]['traffic_tx']-$interface_crawl_data[$key]['crawl_history'][1]['traffic_tx'])/$GLOBALS['crawl_cycle']/60;
+	$interface_crawl_data[$key]['traffic_info']['traffic_tx_per_second_byte'] = ($if_crawl_data_now['traffic_tx']-$if_crawl_data_previous['traffic_tx'])/$GLOBALS['crawl_cycle']/60;
 	//Set negative values to 0
 	if ($interface_crawl_data[$key]['traffic_info']['traffic_tx_per_second_byte']<0) {
 		$interface_crawl_data[$key]['traffic_info']['traffic_tx_per_second_byte']=0;

@@ -54,6 +54,12 @@ class RouterEditor {
 			}
 
 			$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
+
+
+			//Make history
+			$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+			$history_data = serialize(array('router_id'=>$router_id, 'action'=>'new'));
+			DB::getInstance()->exec("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data) VALUES ('$actual_crawl_cycle[id]', 'router', '$router_id', NOW(), '$history_data');");
 			
 			//Send Message to twitter
 			if($_POST['twitter_notification']=='1') {
@@ -68,7 +74,8 @@ class RouterEditor {
 
 	public function resetRouterAutoAssignHash($router_id) {
 		$result = DB::getInstance()->exec("UPDATE routers SET
-							router_auto_assign_hash = ''
+							router_auto_assign_hash = '',
+							trying_to_assign_notified = 0
 						WHERE id = '$router_id'");
 		if ($result>0) {
 			$message[] = array("Der Auto Assign Hash wurde zurückgesetzt.", 1);

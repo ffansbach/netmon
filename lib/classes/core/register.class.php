@@ -28,6 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+require_once("lib/classes/core/login.class.php");
 require_once 'lib/classes/extern/Zend/Mail.php';
 require_once 'lib/classes/extern/Zend/Mail/Transport/Smtp.php';
 
@@ -227,7 +228,7 @@ $mail->send($transport);
 	}
   
 	public function setNewPassword($new_password_hash, $old_password_hash, $user_id) {
-		$user_data = Helper::getUserByID($user_id);
+		$user_data = User::getUserByID($user_id);
 		if($old_password_hash==$user_data['password']) {
 			$result = DB::getInstance()->exec("UPDATE users SET password = '$new_password_hash' WHERE id = '$user_id'");
 			if ($result>0) {

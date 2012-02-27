@@ -2,6 +2,7 @@
 	require_once('runtime.php');
 	require_once('lib/classes/core/helper.class.php');
 	require_once('lib/classes/core/register.class.php');
+	require_once('lib/classes/core/user.class.php');
 	
 	$register = new register;
 	
@@ -11,7 +12,7 @@
 		$smarty->display("resend_activation_mail.tpl.php");
 		$smarty->display("footer.tpl.php");
 	} else {
-		$user = Helper::getUserByEmail($_POST['email']);
+		$user = User::getUserByEmail($_POST['email']);
 		if ($user) {
 			if ($user['activated']!="0") {
 				if(empty($user['openid'])) {

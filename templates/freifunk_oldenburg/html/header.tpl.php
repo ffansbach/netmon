@@ -43,8 +43,9 @@
 			<div id="nav_main">
 				<ul>
 					<li><a href="http://blog.freifunk-ol.de/">Neues</a></li>
-					<li><a href="http://wiki.freifunk-ol.de/">Wiki</a></li>
-					<li id="current"><a href="#">Netmon</a></li>
+					<li><a href="http://wiki.freifunk-ol.de/">Informationen</a></li>
+					<li><a href="http://wiki.freifunk-ol.de/index.php?title=Kontakt">Kontakt</a></li>
+					<li id="current"><a href="#">Netzwerk</a></li>
 					<li><a href="http://trac.freifunk-ol.de/">Entwicklung</a></li>
 				</ul>
 

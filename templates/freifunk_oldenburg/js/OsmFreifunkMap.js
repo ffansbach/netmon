@@ -223,9 +223,15 @@ function fullmap() {
 //	var layer_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 //	var layer_nodes_offline = loadKmlLayer('Offline Knoten', './api.php?class=apiMap&section=getOfflineServiceKML');
 	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters');
-//	var layer_nodes_offline = loadKmlLayer('Offline Knoten ', './api.php?class=apiMap&section=getOfflineRouters');
-	var batman_adv_conn = loadKmlLayer('Bat. Adv. Verbindungen', './api.php?class=apiMap&section=batman_advanced_conn');
+	var layer_traffic = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRoutersTraffic');
+	
+	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
+	//	var layer_nodes_offline = loadKmlLayer('Offline Knoten ', './api.php?class=apiMap&section=getOfflineRouters');
+	var batman_adv_conn = loadKmlLayer('Bat. Adv. Originators', './api.php?class=apiMap&section=batman_advanced_conn');
+	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
 	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
+
+	
 	
 	/*
     var: new OpenLayers.Layer.OSM("Cycle &amp; Hiking", "tiles/overlay_ch/", {numZoomLevels: 19, isBaseLayer: false, visibility: false }),
@@ -241,7 +247,7 @@ function fullmap() {
 	*/
 	
 	//Add Layers
-        map.addLayers([layer_nodes, batman_adv_conn, olsr_conn]);
+        map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn, batman_adv_conn_nexthop, olsr_conn]);
 
 	
 	// Define bubbles

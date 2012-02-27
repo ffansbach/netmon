@@ -85,19 +85,26 @@ class JsonDataCollector {
 			echo nl2br($e->getMessage());
 		}
 		
-print_r($services);
+//print_r($services);
 
 		foreach ($services as $key=>$service) {
-			if (!empty($service['service_ipv4_addr']) AND is_numeric($service['port'])) {
-				$portcheck =  @fsockopen($service['service_ipv4_addr'], $service['port'], $errno, $errstr, 2);
-				if ($portcheck) {
-					$status = "online";
-				} else {
-					$status = "offline";
+			if (!empty($service['ips']) AND is_numeric($service['port'])) {
+				foreach($service['ips'] as $ip) {
+					if($ip['ipv']==4) {
+						$portcheck =  @fsockopen($ip['ip'], $service['port'], $errno, $errstr, 2);
+						if ($portcheck) {
+							$status = "online";
+						} else {
+							$status = "offline";
+						}
+						
+						$result = $api_service->insertCrawl($GLOBALS['nickname'], $GLOBALS['password'], $service['service_id'], $status, $ip['ip']);
+//						print_r($result);
+						if($status=="online") {
+							break;
+						}
+					}
 				}
-
-				$result = $api_service->insertCrawl($GLOBALS['nickname'], $GLOBALS['password'], $service['service_id'], $status, $service['service_ipv4_addr']);
-print_r($result);
 			}
 		}
 	}

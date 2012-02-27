@@ -2,6 +2,7 @@
 
 class BatmanAdvanced {
 	public function getCrawlBatmanAdvOriginatorsByCrawlCycleId($crawl_cycle_id, $router_id) {
+		$originators = array();
 		try {
 			$sql = "SELECT  *
 					FROM crawl_batman_advanced_originators

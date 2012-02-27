@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once $path.'lib/classes/core/service.class.php';
+require_once 'lib/classes/core/service.class.php';
 
 class ServiceEditor {
 	public function addService($router_id, $title, $description, $ip_addresses, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {

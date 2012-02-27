@@ -43,16 +43,7 @@ class Crawl {
 			}
 
 			/**Insert Router Interfaces*/
-			foreach($data['interface_data'] as $sendet_interface) {
-				//Make DB Insert
-				try {
-					DB::getInstance()->exec("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, crawl_date, name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_tx, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power, mtu)
-								 VALUES ('$data[router_id]', '$last_crawl_cycle[id]', NOW(), '$sendet_interface[name]', '$sendet_interface[mac_addr]', '$sendet_interface[ipv4_addr]', '$sendet_interface[ipv6_addr]', '$sendet_interface[ipv6_link_local_addr]', '$sendet_interface[traffic_rx]', '$sendet_interface[traffic_tx]', '$sendet_interface[wlan_mode]', '$sendet_interface[wlan_frequency]', '$sendet_interface[wlan_essid]', '$sendet_interface[wlan_bssid]', '$sendet_interface[wlan_tx_power]', '$sendet_interface[mtu]');");
-				}
-				catch(PDOException $e) {
-					echo $e->getMessage();
-				}
-				
+			foreach($data['interface_data'] as $sendet_interface) {				
 				//Update RRD Graph DB
 				$rrd_path_traffic_rx = "$GLOBALS[monitor_root]/rrdtool/databases/router_$data[router_id]_interface_$sendet_interface[name]_traffic_rx.rrd";
 				if(!file_exists($rrd_path_traffic_rx)) {
@@ -70,6 +61,7 @@ class Crawl {
 					$interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']=0;
 				$interface_crawl_data['traffic_info']['traffic_rx_per_second_kibibyte'] = round($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']/1024, 2);
 				$interface_crawl_data['traffic_info']['traffic_rx_per_second_kilobyte'] = round($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']/1000, 2);
+				$traffic_rx_per_second_byte = round($interface_crawl_data['traffic_info']['traffic_rx_per_second_byte']);
 				
 				$interface_crawl_data['traffic_info']['traffic_tx_per_second_byte'] = ($sendet_interface['traffic_tx']-$interface_last_endet_crawl['traffic_tx'])/$GLOBALS['crawl_cycle']/60;
 				//Set negative values to 0
@@ -77,10 +69,20 @@ class Crawl {
 					$interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']=0;
 				$interface_crawl_data['traffic_info']['traffic_tx_per_second_kibibyte'] = round($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']/1024, 2);
 				$interface_crawl_data['traffic_info']['traffic_tx_per_second_kilobyte'] = round($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']/1000, 2);
+				$traffic_tx_per_second_byte = round($interface_crawl_data['traffic_info']['traffic_tx_per_second_byte']);
 	
-				//Update Database
+				//Update RRDDatabase
 				$crawl_time = time();
 				exec("rrdtool update $rrd_path_traffic_rx $crawl_time:".$interface_crawl_data['traffic_info']['traffic_rx_per_second_kilobyte'].":".$interface_crawl_data['traffic_info']['traffic_tx_per_second_kilobyte']);
+
+				//Make DB Insert
+				try {
+					DB::getInstance()->exec("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, crawl_date, name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_rx_avg, traffic_tx, traffic_tx_avg, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power, mtu)
+								 VALUES ('$data[router_id]', '$last_crawl_cycle[id]', NOW(), '$sendet_interface[name]', '$sendet_interface[mac_addr]', '$sendet_interface[ipv4_addr]', '$sendet_interface[ipv6_addr]', '$sendet_interface[ipv6_link_local_addr]', '$sendet_interface[traffic_rx]', '$traffic_rx_per_second_byte', '$sendet_interface[traffic_tx]', '$traffic_tx_per_second_byte', '$sendet_interface[wlan_mode]', '$sendet_interface[wlan_frequency]', '$sendet_interface[wlan_essid]', '$sendet_interface[wlan_bssid]', '$sendet_interface[wlan_tx_power]', '$sendet_interface[mtu]');");
+				}
+				catch(PDOException $e) {
+					echo $e->getMessage();
+				}
 			}
 
 			/**Insert IP crawl data*/

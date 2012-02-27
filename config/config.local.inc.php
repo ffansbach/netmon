@@ -10,16 +10,16 @@ $GLOBALS['url_to_netmon'] = "http://netmon.freifunk-ol.de";
 $GLOBALS['mysql_host'] = "localhost";
 $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
-$GLOBALS['mysql_password'] = "passwort";
+$GLOBALS['mysql_password'] = "bla";
 
 //JABBER
 $GLOBALS['jabber_server'] = "jabber.nord-west.net";
 $GLOBALS['jabber_username'] = "netmon";
-$GLOBALS['jabber_password'] = "passwort";
+$GLOBALS['jabber_password'] = "bla";
 
 //TWITTER
-$GLOBALS['twitter_consumer_key'] = "secret";
-$GLOBALS['twitter_consumer_secret'] = "secret";
+$GLOBALS['twitter_consumer_key'] = "bla";
+$GLOBALS['twitter_consumer_secret'] = "bla";
 $GLOBALS['twitter_username'] = "ff_ol";
 
 //MAIL
@@ -48,7 +48,7 @@ $GLOBALS['hours_to_keep_mysql_crawl_data'] = 5;
 $GLOBALS['hours_to_keep_history_table'] = 48;
 
 //GOOGLEMAPSAPIKEY
-$GLOBALS['google_maps_api_key'] = 'api_key';
+$GLOBALS['google_maps_api_key'] = 'bla';
 
 //CRAWLER
 $GLOBALS['crawl_cycle'] = 10;
@@ -62,5 +62,7 @@ $GLOBALS['template'] = 'freifunk_oldenburg';
 $GLOBALS['netmon_is_connected_to_network_by_ipv6'] = true;
 $GLOBALS['netmon_ipv6_interface'] = "batvpn";
 $GLOBALS['netmon_is_connected_to_network_by_ipv4'] = true;
+
+$GLOBALS['hours_to_prevent_from_sending_new_auto_assign_mail'] = 24;
 
 ?>

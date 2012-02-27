@@ -34,12 +34,16 @@ require_once($GLOBALS['monitor_root'].'lib/classes/extern/Zend/Service/Twitter.p
 class Message {
 	/*This are the internal status messages of netmon*/
 	public function getMessage() {
+		if(!isset($_SESSION['system_messages']))
+			$_SESSION['system_messages'] = array();
 		$messages = $_SESSION['system_messages'];
 		unset($_SESSION['system_messages']);
 		return $messages;
 	}
 	
 	public function getMessageWithoutDelete() {
+		if(!isset($_SESSION['system_messages']))
+			$_SESSION['system_messages'] = array();
 		$messages = $_SESSION['system_messages'];
 		return $messages;
 	}

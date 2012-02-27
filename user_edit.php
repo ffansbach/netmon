@@ -8,7 +8,7 @@
   $User = new User;
 
   if ($_GET['section'] == "edit") {
-    $smarty->assign('user', Helper::getUserByID($_GET['user_id']));
+    $smarty->assign('user', User::getUserByID($_GET['user_id']));
 
 	//Only owner and Root can access this site.
 	if (!UserManagement::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
@@ -30,7 +30,7 @@
     $smarty->display("footer.tpl.php");
   } elseif ($_GET['section'] == "insert_edit") {
     UserManagement::isOwner($smarty, $_SESSION['user_id']);
-    $smarty->assign('user', Helper::getUserByID($_GET['user_id']));
+    $smarty->assign('user', User::getUserByID($_GET['user_id']));
     if ($User->userInsertEdit()) {
       header('Location: user.php?user_id='.$_SESSION['user_id']);
     } else {

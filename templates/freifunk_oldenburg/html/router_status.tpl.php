@@ -550,16 +550,12 @@ $(document).ready(function() {
 							<b>IPv6 Link Local Adresse:</b> {$interface.ipv6_link_local_addr}		
 						</li>
 					{/if}
-					{if !empty($interface.traffic_info.traffic_rx_per_second_kilobyte)}
-						<li>
-							<b>Average traffic received:</b> {$interface.traffic_info.traffic_rx_per_second_kilobyte} Kb/sec
-						</li>
-					{/if}
-					{if !empty($interface.traffic_info.traffic_tx_per_second_kilobyte)}
-						<li>
-							<b>Average traffic transmitted:</b> {$interface.traffic_info.traffic_tx_per_second_kilobyte} Kb/sec
-						</li>
-					{/if}
+					<li>
+						<b>Average traffic received:</b> {$interface.traffic_info.traffic_rx_per_second_kilobyte} Kb/sec
+					</li>
+					<li>
+						<b>Average traffic transmitted:</b> {$interface.traffic_info.traffic_tx_per_second_kilobyte} Kb/sec
+					</li>
 				</ul>
 				
 				{if !empty($interface.wlan_frequency)}
@@ -619,7 +615,7 @@ $(document).ready(function() {
 					<b>Port: </b> {$service.port}
 				</li>
 				<li>
-					<b>Ip Adressen: </b> {foreach $service.ips as $ip}
+					<b>Ip Adresse/n: </b> {foreach $service.ips as $ip}
 {if !empty($service.url_prefix) AND $ip.ipv!='6'}<a href="{$service.url_prefix}{$ip.ip}:{$service.port}" target="_blank">{$ip.ip}</a>{else}{$ip.ip}{/if} {/foreach}
 				</li>
 				<li>

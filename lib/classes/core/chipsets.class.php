@@ -14,6 +14,22 @@ class Chipsets {
 		return array("result"=>true, "id"=>$chipset_id);
 	}
 
+	public function getChipsets() {
+		try {
+			$sql = "SELECT  *
+					FROM chipsets
+					ORDER BY name asc";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$chipsets[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $chipsets;
+	}
+
 	public function getChipsetByName($chipset) {
 		try {
 			$sql = "SELECT  *

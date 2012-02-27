@@ -19,3 +19,14 @@
 		</div>
 	</div>
 <p>
+
+<h3>Legende</h3>
+<div style="float: left; margin-right: 20px;">
+<img src="templates/freifunk_oldenburg/img/ffmap/green_button.png"> Router ist online<br>
+<img src="templates/freifunk_oldenburg/img/ffmap/ip_offline.png"> Router ist offline<br>
+<img src="templates/freifunk_oldenburg/img/ffmap/traffic_6.png" width="20"> Router hat Traffic<br>
+</div>
+<div>
+<img src="templates/freifunk_oldenburg/img/ffmap/clients_2_4.png" width="20"> Router hat Clients<br>
+<img src="templates/freifunk_oldenburg/img/ffmap/mesh_line.png" width="20"> Mesh Verbindung<br>
+</div>

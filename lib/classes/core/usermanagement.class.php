@@ -92,7 +92,7 @@ class UserManagement {
 		$return = false;
 		for ($i=count($permission)-1; $i>=0; $i--) {
 			$exponent = $permission[$i];
-			if ($sitepermission[$sitepermission_len-($exponent+1)]==1) {
+			if (($sitepermission_len-($exponent+1)>=0) && $sitepermission[$sitepermission_len-($exponent+1)]==1) {
 				if ($sitepermission[$sitepermission_len-($exponent+1)]==$userpermission[$userpermission_len-($exponent+1)]) {
 					$return = true;
 				}

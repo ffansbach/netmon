@@ -1,5 +1,7 @@
 <?php
 
+require_once("lib/classes/core/user.class.php");
+
 class Imagemaker {
 	public function getImages() {
 		try {
@@ -90,7 +92,7 @@ class Imagemaker {
 
 	public function deleteImage($image_id) {
 		$image_data = Imagemaker::getImageByImageId($image_id);
-		$user = Helper::getUserByID($_SESSION['user_id']);
+		$user = User::getUserByID($_SESSION['user_id']);
 
 		//If is owning user or if root
 		if(UserManagement::isThisUserOwner($image_data['user_id'], $session['user_id']) OR $user['permission']==120) {

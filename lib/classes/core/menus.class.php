@@ -28,6 +28,8 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+require_once('lib/classes/core/user.class.php');
+
 class Menus extends UserManagement {
 
   function topMenu() {
@@ -43,7 +45,7 @@ class Menus extends UserManagement {
     }
     
     if (UserManagement::checkPermission(4)) {
-      $user_data = Helper::getUserByID($_SESSION['user_id']);
+      $user_data = User::getUserByID($_SESSION['user_id']);
 
       $menu[] = array('pretext'=>'Eingeloggt als:', 'name'=>$user_data['nickname'], 'href'=>"user.php?user_id=$_SESSION[user_id]");
       $menu[] = array('name'=>'Logout', 'href'=>'login.php?section=logout');
@@ -65,7 +67,7 @@ class Menus extends UserManagement {
     if (UserManagement::checkPermission(1)) {
 //      $menu[] = array('name'=>'News', 'href'=>'portal.php');
       $menu[] = array('name'=>'Map', 'href'=>'map.php');
-      $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php', 'selected'=>$selected);
+      $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php');
       $menu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
       $menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'networkstatistic.php');
       $menu[] = array('name'=>'Topologie', 'href'=>'http://dev.freifunk-ol.de/topo/batvpn.png');
