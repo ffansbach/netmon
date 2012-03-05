@@ -120,6 +120,12 @@ class Interfaces {
 				
 				$row['ipv4_netmask_dot'] = SubnetCalculator::getNmask($row['ipv4_netmask']);
 				$row['ipv4_bcast'] = SubnetCalculator::getDqBcast($row['ipv4_host'], $row['ipv4_netmask']);
+				if($row['ipv4_dhcp_kind']=='range') {
+					$ipv4_range = Interfaces::getIPv4RangeByInterfaceId($row['interface_id']);
+					$row['ipv4_dhcp_range_start'] = $ipv4_range['ip_start'];
+					$row['ipv4_dhcp_range_end'] = $ipv4_range['ip_end'];
+				}
+
 				$interfaces[] = $row;
 			}
 		}
@@ -253,6 +259,20 @@ class Interfaces {
 			echo $e->getMessage();
 		}
 		return $interface;
+	}
+
+	public function getIPv4RangeByInterfaceId($interface_id) {
+		try {
+			$sql = "SELECT  *
+					FROM ip_ranges
+				WHERE interface_id='$interface_id'";
+			$result = DB::getInstance()->query($sql);
+			$ip_ranges = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $ip_ranges;
 	}
 }
 

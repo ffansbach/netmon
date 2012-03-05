@@ -34,41 +34,6 @@ require_once($GLOBALS['monitor_root'].'lib/classes/core/ip.class.php');
 require_once($GLOBALS['monitor_root'].'lib/classes/core/interfaces.class.php');
 
 class Ip {
-/*deprecated  public function getServiceList($ip_id) {
-	$services = Helper::getServicesByIpId($ip_id);
-	if (is_array($services))
-	  foreach ($services as $service) {
-	    $crawl_data = Helper::getCurrentCrawlDataByServiceId($service['service_id']);
-	    $servicelist[] = array_merge($service, $crawl_data);
-	  }
-    return $servicelist;
-  }
-
-  public function insertStatus($current_crawl_data, $ip_id) {
-	try {
-		$sql = "UPDATE ips SET ";
-		if (!empty($current_crawl_data['location'])) {
-			$sql .= "location = '$current_crawl_data[location]',";
-		}
-		if (!empty($current_crawl_data['longitude'])) {
-			$sql .= "longitude = '$current_crawl_data[longitude]',";
-		}
-		if (!empty($current_crawl_data['latitude'])) {
-			$sql .= "latitude = '$current_crawl_data[latitude]',";
-		}
-		$sql = substr($sql, 0, -1);
-		$sql .= " WHERE id = '$ip_id';";
-		DB::getInstance()->exec($sql);
-
-	}
-	catch(PDOException $e) {
-		$exception = $e->getMessage();
-	}
-	return true; 
-
-  }*/
-//kommentar endete hier (bjo)
-
 	public function addIPv4Address($router_id, $project_id, $interface_id, $ipv4_addr) {
 		//Add new IPv4-Address
 		try {
@@ -131,7 +96,6 @@ class Ip {
 	}
 
 	public function getIpById($ip_id) {
-		$ips = array();
 		try {
 			$sql = "SELECT * FROM ips
 				WHERE id='$ip_id'";
@@ -197,6 +161,28 @@ class Ip {
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$ips[] = $row['ip'];
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $ips;
+	}
+
+	public function getExistingIPs($ipv="all") {
+		if($ipv=="all")
+			$sql_append = "";
+		else
+			$sql_append = "WHERE ipv='$ipv'";
+
+		$ips = array();
+		try {
+			$sql = "SELECT * FROM ips
+				$sql_append
+				ORDER BY ip ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$ips[] = $row;
 			}
 		}
 		catch(PDOException $e) {

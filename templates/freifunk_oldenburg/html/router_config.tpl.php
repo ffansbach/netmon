@@ -7,8 +7,8 @@
 </ul>
 
 <ul id="tabnav" style="text-align: right; padding-right: 0px; margin-right: 0px;">
-	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px" href="./routereditor.php?section=edit&router_id={$router_data.router_id}">Router editieren</a></li>
-	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px" href="./interfaceeditor.php?section=add&router_id={$router_data.router_id}">Interface hinzufügen</a></li>
+	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px;" href="./routereditor.php?section=edit&router_id={$router_data.router_id}">Router editieren</a></li>
+	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px;" href="./interfaceeditor.php?section=add&router_id={$router_data.router_id}">Interface hinzufügen</a></li>
 	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px; border-right: 0px;" href="./serviceeditor.php?section=add&router_id={$router_data.router_id}">Dienst hinzufügen</a></li>
 </ul>
 
@@ -17,7 +17,7 @@
 <div style="width: 100%; overflow: hidden;">
     <div style="float:left; width: 50%;">
 		<h2>Grunddaten</h2>
-		<b>Benutzer:</b> <a href="./user.php?id={$router_data.user_id}">{$router_data.nickname}</a><br>
+		<b>Benutzer:</b> <a href="./user.php?user_id={$router_data.user_id}">{$router_data.nickname}</a><br>
 		<b>Angelegt am:</b> {$router_data.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
 		{if !empty($router_data.description)}<b>Beschreibung:</b> {$router_data.description}<br>{/if}
 

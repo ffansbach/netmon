@@ -5,6 +5,7 @@
 <ul id="tabnav">
 	<li class="tab1"><a href="./config.php?section=edit">Netmon</a></li>
 	<li class="tab2"><a href="./config.php?section=edit_twitter">Twitter</a></li>
+	<li class="tab2"><a href="./config.php?section=edit_hardware">Hardware</a></li>
 </ul>
 
 <h1>Netmon Konfiguration</h1>

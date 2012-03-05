@@ -25,6 +25,7 @@ $(document).ready(function() {
 
 {if $permitted}
 <ul id="tabnav" style="text-align: right; padding-right: 0px; margin-right: 0px;">
+	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px;" href="./dnseditor.php?section=add_host">Domain hinzufügen</a></li>
 	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px; border-right: 0px;" href="./user_edit.php?section=edit&user_id={$smarty.get.user_id}">Benutzereinstellungen</a></li>
 </ul>
 {/if}
@@ -200,6 +201,36 @@ versuche die Seite in ein paar Minuten (5-10) noch einmal neu zu laden.</p>
 	</div>
 {else}
 <p>Keine Services vorhanden</p>
+{/if}
+
+<br style="clear: both;">
+
+<h2>Domains von {$user.nickname}</h2>
+{if !empty($dns_hosts)}
+	<div style="display: block; float: left;">
+		<table class="display" id="servicelist">
+			<thead>
+				<tr>
+					<th>Domain</th>
+					<th>IPv4 Adresse</th>
+					<th>IPv6 Adresse</th>
+					<th>Aktionen</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach $dns_hosts as $dns_host}
+					<tr>
+						<td>{$dns_host.host}.{$dns_tld}</td>
+						<td>{if $dns_host.ipv4_id!=0}{$dns_host.ipv4_ip}{else}Keine IPv4 Adresse{/if}</td>
+						<td>{if $dns_host.ipv6_id!=0}{$dns_host.ipv6_ip}{else}Keine IPv6 Adresse{/if}</td>
+						<td><a href="./dnseditor.php?section=edit_host&host_id={$dns_host.id}">Editieren</a></td>
+					</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	</div>
+{else}
+<p>Keine Domains vorhanden</p>
 {/if}
 
 <br style="clear: both;">

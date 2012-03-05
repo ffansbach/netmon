@@ -200,7 +200,9 @@ class User {
 
 	function getUserByID($id) {
 		try {
-			$sql = "SELECT * FROM users WHERE id=$id";
+			$sql = "SELECT *
+				FROM users
+				WHERE id=$id";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$user = $row;
@@ -214,7 +216,9 @@ class User {
 
 	function getPlublicUserInfoByID($id) {
 		try {
-			$sql = "SELECT nickname, vorname, nachname, strasse, plz, ort, telefon, email, jabber, icq, website, about FROM users WHERE id=$id";
+			$sql = "SELECT nickname, vorname, nachname, strasse, plz, ort, telefon, email, jabber, icq, website, about
+				FROM users
+				WHERE id=$id";
 			$result = DB::getInstance()->query($sql);
 			$user = $result->fetch(PDO::FETCH_ASSOC);
 		}

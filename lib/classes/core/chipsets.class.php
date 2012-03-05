@@ -30,6 +30,40 @@ class Chipsets {
 		return $chipsets;
 	}
 
+	public function getChipsetsWithoutName() {
+		try {
+			$sql = "SELECT  *
+					FROM chipsets
+					WHERE hardware_name=''
+					ORDER BY name asc";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$chipsets[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $chipsets;
+	}
+
+	public function getChipsetsWithName() {
+		try {
+			$sql = "SELECT  *
+					FROM chipsets
+					WHERE hardware_name!=''
+					ORDER BY name asc";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$chipsets[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $chipsets;
+	}
+
 	public function getChipsetByName($chipset) {
 		try {
 			$sql = "SELECT  *

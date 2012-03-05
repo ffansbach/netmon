@@ -516,7 +516,7 @@ $GLOBALS[community_name]";
 ein Router versucht sich vergeblich mit der Kennung deines Routers $router_data[hostname] mit Netmon zu verbinden.
 Eventuell hast du deinen Router vor kurzem neu installiert und vergessen den Anmeldehash deines Routers in Netmon zu resetten.
 Wenn dem so ist, kannst du den Hash unter folgender URL resetten:
-$GLOBALS[url_to_netmon]/router_status.php?section=edit&router_id=$router_data[router_id]
+$GLOBALS[url_to_netmon]/routereditor.php?section=edit&router_id=$router_data[router_id]
 
 Wenn du meinst, dass dies ein Fehler ist, dann setze dich bitte mit dem Freifunk Team unter fragen@freifunk-ol.de in Verbindung.
 
@@ -535,12 +535,12 @@ $GLOBALS[community_name]";
 			$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
 		}
 		
-		$mail = new Zend_Mail();
+/*		$mail = new Zend_Mail();
 		$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
 		$mail->addTo($user_data['email']);
 		$mail->setSubject("Router versucht vergeblich sich mit Netmon zu verbinden");
 		$mail->setBodyText($text);
-		$mail->send($transport);
+		$mail->send($transport);*/
 	}
 
 

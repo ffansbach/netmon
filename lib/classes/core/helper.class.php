@@ -29,402 +29,19 @@
  */
 
 class Helper {
-/*	public function getIpInfo($id) {
+	public function getIpIdByServiceId($service_id) {
 		try {
-			$sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.dhcp_host, ips.dhcp_netmask, ips.subnet_id, ips.vpn_client_cert, ips.vpn_client_key, ips.location, ips.longitude, ips.latitude, ips.chipset, ips.create_date,
-						   users.nickname,
-						   subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca_crt
-					FROM ips
-					LEFT JOIN users ON (users.id=ips.user_id)
-					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
-					WHERE ips.id=$id";
+			$sql = "select ips.id FROM ips, services WHERE services.id='$service_id' AND ips.id=services.ip_id;";
 			$result = DB::getInstance()->query($sql);
-			$ip = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			foreach($result as $row) {
+				$ip = $row;
+			}
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		$ip['is_ip_owner'] = UserManagement::isThisUserOwner($ip['user_id']);
+		
 		return $ip;
-	}*/
-
-/*	public function getIpsByUserIDThatCanVPN($user_id) {
-		try {
-			$sql = "SELECT ips.id as ip_id, ips.ip, subnets.title as subnet_title
-					FROM ips
-					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
-					WHERE ips.user_id='$user_id' AND ips.vpn_client_cert!='' AND ips.vpn_client_key!='' AND subnets.vpn_server_ca_crt!=''";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$ips[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $ips;
-	}*/
-  
-/*  public function getIpDataByIpId($id) {
-    try {
-      $sql = "SELECT ips.id as ip_id, ips.user_id, ips.ip, ips.zone_start, ips.zone_end, ips.subnet_id, ips.radius, ips.vpn_client_cert, ips.vpn_client_key, ips.location, ips.longitude, ips.latitude, ips.chipset, DATE_FORMAT(ips.create_date, '%D %M %Y') as create_date,
-				      users.nickname, users.email,
-				      subnets.title, subnets.host, subnets.netmask, subnets.vpn_server, subnets.vpn_server_port, subnets.vpn_server_device, subnets.vpn_server_proto, subnets.vpn_server_ca_crt
-				   FROM ips
-				   LEFT JOIN users ON (users.id=ips.user_id)
-				   LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
-				   WHERE ips.id=$id";
-      $result = DB::getInstance()->query($sql);
-	  $ip = $result->fetch(PDO::FETCH_ASSOC);
-    }
-    catch(PDOException $e) {
-      echo $e->getMessage();
-    }
-
-    $ip['is_ip_owner'] = UserManagement::isThisUserOwner($ip['user_id']);
-    return $ip;
-  }
-
-	public function getSubnetById($subnet_id) {
-		try {
-			$sql = "select * FROM subnets WHERE id='$subnet_id'";
-			$result = DB::getInstance()->query($sql);
-			$subnet = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-
-		$subnet['last_ip'] = SubnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
-		$subnet['first_ip'] = SubnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
-		$subnet['hosts_total'] = SubnetCalculator::getHostsTotal($subnet['netmask']);
-		$subnet['broadcast'] = SubnetCalculator::getDqBcast($GLOBALS['net_prefix'].".".$subnet['host'], $subnet['netmask']);
-
-		return $subnet;
 	}
-
-	public function getIpOfIpById($ip_id) {
-		try {
-			$sql = "select ip FROM ips WHERE id='$ip_id';";
-			$result = DB::getInstance()->query($sql);
-			$ip = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		
-		return $ip['ip'];
-	}*/
-
-  public function getIpIdByServiceId($service_id) {
-	try {
-		$sql = "select ips.id FROM ips, services WHERE services.id='$service_id' AND ips.id=services.ip_id;";
-		$result = DB::getInstance()->query($sql);
-		foreach($result as $row) {
-			$ip = $row;
-		}
-	}
-	
-	catch(PDOException $e) {
-		echo $e->getMessage();
-	}
-
-    return $ip;
-  }
-
-
-/*  public function getIpsByUserId($user_id) {
-    $ips = array();
-	try {
-		$sql = "select ips.id, ips.ip, ips.user_id, subnets.host as subnet_host, subnets.netmask as subnet_netmask FROM ips LEFT JOIN subnets on (subnets.id = ips.subnet_id) WHERE ips.user_id='$user_id' ORDER BY subnets.host, ips.ip;";
-		$result = DB::getInstance()->query($sql);
-		
-		foreach($result as $row) {
-			$ips[] = $row;
-		}
-	}
-
-	catch(PDOException $e) {
-		echo $e->getMessage();
-	}
-
-    return $ips;
-  }
-
-  public function getServicesByType($type) {
-    //Get only services that the user is allowed to see
-    if (!UserManagement::checkPermission(4))
-      $visible = "AND visible = 1";
-    else
-      $visible = "";
-
-    $services = array();
-	try {
-		$sql = "SELECT services.id as service_id, services.ip_id, services.title as services_title, services.description, services.typ, services.crawler, services.visible, notify, notification_wait, services.notified, last_notification, services.use_netmons_url, services.url, services.create_date,
-			       ips.id as ip_id, ips.ip, ips.zone_start, ips.zone_end,			       
-			       subnets.id as subnet_id, subnets.title, subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.vpn_server_ca_crt, subnets.vpn_server_ca_key, subnets.vpn_server_pass,
-			       users.id as user_id, users.nickname, users.email
-			FROM services
-			LEFT JOIN ips ON (ips.id = services.ip_id)
-			LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
-			LEFT JOIN users ON (users.id = ips.user_id)
-			WHERE services.typ='$type' $visible ORDER BY services.id";
-		$result = DB::getInstance()->query($sql);
-		
-		foreach($result as $row) {
-			$services[] = $row;
-		}
-	}
-
-	catch(PDOException $e) {
-		echo $e->getMessage();
-	}
-
-    return $services;
-  }
-
-  public function getAllServiceIDsByServiceType($type) {
-    $services = array();
-	try {
-		$sql = "SELECT services.id as service_id, services.typ, services.crawler,
-					   ips.ip,
-					   subnets.host as subnet_host, subnets.netmask as subnet_netmask
-			       FROM services
-			       LEFT JOIN ips ON (ips.id = services.ip_id)
-			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
-			       WHERE services.typ='$type'";
-		$result = DB::getInstance()->query($sql);
-		
-		foreach($result as $row) {
-			$services[] = $row;
-		}
-	}
-
-	catch(PDOException $e) {
-		echo $e->getMessage();
-	}
-
-    return $services;
-  }*/
-
-/*  public function getServicesByUserId($user_id) {
-    //Get only services that the user is allowed to see
-    if (!UserManagement::checkPermission(4))
-      $visible = "AND visible = 1";
-    else
-      $visible = "";
-
-    $services = array();
-	try {
-		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
-				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
-				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
-				      users.nickname
-			       FROM services
-			       LEFT JOIN ips ON (ips.id = services.ip_id)
-			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
-			       LEFT JOIN users ON (users.id = ips.user_id)
-			       WHERE ips.user_id='$user_id' $visible ORDER BY services.id";
-		$result = DB::getInstance()->query($sql);
-		
-		foreach($result as $row) {
-			$services[] = $row;
-		}
-	}
-
-	catch(PDOException $e) {
-		echo $e->getMessage();
-	}
-
-    return $services;
-  }
-
-  public function getServicesByTypeAndIpId($type, $ipId) {
-    //Get only services that the user is allowed to see
-    if (!UserManagement::checkPermission(4))
-      $visible = "AND visible = 1";
-    else
-      $visible = "";
-
-    $services = array();
-	try {
-		$sql = "SELECT services.id as service_id, services.title as services_title, services.typ, services.crawler,
-				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
-				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
-				      users.nickname
-			       FROM services
-			       LEFT JOIN ips ON (ips.id = services.ip_id)
-			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
-			       LEFT JOIN users ON (users.id = ips.user_id)
-			       WHERE services.typ='$type' AND ips.id='$ipId' $visible ORDER BY services.id";
-		$result = DB::getInstance()->query($sql);
-		foreach($result as $row) {
-			$services[] = $row;
-		}
-	}
-
-	catch(PDOException $e) {
-		echo $e->getMessage();
-	}
-
-    return $services;
-  }
-
-  public function getServicesByIpId($ip_id) {
-	$services = array();
-    //Get only services that the user is allowed to see
-    if (!UserManagement::checkPermission(4))
-      $visible = "AND visible = 1";
-    else
-      $visible = "";
-
-    try {
-      $sql = "SELECT services.id as service_id, services.title as services_title, services.description, services.typ, services.crawler, services.create_date,
-				      ips.user_id, ips.ip, ips.id as ip_id, ips.subnet_id,
-				      subnets.host as subnet_host, subnets.netmask as subnet_netmask, subnets.title,
-				      users.nickname
-			       FROM services
-			       LEFT JOIN ips ON (ips.id = services.ip_id)
-			       LEFT JOIN subnets ON (subnets.id = ips.subnet_id)
-			       LEFT JOIN users ON (users.id = ips.user_id)
-			       WHERE services.ip_id='$ip_id' $visible ORDER BY services.id";
-      $result = DB::getInstance()->query($sql);
-
-      foreach($result as $row) {
-        $services[] = $row;
-      }
-    }
-    catch(PDOException $e) {
-      echo $e->getMessage();
-    }
-
-    return $services;
-  }
-
-  public function getSubnetsByUserId($user_id) {
-    $subnets = array();
-	try {
-		$sql = "select * FROM subnets WHERE user_id='$user_id';";
-		$result = DB::getInstance()->query($sql);
-		foreach($result as $row) {
-			$subnets[] = $row;
-		}
-    }
-    catch(PDOException $e) {
-		echo $e->getMessage();
-    }
-
-    return $subnets;
-  }
-
-  public function getIpsBySubnetId($subnet_id) {
-    $ips = array();
-	try {
-		$sql = "select * FROM ips WHERE subnet_id='$subnet_id';";
-		$result = DB::getInstance()->query($sql);
-		foreach($result as $row) {
-			$ips[] = $row;
-		}
-    }
-    catch(PDOException $e) {
-		echo $e->getMessage();
-    }
-    return $ips;
-  }
-
-	public function getSubnetIpOfIpById($ip_id) {
-		try {
-			$sql = "SELECT subnets.host as subnet_host, subnets.netmask as subnet_netmask FROM ips
-					LEFT JOIN subnets on (subnets.id=ips.subnet_id)
-					WHERE ips.id='$ip_id';";
-			$result = DB::getInstance()->query($sql);
-			$subnet = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $subnet;
-	}*/
-
-/*	function getUserByID($id) {
-		try {
-			$sql = "SELECT * FROM users WHERE id=$id";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$user = $row;
-			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $user;
-	}
-
-	function getPlublicUserInfoByID($id) {
-		try {
-			$sql = "SELECT nickname, vorname, nachname, strasse, plz, ort, telefon, email, jabber, icq, website, about FROM users WHERE id=$id";
-			$result = DB::getInstance()->query($sql);
-			$user = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $user;
-	}*/
-
-/*	function getIplistByUserID($id) {
-		try {
-			$sql = "SELECT ips.id, ips.user_id, ips.ip, ips.subnet_id,
-						   users.nickname,
-					LEFT(subnets.title, 25) as title, subnets.host as subnet_host, subnets.netmask as subnet_netmask
-					FROM ips
-					LEFT JOIN users ON (users.id=ips.user_id)
-					LEFT JOIN subnets ON (subnets.id=ips.subnet_id)
-					WHERE users.id=$id
-					ORDER BY subnets.host, ips.ip";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$row['is_ip_owner'] = UserManagement::isThisUserOwner($row['user_id']);
-				$iplist[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-    	return $iplist;
-	}
-
-	function getSubnetlistByUserID($id) {
-		try {
-			$sql = "SELECT COUNT(ips.id) as ips_in_net, subnets.id, subnets.host, subnets.netmask, subnets.title
-					FROM  subnets
-					LEFT JOIN ips on (ips.subnet_id=subnets.id)
-					WHERE subnets.user_id=$id GROUP BY subnets.id";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$subnetlist[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $subnetlist;	
-	}
-
-	public function getExistingIpsBySubnetId($subnet_id) {
-		$ips = array();
-		try {
-			$sql = "SELECT * FROM ips WHERE subnet_id='$subnet_id' ORDER BY ip ASC";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$ips[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $ips;
-	}*/
 
 	public function getExistingIPv4IpsByProjectId($project_id) {
 		$ips = array();
@@ -460,55 +77,6 @@ class Helper {
 		return $ips;
 	}
 
-/*	public function getExistingRangesBySubnetId($subnet_id) {
-		$rangelist = array();
-		$subnet_data = Helper::getSubnetById($subnet_id);
-		if ($subnet_data['dhcp_kind']=='ips') {
-			$ips = Helper::getIpsBySubnetId($subnet_id);
-			
-			foreach ($ips as $ip) {
-				if((!empty($ip['zone_start']) AND $ip['zone_start']!='NULL' AND $ip['zone_start']!=0) AND (!empty($ip['zone_end']) AND $ip['zone_end']!='NULL' AND $ip['zone_end']!=0)) {
-					$exploded_zone_start = explode(".", $ip['zone_start']);
-					$exploded_zone_end = explode(".", $ip['zone_end']);
-					
-					for ($i=$exploded_zone_start[0]; $i<=$exploded_zone_end[0]; $i++) {
-						for ($ii=$exploded_zone_start[1]; $ii<=$exploded_zone_end[1]; $ii++) {
-							$key_ip = $GLOBALS['net_prefix'].".".$i.".".$ii;
-							$rangelist[$key_ip]['range_ip'] = $i.".".$ii;
-							$rangelist[$key_ip]['ip_id'] = $ip['id'];
-						}
-					}
-				}
-			}
-		}
-		return $rangelist;
-	}
-
-	public function getExistingIpSubnetsBySubnetId($subnet_id) {
-		$rangelist = array();
-		$subnet_data = Helper::getSubnetById($subnet_id);
-		if ($subnet_data['dhcp_kind']=='subnet') {
-			$ips = Helper::getIpsBySubnetId($subnet_id);
-			
-			foreach ($ips as $ip) {
-				if(!empty($ip['dhcp_host']) AND !empty($ip['dhcp_netmask'])) {
-					$ip_subnet['first_ip'] = SubnetCalculator::getDqFirstIp($GLOBALS['net_prefix'].".".$ip['dhcp_host'], $ip['dhcp_netmask']);
-					$ip_subnet['last_ip'] = SubnetCalculator::getDqLastIp($GLOBALS['net_prefix'].".".$ip['dhcp_host'], $ip['dhcp_netmask']);
-					$exploded_zone_start = explode(".", $ip_subnet['first_ip']);
-					$exploded_zone_end = explode(".", $ip_subnet['last_ip']);
-					for ($i=$exploded_zone_start[2]; $i<=$exploded_zone_end[2]; $i++) {
-						for ($ii=$exploded_zone_start[3]; $ii<=$exploded_zone_end[3]; $ii++) {
-							$key_ip = $GLOBALS['net_prefix'].".".$i.".".$ii;
-							$rangelist[$key_ip]['subnet_ip'] = $i.".".$ii;
-							$rangelist[$key_ip]['ip_id'] = $ip['id'];
-						}
-					}
-				}
-			}
-		}
-		return $rangelist;
-	}*/
-	
 	function object2array($object) {
 		if (is_object($object) || is_array($object)) {
 			foreach ($object as $key => $value) {
@@ -537,20 +105,6 @@ class Helper {
 			return false;
 		}
 	}
-	
-/*	public function getUserByEmail($email) {
-		try {
-			$sql = "SELECT * FROM  users WHERE email='$email'";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$user = $row;
-			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		};
-		return $user;
-	}*/
 	
 	function randomPassword($size) { 
 		$result = "";
@@ -609,20 +163,6 @@ class Helper {
 		return Helper::getServicesByIpId($ipId);
 	}
 
-/*	public function makeSmoothIplistTime($timestamp) {
-		if (empty($timestamp)) {
-			$time = "unbekannt";
-		} elseif (date("d.m.Y", $timestamp)==date("d.m.Y", time()-86400)) {
-			$time = "Gestern ".date("H:i", $timestamp." uhr");
-		} elseif(date("d.m.Y", $timestamp)==date("d.m.Y", time())) {
-			$time = "Heute ".date("H:i", $timestamp)." uhr";
-		} else {
-			$time = date("d.m.Y", $timestamp)." ".date("H:i", $timestamp)." uhr";
-		}
-
-		return $time;
-	}*/
-
 	public function countServiceStatusByType($type) {
 		$result['online']=0;
 		$result['offline']=0;
@@ -660,74 +200,71 @@ class Helper {
 		return $checked_ip;
 	}
 
-
-function recursive_remove_directory($directory, $empty=FALSE)
-{
-	// if the path has a slash at the end we remove it here
-	if(substr($directory,-1) == '/')
-	{
-		$directory = substr($directory,0,-1);
-	}
-
-	// if the path is not valid or is not a directory ...
-	if(!file_exists($directory) || !is_dir($directory))
-	{
-		// ... we return false and exit the function
-		return FALSE;
-
-	// ... if the path is not readable
-	}elseif(!is_readable($directory))
-	{
-		// ... we return false and exit the function
-		return FALSE;
-
-	// ... else if the path is readable
-	}else{
-
-		// we open the directory
-		$handle = opendir($directory);
-
-		// and scan through the items inside
-		while (FALSE !== ($item = readdir($handle)))
+	function recursive_remove_directory($directory, $empty=FALSE) {
+		// if the path has a slash at the end we remove it here
+		if(substr($directory,-1) == '/')
 		{
-			// if the filepointer is not the current directory
-			// or the parent directory
-			if($item != '.' && $item != '..')
+			$directory = substr($directory,0,-1);
+		}
+
+		// if the path is not valid or is not a directory ...
+		if(!file_exists($directory) || !is_dir($directory))
+		{
+			// ... we return false and exit the function
+			return FALSE;
+
+		// ... if the path is not readable
+		}elseif(!is_readable($directory))
+		{
+			// ... we return false and exit the function
+			return FALSE;
+
+		// ... else if the path is readable
+		}else{
+
+			// we open the directory
+			$handle = opendir($directory);
+
+			// and scan through the items inside
+			while (FALSE !== ($item = readdir($handle)))
 			{
-				// we build the new path to delete
-				$path = $directory.'/'.$item;
-
-				// if the new path is a directory
-				if(is_dir($path)) 
+				// if the filepointer is not the current directory
+				// or the parent directory
+				if($item != '.' && $item != '..')
 				{
-					// we call this function with the new path
-					Helper::recursive_remove_directory($path);
+					// we build the new path to delete
+					$path = $directory.'/'.$item;
 
-				// if the new path is a file
-				}else{
-					// we remove the file
-					unlink($path);
+					// if the new path is a directory
+					if(is_dir($path)) 
+					{
+						// we call this function with the new path
+						Helper::recursive_remove_directory($path);
+
+					// if the new path is a file
+					}else{
+						// we remove the file
+						unlink($path);
+					}
 				}
 			}
-		}
-		// close the directory
-		closedir($handle);
+			// close the directory
+			closedir($handle);
 
-		// if the option to empty is not set to true
-		if($empty == FALSE)
-		{
-			// try to delete the now empty directory
-			if(!rmdir($directory))
+			// if the option to empty is not set to true
+			if($empty == FALSE)
 			{
-				// return false if not possible
-				return FALSE;
+				// try to delete the now empty directory
+				if(!rmdir($directory))
+				{
+					// return false if not possible
+					return FALSE;
+				}
 			}
+			// return success
+			return TRUE;
 		}
-		// return success
-		return TRUE;
 	}
-}
-
 }
 
 ?>
