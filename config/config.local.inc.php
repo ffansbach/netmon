@@ -64,5 +64,7 @@ $GLOBALS['netmon_ipv6_interface'] = "batvpn";
 $GLOBALS['netmon_is_connected_to_network_by_ipv4'] = true;
 
 $GLOBALS['hours_to_prevent_from_sending_new_auto_assign_mail'] = 24;
+$GLOBALS['dns_tld'] = "ffol";
+$GLOBALS['dns_hosts_file_path'] = "./hosts_netmon_test";
 
 ?>

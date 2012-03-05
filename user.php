@@ -3,6 +3,7 @@ require_once('runtime.php');
 require_once('lib/classes/core/helper.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/service.class.php');
+require_once('lib/classes/core/dns.class.php');
 require_once('lib/classes/core/user.class.php');
   
 $smarty->assign('message', Message::getMessage());
@@ -35,6 +36,9 @@ $smarty->assign('servicelist', $servicelist);
 $user_history = History::getUserHistory($_GET['user_id'], 5);
 
 $smarty->assign('user_history', $user_history);
+
+$smarty->assign('dns_tld', $GLOBALS['dns_tld']);
+$smarty->assign('dns_hosts', DNS::getHosts());
 
 /*$smarty->assign('iplist', Helper::getIplistByUserID($_GET['id']));
 $smarty->assign('subnetlist', Helper::getSubnetlistByUserID($_GET['id']));

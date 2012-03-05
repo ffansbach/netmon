@@ -27,126 +27,126 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-  /**
-  * Do not display PHP errors on a real installation
-  */
+	/**
+	* Do not display PHP errors on a real installation
+	*/
 
-  if (ini_get('display_errors')) {
-    ini_set('display_errors', 1);
-  }
+	if (ini_get('display_errors')) {
+	  ini_set('display_errors', 1);
+	}
 
-  /**
-  * SET INCLUDE PATH AND MONITOR_ROOT
-  */
-
-
-  $include_path = __DIR__."/lib/classes/extern/";
-  set_include_path(get_include_path() .PATH_SEPARATOR. $include_path);
-
-  if(empty($GLOBALS['monitor_root'])) {
-	$GLOBALS['monitor_root'] = __DIR__."/";
-  }
-
-  /**
-  * Start PHP Session
-  */
-
-  session_start();
-
-  /**
-  * KONFIGURATION
-  */
-  
-  //Content type and encoding
-  header("Content-Type: text/html; charset=UTF-8");
-  date_default_timezone_set('Europe/Berlin');
-
-  require_once('config/config.local.inc.php');
-  require_once('config/menus.local.inc.php');
-  require_once('config/release.php');
-
-  /**
-  * Check if dirs a writable
-  */
-  
-  $GLOBALS['netmon_root_path'] = __DIR__."/";
-
-  $dirs[] = $GLOBALS['netmon_root_path'].'templates_c/';
-  $dirs[] = $GLOBALS['netmon_root_path'].'ccd/';
-  $dirs[] = $GLOBALS['netmon_root_path'].'config/';
-  $dirs[] = $GLOBALS['netmon_root_path'].'config/config.local.inc.php';
-  $dirs[] = $GLOBALS['netmon_root_path'].'tmp/';
-  $dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/images/';
-  $dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/configurations/';
-  $dirs[] = $GLOBALS['netmon_root_path'].'rrdtool/';
-  $dirs[] = $GLOBALS['netmon_root_path'].'rrdtool/databases/';
-
-  $everything_is_writable = true;
-  foreach($dirs as $dir) {
-    if (!is_writable($dir))
-      $not_writable_dirs[] = $dir;
-  }
+	/**
+	* SET INCLUDE PATH AND MONITOR_ROOT
+	*/
 
 
+	$include_path = __DIR__."/lib/classes/extern/";
+	set_include_path(get_include_path() .PATH_SEPARATOR. $include_path);
 
-  if(!empty($not_writable_dirs)) {
-    echo "The following files or directories have to be writable to run Netmon:<br><br>";
-    foreach($not_writable_dirs as $not_writable_dir) {
-      echo "$not_writable_dir<br>";
-    }
-    echo "<br>Please set writable permissions and reload the site.";
-    die();
-  }
+	if(empty($GLOBALS['monitor_root'])) {
+	      $GLOBALS['monitor_root'] = __DIR__."/";
+	}
 
-  /**
-  * WICHTIGE KLASSEN
-  */
+	/**
+	* Start PHP Session
+	*/
 
-  //PDO Class
-  require_once('lib/classes/core/db.class.php');
-  //Class for Systemnotifications
-  require_once('lib/classes/core/message.class.php');
-  //Class hat conains many useull functions
-  require_once('lib/classes/core/helper.class.php');
-  //Usermanagement class
-  require_once('lib/classes/core/usermanagement.class.php');  
-  //Class to generate the menu
-  require_once('lib/classes/core/menus.class.php');
+	session_start();
 
-  $UserManagement =  new UserManagement;
+	/**
+	* KONFIGURATION
+	*/
+	
+	//Content type and encoding
+	header("Content-Type: text/html; charset=UTF-8");
+	date_default_timezone_set('Europe/Berlin');
 
-  /**
-  * LOAD ZEND FRAMEWORK
-  */
+	require_once('config/config.local.inc.php');
+	require_once('config/menus.local.inc.php');
+	require_once('config/release.php');
 
-  require_once 'lib/classes/extern/Zend/Loader/Autoloader.php';
-  Zend_Loader_Autoloader::getInstance();
+	/**
+	* Check if dirs a writable
+	*/
+	
+	$GLOBALS['netmon_root_path'] = __DIR__."/";
 
-  new Zend_Mail_Transport_Smtp();
-  new Zend_Mail();
+	$dirs[] = $GLOBALS['netmon_root_path'].'templates_c/';
+	$dirs[] = $GLOBALS['netmon_root_path'].'ccd/';
+	$dirs[] = $GLOBALS['netmon_root_path'].'config/';
+	$dirs[] = $GLOBALS['netmon_root_path'].'config/config.local.inc.php';
+	$dirs[] = $GLOBALS['netmon_root_path'].'tmp/';
+	$dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/images/';
+	$dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/configurations/';
+	$dirs[] = $GLOBALS['netmon_root_path'].'rrdtool/';
+	$dirs[] = $GLOBALS['netmon_root_path'].'rrdtool/databases/';
 
-  /**
-  * Default Setting
-  */
-  if(!isset($GLOBALS['installation_mode']))
-    $GLOBALS['installation_mode'] = false;
+	$everything_is_writable = true;
+	foreach($dirs as $dir) {
+	  if (!is_writable($dir))
+	    $not_writable_dirs[] = $dir;
+	}
 
-  /**
-  * SMARTY TEMPLATEENGINE
-  */
 
-  //Smarty main class
-  require_once ('lib/classes/extern/smarty/Smarty.class.php');
 
-  //Initialise Smarty
-  $smarty = new Smarty;
-  $smarty->compile_check = true;
-  //Set debugging site off
-  $smarty->debugging = false;
-  //Templatefolder
-  $smarty->template_dir = "templates/$GLOBALS[template]/html";
-  //Compilefolder
-  $smarty->compile_dir = 'templates_c';
+	if(!empty($not_writable_dirs)) {
+	  echo "The following files or directories have to be writable to run Netmon:<br><br>";
+	  foreach($not_writable_dirs as $not_writable_dir) {
+	    echo "$not_writable_dir<br>";
+	  }
+	  echo "<br>Please set writable permissions and reload the site.";
+	  die();
+	}
+
+	/**
+	* WICHTIGE KLASSEN
+	*/
+
+	//PDO Class
+	require_once('lib/classes/core/db.class.php');
+	//Class for Systemnotifications
+	require_once('lib/classes/core/message.class.php');
+	//Class hat conains many useull functions
+	require_once('lib/classes/core/helper.class.php');
+	//Usermanagement class
+	require_once('lib/classes/core/usermanagement.class.php');  
+	//Class to generate the menu
+	require_once('lib/classes/core/menus.class.php');
+
+	$UserManagement =  new UserManagement;
+
+	/**
+	* LOAD ZEND FRAMEWORK
+	*/
+
+	require_once 'lib/classes/extern/Zend/Loader/Autoloader.php';
+	Zend_Loader_Autoloader::getInstance();
+
+	new Zend_Mail_Transport_Smtp();
+	new Zend_Mail();
+
+	/**
+	* Default Setting
+	*/
+	if(!isset($GLOBALS['installation_mode']))
+	  $GLOBALS['installation_mode'] = false;
+
+	/**
+	* SMARTY TEMPLATEENGINE
+	*/
+
+	//Smarty main class
+	require_once ('lib/classes/extern/smarty/Smarty.class.php');
+
+	//Initialise Smarty
+	$smarty = new Smarty;
+	$smarty->compile_check = true;
+	//Set debugging site off
+	$smarty->debugging = false;
+	//Templatefolder
+	$smarty->template_dir = "templates/$GLOBALS[template]/html";
+	//Compilefolder
+	$smarty->compile_dir = 'templates_c';
 
 	/**
 	* Auto Login

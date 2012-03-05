@@ -3,6 +3,7 @@
 require_once('runtime.php');
 require_once('./lib/classes/core/install.class.php');
 require_once('./lib/classes/core/config.class.php');
+require_once('./lib/classes/core/chipsets.class.php');
 require_once('lib/classes/extern/Zend/Oauth/Consumer.php');
 
 
@@ -247,6 +248,16 @@ if ($_GET['section']=="edit") {
 	
 	// redirect the user
 	$consumer->redirect();
+} elseif($_GET['section']=="edit_hardware") {
+	$smarty->assign('chipsets_with_name', Chipsets::getChipsetsWithName());
+	$smarty->assign('chipsets_without_name', Chipsets::getChipsetsWithoutName());
+	
+	$smarty->assign('message', Message::getMessage());
+	$smarty->display("header.tpl.php");
+	$smarty->display("config_hardware.tpl.php");
+	$smarty->display("footer.tpl.php");
 }
+
+
 
 ?>

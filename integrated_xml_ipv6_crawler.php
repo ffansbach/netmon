@@ -76,7 +76,7 @@ class IntegratedXmlIPv6Crawler {
 									echo "Hole Crawl daten...";
 									//Fetch crawl data from node
 									$return = array();
-									$command = "wget_return=`busybox wget -q -O - http://[$ipv6_address[0]%$GLOBALS[netmon_ipv6_interface]]/node.data & sleep 15; kill $!`
+									$command = "wget_return=`busybox wget -q -O - http://[$ipv6_address[0]%$GLOBALS[netmon_ipv6_interface]]/node.data & sleep 10; kill $!`
 echo \$wget_return";
 //echo $command;
 									exec($command, $return);
