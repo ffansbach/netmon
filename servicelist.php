@@ -4,7 +4,7 @@ require_once('runtime.php');
 require_once('lib/classes/core/service.class.php');
 require_once('lib/classes/core/usermanagement.class.php');
 
-$is_logged_id = Usermanagement::isLoggedIn($SESSION['user_id']);
+$is_logged_id = Usermanagement::isLoggedIn($_SESSION['user_id']);
 if($is_logged_id) {
 	$view='all';
 } else {

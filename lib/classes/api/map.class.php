@@ -377,6 +377,7 @@ class ApiMap {
 					$crawl_routers = Router::getCrawlRoutersByCrawlCycleId($last_endet_crawl_cycle['id']);
 					foreach($crawl_routers as $crawl_router) {
 						$router_data = Router::getRouterInfo($crawl_router['router_id']);
+						$add_data = Router::getAddData($crawl_router['router_id']);
 
 						$crawl_interfaces = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $crawl_router['router_id']);
 						$row['traffic'] = 0;
@@ -435,6 +436,9 @@ class ApiMap {
 													   $box_inhalt .= "<b>Standortbeschreibung:</b> $location<br>";
 												   }
 												   $box_inhalt .= "<b>Letztes Update:</b> ".$crawl_router['crawl_date']."<br><br>";
+										if($add_data['adds_allowed']==1 AND $add_data['add_small_exists']) {
+											$box_inhalt .= "<b>Sponsored by:</b><br><img src=\"./data/adds/".$router_data['router_id']."_add_small.jpg\">";
+										}
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 								$xw->endElement();
 								$xw->startElement('styleUrl');

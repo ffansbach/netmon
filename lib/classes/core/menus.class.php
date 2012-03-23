@@ -31,82 +31,85 @@
 require_once('lib/classes/core/user.class.php');
 
 class Menus extends UserManagement {
-
-  function topMenu() {
-    if (UserManagement::checkPermission(1)) {
-	    return $GLOBALS['topMenu'];
-    }
-  }
+	function topMenu() {
+		$menu = array();
+		if (UserManagement::checkPermission(1)) {
+			return $GLOBALS['topMenu'];
+		}
+	}
   
-  public function loginOutMenu() {
-    if (UserManagement::checkPermission(2)) {
-      $menu[] = array('name'=>'Login', 'href'=>'login.php?section=login');
-      $menu[] = array('name'=>'Registrieren', 'href'=>'register.php');
-    }
-    
-    if (UserManagement::checkPermission(4)) {
-      $user_data = User::getUserByID($_SESSION['user_id']);
+	public function loginOutMenu() {
+		$menu = array();
+		if (UserManagement::checkPermission(2)) {
+			$menu[] = array('name'=>'Login', 'href'=>'login.php?section=login');
+			$menu[] = array('name'=>'Registrieren', 'href'=>'register.php');
+		}
+	
+		if (UserManagement::checkPermission(4)) {
+			$user_data = User::getUserByID($_SESSION['user_id']);
+			$menu[] = array('pretext'=>'Eingeloggt als:', 'name'=>$user_data['nickname'], 'href'=>"user.php?user_id=$_SESSION[user_id]");
+			$menu[] = array('name'=>'Logout', 'href'=>'login.php?section=logout');
+		}
+		return $menu;
+	}
+	
+	function installationMenu() {
+		$menu = array();
+		$menu[] = array('name'=>'Übersicht', 'href'=>'install.php');
+		$menu[] = array('name'=>'Datenbank', 'href'=>'install.php?section=db');
+		$menu[] = array('name'=>'Nachrichten', 'href'=>'install.php?section=messages');
+		$menu[] = array('name'=>'Netzwerk', 'href'=>'install.php?section=network');
+		$menu[] = array('name'=>'Beenden', 'href'=>'install.php?section=finish');
+		$menu = Menus::checkIfSelected($menu);
+		return $menu;
+	}
+	
+	function normalMenu() {
+		$menu = array();
+		if (UserManagement::checkPermission(1)) {
+			$menu[] = array('name'=>'Map', 'href'=>'map.php');
+			$menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php');
+			$menu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
+			$menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'networkstatistic.php');
+			$menu[] = array('name'=>'Topologie', 'href'=>'http://dev.freifunk-ol.de/topo/batvpn.png');
+			$menu[] = array('name'=>'Suchen', 'href'=>'search.php');
+		}
+		$menu = Menus::checkIfSelected($menu);
+		return $menu;
+	}
+	
+	function userMenu() {
+		$menu = array();
+		if (UserManagement::checkPermission(8)) {
+			$menu[] = array('name'=>'Neuer Router', 'href'=>'routereditor.php?section=new');
+			$menu[] = array('name'=>'Benutzerliste', 'href'=>'userlist.php');
+		}
+		$menu = Menus::checkIfSelected($menu);
+		return $menu;
+	}
 
-      $menu[] = array('pretext'=>'Eingeloggt als:', 'name'=>$user_data['nickname'], 'href'=>"user.php?user_id=$_SESSION[user_id]");
-      $menu[] = array('name'=>'Logout', 'href'=>'login.php?section=logout');
-    }
-    return $menu;
-  }
+	function adminMenu() {
+		$menu = array();
+		if (UserManagement::checkPermission(32)) {
+//			$menu[] = array('name'=>'Neues Projekt', 'href'=>'subneteditor.php?section=new');
+			$menu[] = array('name'=>'Neues Projekt', 'href'=>'projecteditor.php?section=new');
+			$menu[] = array('name'=>'Imagemaker', 'href'=>'imagemaker.php');
+//			$menu[] = array('name'=>'CCD regenerieren', 'href'=>'vpn.php?section=regenerate_ccd_subnet');
+			$menu[] = array('name'=>'Projektliste', 'href'=>'projectlist.php');
+		}
+		$menu = Menus::checkIfSelected($menu);
+		return $menu;
+	}
 
-  function installationMenu() {
-      $menu[] = array('name'=>'Übersicht', 'href'=>'install.php');
-      $menu[] = array('name'=>'Datenbank', 'href'=>'install.php?section=db');
-      $menu[] = array('name'=>'Nachrichten', 'href'=>'install.php?section=messages');
-      $menu[] = array('name'=>'Netzwerk', 'href'=>'install.php?section=network');
-      $menu[] = array('name'=>'Beenden', 'href'=>'install.php?section=finish');
-    $menu = Menus::checkIfSelected($menu);
-    return $menu;
-  }
-
-  function normalMenu() {
-    if (UserManagement::checkPermission(1)) {
-//      $menu[] = array('name'=>'News', 'href'=>'portal.php');
-      $menu[] = array('name'=>'Map', 'href'=>'map.php');
-      $menu[] = array('name'=>'Routerliste', 'href'=>'routerlist.php');
-      $menu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
-      $menu[] = array('name'=>'Netzwerkstatistik', 'href'=>'networkstatistic.php');
-      $menu[] = array('name'=>'Topologie', 'href'=>'http://dev.freifunk-ol.de/topo/batvpn.png');
-      $menu[] = array('name'=>'Suchen', 'href'=>'search.php');
-    }
-
-    $menu = Menus::checkIfSelected($menu);
-    return $menu;
-  }
-
-  function userMenu() {
-    if (UserManagement::checkPermission(8)) {
-//      $menu[] = array('name'=>'Mein Benutzer', 'href'=>"user.php?user_id=$_SESSION[user_id]");
-      $menu[] = array('name'=>'Neuer Router', 'href'=>'routereditor.php?section=new');
-      $menu[] = array('name'=>'Benutzerliste', 'href'=>'userlist.php');
-    }
-    $menu = Menus::checkIfSelected($menu);
-    return $menu;
-  }
-
-  function adminMenu() {
-    if (UserManagement::checkPermission(32)) {
-//      $menu[] = array('name'=>'Neues Projekt', 'href'=>'subneteditor.php?section=new');
-      $menu[] = array('name'=>'Neues Projekt', 'href'=>'projecteditor.php?section=new');
-      $menu[] = array('name'=>'Imagemaker', 'href'=>'imagemaker.php');
-//      $menu[] = array('name'=>'CCD regenerieren', 'href'=>'vpn.php?section=regenerate_ccd_subnet');
-      $menu[] = array('name'=>'Projektliste', 'href'=>'projectlist.php');
-    }
-    $menu = Menus::checkIfSelected($menu);
-    return $menu;
-  }
-  function rootMenu() {
-    if (UserManagement::checkPermission(64)) {
-      $menu[] = array('name'=>'Konfiguration', 'href'=>'config.php?section=edit');
-    }
-    $menu = Menus::checkIfSelected($menu);
-    return $menu;
-  }
-
+	function rootMenu() {
+		$menu = array();
+		if (UserManagement::checkPermission(64)) {
+			$menu[] = array('name'=>'Konfiguration', 'href'=>'config.php?section=edit');
+		}
+		$menu = Menus::checkIfSelected($menu);
+		return $menu;
+	}
+	
 	public function checkIfSelected($menu) {
 		if(!empty($menu)) {
 			foreach($menu as $key=>$m) {

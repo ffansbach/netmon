@@ -9,24 +9,27 @@ require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/ip.class.php');
 require_once('lib/classes/core/crawling.class.php');
 require_once('lib/classes/core/chipsets.class.php');
-
+require_once('lib/classes/extern/FwToolHash.class.php');
 
 if($_GET['section']=="test_login_strings") {
-	$login_strings = explode(";", $_GET['login_strings']);
-	$exist=false;
-	foreach($login_strings as $login_string) {
-		if(!empty($login_string)) {
-			$router_data = Router::getRouterByAutoAssignLoginString($login_string);
-			if(!empty($router_data)) {
-				$exist=true;
-				echo "success;$login_string";
-				break;
+	if(!empty($_GET['login_strings'])) {
+		$login_strings = explode(";", $_GET['login_strings']);
+		$exist=false;
+		foreach($login_strings as $login_string) {
+			if(!empty($login_string)) {
+				$router_data = Router::getRouterByAutoAssignLoginString($login_string);
+				if(!empty($router_data)) {
+					$exist=true;
+					echo "success;$login_string";
+					break;
+				}
 			}
 		}
-	}
-	if(!$exist) {
-		echo "error;login_string_not_found";
-	}
+		if(!$exist) {
+			echo "error;login_string_not_found";
+		}
+	} else
+		echo "error;no_login_strings_given";
 }
 
 if($_GET['section']=="router_auto_assign") {
@@ -79,18 +82,9 @@ if($_GET['section']=="router_auto_assign") {
 		}
 		echo "error;already_assigned;$_GET[router_auto_assign_login_string]";
 	} else {
-
 		//generate random string
-		$hash = md5(
-                          uniqid(
-                                  (string)microtime(true)
-                                  +sha1(
-                                        (string)rand(0,10000)  //100% Zufall
-                                        +$thumb_tmp_name
-                                        )
-                                )
-                          +md5($orig_name)
-                          );
+		$hash_generator = new FW_Tool_Hash(32);
+		$hash = $hash_generator->getHash();
 
 		//Save hash to DB
 		$result = DB::getInstance()->exec("UPDATE routers SET

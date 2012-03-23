@@ -147,5 +147,29 @@ class DNS {
 		}
 		return $hosts;
 	}
+
+	public function getHostsByUser($user_id) {
+		$hosts = array();
+		try {
+			$sql = "SELECT * FROM dns_hosts WHERE user_id='$user_id'";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $key=>$row) {
+				if($row['ipv4_id']!="0") {
+					$row['ipv4_ip'] = IP::getIpById($row['ipv4_id']);
+					$row['ipv4_ip'] = $row['ipv4_ip']['ip'];
+				}
+				
+				if($row['ipv6_id']!="0") {
+					$row['ipv6_ip'] = IP::getIpById($row['ipv6_id']);
+					$row['ipv6_ip'] = $row['ipv6_ip']['ip'];
+				}
+				$hosts[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $hosts;
+	}
 }
 ?>

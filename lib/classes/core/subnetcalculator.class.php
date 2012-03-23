@@ -52,8 +52,9 @@ function dotbin($binin,$cdr_nmask){
 
 function dqtobin($dqin) {
         $dq = explode(".",$dqin);
-        for ($i=0; $i<4 ; $i++) {
-           $bin[$i]=str_pad(decbin($dq[$i]), 8, "0", STR_PAD_LEFT);
+        for ($i=0; $i<4; $i++) {
+	   if(isset($dq[$i])) //line added by floh1111
+		  $bin[$i]=str_pad(decbin($dq[$i]), 8, "0", STR_PAD_LEFT);
         }
         return implode("",$bin);
 }

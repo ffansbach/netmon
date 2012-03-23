@@ -9,6 +9,7 @@
 <ul id="tabnav" style="text-align: right; padding-right: 0px; margin-right: 0px;">
 	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px;" href="./routereditor.php?section=edit&router_id={$router_data.router_id}">Router editieren</a></li>
 	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px;" href="./interfaceeditor.php?section=add&router_id={$router_data.router_id}">Interface hinzufügen</a></li>
+	{if $show_add_link}<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px;" href="./addeditor.php?router_id={$smarty.get.router_id}">Werbung</a></li>{/if}
 	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px; border-right: 0px;" href="./serviceeditor.php?section=add&router_id={$router_data.router_id}">Dienst hinzufügen</a></li>
 </ul>
 

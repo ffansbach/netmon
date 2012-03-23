@@ -395,15 +395,45 @@ if($_GET['section']=="get_hostnames_and_mac") {
 }
 
 if($_GET['section']=="get_hostnames_and_ipv6_adresses") {
-	$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+//	$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+	$routers = Router::getRouters();
 
-	try {
+	$ips = array();
+	foreach($routers as $router) {
+		try {
+			$sql = "
+SELECT * FROM 
+(
+	SELECT ips.ip, routers.id as router_id, routers.hostname
+	FROM ips, routers 
+	WHERE ips.router_id = $router[id] AND ips.router_id = routers.id
+	ORDER BY ips.create_date DESC
+) as my_table_tmp
+GROUP BY router_id
+ORDER BY router_id asc";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $row) {
+				$ips[] = $row;
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+
+//SELECT ips.ip, routers.hostname FROM ips, routers WHERE ips.router_id=$router[id] AND ips.ipv=6 ORDER BY ips.create_date DESC;
+
+echo "<pre>";
+print_r($ips);
+echo "</pre>";
+
+
+/*	try {
 //		$sql = "SELECT crawl_interfaces.ipv6_link_local_addr, routers.hostname
 //       			FROM  crawl_interfaces, routers
 //			WHERE crawl_cycle_id='$last_endet_crawl_cycle[id]' AND crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id";
-		$sql = " SELECT DISTINCT crawl_interfaces.ipv6_link_local_addr, routers.hostname
-		                        FROM  crawl_interfaces, crawl_routers, routers
-		                                                WHERE crawl_routers.status='online' AND crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id";
+
+
 		$result = DB::getInstance()->query($sql);
 		foreach($result as $row) {
 			$row['ipv6_link_local_addr'] = explode("/",$row['ipv6_link_local_addr']);
@@ -412,7 +442,23 @@ if($_GET['section']=="get_hostnames_and_ipv6_adresses") {
 	}
 	catch(PDOException $e) {
 		echo $e->getMessage();
-	}
+	}*/
+
+/*		$sql = " SELECT DISTINCT crawl_interfaces.ipv6_link_local_addr, routers.hostname
+		                        FROM  crawl_interfaces, crawl_routers, routers
+		                                                WHERE crawl_routers.status='online' AND crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id
+GROUP BY routers.id
+ORDER BY crawl_interfaces.crawl_date ASC";*/
+
+/*		$sql = "SELECT * FROM 
+(
+	SELECT routers.id as router_id, crawl_interfaces.ipv6_link_local_addr, routers.hostname
+	FROM crawl_interfaces, crawl_routers, routers 
+	WHERE crawl_routers.status='online' AND crawl_interfaces.name='br-mesh' AND routers.id=crawl_interfaces.router_id
+	ORDER BY crawl_interfaces.crawl_date DESC
+) as my_table_tmp
+GROUP BY router_id
+ORDER BY router_id asc";*/
 }
 
 if($_GET['section']=="get_hostnames_and_ipv6_adresses_2") {
