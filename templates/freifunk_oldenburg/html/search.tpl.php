@@ -17,7 +17,7 @@
 
 <div id="ipitem" style="width: 760px; overflow: hidden;">
   <div nstyle="white-space: nowrap;">
-    <div style="float:left; width: 120px;"><b>Hostname</b></div>
+    <div style="float:left; width: 180px;"><b>Hostname</b></div>
     <div style="float:left; width: 60px;"><b>Status</b></div>
     <div style="float:left; width: 80px;"><b>IF-Name</b></div>
     <div style="float:left; width: 85px;"><b>Benutzer</b></div>
@@ -27,7 +27,7 @@
 {foreach key=count item=interface from=$search_result_crawled_interfaces}
 <div id="ipitem" style="width: 760px; overflow: hidden;">
   <div style="white-space: nowrap;">
-    <div style="float:left; width: 120px;"><a href="./router_status.php?router_id={$interface.router_id}&crawl_cycle_id={$interface.crawl_cycle_id}">{$interface.router_data.hostname}</a></div>
+    <div style="float:left; width: 180px;"><a href="./router_status.php?router_id={$interface.router_id}&crawl_cycle_id={$interface.crawl_cycle_id}">{$interface.router_data.hostname}</a></div>
     <div style="float:left; width: 60px;">
     {if $interface.router_crawl_data.status=="online"}
       <div style="float:left; width: 60px; align: center;"><img src="./templates/img/ffmap/status_up_small.png" alt="online"></div>

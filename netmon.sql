@@ -1,20 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.0
+-- version 3.4.10.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 05. Mrz 2012 um 03:36
+-- Erstellungszeit: 23. Mrz 2012 um 13:47
 -- Server Version: 5.5.17
--- PHP-Version: 5.3.10-1
+-- PHP-Version: 5.3.10-2
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Datenbank: `freifunksql5`
@@ -45,6 +39,7 @@ CREATE TABLE IF NOT EXISTS `config` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `value` text NOT NULL,
+  `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
@@ -479,6 +474,19 @@ CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `router_adds`
+--
+
+CREATE TABLE IF NOT EXISTS `router_adds` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `router_id` int(11) NOT NULL,
+  `adds_allowed` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `services`
 --
 
@@ -581,7 +589,3 @@ CREATE TABLE IF NOT EXISTS `users` (
   `activated` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

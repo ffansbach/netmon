@@ -1,7 +1,7 @@
 <?php
 /** Include Classes **/
 require_once('runtime.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/ip.class.php');
+require_once('lib/classes/core/ip.class.php');
 
 $ip = Ip::getIpById($_GET['ip_id']);
 
@@ -13,10 +13,8 @@ if ($ip['ipv']=='6') {
 }
 
 $return = array();
-$command = "wget_return=`busybox wget -q -O - http://$address/node.data & sleep 5; kill $!`
+$command = "wget_return=`busybox wget -q -O - http://$address/node.data & sleep 10; kill $!`
 echo \$wget_return";
-
-//echo $command;
 
 exec($command, $return);
 $return_string = "";
@@ -24,6 +22,10 @@ foreach($return as $string) {
 	$return_string .= $string;
 }
 
-echo $string;
+if(!empty($string)) {
+	echo $string;
+} else {
+	echo $command;
+}
 
 ?>

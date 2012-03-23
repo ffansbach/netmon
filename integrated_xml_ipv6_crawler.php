@@ -1,5 +1,18 @@
 <?php
 
+/**
+* IF Netmon is called by the server/cronjob
+*/
+if (empty($_SERVER["REQUEST_URI"])) {
+	$path = dirname(__FILE__)."/";
+	set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+	$GLOBALS['netmon_root_path'] = $path."/";
+}
+
+if(!empty($_SERVER['REMOTE_ADDR'])) {
+	die("This script can only be run by the server directly.");
+}
+
 require_once('runtime.php');
 require_once('lib/classes/core/helper.class.php');
 require_once('lib/classes/core/editinghelper.class.php');
@@ -7,6 +20,10 @@ require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/project.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/api/crawl.class.php');
+
+require_once('lib/classes/core/service.class.php');
+require_once('lib/classes/core/crawling.class.php');
+require_once('lib/classes/core/rrdtool.class.php');
 
 class IntegratedXmlIPv6Crawler {
 	public function simplexml2array($xml) {
@@ -29,8 +46,8 @@ class IntegratedXmlIPv6Crawler {
 		return (string) $xml;
 	}
 	
-	public function crawl() {
-		$routers = Router::getRoutersForCrawl();
+	public function crawl($from, $to) {
+		$routers = Router::getRoutersForCrawl($from, $to);
 		
 		foreach($routers as $router) {
 			if(!empty($router['interfaces'])) {
@@ -47,7 +64,7 @@ class IntegratedXmlIPv6Crawler {
 								$ipv6_address = explode("/", $ip_address['ip']);
 								$return = array();
 								echo "Pinge...\n";
-								$command = "ping6 -c 4 -I $GLOBALS[netmon_ipv6_interface] $ipv6_address[0]";
+								$command = "ping6 -c 6 -I $GLOBALS[netmon_ipv6_interface] $ipv6_address[0]";
 //								echo $command."\n";
 								exec($command, $return);
 
@@ -76,14 +93,16 @@ class IntegratedXmlIPv6Crawler {
 									echo "Hole Crawl daten...";
 									//Fetch crawl data from node
 									$return = array();
-									$command = "wget_return=`busybox wget -q -O - http://[$ipv6_address[0]%$GLOBALS[netmon_ipv6_interface]]/node.data & sleep 10; kill $!`
+									$command = "wget_return=`busybox wget -q -O - http://[$ipv6_address[0]%$GLOBALS[netmon_ipv6_interface]]/node.data & sleep 15; kill $!`
 echo \$wget_return";
 //echo $command;
+
 									exec($command, $return);
 									$return_string = "";
 									foreach($return as $string) {
 										$return_string .= $string;
 									}
+
 									if(!empty($return_string)) {
 										echo "Crawl Daten bekommen, node wird als online markiert\n";
 										$xml = new SimpleXMLElement($return_string);
@@ -131,6 +150,14 @@ echo \$wget_return";
 	}
 }
 
-	IntegratedXmlIPv6Crawler::crawl();
+$opts="";
+$opts .= "f:";
+$opts .= "t:";
+$options = getopt($opts);
+
+/*echo $options['f'];
+echo $options['t'];*/
+
+	IntegratedXmlIPv6Crawler::crawl($options['f'], $options['t']);
 
 ?>

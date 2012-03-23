@@ -270,11 +270,13 @@ revision,
 		return $routers;
 	}
 
-	public function getRoutersForCrawl() {
+	public function getRoutersForCrawl($from, $to) {
 		try {
 			$sql = "SELECT  *
 					FROM routers
-				WHERE crawl_method='crawler'";
+				WHERE crawl_method='crawler'
+				ORDER BY id ASC
+				LIMIT $from, $to";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$row['interfaces'] = Interfaces::getInterfacesByRouterId($row['id']);
@@ -502,12 +504,12 @@ $GLOBALS[community_name]";
 			$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
 		}
 		
-		$mail = new Zend_Mail();
+/*		$mail = new Zend_Mail();
 		$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
 		$mail->addTo($user_data['email']);
 		$mail->setSubject("Router offline $GLOBALS[community_name]");
 		$mail->setBodyText($text);
-		$mail->send($transport);
+		$mail->send($transport);*/
 	}
 
 	public function notifyAboutRouterTryingToAssign($router_data, $user_data) {
@@ -602,5 +604,40 @@ $GLOBALS[community_name]";
 			echo $e->getMessage();
 		}
 		return $router;
+	}
+
+	public function areAddsAllowed($router_id) {
+		try {
+			$sql = "SELECT  *
+					FROM router_adds
+					WHERE router_id='$router_id'
+					LIMIT 1";
+			$result = DB::getInstance()->query($sql);
+			$data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		if(count($data) AND $data['adds_allowd']=='1') return true;
+		else return false;
+	}
+
+	public function getAddData($router_id) {
+		try {
+			$sql = "SELECT  *
+					FROM router_adds
+					WHERE router_id='$router_id'
+					LIMIT 1";
+			$result = DB::getInstance()->query($sql);
+			$data = $result->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		$data['add_small_exists'] = file_exists("./data/adds/".$router_id."_add_small.jpg");
+		$data['add_big_exists'] = file_exists("./data/adds/".$router_id."_add_big.jpg");
+
+		return $data;
 	}
 }

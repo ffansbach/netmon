@@ -62,6 +62,7 @@ class BatmanAdvanced {
 	}
 
 	public function getCrawlBatmanAdvInterfacesByCrawlCycleId($crawl_cycle_id, $router_id) {
+		$interfaces = array();
 		try {
 			$sql = "SELECT  *
 					FROM crawl_batman_advanced_interfaces

@@ -65,6 +65,57 @@
 	require_once('config/menus.local.inc.php');
 	require_once('config/release.php');
 
+	//PDO Class
+	require_once('lib/classes/core/db.class.php');
+
+	//Config Class
+	require_once('lib/classes/core/config.class.php');
+
+	/**
+	* Fetch configuration from database
+	*/
+	$GLOBALS['installed'] = Config::getConfigValueByName('installed');
+
+	//JABBER
+	$GLOBALS['jabber_server'] = Config::getConfigValueByName('jabber_server');
+	$GLOBALS['jabber_username'] = Config::getConfigValueByName('jabber_username');
+	$GLOBALS['jabber_password'] = Config::getConfigValueByName('jabber_password');
+	
+	//TWITTER
+	$GLOBALS['twitter_consumer_key'] = Config::getConfigValueByName('twitter_consumer_key');
+	$GLOBALS['twitter_consumer_secret'] = Config::getConfigValueByName('twitter_consumer_secret');
+	$GLOBALS['twitter_username'] = Config::getConfigValueByName('twitter_username');
+	
+	//MAIL
+	$GLOBALS['mail_sending_type'] = Config::getConfigValueByName('mail_sending_type');
+	$GLOBALS['mail_sender_adress'] = Config::getConfigValueByName('mail_sender_adress');
+	$GLOBALS['mail_sender_name'] = Config::getConfigValueByName('mail_sender_name');
+	$GLOBALS['mail_smtp_server'] = Config::getConfigValueByName('mail_smtp_server');
+	$GLOBALS['mail_smtp_username'] = Config::getConfigValueByName('mail_smtp_username');
+	$GLOBALS['mail_smtp_password'] = Config::getConfigValueByName('mail_smtp_password');
+	$GLOBALS['mail_smtp_login_auth'] = Config::getConfigValueByName('mail_smtp_login_auth');
+	$GLOBALS['mail_smtp_ssl'] = Config::getConfigValueByName('mail_smtp_ssl');
+	
+	//NETWORK
+	$GLOBALS['community_name'] = Config::getConfigValueByName('community_name');
+	$GLOBALS['enable_network_policy'] = Config::getConfigValueByName('enable_network_policy');
+	$GLOBALS['network_policy_url'] = Config::getConfigValueByName('network_policy_url');
+	
+	//PROJEKT
+	$GLOBALS['hours_to_keep_mysql_crawl_data'] = Config::getConfigValueByName('hours_to_keep_mysql_crawl_data');
+	$GLOBALS['hours_to_keep_history_table'] = Config::getConfigValueByName('hours_to_keep_history_table');
+	
+	//GOOGLEMAPSAPIKEY
+	$GLOBALS['google_maps_api_key'] = Config::getConfigValueByName('google_maps_api_key');
+	//CRAWLER
+	$GLOBALS['crawl_cycle'] = Config::getConfigValueByName('crawl_cycle_length_in_minutes');
+	
+	//TEMPLATE
+	$GLOBALS['template'] = Config::getConfigValueByName('template');
+	
+	//WEBSERVER
+	$GLOBALS['url_to_netmon'] = Config::getConfigValueByName('url_to_netmon');
+
 	/**
 	* Check if dirs a writable
 	*/
@@ -102,8 +153,6 @@
 	* WICHTIGE KLASSEN
 	*/
 
-	//PDO Class
-	require_once('lib/classes/core/db.class.php');
 	//Class for Systemnotifications
 	require_once('lib/classes/core/message.class.php');
 	//Class hat conains many useull functions
@@ -153,7 +202,7 @@
 	*/
 
 	if (!$GLOBALS['installation_mode']) {
-		if (!UserManagement::isLoggedIn($_SESSION['user_id'])) {
+		if (isset($_SESSION['user_id']) AND !UserManagement::isLoggedIn($_SESSION['user_id'])) {
 			//Login Class
 			require_once('lib/classes/core/login.class.php');
 			if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
@@ -208,8 +257,13 @@
 	$smarty->assign('actual_crawl_cycle', $actual_crawl_cycle);
 
 	//This is used for redirection after login
-	$_SESSION['last_page'] = $_SESSION['current_page'];
-	$_SESSION['current_page'] = $_SERVER['REQUEST_URI'];
+	$_SESSION['last_page'] = "";
+	if(isset($_SESSION['current_page']))
+		$_SESSION['last_page'] = $_SESSION['current_page'];
+
+	$_SESSION['current_page'] = "";
+	if(isset($_SERVER['REQUEST_URI']))
+		$_SESSION['current_page'] = $_SERVER['REQUEST_URI'];
 
 	/**Google Maps API Key*/
 	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);

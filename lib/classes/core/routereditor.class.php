@@ -1,9 +1,9 @@
 <?php
 
-require_once($path.'lib/classes/core/interfaces.class.php');
-require_once($path.'lib/classes/core/service.class.php');
-require_once($path.'lib/classes/core/serviceeditor.class.php');
-require_once($path.'lib/classes/core/crawling.class.php');
+require_once('lib/classes/core/interfaces.class.php');
+require_once('lib/classes/core/service.class.php');
+require_once('lib/classes/core/serviceeditor.class.php');
+require_once('lib/classes/core/crawling.class.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
@@ -162,7 +162,6 @@ class RouterEditor {
 		Message::setMessage($message);
 		return true;
 	}
-
 }
 
 ?>

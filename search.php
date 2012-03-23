@@ -28,13 +28,13 @@ $smarty->assign('message', Message::getMessage());
 
 if(!empty($_POST['search_range'])) {
 	$search_range = $_POST['search_range'];
-} else {
+} elseif (!empty($_GET['search_range'])) {
 	$search_range = $_GET['search_range'];
 }
 
 if(!empty($_POST['search_range'])) {
 	$search_string = $_POST['search_string'];
-} else {
+} elseif(!empty($_GET['search_string'])) {
 	$search_string = $_GET['search_string'];
 }
 

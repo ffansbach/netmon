@@ -46,20 +46,6 @@
 						 erscheint in der <a href="./routers_trying_to_assign.php">Liste der neuen, nicht zugewiesenen Router</a>
 					{/if}
 				{/if}
-				
-				<!--	{if $hist.object == 'router'}
-		{if $hist.data.action == 'status'}
-			{if $hist.data.from=='offline'}
-				{$hist.create_date}: {$hist.additional_data.hostname} ({$hist.additional_data.nickname}) geht online.<br>
-			{elseif $hist.data.from=='online'}
-				{$hist.create_date}: {$hist.additional_data.hostname} ({$hist.additional_data.nickname}) geht offline.<br>
-			{/if}
-		{/if}
-		{if $hist.data.action == 'reboot'}
-			{$hist.create_date}: {$net_prefix}.{$hist.additional_data.ip}:{$hist.data.service_id} ({$hist.additional_data.nickname}) wurde rebootet.<br>
-		{/if}
-	{/if}-->
-
 			</li>
 		{/foreach}
 	</ul>

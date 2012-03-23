@@ -38,7 +38,7 @@ $user_history = History::getUserHistory($_GET['user_id'], 5);
 $smarty->assign('user_history', $user_history);
 
 $smarty->assign('dns_tld', $GLOBALS['dns_tld']);
-$smarty->assign('dns_hosts', DNS::getHosts());
+$smarty->assign('dns_hosts', DNS::getHostsByUser($_GET['user_id']));
 
 /*$smarty->assign('iplist', Helper::getIplistByUserID($_GET['id']));
 $smarty->assign('subnetlist', Helper::getSubnetlistByUserID($_GET['id']));
