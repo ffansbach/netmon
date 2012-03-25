@@ -140,6 +140,21 @@ class RouterEditor {
 		}
 	}
 
+	public function insertEditHash($router_id, $hash) {
+			$result = DB::getInstance()->exec("UPDATE routers SET
+								router_auto_assign_hash='$hash'
+							WHERE id = '$router_id'");
+			if ($result>0) {
+				$message[] = array("Der geänderte Hash wurde gespeichert.", 1);
+				Message::setMessage($message);
+				return true;
+			} else {
+				$message[] = array("Fehler!", 2);
+				Message::setMessage($message);
+				return false;
+			}
+	}
+
 	public function insertDeleteRouter($router_id) {
 		$router_data=Router::getRouterInfo($router_id);
 

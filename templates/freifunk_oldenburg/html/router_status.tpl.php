@@ -363,7 +363,7 @@ $(document).ready(function() {
 		
 		<h3>Originators</h3>
 		{if !empty($batman_adv_originators)}
-			<table class="display" id="batman_adv_originator_list">
+			<table class="display" id="batman_adv_originator_list" style="font-size: 8pt;">
 				<thead>
 					<tr>
 						<th>Originator</th>
@@ -375,7 +375,7 @@ $(document).ready(function() {
 				</thead>
 				<tbody>
 					{foreach $batman_adv_originators as $originators}
-						<tr>
+						<tr style="background-color: {if $originators.link_quality >= 0 AND $originators.link_quality < 105}#ff1e1e{else if $originators.link_quality >= 105 AND $originators.link_quality < 130}#ff4949{else if $originators.link_quality >= 130 AND $originators.link_quality < 155}#ff6a6a{else if $originators.link_quality >= 155 AND $originators.link_quality < 180}#ffac53{else if $originators.link_quality >= 180 AND $originators.link_quality < 205}#ffeb79{else if $originators.link_quality >= 205 AND $originators.link_quality < 230}#79ff7c{else if $originators.link_quality >= 230}#04ff0a{/if};">
 							<td><a href="search.php?search_range=mac_addr&search_string={$originators.originator}">{$originators.originator}</a></td>
 							<td>{$originators.last_seen}</td>
 							<td>{$originators.link_quality}</td>

@@ -20,6 +20,16 @@
 </form>
 {/if}
 
+{if $is_root=='1'}
+	<h2>Hash ändern</h2>
+	<form action="./routereditor.php?section=insert_edit_hash&router_id={$router_data.router_id}" method="POST">
+		<p>
+			Hash ändern:<br><input name="router_auto_assign_hash" type="text" size="35" maxlength="50" value="{$router_data.router_auto_assign_hash}">
+		</p>
+		<p><input type="submit" value="Absenden"></p>
+	</form>
+{/if}
+
 <h2>Grunddaten ändern</h2>
 <form action="./routereditor.php?section=insert_edit&router_id={$router_data.router_id}" method="POST">
 	<p>
@@ -115,5 +125,5 @@
 		Mac Adresse (ohne Bindestriche oder Doppelpunkte): <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$router_data.router_auto_assign_login_string}">
 	</p>
 
-	<p><input type="submit" value="Absenden"></p>
+
 </form>

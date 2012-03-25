@@ -44,6 +44,7 @@
 		//Moderator and owning user can edit router
 		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
+			$smarty->assign('is_root', UserManagement::checkPermission(120));
 
 			/** Get and assign Router Informations **/
 			$smarty->assign('chipsets', Chipsets::getChipsets());
@@ -72,6 +73,25 @@
 			$message[] = array("Du hast nicht genügend Rechte um diesen Router zu editieren!", 2);
 			Message::setMessage($message);
 			header('Location: ./login.php');
+		}
+	}
+
+	if ($_GET['section'] == "insert_edit_hash") {
+		//only root can edit hash
+		if(UserManagement::checkPermission(120)) {
+			$insert_result = RouterEditor::insertEditHash($_GET['router_id'], $_POST['router_auto_assign_hash']);
+			if($insert_result) {
+				header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+			} else {
+				header('Location: ./routereditor.php?section=edit&router_id='.$_GET['router_id']);
+			}
+			
+			header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+		} else {
+			$message[] = array('Nur Root kann den Hash ändern.', 2);
+			Message::setMessage($message);
+			
+			header('Location: ./router_config.php?router_id='.$_GET['router_id']);
 		}
 	}
 
