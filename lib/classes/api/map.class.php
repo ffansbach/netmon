@@ -194,7 +194,9 @@ class ApiMap {
 							}
 
 							if(!empty($router_longitude) AND !empty($router_latitude)) {
-								$originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+//								$originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+								$originators = BatmanAdvanced::getCrawlBatmanAdvNexthopsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+
 								//$originators = unserialize($originators['originators']);
 
 								if(!empty($originators)) {
@@ -208,8 +210,33 @@ class ApiMap {
 											$neighbour_router_latitude = $neighbour_router['latitude'];
 										}
 
-										if(!empty($neighbour_router)) {
+										if(!empty($neighbour_router) AND strlen($originator['nexthop'])==17) {
 											$xw->startElement('Placemark');
+												$xw->startElement('Style');
+													$xw->startElement('LineStyle');
+														$xw->startElement('color');
+															if($originator['link_quality']>=0 AND $originator['link_quality']<105) {
+																$xw->writeRaw("ff1e1eff");
+															} elseif($originator['link_quality']>=105 AND $originator['link_quality']<130) {
+																$xw->writeRaw("ff4949ff");
+															} elseif($originator['link_quality']>=130 AND $originator['link_quality']<155) {
+																$xw->writeRaw("ff6a6aff");
+															} elseif($originator['link_quality']>=155 AND $originator['link_quality']<180) {
+																$xw->writeRaw("ff53acff");
+															} elseif($originator['link_quality']>=180 AND $originator['link_quality']<205) {
+																$xw->writeRaw("ff79ebff");
+															} elseif($originator['link_quality']>=205 AND $originator['link_quality']<230) {
+																$xw->writeRaw("ff7cff79");
+															} elseif($originator['link_quality']>=230) {
+																$xw->writeRaw("ff0aff04");
+															}
+														$xw->endElement();
+/*														$xw->startElement('width');
+																$xw->writeRaw("5");
+														$xw->endElement();*/
+													$xw->endElement();
+												$xw->endElement();
+
 												$xw->startElement('name');
 													$xw->writeRaw("myname");
 												$xw->endElement();
@@ -381,11 +408,14 @@ class ApiMap {
 
 						$crawl_interfaces = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $crawl_router['router_id']);
 						$row['traffic'] = 0;
+						$traffic = 0;
 						foreach($crawl_interfaces as $interface) {
 							$traffic = $traffic + $interface['traffic_rx_avg'] + $interface['traffic_tx_avg'];
 						}
 						$traffic = round($traffic/1024,2);
 						
+						$batman_adv_originators = BatmanAdvanced::getCrawlBatmanAdvNexthopsByCrawlCycleId($last_endet_crawl_cycle['id'], $crawl_router['router_id']);
+						$client_count = Clients::getClientsCountByRouterAndCrawlCycle($crawl_router['router_id'], $last_endet_crawl_cycle['id']);
 						//Make coordinates and location information
 						if(!empty($crawl_router['longitude']) AND !empty($crawl_router['latitude'])) {
 							$longitude = $crawl_router['longitude'];
@@ -431,18 +461,69 @@ class ApiMap {
 								$xw->startElement('description');
 										$box_inhalt = "<b>Status:</b> $crawl_router[status]<br>
 										<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>
+												   <b>Clients:</b> ".$client_count."<br>
 												   <b>Benutzer:</b> <a href='./user.php?user_id=$router_data[user_id]'>$router_data[nickname]</a><br>";
 												   if(!empty($location)) {
 													   $box_inhalt .= "<b>Standortbeschreibung:</b> $location<br>";
 												   }
-												   $box_inhalt .= "<b>Letztes Update:</b> ".$crawl_router['crawl_date']."<br><br>";
-										if($add_data['adds_allowed']==1 AND $add_data['add_small_exists']) {
+												   $box_inhalt .= "<b>Letztes Update:</b> ".date("d.m.Y H:i", strtotime($crawl_router['crawl_date']))." Uhr <br><br>";
+										if(isset($add_data['adds_allowed']) AND $add_data['adds_allowed']==1 AND $add_data['add_small_exists']) {
 											$box_inhalt .= "<b>Sponsored by:</b><br><img src=\"./data/adds/".$router_data['router_id']."_add_small.jpg\">";
 										}
+
+
+$box_inhalt .= "<h3>Nachbarn</h3>";
+		if(!empty($batman_adv_originators)) {
+$box_inhalt .= '			<table>
+				<thead>
+					<tr>
+						<th>Originator</th>
+						<th>Last Seen</th>
+						<th>Quality</th>
+						<th>Nexthop</th>
+						<th>Outgoing Interface</th>
+					</tr>
+				</thead>
+				<tbody>';
+					foreach ($batman_adv_originators as $originators) {
+$box_inhalt .= '					<tr style="background-color:';
+if($originators['link_quality'] >= 0 AND $originators['link_quality'] < 105) {
+$box_inhalt .= '#ff1e1e';
+} elseif($originators['link_quality'] >= 105 AND $originators['link_quality'] < 130) {
+$box_inhalt .= '#ff4949';
+} elseif($originators['link_quality'] >= 130 AND $originators['link_quality'] < 155) {
+$box_inhalt .= '#ff6a6a';
+} elseif($originators['link_quality'] >= 155 AND $originators['link_quality'] < 180) {
+$box_inhalt .= '#ffac53';
+} elseif($originators['link_quality'] >= 180 AND $originators['link_quality'] < 205) {
+$box_inhalt .= '#ffeb79';
+} elseif($originators['link_quality'] >= 205 AND $originators['link_quality'] < 230) {
+$box_inhalt .= '#79ff7c';
+} elseif($originators['link_quality'] >= 230) {
+$box_inhalt .= '#04ff0a';
+};
+$box_inhalt .= "\">
+							<td><a href=\"search.php?search_range=mac_addr&search_string=$originators[originator]\">$originators[originator]</a></td>
+							<td>$originators[last_seen]</td>
+							<td>$originators[link_quality]</td>
+							<td>$originators[nexthop]</td>
+							<td>$originators[outgoing_interface]</td>
+						</tr>";
+					}
+$box_inhalt .= '			</tbody>
+			</table>';
+		} else {
+$box_inhalt .= '	<p>Keine Originators gefunden</p>';
+		}
+
+
+
+
+
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 								$xw->endElement();
 								$xw->startElement('styleUrl');
-									if($_GET['highlight_router_id']==$router_data['router_id']) {
+									if(isset($_GET['highlight_router_id']) AND $_GET['highlight_router_id']==$router_data['router_id']) {
 										$xw->writeRaw('#sh_blue-pushpin');
 									} elseif($crawl_router['status']=='online') {
 	$xw->writeRaw('#sh_green-pushpin');
@@ -580,6 +661,7 @@ else
 						}
 						
 						if($do) {
+							if($crawl_router['status']=='online') {
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
 									$xw->writeRaw("<![CDATA[Router <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
@@ -589,7 +671,7 @@ else
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 								$xw->endElement();
 								$xw->startElement('styleUrl');
-									if($crawl_router['status']=='online') {
+
 
 if($traffic<40)
 	$xw->writeRaw('#sh_green-pushpin-1');
@@ -605,7 +687,7 @@ elseif($traffic<240)
 	$xw->writeRaw('#sh_green-pushpin-5');
 else
 	$xw->writeRaw('#sh_green-pushpin-6');
-									}
+
 								$xw->endElement();
 								$xw->startElement('Point');
 									$xw->startElement('coordinates');
@@ -613,6 +695,7 @@ else
 									$xw->endElement();
 								$xw->endElement();
 							$xw->endElement();
+							}
 						}
 					}
 				$xw->endElement();

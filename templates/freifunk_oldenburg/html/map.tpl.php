@@ -28,5 +28,5 @@
 </div>
 <div>
 <img src="templates/freifunk_oldenburg/img/ffmap/clients_2_4.png" width="20"> Router hat Clients<br>
-<img src="templates/freifunk_oldenburg/img/ffmap/mesh_line.png" width="20"> Mesh Verbindung<br>
+<img src="templates/freifunk_oldenburg/img/ffmap/mesh_line.png" width="20"> Mesh Verbindung (grün: gut verbindung, rot: schlechte verbindung)<br>
 </div>

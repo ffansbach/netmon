@@ -155,7 +155,13 @@ function fullmap() {
 
 	// Initialize the map
 	map = new OpenLayers.Map ("map", {
-		controls:[new OpenLayers.Control.ScaleLine(), new OpenLayers.Control.Navigation()],
+		controls:[new OpenLayers.Control.ScaleLine(), 
+				  new OpenLayers.Control.TouchNavigation({
+                dragPanOptions: {
+                    enableKinetic: true
+                }
+            }),
+	    new OpenLayers.Control.Navigation()],
 
 		displayProjection: new OpenLayers.Projection("EPSG:4326"),
 		units: "m",
@@ -223,11 +229,11 @@ function fullmap() {
 //	var layer_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 //	var layer_nodes_offline = loadKmlLayer('Offline Knoten', './api.php?class=apiMap&section=getOfflineServiceKML');
 	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters');
-	var layer_traffic = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRoutersTraffic');
+	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');
 	
 	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
 	//	var layer_nodes_offline = loadKmlLayer('Offline Knoten ', './api.php?class=apiMap&section=getOfflineRouters');
-	var batman_adv_conn = loadKmlLayer('Bat. Adv. Originators', './api.php?class=apiMap&section=batman_advanced_conn');
+//	var batman_adv_conn = loadKmlLayer('Bat. Adv. Originators', './api.php?class=apiMap&section=batman_advanced_conn');
 	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
 	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 
@@ -247,7 +253,7 @@ function fullmap() {
 	*/
 	
 	//Add Layers
-        map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn, batman_adv_conn_nexthop, olsr_conn]);
+        map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop, olsr_conn]);
 
 	
 	// Define bubbles
@@ -319,11 +325,12 @@ function router_map(highlight_router_id) {
         map.addLayers([layer_conn, layer_nodes_offline, layer_nodes_online]);*/
 
 	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters&highlight_router_id='+highlight_router_id);
-	var batman_adv_conn = loadKmlLayer('Bat. Adv. Verbindungen', './api.php?class=apiMap&section=batman_advanced_conn');
+//	var batman_adv_conn = loadKmlLayer('Bat. Adv. Verbindungen', './api.php?class=apiMap&section=batman_advanced_conn');
+	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
 	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
 	
 	//Add Layers
-        map.addLayers([layer_nodes, batman_adv_conn, olsr_conn]);
+        map.addLayers([layer_nodes, batman_adv_conn_nexthop, olsr_conn]);
 	
 	// Define bubbles
 	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});

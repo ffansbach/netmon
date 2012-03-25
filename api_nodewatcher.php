@@ -396,7 +396,7 @@ if($_GET['section']=="get_hostnames_and_mac") {
 
 if($_GET['section']=="get_hostnames_and_ipv6_adresses") {
 //	$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-	$routers = Router::getRouters();
+/*	$routers = Router::getRouters();
 
 	$ips = array();
 	foreach($routers as $router) {
@@ -425,7 +425,7 @@ ORDER BY router_id asc";
 
 echo "<pre>";
 print_r($ips);
-echo "</pre>";
+echo "</pre>";*/
 
 
 /*	try {
@@ -473,9 +473,11 @@ if($_GET['section']=="get_hostnames_and_ipv6_adresses_2") {
 			WHERE ips.ipv=6
 			GROUP BY ips.ip";
 		$result = DB::getInstance()->query($sql);
+echo "<pre>";
 		foreach($result as $row) {
 			echo $row['ip']." ".$row['hostname']."\n";
 		}
+echo "</pre>";
 	}
 	catch(PDOException $e) {
 		echo $e->getMessage();

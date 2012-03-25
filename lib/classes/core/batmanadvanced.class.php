@@ -6,7 +6,27 @@ class BatmanAdvanced {
 		try {
 			$sql = "SELECT  *
 					FROM crawl_batman_advanced_originators
-					WHERE router_id='$router_id' AND crawl_cycle_id='$crawl_cycle_id'";
+					WHERE router_id='$router_id' AND crawl_cycle_id='$crawl_cycle_id'
+					ORDER BY link_quality ASC";
+			$result = DB::getInstance()->query($sql);
+			foreach($result as $key=>$row) {
+				$originators[$key] = $row;
+				$originators[$key]['originator_file_path'] = str_replace(":","_",$row['originator']);
+			}
+		}
+		catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $originators;
+	}
+
+	public function getCrawlBatmanAdvNexthopsByCrawlCycleId($crawl_cycle_id, $router_id) {
+		$originators = array();
+		try {
+			$sql = "SELECT  *
+					FROM crawl_batman_advanced_originators
+					WHERE router_id='$router_id' AND crawl_cycle_id='$crawl_cycle_id'
+					GROUP BY nexthop";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $key=>$row) {
 				$originators[$key] = $row;
