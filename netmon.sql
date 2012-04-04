@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 23. Mrz 2012 um 13:47
--- Server Version: 5.5.17
--- PHP-Version: 5.3.10-2
+-- Erstellungszeit: 04. Apr 2012 um 05:28
+-- Server Version: 5.5.22
+-- PHP-Version: 5.3.10-1~dotdeb.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -589,3 +589,19 @@ CREATE TABLE IF NOT EXISTS `users` (
   `activated` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `variable_splash_clients`
+--
+
+CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `router_id` int(11) NOT NULL,
+  `mac_addr` varchar(150) NOT NULL,
+  `ip` varchar(100) NOT NULL,
+  `ipv` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
