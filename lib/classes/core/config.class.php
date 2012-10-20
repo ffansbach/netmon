@@ -32,18 +32,14 @@ class Config {
 	}
 
 	public function writeConfigLine($name, $value) {
-		$config_line = Config::getConfigLineByName($name);
-		if(empty($config_line)) {
-			//If config line does not exists, create
-			try {
-				DB::getInstance()->exec("INSERT INTO config (name, value, create_date)
-							 VALUES ('$name', '$value', NOW());");
-				$config_line['id'] = DB::getInstance()->lastInsertId();
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-		} else {
+		// just ever insert, and on error update
+		//If config line does not exists, create
+		try {
+			DB::getInstance()->exec("INSERT INTO config (name, value, create_date)
+						 VALUES ('$name', '$value', NOW());");
+			$config_line['id'] = DB::getInstance()->lastInsertId();
+		}
+		catch(PDOException $e) {
 			//If config line exists, update
 			try {
 				$result = DB::getInstance()->exec("UPDATE config SET

@@ -49,9 +49,14 @@ if ($GLOBALS['installed']) {
 	$_SESSION['mail'] = "smtp";
     }
 
-    $smarty->display("header.tpl.php");
-    $smarty->display("install_info.tpl.php");
-    $smarty->display("footer.tpl.php");
+    try {
+       $smarty->display("header.tpl.php");
+       $smarty->display("install_info.tpl.php");
+       $smarty->display("footer.tpl.php");
+    }
+    catch(Exception $e) {
+	print $e->getMessage();
+    }
 } elseif ($_GET['section']=="db") {
     $smarty->display("header.tpl.php");
     $smarty->display("install_db_data.tpl.php");
@@ -99,7 +104,7 @@ if ($GLOBALS['installed']) {
 } elseif ($_GET['section']=="messages") {
 
         $smarty->assign('mail_sending_type', $_SESSION['mail']);
-        $smarty->assign('url_to_netmon', "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']);
+        $smarty->assign('url_to_netmon', "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));
         $smarty->assign('enable_network_policy', false);
 
 	$smarty->display("header.tpl.php");

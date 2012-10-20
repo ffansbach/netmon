@@ -65,6 +65,7 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('url_to_netmon', Config::getConfigValueByName("url_to_netmon"));
 	$smarty->assign('google_maps_api_key', Config::getConfigValueByName("google_maps_api_key"));
 	$smarty->assign('template_name', Config::getConfigValueByName("template"));
+	$smarty->assign('template', Config::getConfigValueByName("template"));
 	$smarty->assign('hours_to_keep_mysql_crawl_data', Config::getConfigValueByName("hours_to_keep_mysql_crawl_data"));
 	$smarty->assign('hours_to_keep_history_table', Config::getConfigValueByName("hours_to_keep_history_table"));
 	$smarty->assign('crawl_cycle_length_in_minutes', Config::getConfigValueByName("crawl_cycle_length_in_minutes"));

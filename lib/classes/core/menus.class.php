@@ -113,10 +113,12 @@ class Menus extends UserManagement {
 	public function checkIfSelected($menu) {
 		if(!empty($menu)) {
 			foreach($menu as $key=>$m) {
-				if (stristr($_SERVER["REQUEST_URI"], $menu[$key]['href'])!==FALSE) {
-					$menu[$key]['selected'] = true;
-				} else {
-					$menu[$key]['selected'] = false;
+				if (isset($_SERVER["REQUEST_URI"])) {
+					if (stristr($_SERVER["REQUEST_URI"], $menu[$key]['href'])!==FALSE) {
+						$menu[$key]['selected'] = true;
+					} else {
+						$menu[$key]['selected'] = false;
+					}
 				}
 			}
 		}

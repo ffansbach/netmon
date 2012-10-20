@@ -26,7 +26,7 @@ class Crawling {
 			//Set all routers in old crawl cycle that have not been crawled yet to status offline
 			$routers = Router::getRouters();
 			foreach ($routers as $router) {
-				echo "prüfe router id: ".$router['id'];
+				echo "prüfe router id: ".$router['id']."\n";
 				$crawl = Router::getCrawlRouterByCrawlCycleId($actual_crawl_cycle['id'], $router['id']);
 				if(empty($crawl)) {
 					echo $router['id']." wird als offline markiert";
@@ -120,6 +120,7 @@ class Crawling {
 	public function deleteOldCrawlDataExceptLastOnlineCrawl($seconds) {
 		//Get last online CrawlCycleId of every router
 		$last_online_crawl_cycle_ids = array();
+		$last_online_crawl_cycles = array();
 		try {
 			$sql = "SELECT crawl_cycle_id, router_id FROM 
 					(SELECT * FROM crawl_routers
