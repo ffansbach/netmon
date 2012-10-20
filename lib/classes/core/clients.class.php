@@ -31,6 +31,7 @@ class Clients {
 	}
 */
 	public function countClientsCrawlCycle($crawl_cycle_id) {
+		$client_count = 0;
 		try {
 			$sql = "SELECT  *
 					FROM crawl_clients_count

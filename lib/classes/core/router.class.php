@@ -160,6 +160,7 @@ revision,
 
 
 	public function getRouters() {
+		$routers = array();
 		try {
 			$sql = "SELECT  *
 					FROM routers";
@@ -271,6 +272,7 @@ revision,
 	}
 
 	public function getRoutersForCrawl($from, $to) {
+		$routers=array();
 		try {
 			$sql = "SELECT  *
 					FROM routers
