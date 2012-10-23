@@ -201,6 +201,8 @@ class ApiMap {
 
 				if(!empty($originators)) {
 					foreach($originators as $originator) {
+						if (Config::getConfigValueByName('routervpnif') == $originator['outgoing_interface'])
+							continue;
 						$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['nexthop'], $last_endet_crawl_cycle['id']);
 						$neighbour_router_longitude = $neighbour_router['longitude'];
 						$neighbour_router_latitude = $neighbour_router['latitude'];
