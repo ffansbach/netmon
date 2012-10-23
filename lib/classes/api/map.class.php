@@ -48,50 +48,50 @@ class ApiMap {
 		$xw = new xmlWriter();
 		$xw->openMemory();
 		$xw->startDocument('1.0','UTF-8');
-			$xw->startElement ('kml'); 
-				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
-				$xw->startElement('Document');   
-					$xw->writeElement ('name', '200903170407-200903170408');
-					$xw->startElement('Folder');
-						$xw->startElement('name');
-							$xw->writeRaw('create');
-						$xw->endElement();
-						$routers = Router::getRouters();
-						$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-						foreach($routers as $router) {
-							if(!empty($router['latitude']) AND !empty($router['longitude'])) {
-								$originators = Olsr::getCrawlOlsrDataByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
-								$olsr_entrys = unserialize($originators['olsrd_links']);
-								if(!empty($olsr_entrys)) {
-									$router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
-									foreach($olsr_entrys as $olsr_entry) {
-										$tmp1 = 'Remote IP';
-										$neighbour_router = Router::getRouterByIPv4Addr($olsr_entry[$tmp1]);
-										$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
-										if(!empty($neighbour_router['longitude']) AND !empty($neighbour_router['longitude'])) {
-											$xw->startElement('Placemark');
-												$xw->startElement('name');
-													$xw->writeRaw("myname");
-												$xw->endElement();
-												$xw->startElement('Polygon');
-													$xw->startElement('outerBoundaryIs');
-														$xw->startElement('LinearRing');
-															$xw->startElement('coordinates');
-																$xw->writeRaw("$router[longitude],$router[latitude],0
-																			    $neighbour_router[longitude],$neighbour_router[latitude],0");
-															$xw->endElement();
-														$xw->endElement();
-													$xw->endElement();
-												$xw->endElement();
-											$xw->endElement();
-										}
-									}
-								}
-							}
+		$xw->startElement ('kml'); 
+		$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+		$xw->startElement('Document');   
+		$xw->writeElement ('name', '200903170407-200903170408');
+		$xw->startElement('Folder');
+		$xw->startElement('name');
+		$xw->writeRaw('create');
+		$xw->endElement();
+		$routers = Router::getRouters();
+		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+		foreach($routers as $router) {
+			if(!empty($router['latitude']) AND !empty($router['longitude'])) {
+				$originators = Olsr::getCrawlOlsrDataByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+				$olsr_entrys = unserialize($originators['olsrd_links']);
+				if(!empty($olsr_entrys)) {
+					$router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+					foreach($olsr_entrys as $olsr_entry) {
+						$tmp1 = 'Remote IP';
+						$neighbour_router = Router::getRouterByIPv4Addr($olsr_entry[$tmp1]);
+						$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
+						if(!empty($neighbour_router['longitude']) AND !empty($neighbour_router['longitude'])) {
+							$xw->startElement('Placemark');
+							$xw->startElement('name');
+							$xw->writeRaw("myname");
+							$xw->endElement();
+							$xw->startElement('Polygon');
+							$xw->startElement('outerBoundaryIs');
+							$xw->startElement('LinearRing');
+							$xw->startElement('coordinates');
+							$xw->writeRaw("$router[longitude],$router[latitude],0
+							$neighbour_router[longitude],$neighbour_router[latitude],0");
+							$xw->endElement();
+							$xw->endElement();
+							$xw->endElement();
+							$xw->endElement();
+							$xw->endElement();
 						}
-					$xw->endElement();
-				$xw->endElement();
-			$xw->endElement();
+					}
+				}
+			}
+		}
+		$xw->endElement();
+		$xw->endElement();
+		$xw->endElement();
 		$xw->endDocument();
 
 		print $xw->outputMemory(true);
@@ -103,65 +103,65 @@ class ApiMap {
 		$xw = new xmlWriter();
 		$xw->openMemory();
 		$xw->startDocument('1.0','UTF-8');
-			$xw->startElement ('kml'); 
-				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
-				$xw->startElement('Document');   
-					$xw->writeElement ('name', '200903170407-200903170408');
-					$xw->startElement('Folder');
-						$xw->startElement('name');
-							$xw->writeRaw('create');
-						$xw->endElement();
-						$routers = Router::getRouters();
-						$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-						foreach($routers as $router) {
-							$router_longitude = $router['longitude'];
-							$router_latitude = $router['latitude'];
+		$xw->startElement ('kml'); 
+		$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+		$xw->startElement('Document');   
+		$xw->writeElement ('name', '200903170407-200903170408');
+		$xw->startElement('Folder');
+		$xw->startElement('name');
+		$xw->writeRaw('create');
+		$xw->endElement();
+		$routers = Router::getRouters();
+		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+		foreach($routers as $router) {
+			$router_longitude = $router['longitude'];
+			$router_latitude = $router['latitude'];
 
-							$router_crawl = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
-							if(!empty($router_crawl['longitude']) AND !empty($router_crawl['latitude'])) {
-								$router_longitude = $router_crawl['longitude'];
-								$router_latitude = $router_crawl['latitude'];
-							}
+			$router_crawl = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+			if(!empty($router_crawl['longitude']) AND !empty($router_crawl['latitude'])) {
+				$router_longitude = $router_crawl['longitude'];
+				$router_latitude = $router_crawl['latitude'];
+			}
 
-							if(!empty($router_longitude) AND !empty($router_latitude)) {
-								$originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
-								//$originators = unserialize($originators['originators']);
+			if(!empty($router_longitude) AND !empty($router_latitude)) {
+				$originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+				//$originators = unserialize($originators['originators']);
 
-								if(!empty($originators)) {
-									foreach($originators as $originator) {
-										$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['originator'], $last_endet_crawl_cycle['id']);
-										$neighbour_router_longitude = $neighbour_router['longitude'];
-										$neighbour_router_latitude = $neighbour_router['latitude'];
-										$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
-										if(!empty($neighbour_router['longitude']) AND !empty($neighbour_router['latitude'])) {
-											$neighbour_router_longitude = $neighbour_router['longitude'];
-											$neighbour_router_latitude = $neighbour_router['latitude'];
-										}
-
-										if(!empty($neighbour_router)) {
-											$xw->startElement('Placemark');
-												$xw->startElement('name');
-													$xw->writeRaw("myname");
-												$xw->endElement();
-												$xw->startElement('Polygon');
-													$xw->startElement('outerBoundaryIs');
-														$xw->startElement('LinearRing');
-															$xw->startElement('coordinates');
-																$xw->writeRaw("$router[longitude],$router[latitude],0
-																			    $neighbour_router_longitude,$neighbour_router_latitude,0");
-															$xw->endElement();
-														$xw->endElement();
-													$xw->endElement();
-												$xw->endElement();
-											$xw->endElement();
-										}
-									}
-								}
-							}
+				if(!empty($originators)) {
+					foreach($originators as $originator) {
+						$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['originator'], $last_endet_crawl_cycle['id']);
+						$neighbour_router_longitude = $neighbour_router['longitude'];
+						$neighbour_router_latitude = $neighbour_router['latitude'];
+						$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
+						if(!empty($neighbour_router['longitude']) AND !empty($neighbour_router['latitude'])) {
+							$neighbour_router_longitude = $neighbour_router['longitude'];
+							$neighbour_router_latitude = $neighbour_router['latitude'];
 						}
-					$xw->endElement();
-				$xw->endElement();
-			$xw->endElement();
+
+						if(!empty($neighbour_router)) {
+							$xw->startElement('Placemark');
+							$xw->startElement('name');
+							$xw->writeRaw("myname");
+							$xw->endElement();
+							$xw->startElement('Polygon');
+							$xw->startElement('outerBoundaryIs');
+							$xw->startElement('LinearRing');
+							$xw->startElement('coordinates');
+							$xw->writeRaw("$router[longitude],$router[latitude],0
+							$neighbour_router_longitude,$neighbour_router_latitude,0");
+							$xw->endElement();
+							$xw->endElement();
+							$xw->endElement();
+							$xw->endElement();
+							$xw->endElement();
+						}
+					}
+				}
+			}
+		}
+		$xw->endElement();
+		$xw->endElement();
+		$xw->endElement();
 		$xw->endDocument();
 
 		print $xw->outputMemory(true);
@@ -173,92 +173,92 @@ class ApiMap {
 		$xw = new xmlWriter();
 		$xw->openMemory();
 		$xw->startDocument('1.0','UTF-8');
-			$xw->startElement ('kml'); 
-				$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
-				$xw->startElement('Document');   
-					$xw->writeElement ('name', '200903170407-200903170408');
-					$xw->startElement('Folder');
-						$xw->startElement('name');
-							$xw->writeRaw('create');
-						$xw->endElement();
-						$routers = Router::getRouters();
-						$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-						foreach($routers as $router) {
-							$router_longitude = $router['longitude'];
-							$router_latitude = $router['latitude'];
+		$xw->startElement ('kml'); 
+		$xw->writeAttribute( 'xmlns', 'http://earth.google.com/kml/2.1');
+		$xw->startElement('Document');   
+		$xw->writeElement ('name', '200903170407-200903170408');
+		$xw->startElement('Folder');
+		$xw->startElement('name');
+		$xw->writeRaw('create');
+		$xw->endElement();
+		$routers = Router::getRouters();
+		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+		foreach($routers as $router) {
+			$router_longitude = $router['longitude'];
+			$router_latitude = $router['latitude'];
 
-							$router_crawl = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
-							if(!empty($router_crawl['longitude']) AND !empty($router_crawl['latitude'])) {
-								$router_longitude = $router_crawl['longitude'];
-								$router_latitude = $router_crawl['latitude'];
-							}
+			$router_crawl = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+			if(!empty($router_crawl['longitude']) AND !empty($router_crawl['latitude'])) {
+				$router_longitude = $router_crawl['longitude'];
+				$router_latitude = $router_crawl['latitude'];
+			}
 
-							if(!empty($router_longitude) AND !empty($router_latitude)) {
-//								$originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
-								$originators = BatmanAdvanced::getCrawlBatmanAdvNexthopsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+			if(!empty($router_longitude) AND !empty($router_latitude)) {
+				//$originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+				$originators = BatmanAdvanced::getCrawlBatmanAdvNexthopsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
 
-								//$originators = unserialize($originators['originators']);
+				//$originators = unserialize($originators['originators']);
 
-								if(!empty($originators)) {
-									foreach($originators as $originator) {
-										$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['nexthop'], $last_endet_crawl_cycle['id']);
-										$neighbour_router_longitude = $neighbour_router['longitude'];
-										$neighbour_router_latitude = $neighbour_router['latitude'];
-										$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
-										if(!empty($neighbour_router['longitude']) AND !empty($neighbour_router['latitude'])) {
-											$neighbour_router_longitude = $neighbour_router['longitude'];
-											$neighbour_router_latitude = $neighbour_router['latitude'];
-										}
-
-										if(!empty($neighbour_router) AND strlen($originator['nexthop'])==17) {
-											$xw->startElement('Placemark');
-												$xw->startElement('Style');
-													$xw->startElement('LineStyle');
-														$xw->startElement('color');
-															if($originator['link_quality']>=0 AND $originator['link_quality']<105) {
-																$xw->writeRaw("ff1e1eff");
-															} elseif($originator['link_quality']>=105 AND $originator['link_quality']<130) {
-																$xw->writeRaw("ff4949ff");
-															} elseif($originator['link_quality']>=130 AND $originator['link_quality']<155) {
-																$xw->writeRaw("ff6a6aff");
-															} elseif($originator['link_quality']>=155 AND $originator['link_quality']<180) {
-																$xw->writeRaw("ff53acff");
-															} elseif($originator['link_quality']>=180 AND $originator['link_quality']<205) {
-																$xw->writeRaw("ff79ebff");
-															} elseif($originator['link_quality']>=205 AND $originator['link_quality']<230) {
-																$xw->writeRaw("ff7cff79");
-															} elseif($originator['link_quality']>=230) {
-																$xw->writeRaw("ff0aff04");
-															}
-														$xw->endElement();
-/*														$xw->startElement('width');
-																$xw->writeRaw("5");
-														$xw->endElement();*/
-													$xw->endElement();
-												$xw->endElement();
-
-												$xw->startElement('name');
-													$xw->writeRaw("myname");
-												$xw->endElement();
-												$xw->startElement('Polygon');
-													$xw->startElement('outerBoundaryIs');
-														$xw->startElement('LinearRing');
-															$xw->startElement('coordinates');
-																$xw->writeRaw("$router[longitude],$router[latitude],0
-																			    $neighbour_router_longitude,$neighbour_router_latitude,0");
-															$xw->endElement();
-														$xw->endElement();
-													$xw->endElement();
-												$xw->endElement();
-											$xw->endElement();
-										}
-									}
-								}
-							}
+				if(!empty($originators)) {
+					foreach($originators as $originator) {
+						$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['nexthop'], $last_endet_crawl_cycle['id']);
+						$neighbour_router_longitude = $neighbour_router['longitude'];
+						$neighbour_router_latitude = $neighbour_router['latitude'];
+						$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
+						if(!empty($neighbour_router['longitude']) AND !empty($neighbour_router['latitude'])) {
+							$neighbour_router_longitude = $neighbour_router['longitude'];
+							$neighbour_router_latitude = $neighbour_router['latitude'];
 						}
-					$xw->endElement();
-				$xw->endElement();
-			$xw->endElement();
+
+						if(!empty($neighbour_router) AND strlen($originator['nexthop'])==17) {
+							$xw->startElement('Placemark');
+							$xw->startElement('Style');
+							$xw->startElement('LineStyle');
+							$xw->startElement('color');
+							if($originator['link_quality']>=0 AND $originator['link_quality']<105) {
+								$xw->writeRaw("ff1e1eff");
+							} elseif($originator['link_quality']>=105 AND $originator['link_quality']<130) {
+								$xw->writeRaw("ff4949ff");
+							} elseif($originator['link_quality']>=130 AND $originator['link_quality']<155) {
+								$xw->writeRaw("ff6a6aff");
+							} elseif($originator['link_quality']>=155 AND $originator['link_quality']<180) {
+								$xw->writeRaw("ff53acff");
+							} elseif($originator['link_quality']>=180 AND $originator['link_quality']<205) {
+								$xw->writeRaw("ff79ebff");
+							} elseif($originator['link_quality']>=205 AND $originator['link_quality']<230) {
+								$xw->writeRaw("ff7cff79");
+							} elseif($originator['link_quality']>=230) {
+								$xw->writeRaw("ff0aff04");
+							}
+							$xw->endElement();
+							/*$xw->startElement('width');
+							$xw->writeRaw("5");
+							$xw->endElement();*/
+							$xw->endElement();
+							$xw->endElement();
+
+							$xw->startElement('name');
+							$xw->writeRaw("myname");
+							$xw->endElement();
+							$xw->startElement('Polygon');
+							$xw->startElement('outerBoundaryIs');
+							$xw->startElement('LinearRing');
+							$xw->startElement('coordinates');
+							$xw->writeRaw("$router[longitude],$router[latitude],0
+							$neighbour_router_longitude,$neighbour_router_latitude,0");
+							$xw->endElement();
+							$xw->endElement();
+							$xw->endElement();
+							$xw->endElement();
+							$xw->endElement();
+						}
+					}
+				}
+			}
+		}
+		$xw->endElement();
+		$xw->endElement();
+		$xw->endElement();
 		$xw->endDocument();
 
 		print $xw->outputMemory(true);
