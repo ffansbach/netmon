@@ -201,8 +201,6 @@ class ApiMap {
 
 				if(!empty($originators)) {
 					foreach($originators as $originator) {
-						if (Config::getConfigValueByName('routervpnif') == $originator['outgoing_interface'])
-							continue;
 						$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['nexthop'], $last_endet_crawl_cycle['id']);
 						$neighbour_router_longitude = $neighbour_router['longitude'];
 						$neighbour_router_latitude = $neighbour_router['latitude'];
@@ -217,20 +215,24 @@ class ApiMap {
 							$xw->startElement('Style');
 							$xw->startElement('LineStyle');
 							$xw->startElement('color');
-							if($originator['link_quality']>=0 AND $originator['link_quality']<105) {
-								$xw->writeRaw("ff1e1eff");
-							} elseif($originator['link_quality']>=105 AND $originator['link_quality']<130) {
-								$xw->writeRaw("ff4949ff");
-							} elseif($originator['link_quality']>=130 AND $originator['link_quality']<155) {
-								$xw->writeRaw("ff6a6aff");
-							} elseif($originator['link_quality']>=155 AND $originator['link_quality']<180) {
-								$xw->writeRaw("ff53acff");
-							} elseif($originator['link_quality']>=180 AND $originator['link_quality']<205) {
-								$xw->writeRaw("ff79ebff");
-							} elseif($originator['link_quality']>=205 AND $originator['link_quality']<230) {
-								$xw->writeRaw("ff7cff79");
-							} elseif($originator['link_quality']>=230) {
-								$xw->writeRaw("ff0aff04");
+							if (Config::getConfigValueByName('routervpnif') == $originator['outgoing_interface']) {
+                                                                $xw->writeRaw("40ff0000");
+                                                        } else {
+								if($originator['link_quality']>=0 AND $originator['link_quality']<105) {
+									$xw->writeRaw("ff1e1eff");
+								} elseif($originator['link_quality']>=105 AND $originator['link_quality']<130) {
+									$xw->writeRaw("ff4949ff");
+								} elseif($originator['link_quality']>=130 AND $originator['link_quality']<155) {
+									$xw->writeRaw("ff6a6aff");
+								} elseif($originator['link_quality']>=155 AND $originator['link_quality']<180) {
+									$xw->writeRaw("ff53acff");
+								} elseif($originator['link_quality']>=180 AND $originator['link_quality']<205) {
+									$xw->writeRaw("ff79ebff");
+								} elseif($originator['link_quality']>=205 AND $originator['link_quality']<230) {
+									$xw->writeRaw("ff7cff79");
+								} elseif($originator['link_quality']>=230) {
+									$xw->writeRaw("ff0aff04");
+								}
 							}
 							$xw->endElement();
 							/*$xw->startElement('width');
