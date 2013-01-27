@@ -2,9 +2,9 @@ var map;
 var layerNetwork;
 
 // default settings
-var lon = 11.02;
-var lat = 49.483;
-var zoom = 11;
+var lon = 10.65;
+var lat = 49.71;
+var zoom = 9;
 
 function onPopupClose(evt) {
 	selectControl.unselect(selectedFeature);

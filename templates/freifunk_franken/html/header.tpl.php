@@ -41,13 +41,13 @@
 		<div id="nav"> <a id="navigation" name="navigation"></a>
 			<!-- skiplink anchor: navigation -->
 			<div id="nav_main">
-				<ul>
+				<!--<ul>
 					<li><a href="http://blog.freifunk-ol.de/">Neues</a></li>
 					<li><a href="http://wiki.freifunk-ol.de/">Informationen</a></li>
 					<li><a href="http://wiki.freifunk-ol.de/index.php?title=Kontakt">Kontakt</a></li>
 					<li id="current"><a href="#">Netzwerk</a></li>
 					<li><a href="http://ticket.freifunk-ol.de">Entwicklung</a></li>
-				</ul>
+				</ul>-->
 
 				<div class="searchbox">
                   <form id="searchForm" name="searchForm" action="./search.php" method="POST">
