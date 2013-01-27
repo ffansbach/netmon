@@ -157,23 +157,23 @@ table.display td.center {
  */
 
 .sorting_asc {
-	background: url('../img/jquery_data_tables/sort_asc.png') no-repeat center right;
+	background: url('../../img/jquery_data_tables/sort_asc.png') no-repeat center right;
 }
 
 .sorting_desc {
-	background: url('../img/jquery_data_tables/sort_desc.png') no-repeat center right;
+	background: url('../../img/jquery_data_tables/sort_desc.png') no-repeat center right;
 }
 
 .sorting {
-	background: url('../img/jquery_data_tables/sort_both.png') no-repeat center right;
+	background: url('../../img/jquery_data_tables/sort_both.png') no-repeat center right;
 }
 
 .sorting_asc_disabled {
-	background: url('../img/jquery_data_tables/sort_asc_disabled.png') no-repeat center right;
+	background: url('../../img/jquery_data_tables/sort_asc_disabled.png') no-repeat center right;
 }
 
 .sorting_desc_disabled {
-	background: url('../img/jquery_data_tables/sort_desc_disabled.png') no-repeat center right;
+	background: url('../../img/jquery_data_tables/sort_desc_disabled.png') no-repeat center right;
 }
 
 
