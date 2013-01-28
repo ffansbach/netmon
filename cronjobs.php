@@ -57,23 +57,14 @@ foreach($files as $file) {
 * Crawl
 **/
 echo "Crawle Router...\n";
-//require_once('integrated_xml_ipv6_crawler.php');
-exec("php /var/kunden/webs/freifunk/netmon/integrated_xml_ipv6_crawler.php -f0 -t15 &> /dev/null & echo $!", $return1);
-print_r($return1);
-exec("php /var/kunden/webs/freifunk/netmon/integrated_xml_ipv6_crawler.php -f15 -t30 &> /dev/null & echo $!", $return2);
-print_r($return2);
-exec("php /var/kunden/webs/freifunk/netmon/integrated_xml_ipv6_crawler.php -f30 -t45 &> /dev/null & echo $!", $return3);
-print_r($return3);
-exec("php /var/kunden/webs/freifunk/netmon/integrated_xml_ipv6_crawler.php -f45 -t60 &> /dev/null & echo $!", $return4);
-print_r($return4);
-exec("php /var/kunden/webs/freifunk/netmon/integrated_xml_ipv6_crawler.php -f60 -t75 &> /dev/null & echo $!", $return5);
-print_r($return5);
-exec("php /var/kunden/webs/freifunk/netmon/integrated_xml_ipv6_crawler.php -f75 -t90 &> /dev/null & echo $!", $return6);
-print_r($return6);
-/*exec("php /var/kunden/webs/freifunk/netmon/integrated_xml_ipv6_crawler.php -f60 -t80 &> /dev/null & echo $!", $return7);
-print_r($return7);
-exec("php /var/kunden/webs/freifunk/netmon/integrated_xml_ipv6_crawler.php -f60 -t80 &> /dev/null & echo $!", $return8);
-print_r($return8);*/
+for ($i=0; $i<=Router::countRouters(); $i+=10) {
+        //start an independet crawl process for each 10 routers to crawl routers simultaniously
+        $return = array();
+        $cmd = "php /var/kunden/webs/freifunk/netmon/integrated_xml_ipv6_crawler.php -f".$i." -t10  &> /dev/null & echo $!";
+        echo "Running: $cmd\n";
+        exec($cmd, $return);
+        echo "The initialized crawl process has the pid $return[0]\n";
+}
 
 /**
 * Service Crawls

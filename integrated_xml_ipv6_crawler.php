@@ -54,20 +54,17 @@ class IntegratedXmlIPv6Crawler {
 				foreach($router['interfaces'] as $interface) {
 					if(!empty($interface['ip_addresses'])) {
 						foreach($interface['ip_addresses'] as $key=>$ip_address) {
-							echo "Crawle $router[hostname]\n";
-							echo "Nutze $ip_address[ip] auf Interface $interface[name] als ip\n";
 							if($ip_address['ipv']==6) {
 								unset($return_string);
 								unset($xml_array);
 								unset($xml);
 								
+								//ping the router to preestablish a connection
 								$ipv6_address = explode("/", $ip_address['ip']);
 								$return = array();
-								echo "Pinge...\n";
-								$command = "ping6 -c 6 -I $GLOBALS[netmon_ipv6_interface] $ipv6_address[0]";
-//								echo $command."\n";
+								$command = "ping6 -c 4 -I $GLOBALS[netmon_ipv6_interface] $ipv6_address[0]";
 								exec($command, $return);
-
+									
 								foreach($return as $key=>$line) {
 									if(strpos($line, "packet loss")!==false) {
 										$ping_result_index=$key;
@@ -87,60 +84,27 @@ class IntegratedXmlIPv6Crawler {
 									$ip_data[0]['ping_avg'] = $exploded_ping_result[1];
 								}
 
-
-								if($ping) {
-									echo "Ping war erfolgreich, avergage time: ".$ip_data[0]['ping_avg']."\n";
-									echo "Hole Crawl daten...";
-									//Fetch crawl data from node
-									$return = array();
-									$command = "curl -s --connect-timeout 4 -m8 -g http://[$ipv6_address[0]%25\$(cat /sys/class/net/$GLOBALS[netmon_ipv6_interface]/ifindex)]/node.data";
-//echo $command;
-
-									exec($command, $return);
-									$return_string = "";
-									foreach($return as $string) {
-										$return_string .= $string;
-									}
-
-									if(!empty($return_string)) {
-										echo "Crawl Daten bekommen, node wird als online markiert\n";
-										try {
-											$xml = new SimpleXMLElement($return_string);
-											$xml_array = IntegratedXmlIPv6Crawler::simplexml2array($xml);
-											$xml_array['ip_data'] = $ip_data;
-											$xml_array['router_id'] = $router['id'];
-											echo "Speichere Crawl daten\n";
-											$return = Crawl::insertCrawlData($xml_array);
-										} catch (Exception $e) {
-											echo nl2br($e->getMessage());
-										}
-									} else {
-										echo "keine Crawl Daten bekommen, node wird als offline markiert\n";
-										$xml_array['system_data']['status'] = "offline";
-									}
-								} else {
-									echo "Ping war nicht erfolgreich, crawle nicht, speichere als offline\n";
-									$xml_array['system_data']['status'] = "offline";
+								//fetch crawl data from router
+								$return = array();
+								$command = "curl -s --connect-timeout 4 -m8 -g http://[$ipv6_address[0]%25\$(cat /sys/class/net/$GLOBALS[netmon_ipv6_interface]/ifindex)]/node.data";
+								exec($command, $return);
+								$return_string = "";
+								foreach($return as $string) {
+									$return_string .= $string;
 								}
-								
-/*								$xml_array['ip_data'] = $ip_data;
-								
-								$xml_array['router_id'] = $router['id'];
-//								print_r($xml_array);
-								echo "Speichere Crawl daten\n";
-								$return = Crawl::insertCrawlData($xml_array);*/
 
-//echo "HOSTNAME: ".$xml_array['system_data']['hostname']."\n";
-//echo "status: ".$xml_array['system_data']['status']."\n";
-//								print_r($return);
-/*								//get routers to crawl
-								$api_crawl = new jsonRPCClient($GLOBALS['netmon_url']."api_json_crawl.php");
-								try {
-									$result = $api_crawl->insertCrawlData($xml_array);
-									print_r($result);
-								} catch (Exception $e) {
-									echo nl2br($e->getMessage());
-								}*/
+								//store the crawl data into the database if the router is not offline
+								if(!empty($return_string)) {
+									try {
+										$xml = new SimpleXMLElement($return_string);
+										$xml_array = IntegratedXmlIPv6Crawler::simplexml2array($xml);
+										$xml_array['ip_data'] = $ip_data;                                                                            
+										$xml_array['router_id'] = $router['id'];
+										$return = Crawl::insertCrawlData($xml_array);
+									} catch (Exception $e) {
+										echo nl2br($e->getMessage());
+									}
+								}
 							}
 						}
 					}
@@ -155,9 +119,6 @@ $opts .= "f:";
 $opts .= "t:";
 $options = getopt($opts);
 
-/*echo $options['f'];
-echo $options['t'];*/
-
-	IntegratedXmlIPv6Crawler::crawl($options['f'], $options['t']);
+IntegratedXmlIPv6Crawler::crawl($options['f'], $options['t']);
 
 ?>
