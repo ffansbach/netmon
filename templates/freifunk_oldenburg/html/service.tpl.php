@@ -1,4 +1,4 @@
-		<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
+		<script src='https://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 		<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
 		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>

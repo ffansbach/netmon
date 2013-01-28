@@ -65,7 +65,7 @@
 
 		<div id="section_location">
 			<div style="width: 100%; overflow: hidden;" class="section_location">
-				<script type="text/javascript" src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
+				<script type="text/javascript" src='https://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 				<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 				<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
 				<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
@@ -124,6 +124,6 @@
 	<p>
 		Mac Adresse (ohne Bindestriche oder Doppelpunkte): <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$router_data.router_auto_assign_login_string}">
 	</p>
-
+	<p><input type="submit" value="Absenden"></p>
 
 </form>

@@ -43,7 +43,7 @@
 <form action="./routereditor.php?section=insert" method="POST">
 	<h2>Grunddaten</h2>
 	<p>
-		Hostname: (prägnanter Name für den Router) <br><input name="hostname" type="text" size="35" maxlength="50" value="{$smarty.get.hostname}">
+		Hostname: (prägnanter Name für den Router) <br><input name="hostname" type="text" size="35" maxlength="50" value="{if !empty($smarty.get.hostname)}{$smarty.get.hostname}{/if}">
 	</p>
 
 	<p>
@@ -75,7 +75,7 @@
 
 		<div id="section_location">
 			<div style="width: 100%; overflow: hidden;" class="section_location">
-				<script type="text/javascript" src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
+				<script type="text/javascript" src='https://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 				<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 				<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
 				<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
@@ -99,7 +99,7 @@
 				<br style="clear:both;">
 			</p>
 			
-			<p>Kurze Beschreibung des Standorts:<br><input id="location" name="location" type="text" size="60" maxlength="60" value="{$router_data.location}"></p>
+			<p>Kurze Beschreibung des Standorts:<br><input id="location" name="location" type="text" size="60" maxlength="60" value=""></p>
 		</div>
 	</div>
 
