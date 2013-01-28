@@ -47,7 +47,7 @@ class History {
 			}
 		}
 
-		if (is_array($history_data)) {
+		if (isset($history_data) AND is_array($history_data)) {
 			foreach ($history_data as $hist_data) {
 				DB::getInstance()->exec("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data) VALUES ('$actual_crawl_cycle[id]', 'router', '$router_id', NOW(), '$hist_data');");
 			}
@@ -337,6 +337,7 @@ class History {
 	}
 
 	public function getHistory($countlimit, $hourlimit) {
+		$history = array();
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 		if($countlimit)
 			$range = "
