@@ -100,6 +100,9 @@ class IntegratedXmlIPv6Crawler {
 										$xml_array = IntegratedXmlIPv6Crawler::simplexml2array($xml);
 										$xml_array['ip_data'] = $ip_data;                                                                            
 										$xml_array['router_id'] = $router['id'];
+										//if crawl data is being stored by this script, the status is always online
+										//because data is only beeing stored if a connection could be established
+										$xml_array['system_data']['status'] = "online";
 										$return = Crawl::insertCrawlData($xml_array);
 									} catch (Exception $e) {
 										echo nl2br($e->getMessage());
