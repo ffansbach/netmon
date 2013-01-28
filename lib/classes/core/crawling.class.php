@@ -186,6 +186,9 @@ class Crawling {
 		$crawl_router = Router::getCrawlRouterByCrawlCycleId($actual_crawl_cycle['id'], $router_id);
 
 		if(empty($crawl_router)) {
+			//set default values if nothing is set
+			if ($crawl_data['status'] != "online" AND $crawl_data['status'] != "offline" AND $crawl_data['status'] != "unknown") $crawl_data['status'] = "unknown";
+			
 			$crawl_data['description'] = (isset($crawl_data['description']) ? rawurldecode($crawl_data['description']) : "");
 			$crawl_data['location'] = (isset($crawl_data['location']) ? rawurldecode($crawl_data['location']) : "");
 			$crawl_data['ping'] = (isset($crawl_data['ping']) ? $crawl_data['ping'] : "");
