@@ -184,15 +184,18 @@ class ApiMap {
 		$routers = Router::getRouters();
 		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		foreach($routers as $router) {
+			//set own position to the position saved fix in netmon
 			$router_longitude = $router['longitude'];
 			$router_latitude = $router['latitude'];
 
+			//if the router has an position in it's actual crawl data, then prefer this position
 			$router_crawl = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
 			if(!empty($router_crawl['longitude']) AND !empty($router_crawl['latitude'])) {
 				$router_longitude = $router_crawl['longitude'];
 				$router_latitude = $router_crawl['latitude'];
 			}
 
+			//if the own position is not empt, then look for neighbours
 			if(!empty($router_longitude) AND !empty($router_latitude)) {
 				//$originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
 				$originators = BatmanAdvanced::getCrawlBatmanAdvNexthopsByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
@@ -210,7 +213,8 @@ class ApiMap {
 							$neighbour_router_latitude = $neighbour_router['latitude'];
 						}
 
-						if(!empty($neighbour_router) AND strlen($originator['nexthop'])==17) {
+						//check if the position is not empty
+						if(!empty($neighbour_router_longitude) AND !empty($neighbour_router_longitude) AND strlen($originator['nexthop'])==17) {
 							$xw->startElement('Placemark');
 							$xw->startElement('Style');
 							$xw->startElement('LineStyle');
