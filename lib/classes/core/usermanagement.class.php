@@ -56,9 +56,9 @@ class UserManagement {
 
 	//Checks if a user is owner or has the permission to access the site
 	public function checkIfUserIsOwnerOrPermitted($site_permission, $owning_user_id) {
-		if($owning_user_id==$_SESSION['user_id']) {
+		if(isset($owning_user_id) AND isset($_SESSION['user_id']) AND $owning_user_id==$_SESSION['user_id']) {
 			return true;
-		} elseif(UserManagement::checkPermission($site_permission, $_SESSION['user_id'])) {
+		} elseif(isset($_SESSION['user_id']) AND isset($site_permission) AND UserManagement::checkPermission($site_permission, $_SESSION['user_id'])) {
 			return true;
 		} else {
 			return false;
