@@ -64,7 +64,6 @@ class RouterEditor {
 			//Send Message to twitter
 			if($_POST['twitter_notification']=='1') {
 				Message::postTwitterMessage("Neuer #Freifunk Knoten in #Oldenburg! Wo? Schau nach: http://netmon.freifunk-ol.de/router_status.php?router_id=$router_id");
-				$message[] = array("Der neue Router wird auf dem Twitteraccount von <a href=\"http://twitter.com/$GLOBALS[twitter_username]\">$GLOBALS[twitter_username]</a> angekündigt.", 1);
 			}
 
 			Message::setMessage($message);

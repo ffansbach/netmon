@@ -67,10 +67,15 @@ class Message {
 			
 			$token = unserialize($config_line['value']);
 			$client = $token->getHttpClient($config);
-			$client->setUri('http://twitter.com/statuses/update.json');
+			$client->setUri('http://api.twitter.com/1/statuses/update.json');
 			$client->setMethod(Zend_Http_Client::POST);
 			$client->setParameterPost('status', $statusMessage);
 			$response = $client->request();
+			if($response->getStatus() == 200)
+				$message[] = array("Folgendes wurde auf dem Twitteraccount von <a href=\"http://twitter.com/$GLOBALS[twitter_username]\">$GLOBALS[twitter_username]</a> angekündigt: <i>\"$statusMessage\"</i>", 1);
+			else
+				$message[] = array("Beim senden der Twitternachricht ist folgender Fehler aufgetreten: ".$response->getStatus(), 0);
+			Message::setMessage($message);
 		}
 	}
 }
