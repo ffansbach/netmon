@@ -202,17 +202,17 @@
 	*/
 
 	if (!$GLOBALS['installation_mode']) {
-		if (isset($_SESSION['user_id']) AND !UserManagement::isLoggedIn($_SESSION['user_id'])) {
+		if (!UserManagement::isLoggedIn($_SESSION['user_id'])) {
 			//Login Class
 			require_once('lib/classes/core/login.class.php');
 			if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
 				Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
-			} elseif (!empty($_COOKIE["openid"]) AND !$_SESSION['openid_login']) {
-				$_SESSION['openid_login'] = true;
+			} elseif (!empty($_COOKIE["openid"])) {
 				require_once('lib/classes/extern/class.openid.php');
 				if (empty($_SESSION['redirect_url'])) {
 					$_SESSION['redirect_url'] = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER['REQUEST_URI'];
 				}
+
 			
 				// Get identity from user and redirect browser to OpenID Server
 				$openid = new SimpleOpenID;
