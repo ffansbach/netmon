@@ -293,8 +293,15 @@ if ($_GET['section']=="edit") {
 } elseif($_GET['section']=="insert_edit_chipset_name") {
 	Chipsets::editChipset($_GET['chipset_id'], $_POST['hardware_name']);
 	header('Location: ./config.php?section=edit_hardware');
+} elseif($_GET['section']=="insert_delete_chipset") {
+	if($_POST['really_delete']==1) {
+		Chipsets::deleteChipset($_GET['chipset_id']);
+		header('Location: ./config.php?section=edit_hardware');
+	} else {
+		$message[] = array("Zum löschen des Chipsets ist eine Bestätigung erforderlich!", 2);
+		Message::setMessage($message);
+		header('Location: ./config.php?section=edit_hardware_name&chipset_id='.$_GET['chipset_id']);
+	}
 }
-
-
 
 ?>

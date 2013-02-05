@@ -27,7 +27,7 @@ if ($_GET['section']=="login") {
 	if($_POST['remember']) {
 		$_SESSION['openid_login_remember']=$_POST['openid_url'];
 	}
-
+	
 	// Get identity from user and redirect browser to OpenID Server
 	if ($_POST['openid_action'] == "login"){ 
 		$openid = new SimpleOpenID;
