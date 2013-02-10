@@ -87,11 +87,11 @@ class Login {
 			return false;
 		} else {
 			$_SESSION = array();
+			$_COOKIE = array();
 			setcookie("nickname", "", time() - 60*60*24*14);
 			setcookie("password_hash", "", time() - 60*60*24*14);
 			setcookie("openid", "", time() - 60*60*24*14);
 			setcookie(session_name(), '', time()-3600,'/');
-
 			$messages[] = array("Sie wurden ausgeloggt und ihre Benutzersession wurde gelöscht!", 1);
 			Message::setMessage($messages);
 			return true;

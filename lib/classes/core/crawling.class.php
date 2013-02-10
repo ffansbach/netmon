@@ -189,43 +189,44 @@ class Crawling {
 			//set default values if nothing is set
 			if ($crawl_data['status'] != "online" AND $crawl_data['status'] != "offline" AND $crawl_data['status'] != "unknown") $crawl_data['status'] = "unknown";
 			
-			$crawl_data['description'] = (isset($crawl_data['description']) ? rawurldecode($crawl_data['description']) : "");
-			$crawl_data['location'] = (isset($crawl_data['location']) ? rawurldecode($crawl_data['location']) : "");
-			$crawl_data['ping'] = (isset($crawl_data['ping']) ? $crawl_data['ping'] : "");
-			$crawl_data['latitude'] = (isset($crawl_data['latitude']) ? $crawl_data['latitude'] : "");
-			$crawl_data['longitude'] = (isset($crawl_data['longitude']) ? $crawl_data['longitude'] : "");
-			$crawl_data['luciname'] = (isset($crawl_data['luciname']) ? $crawl_data['luciname'] : "");
-			$crawl_data['luciversion'] = (isset($crawl_data['luciversion']) ? $crawl_data['luciversion'] : "");
-			$crawl_data['distname'] = (isset($crawl_data['distname']) ? $crawl_data['distname'] : "");
-			$crawl_data['distversion'] = (isset($crawl_data['distversion']) ? $crawl_data['distversion'] : "");
-			$crawl_data['chipset'] = (isset($crawl_data['chipset']) ? $crawl_data['chipset'] : "");
-			$crawl_data['cpu'] = (isset($crawl_data['cpu']) ? $crawl_data['cpu'] : "");
-			$crawl_data['memory_total'] = (isset($crawl_data['memory_total']) ? $crawl_data['memory_total'] : "");
-			$crawl_data['memory_caching'] = (isset($crawl_data['memory_caching']) ? $crawl_data['memory_caching'] : "");
-			$crawl_data['memory_buffering'] = (isset($crawl_data['memory_buffering']) ? $crawl_data['memory_buffering'] : "");
-			$crawl_data['memory_free'] = (isset($crawl_data['memory_free']) ? $crawl_data['memory_free'] : "");
-			$crawl_data['loadavg'] = (isset($crawl_data['loadavg']) ? $crawl_data['loadavg'] : "");
-			$crawl_data['processes'] = (isset($crawl_data['processes']) ? $crawl_data['processes'] : "");
-			$crawl_data['uptime'] = (isset($crawl_data['uptime']) ? $crawl_data['uptime'] : "");
-			$crawl_data['idletime'] = (isset($crawl_data['idletime']) ? $crawl_data['idletime'] : "");
-			$crawl_data['local_time'] = (isset($crawl_data['local_time']) ? $crawl_data['local_time'] : "");
-			$crawl_data['community_essid'] = (isset($crawl_data['community_essid']) ? $crawl_data['community_essid'] : "");
-			$crawl_data['community_nickname'] = (isset($crawl_data['community_nickname']) ? $crawl_data['community_nickname'] : "");
-			$crawl_data['community_email'] = (isset($crawl_data['community_email']) ? $crawl_data['community_email'] : "");
-			$crawl_data['community_prefix'] = (isset($crawl_data['community_prefix']) ? $crawl_data['community_prefix'] : "");
-			$crawl_data['batman_advanced_version'] = (isset($crawl_data['batman_advanced_version']) ? $crawl_data['batman_advanced_version'] : "");
-			$crawl_data['kernel_version'] = (isset($crawl_data['kernel_version']) ? $crawl_data['kernel_version'] : "");
-			$crawl_data['nodewatcher_version'] = (isset($crawl_data['nodewatcher_version']) ? $crawl_data['nodewatcher_version'] : "");
-			$crawl_data['firmware_version'] = (isset($crawl_data['firmware_version']) ? $crawl_data['firmware_version'] : "");
-			$crawl_data['firmware_revision'] = (isset($crawl_data['firmware_revision']) ? $crawl_data['firmware_revision'] : "");
-			$crawl_data['openwrt_core_revision'] = (isset($crawl_data['openwrt_core_revision']) ? $crawl_data['openwrt_core_revision'] : "");
-			$crawl_data['openwrt_feeds_packages_revision'] = (isset($crawl_data['openwrt_feeds_packages_revision']) ? $crawl_data['openwrt_feeds_packages_revision'] : "");
-			$crawl_data['hostname'] = (isset($crawl_data['hostname']) ? $crawl_data['hostname'] : "");
+			$crawl_data['description'] = (isset($crawl_data['description']) ? trim(rawurldecode($crawl_data['description'])) : "");
+			$crawl_data['location'] = (isset($crawl_data['location']) ? trim(rawurldecode($crawl_data['location'])) : "");
+			$crawl_data['ping'] = (isset($crawl_data['ping']) ? trim($crawl_data['ping']) : "");
+			$crawl_data['latitude'] = (isset($crawl_data['latitude']) ? trim($crawl_data['latitude']) : "");
+			$crawl_data['longitude'] = (isset($crawl_data['longitude']) ? trim($crawl_data['longitude']) : "");
+			$crawl_data['luciname'] = (isset($crawl_data['luciname']) ? trim($crawl_data['luciname']) : "");
+			$crawl_data['luciversion'] = (isset($crawl_data['luciversion']) ? trim($crawl_data['luciversion']) : "");
+			$crawl_data['distname'] = (isset($crawl_data['distname']) ? trim($crawl_data['distname']) : "");
+			$crawl_data['distversion'] = (isset($crawl_data['distversion']) ? trim($crawl_data['distversion']) : "");
+			$crawl_data['chipset'] = (isset($crawl_data['chipset']) ? trim($crawl_data['chipset']) : "");
+			$crawl_data['cpu'] = (isset($crawl_data['cpu']) ? trim($crawl_data['cpu']) : "");
+			$crawl_data['memory_total'] = (isset($crawl_data['memory_total']) ? trim($crawl_data['memory_total']) : "");
+			$crawl_data['memory_caching'] = (isset($crawl_data['memory_caching']) ? trim($crawl_data['memory_caching']) : "");
+			$crawl_data['memory_buffering'] = (isset($crawl_data['memory_buffering']) ? trim($crawl_data['memory_buffering']) : "");
+			$crawl_data['memory_free'] = (isset($crawl_data['memory_free']) ? trim($crawl_data['memory_free']) : "");
+			$crawl_data['loadavg'] = (isset($crawl_data['loadavg']) ? trim($crawl_data['loadavg']) : "");
+			$crawl_data['processes'] = (isset($crawl_data['processes']) ? trim($crawl_data['processes']) : "");
+			$crawl_data['uptime'] = (isset($crawl_data['uptime']) ? trim($crawl_data['uptime']) : "");
+			$crawl_data['idletime'] = (isset($crawl_data['idletime']) ? trim($crawl_data['idletime']) : "");
+			$crawl_data['local_time'] = (isset($crawl_data['local_time']) ? trim($crawl_data['local_time']) : "");
+			$crawl_data['community_essid'] = (isset($crawl_data['community_essid']) ? trim($crawl_data['community_essid']) : "");
+			$crawl_data['community_nickname'] = (isset($crawl_data['community_nickname']) ? trim($crawl_data['community_nickname']) : "");
+			$crawl_data['community_email'] = (isset($crawl_data['community_email']) ? trim($crawl_data['community_email']) : "");
+			$crawl_data['community_prefix'] = (isset($crawl_data['community_prefix']) ? trim($crawl_data['community_prefix']) : "");
+			$crawl_data['batman_advanced_version'] = (isset($crawl_data['batman_advanced_version']) ? trim($crawl_data['batman_advanced_version']) : "");
+			$crawl_data['kernel_version'] = (isset($crawl_data['kernel_version']) ? trim($crawl_data['kernel_version']) : "");
+			$crawl_data['nodewatcher_version'] = (isset($crawl_data['nodewatcher_version']) ? trim($crawl_data['nodewatcher_version']) : "");
+			$crawl_data['firmware_version'] = (isset($crawl_data['firmware_version']) ? trim($crawl_data['firmware_version']) : "");
+			$crawl_data['firmware_revision'] = (isset($crawl_data['firmware_revision']) ? trim($crawl_data['firmware_revision']) : "");
+			$crawl_data['openwrt_core_revision'] = (isset($crawl_data['openwrt_core_revision']) ? trim($crawl_data['openwrt_core_revision']) : "");
+			$crawl_data['openwrt_feeds_packages_revision'] = (isset($crawl_data['openwrt_feeds_packages_revision']) ? trim($crawl_data['openwrt_feeds_packages_revision']) : "");
+			$crawl_data['hostname'] = (isset($crawl_data['hostname']) ? trim($crawl_data['hostname']) : "");
 
 			//insert data into the database
 			try {
 				DB::getInstance()->exec("INSERT INTO crawl_routers (router_id, crawl_cycle_id, crawl_date, status, ping, hostname, description, location, latitude, longitude, luciname, luciversion, distname, distversion, chipset, cpu, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, uptime, idletime, local_time, community_essid, community_nickname, community_email, community_prefix, batman_advanced_version, kernel_version, nodewatcher_version, firmware_version, firmware_revision, openwrt_core_revision, 	openwrt_feeds_packages_revision)
-							 VALUES ('$router_id', '$actual_crawl_cycle[id]', NOW(), '$crawl_data[status]', '$crawl_data[ping]', '$crawl_data[hostname]', '$crawl_data[description]', '$crawl_data[location]', '$crawl_data[latitude]', '$crawl_data[longitude]', '$crawl_data[luciname]', '$crawl_data[luciversion]', '$crawl_data[distname]', '$crawl_data[distversion]', '$crawl_data[chipset]', '$crawl_data[cpu]', '$crawl_data[memory_total]', '$crawl_data[memory_caching]', '$crawl_data[memory_buffering]', '$crawl_data[memory_free]', '$crawl_data[loadavg]', '$crawl_data[processes]', '$crawl_data[uptime]', '$crawl_data[idletime]', '$crawl_data[local_time]', '$crawl_data[community_essid]', '$crawl_data[community_nickname]', '$crawl_data[community_email]', '$crawl_data[community_prefix]', '$crawl_data[batman_advanced_version]', '$crawl_data[kernel_version]', '$crawl_data[nodewatcher_version]', '$crawl_data[firmware_version]', '$crawl_data[firmware_revision]', '$crawl_data[openwrt_core_revision]', '$crawl_data[openwrt_feeds_packages_revision]');");
+							 VALUES ('$router_id', '$actual_crawl_cycle[id]', NOW(), '$crawl_data[status]', '$crawl_data[ping]', '$crawl_data[hostname]', '$crawl_data[description]', '$crawl_data[location]', '$crawl_data[latitude]', '$crawl_data[longitude]', '$crawl_data[luciname]', '$crawl_data[luciversion]', '$crawl_data[distname]', '$crawl_data[distversion]', '$crawl_data[chipset]', '$crawl_data[cpu]', '$crawl_data[memory_total]', '$crawl_data[memory_caching]', '$crawl_data[memory_buffering]', '$crawl_data[memory_free]', '$crawl_data[loadavg]', '$crawl_data[processes]', '$crawl_data[uptime]', '$crawl_data[idletime]', '$crawl_data[local_time]', '$crawl_data[community_essid]', '$crawl_data[community_nickname]', '$crawl_data[community_email]', '$crawl_data[community_prefix]', '$crawl_data[batman_advanced_version]', '$crawl_data[kernel_version]', '$crawl_data[nodewatcher_version]', '$crawl_data[firmware_version]', '$crawl_data[firmware_revision]', '$crawl_data[openwrt_core_revision]', '$crawl_data[openwrt_feeds_packages_revision]')
+;");
 			}
 			catch(PDOException $e) {
 				echo $e->getMessage();

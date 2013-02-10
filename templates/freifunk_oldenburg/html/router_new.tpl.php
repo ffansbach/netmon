@@ -133,7 +133,7 @@
 	</p>
 
 	<p>
-		Mac Adresse (ohne Bindestriche oder Doppelpunkte): <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{$smarty.get.router_auto_assign_login_string}">
+		Mac Adresse (ohne Bindestriche oder Doppelpunkte): <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{if isset($smarty.get.router_auto_assign_login_string)}{$smarty.get.router_auto_assign_login_string}{/if}">
 	</p>
 
 	<p><input type="submit" value="Absenden"></p>

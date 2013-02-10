@@ -202,13 +202,12 @@
 	*/
 
 	if (!$GLOBALS['installation_mode']) {
-		if (isset($_SESSION['user_id']) AND !UserManagement::isLoggedIn($_SESSION['user_id'])) {
+		if (!UserManagement::isLoggedIn($_SESSION['user_id'])) {
 			//Login Class
 			require_once('lib/classes/core/login.class.php');
 			if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
 				Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
-			} elseif (!empty($_COOKIE["openid"]) AND !$_SESSION['openid_login']) {
-				$_SESSION['openid_login'] = true;
+			} elseif (!empty($_COOKIE["openid"])) {
 				require_once('lib/classes/extern/class.openid.php');
 				if (empty($_SESSION['redirect_url'])) {
 					$_SESSION['redirect_url'] = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER['REQUEST_URI'];
@@ -223,6 +222,14 @@
 				if ($openid->GetOpenIDServer()){
 					$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].dirname($_SERVER['PHP_SELF']).'/login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
 					$openid->Redirect(); 	// This will redirect user to OpenID Server
+				} else {
+					$error = $openid->GetError();
+					$messages[] = array("Autologin mit der OpenID ".$_COOKIE["openid"]." fehlgeschlagen.", 2);
+					$messages[] = array("ERROR CODE: " . $error['code'], 2);
+					$messages[] = array("ERROR DESCRIPTION: " . $error['description'], 2);
+					setcookie("openid", "", time() - 60*60*24*14);
+					$messages[] = array("Deaktiviere Autologin.", 2);
+					Message::setMessage($messages);
 				}
 			}
 		}
@@ -279,6 +286,8 @@
 	if(!isset($messages)) {
 		$message = array();
 		$smarty->assign('message', $message);
+	} else {
+		$smarty->assign('message', $messages);
 	}
 
 ?>

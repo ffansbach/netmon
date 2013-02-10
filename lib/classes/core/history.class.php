@@ -12,12 +12,23 @@ class History {
 		}
 
 		$last_crawl_data = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router_id);
-		if($last_crawl_data['status']!="online") {
-			$last_online_crawl_data = Router::getLastOnlineCrawlByRouterId($router_id);
-		}
 
+		//erstelle online/offline Benachrichtigung aus aktuellem und letztem crawl Eintrag
 		if (!empty($current_crawl_data['status']) AND $current_crawl_data['status']!=$last_crawl_data['status']) {
 			$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'status', 'from'=>$last_crawl_data['status'], 'to'=>$current_crawl_data['status']));
+		}
+		
+		//erstelle reboot Benachrichtigung aus aktuellem und letztem crawl Eintrag
+		if($current_crawl_data['status']=='online' AND $last_crawl_data['status']=='online') {
+			if ((!empty($current_crawl_data['uptime']) AND !empty($last_crawl_data['uptime'])) AND ($current_crawl_data['uptime']<$last_crawl_data['uptime'])) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'reboot'));
+			}
+		}
+
+		if($last_crawl_data['status']!="online") {
+			$last_online_crawl_data = Router::getLastOnlineCrawlByRouterId($router_id);
+		} else {
+			$last_online_crawl_data = $last_crawl_data;
 		}
 
 		if($current_crawl_data['status']=='online') {
@@ -39,11 +50,14 @@ class History {
 			if (!empty($current_crawl_data['firmware_version']) AND !empty($last_online_crawl_data['firmware_version']) AND $current_crawl_data['firmware_version']!=$last_online_crawl_data['firmware_version']) {
 				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'firmware_version', 'from'=>$last_crawl_data['firmware_version'], 'to'=>$current_crawl_data['firmware_version']));
 			}
-		}
-
-		if($current_crawl_data['status']=='online' AND $last_crawl_data['status']=='online') {
-			if ((!empty($current_crawl_data['uptime']) AND !empty($last_crawl_data['uptime'])) AND ($current_crawl_data['uptime']<$last_crawl_data['uptime'])) {
-				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'reboot'));
+			if (!empty($current_crawl_data['nodewatcher_version']) AND !empty($last_online_crawl_data['nodewatcher_version']) AND $current_crawl_data['nodewatcher_version']!=$last_online_crawl_data['nodewatcher_version']) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'nodewatcher_version', 'from'=>$last_crawl_data['nodewatcher_version'], 'to'=>$current_crawl_data['nodewatcher_version']));
+			}
+			if (!empty($current_crawl_data['hostname']) AND !empty($last_online_crawl_data['hostname']) AND $current_crawl_data['hostname']!=$last_online_crawl_data['hostname']) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'hostname', 'from'=>$last_crawl_data['hostname'], 'to'=>$current_crawl_data['hostname']));
+			}
+			if (!empty($current_crawl_data['chipset']) AND !empty($last_online_crawl_data['chipset']) AND $current_crawl_data['chipset']!=$last_online_crawl_data['chipset']) {
+				$history_data[] = serialize(array('router_id'=>$router_id, 'action'=>'chipset', 'from'=>$last_crawl_data['chipset'], 'to'=>$current_crawl_data['chipset']));
 			}
 		}
 
