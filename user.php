@@ -7,6 +7,8 @@ require_once('lib/classes/core/dns.class.php');
 require_once('lib/classes/core/user.class.php');
   
 $smarty->assign('message', Message::getMessage());
+
+if (!is_numeric($_GET['user_id'])) die('invalid user id');
   
 if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
 	$smarty->assign('permitted', true);
@@ -15,6 +17,8 @@ $smarty->assign('user', User::getUserByID($_GET['user_id']));
 
 $routerlist = Router::getRouterListByUserId($_GET['user_id']);
 $smarty->assign('routerlist', $routerlist);
+
+
 
 if($_GET['user_id']==$_SESSION['user_id'] AND empty($routerlist)) {
   $smarty->assign('show_routersnotassigned_list', true);

@@ -11,6 +11,9 @@ require_once('./lib/classes/core/history.class.php');
 require_once('./lib/classes/core/clients.class.php');
 require_once('./lib/classes/core/service.class.php');
 
+
+if (!is_numeric($_GET['router_id'])) die('invalid router id');
+
 /** Get crawl cycles **/
 if(!isset($_GET['crawl_cycle_id'])) {
 	$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
