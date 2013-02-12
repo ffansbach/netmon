@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1
+-- version 3.5.3
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 04. Apr 2012 um 05:28
--- Server Version: 5.5.22
--- PHP-Version: 5.3.10-1~dotdeb.1
+-- Erstellungszeit: 12. Feb 2013 um 18:53
+-- Server Version: 5.5.29-MariaDB-mariadb1~wheezy-log
+-- PHP-Version: 5.4.4-12
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
   `name` varchar(20) NOT NULL,
   `status` varchar(20) NOT NULL,
   `crawl_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `crawl_batman_advanced_interfaces_id` (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -133,7 +134,8 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `wlan_bssid` varchar(40) NOT NULL,
   `wlan_tx_power` varchar(10) NOT NULL,
   `mtu` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `crawl_interfaces_id` (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -211,12 +213,13 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `batman_advanced_version` varchar(20) NOT NULL,
   `kernel_version` varchar(30) NOT NULL,
   `nodewatcher_version` int(11) NOT NULL,
-  `firmware_version` varchar(20) NOT NULL,
-  `firmware_revision` int(11) NOT NULL,
+  `firmware_version` varchar(250) NOT NULL,
+  `firmware_revision` varchar(250) NOT NULL,
   `openwrt_core_revision` int(11) NOT NULL,
   `openwrt_feeds_packages_revision` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `id` (`id`)
+  KEY `id` (`id`),
+  KEY `crawl_routers_id` (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
