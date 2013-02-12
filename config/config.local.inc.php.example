@@ -6,9 +6,6 @@ $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
 $GLOBALS['mysql_password'] = "bla";
 
-$GLOBALS['crawler_ping_timeout'] = 5;
-$GLOBALS['crawler_curl_timeout'] = 5;
-
 //NETWORK_CONNECTION
 $GLOBALS['netmon_is_connected_to_network_by_ipv6'] = true;
 $GLOBALS['netmon_ipv6_interface'] = "batvpn";

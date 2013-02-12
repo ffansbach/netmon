@@ -22,10 +22,6 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('mysql_user', $GLOBALS['mysql_user']);
 	$smarty->assign('mysql_password', $GLOBALS['mysql_password']);
 	
-	//CRAWLER
-	$smarty->assign('crawler_ping_timeout', $GLOBALS['crawler_ping_timeout']);
-	$smarty->assign('crawler_curl_timeout', $GLOBALS['crawler_curl_timeout']);
-
 	$smarty->assign('message', Message::getMessage());
 	$smarty->display("header.tpl.php");
 	$smarty->display("config.tpl.php");
@@ -37,13 +33,6 @@ if ($_GET['section']=="edit") {
 		$configs[2] = '$GLOBALS[\'mysql_user\'] = "'.$_POST['mysql_user'].'";';
 		$configs[3] = '$GLOBALS[\'mysql_password\'] = "'.$_POST['mysql_password'].'";';
 		$file = Install::changeConfigSection('//MYSQL', $file, $configs);
-		Install::writeEmptyFileLineByLine($config_path, $file);
-		unset($configs);
-
-		$file = Install::getFileLineByLine($config_path);
-		$configs[1] = '$GLOBALS[\'crawler_ping_timeout\'] = '.$_POST['crawler_ping_timeout'].';';
-		$configs[2] = '$GLOBALS[\'crawler_curl_timeout\'] = '.$_POST['crawler_curl_timeout'].';';
-		$file = Install::changeConfigSection('//CRAWLER', $file, $configs);
 		Install::writeEmptyFileLineByLine($config_path, $file);
 		unset($configs);
 

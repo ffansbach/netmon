@@ -184,14 +184,6 @@ if ($GLOBALS['installed']) {
 	Install::writeEmptyFileLineByLine($config_path, $file);
 	unset($configs);
 
-	$file = Install::getFileLineByLine($config_path);
-	$configs[0] = '$GLOBALS[\'crawl_cycle\'] = '.$_POST['crawl_cycle'].';';
-	$configs[1] = '$GLOBALS[\'crawler_ping_timeout\'] = '.$_POST['crawler_ping_timeout'].';';
-	$configs[2] = '$GLOBALS[\'crawler_curl_timeout\'] = '.$_POST['crawler_curl_timeout'].';';
-	$file = Install::changeConfigSection('//CRAWLER', $file, $configs);
-	Install::writeEmptyFileLineByLine($config_path, $file);
-	unset($configs);
-
 	header('Location: ./install.php?section=finish');
 } elseif ($_GET['section']=="finish") {
 	$config_path = "./config/config.local.inc.php";

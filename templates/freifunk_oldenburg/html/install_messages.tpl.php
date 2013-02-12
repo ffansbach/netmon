@@ -36,9 +36,6 @@
 		<p>URL zur Netzwerkvereinbarung:<br><input name="networkPolicy" type="text" size="30" value="{$networkPolicy}"></p>
 	</span>
 
-	<h3>VPN</h3>
-	<p>Gültigkeit der Keys in Tagen:<br><input name="expiration" type="text" size="30" value="{$expiration}"></p>
-
 	<h3>Netmon</h3>
 	<p>Speicherdauer für Crawl-Daten in Tagen:<br><input name="days_to_keep_mysql_crawl_data" type="text" size="30" value="{$days_to_keep_mysql_crawl_data}"></p>
 
@@ -47,8 +44,6 @@
 
 	<h3>Crawler</h3>
 	<p>Dauer eines Crawl Cycles in Minuten:<br><input name="crawl_cycle" type="text" size="30" value="{$crawl_cycle}"></p>
-	<p>Ping Timeout des Crawlers:<br><input name="crawler_ping_timeout" type="text" size="30" value="{$crawler_ping_timeout}"></p>
-	<p>Curl Timeout des Crawlers:<br><input name="crawler_curl_timeout" type="text" size="30" value="{$crawler_curl_timeout}"></p>
 	
 	<p><input type="submit" value="Weiter"></p>
 </form>

@@ -26,9 +26,7 @@ class Main {
 	}
 
 	public function crawler_config() {
-		return array('crawler_ping_timeout' => $GLOBALS['crawler_ping_timeout'],
-			     'crawler_curl_timeout' => $GLOBALS['crawler_curl_timeout'],
-			     'crawl_cycle' => $GLOBALS['crawl_cycle']);
+		return array('crawl_cycle' => $GLOBALS['crawl_cycle']);
 	}
 
 	public function getAllServiceIDsByServiceType($type) {
