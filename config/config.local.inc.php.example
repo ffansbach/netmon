@@ -6,9 +6,6 @@ $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
 $GLOBALS['mysql_password'] = "bla";
 
-//VPNKEYS
-$GLOBALS['expiration'] = 3650;
-
 $GLOBALS['crawler_ping_timeout'] = 5;
 $GLOBALS['crawler_curl_timeout'] = 5;
 

@@ -22,9 +22,6 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('mysql_user', $GLOBALS['mysql_user']);
 	$smarty->assign('mysql_password', $GLOBALS['mysql_password']);
 	
-	//VPNKEYS
-	$smarty->assign('expiration', $GLOBALS['expiration']);
-	
 	//CRAWLER
 	$smarty->assign('crawler_ping_timeout', $GLOBALS['crawler_ping_timeout']);
 	$smarty->assign('crawler_curl_timeout', $GLOBALS['crawler_curl_timeout']);
@@ -40,12 +37,6 @@ if ($_GET['section']=="edit") {
 		$configs[2] = '$GLOBALS[\'mysql_user\'] = "'.$_POST['mysql_user'].'";';
 		$configs[3] = '$GLOBALS[\'mysql_password\'] = "'.$_POST['mysql_password'].'";';
 		$file = Install::changeConfigSection('//MYSQL', $file, $configs);
-		Install::writeEmptyFileLineByLine($config_path, $file);
-		unset($configs);
-
-		$file = Install::getFileLineByLine($config_path);
-		$configs[0] = '$GLOBALS[\'expiration\'] = '.$_POST['expiration'].';';
-		$file = Install::changeConfigSection('//VPNKEYS', $file, $configs);
 		Install::writeEmptyFileLineByLine($config_path, $file);
 		unset($configs);
 

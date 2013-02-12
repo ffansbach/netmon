@@ -173,12 +173,6 @@ if ($GLOBALS['installed']) {
 	unset($configs);
 
 	$file = Install::getFileLineByLine($config_path);
-	$configs[0] = '$GLOBALS[\'expiration\'] = '.$_POST['expiration'].';';
-	$file = Install::changeConfigSection('//VPNKEYS', $file, $configs);
-	Install::writeEmptyFileLineByLine($config_path, $file);
-	unset($configs);
-
-	$file = Install::getFileLineByLine($config_path);
 	$configs[0] = '$GLOBALS[\'days_to_keep_mysql_crawl_data\'] = '.$_POST['days_to_keep_mysql_crawl_data'].';';
 	$file = Install::changeConfigSection('//PROJEKT', $file, $configs);
 	Install::writeEmptyFileLineByLine($config_path, $file);

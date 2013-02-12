@@ -20,9 +20,6 @@
 	<p>Benutzer:<br><input name="mysql_user" type="text" size="30" value="{$mysql_user}"></p>
 	<p>Passwort:<br><input name="mysql_password" type="text" size="30" value="{$mysql_password}"></p>
 
-	<h3>VPN</h3>
-	<p>Gültigkeit der Keys in Tagen:<br><input name="expiration" type="text" size="30" value="{$expiration}"></p>
-
 	<h3>Crawler</h3>
 	<p>Ping Timeout des Crawlers:<br><input name="crawler_ping_timeout" type="text" size="30" value="{$crawler_ping_timeout}"></p>
 	<p>Curl Timeout des Crawlers:<br><input name="crawler_curl_timeout" type="text" size="30" value="{$crawler_curl_timeout}"></p>
