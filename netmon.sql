@@ -3,12 +3,18 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 12. Feb 2013 um 18:53
+-- Erstellungszeit: 12. Feb 2013 um 19:39
 -- Server Version: 5.5.29-MariaDB-mariadb1~wheezy-log
 -- PHP-Version: 5.4.4-12
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Datenbank: `freifunksql5`
@@ -26,7 +32,9 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
   `create_date` datetime NOT NULL,
   `name` varchar(100) NOT NULL,
   `hardware_name` varchar(200) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `hardware_name` (`hardware_name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -40,7 +48,8 @@ CREATE TABLE IF NOT EXISTS `config` (
   `name` varchar(50) NOT NULL,
   `value` text NOT NULL,
   `create_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -57,7 +66,9 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
   `status` varchar(20) NOT NULL,
   `crawl_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `crawl_batman_advanced_interfaces_id` (`id`)
+  KEY `crawl_batman_advanced_interfaces_id` (`id`),
+  KEY `router_id` (`router_id`),
+  KEY `crawl_cycle_id` (`crawl_cycle_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -76,7 +87,9 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
   `outgoing_interface` varchar(20) NOT NULL,
   `last_seen` varchar(20) NOT NULL,
   `crawl_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `router_id` (`router_id`),
+  KEY `crawl_cycle_id` (`crawl_cycle_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -91,7 +104,9 @@ CREATE TABLE IF NOT EXISTS `crawl_clients_count` (
   `crawl_cycle_id` int(11) NOT NULL,
   `crawl_date` datetime NOT NULL,
   `client_count` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `router_id` (`router_id`),
+  KEY `crawl_cycle_id` (`crawl_cycle_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -135,7 +150,10 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `wlan_tx_power` varchar(10) NOT NULL,
   `mtu` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `crawl_interfaces_id` (`id`)
+  KEY `crawl_interfaces_id` (`id`),
+  KEY `crawl_id` (`crawl_id`),
+  KEY `router_id` (`router_id`),
+  KEY `crawl_cycle_id` (`crawl_cycle_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -150,7 +168,9 @@ CREATE TABLE IF NOT EXISTS `crawl_ips` (
   `crawl_cycle_id` int(11) NOT NULL,
   `crawl_date` datetime NOT NULL,
   `ping_avg` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `ip_id` (`ip_id`),
+  KEY `crawl_cycle_id` (`crawl_cycle_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -219,7 +239,10 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `openwrt_feeds_packages_revision` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`),
-  KEY `crawl_routers_id` (`id`)
+  KEY `crawl_routers_id` (`id`),
+  KEY `router_id` (`router_id`),
+  KEY `crawl_cycle_id` (`crawl_cycle_id`),
+  KEY `status` (`status`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -235,7 +258,9 @@ CREATE TABLE IF NOT EXISTS `crawl_services` (
   `crawl_date` datetime NOT NULL,
   `status` varchar(20) NOT NULL,
   `crawled_ipv4_addr` varchar(30) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `service_id` (`service_id`),
+  KEY `crawl_cycle_id` (`crawl_cycle_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -251,7 +276,8 @@ CREATE TABLE IF NOT EXISTS `dns_hosts` (
   `ipv4_id` int(11) NOT NULL,
   `ipv6_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `host` (`host`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -267,7 +293,8 @@ CREATE TABLE IF NOT EXISTS `history` (
   `object_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `data` text NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `crawl_cycle_id` (`crawl_cycle_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -316,7 +343,8 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
   `mac_addr` varchar(150) NOT NULL,
   `vpn_client_cert` text NOT NULL,
   `vpn_client_key` text NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `router_id` (`router_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -329,7 +357,9 @@ CREATE TABLE IF NOT EXISTS `interface_ips` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `interface_id` int(11) NOT NULL,
   `ip_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `ip_id` (`ip_id`),
+  KEY `interface_id` (`interface_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -345,7 +375,11 @@ CREATE TABLE IF NOT EXISTS `ips` (
   `ip` varchar(100) NOT NULL,
   `ipv` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `ip` (`ip`),
+  KEY `router_id` (`router_id`),
+  KEY `ipv` (`ipv`),
+  KEY `project_id` (`project_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -425,7 +459,9 @@ CREATE TABLE IF NOT EXISTS `projects` (
   `geo_polygons` text NOT NULL,
   `dns_server` varchar(200) NOT NULL,
   `website` varchar(250) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `is_ipv4` (`is_ipv4`),
+  KEY `is_batman_adv` (`is_batman_adv`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -608,3 +644,7 @@ CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
