@@ -21,7 +21,7 @@
 				<a class="skip" href="#content" title="skip link">Skip to the content</a><span class="hideme">.</span>
 				<!-- end: skip link navigation -->
 				<span>
-					{if !$installation_mode}
+					{if $installed}
 <!--						{foreach $top_menu as $topmenu}
 							<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}">{$topmenu.name}</a></span>
 						{/foreach}-->
@@ -57,7 +57,7 @@
                 </div>
 			</div>
 			<div id="nav_sub">
-					{if $installation_mode}
+					{if $installed}
 						{if isset($installation_menu)}
 							<ul>
 								{foreach $installation_menu as $menu}
@@ -66,7 +66,7 @@
 							</ul>
 						{/if}
 					{/if}
-					{if !$installation_mode}
+					{if $installed}
 						<ul>
 							{foreach $normal_menu as $normalmenu}
 								<li><a {if $normalmenu.selected=='true'}class="selected"{/if} href="{$normalmenu.href}">{$normalmenu.name}</a>{$normalmenu.selected}</li>
@@ -74,7 +74,7 @@
 						</ul>
 					{/if}
 			
-					{if !$installation_mode}
+					{if $installed}
 						{if isset($user_menu)}
 							<ul>
 								{foreach $user_menu as $usermenu}
@@ -83,7 +83,7 @@
 							</ul>
 						{/if}
 					{/if}
-					{if !$installation_mode}
+					{if $installed}
 						{if isset($admin_menu)}
 							<ul>
 								{foreach $admin_menu as $menu}
@@ -92,7 +92,7 @@
 							</ul>
 						{/if}
 					{/if}
-					{if !$installation_mode}
+					{if $installed}
 						{if isset($root_menu)}
 							<ul>
 								{foreach $root_menu as $menu}
@@ -140,7 +140,7 @@
 	</div>
 
 	<div id="topmenu">
-		{if !$installation_mode}
+		{if !$installed}
 			{foreach $top_menu as $topmenu}
 				<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}">{$topmenu.name}</a></span>
 			{/foreach}
@@ -157,7 +157,7 @@
 <div id="main">
 	<!--Linkes Menü-->
 <!--	<div id="left_menu">
-		{if $installation_mode}
+		{if $installed}
 			<div class="user_menus">
 				{if isset($installation_menu)}
 					&nbsp;&nbsp;&nbsp;&nbsp;<b>Installationsmenü</b>
@@ -169,7 +169,7 @@
 				{/if}
 			</div>
 		{/if}
-		{if !$installation_mode}
+		{if !$installed}
 			<div class="user_menus">
 				&nbsp;&nbsp;&nbsp;&nbsp;<b>Navigation</b>
 				<ul>
@@ -180,7 +180,7 @@
 			</div>
 		{/if}
 
-		{if !$installation_mode}
+		{if !$installed}
 			<div class="user_menus">
 				{if isset($user_menu)}
 					&nbsp;&nbsp;&nbsp;&nbsp;<b>Benutzermenü</b>
@@ -192,7 +192,7 @@
 				{/if}
 			</div>
 		{/if}
-		{if !$installation_mode}
+		{if !$installed}
 			<div class="user_menus">
 				{if isset($admin_menu)}
 					&nbsp;&nbsp;&nbsp;&nbsp;<b>Adminmenü</b>
@@ -204,7 +204,7 @@
 				{/if}
 			</div>
 		{/if}
-		{if !$installation_mode}
+		{if !$installed}
 			<div class="user_menus">
 				{if isset($root_menu)}
 					&nbsp;&nbsp;&nbsp;&nbsp;<b>Rootmenü</b>

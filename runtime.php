@@ -1,208 +1,155 @@
 <?php
-// +---------------------------------------------------------------------------+
-// index.php
-// Netmon, Freifunk Netzverwaltung und Monitoring Software
-//
-// Copyright (c) 2009 Clemens John <clemens-john@gmx.de>
-// +---------------------------------------------------------------------------+
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 3
-// of the License, or any later version.
-// +---------------------------------------------------------------------------+
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-// +---------------------------------------------------------------------------+/
-
-/**
- * This file is the runtime configuration of the project
- *
- * @author	Clemens John <clemens-john@gmx.de>
- * @version	0.1
- * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
- */
+	// +---------------------------------------------------------------------------+
+	// index.php
+	// Netmon, Freifunk Netzverwaltung und Monitoring Software
+	//
+	// Copyright (c) 2009 Clemens John <clemens-john@gmx.de>
+	// +---------------------------------------------------------------------------+
+	// This program is free software; you can redistribute it and/or
+	// modify it under the terms of the GNU General Public License
+	// as published by the Free Software Foundation; either version 3
+	// of the License, or any later version.
+	// +---------------------------------------------------------------------------+
+	// This program is distributed in the hope that it will be useful,
+	// but WITHOUT ANY WARRANTY; without even the implied warranty of
+	// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	// GNU General Public License for more details.
+	// You should have received a copy of the GNU General Public License
+	// along with this program; if not, write to the Free Software
+	// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+	// +---------------------------------------------------------------------------+/
 
 	/**
-	* Do not display PHP errors on a real installation
+	* This file is the runtime configuration of the project
+	*
+	* @author	Clemens John <clemens-john@gmx.de>
+	* @version	0.1
+	* @package	Netmon Freifunk Netzverwaltung und Monitoring Software
 	*/
 
-	if (ini_get('display_errors')) {
-	  ini_set('display_errors', 1);
+	//Set default values
+	$GLOBALS['installed'] = false;
+	$GLOBALS['template'] = "freifunk_oldenburg";
+	$GLOBALS['monitor_root'] = __DIR__."/";
+	set_include_path(get_include_path() .PATH_SEPARATOR. __DIR__."/lib/classes/extern/");
+
+	//copy exemple config files and create needed directories on fresh installation
+	if(!file_exists('config/config.local.inc.php'))	copy('config/config.local.inc.php.example', 'config/config.local.inc.php');
+	$create_dirs[] = 'templates_c/';
+	$create_dirs[] = 'tmp/';
+	$create_dirs[] = 'rrdtool/';
+	$create_dirs[] = 'rrdtool/databases/';
+	foreach($create_dirs as $dir) {
+		if(!file_exists($GLOBALS['monitor_root'].$dir))
+			mkdir($GLOBALS['monitor_root'].$dir);
 	}
 
-	/**
-	* SET INCLUDE PATH AND MONITOR_ROOT
-	*/
-
-
-	$include_path = __DIR__."/lib/classes/extern/";
-	set_include_path(get_include_path() .PATH_SEPARATOR. $include_path);
-
-	if(empty($GLOBALS['monitor_root'])) {
-	      $GLOBALS['monitor_root'] = __DIR__."/";
+	//check if directories and files are writable
+	$check_writable = $create_dirs;
+	$check_writable[] = $GLOBALS['monitor_root'].'config/';
+	$check_writable[] = $GLOBALS['monitor_root'].'config/config.local.inc.php';
+	foreach($check_writable as $path) {
+		if (!is_writable($path)) {
+			echo $path."<br>";
+			$not_writable[] = $path;
+		}
 	}
 
-	/**
-	* Start PHP Session
-	*/
+	if(!empty($not_writable)) {
+		echo "Please set writable permissions to the above files and directories and reload the site.";
+		die();
+	}
 
+	//start php session and set content type and timezone
 	session_start();
-
-	/**
-	* KONFIGURATION
-	*/
-	
-	//Content type and encoding
 	header("Content-Type: text/html; charset=UTF-8");
 	date_default_timezone_set('Europe/Berlin');
-
+	
+	//include important configuration files
 	require_once('config/config.local.inc.php');
-	require_once('config/menus.local.inc.php');
 	require_once('config/release.php');
 
-	//PDO Class
+	//include important classes
 	require_once('lib/classes/core/db.class.php');
-
-	//Config Class
 	require_once('lib/classes/core/config.class.php');
-
-	/**
-	* Fetch configuration from database
-	*/
-	$GLOBALS['installed'] = Config::getConfigValueByName('installed');
-
-	//JABBER
-	$GLOBALS['jabber_server'] = Config::getConfigValueByName('jabber_server');
-	$GLOBALS['jabber_username'] = Config::getConfigValueByName('jabber_username');
-	$GLOBALS['jabber_password'] = Config::getConfigValueByName('jabber_password');
-	
-	//TWITTER
-	$GLOBALS['twitter_consumer_key'] = Config::getConfigValueByName('twitter_consumer_key');
-	$GLOBALS['twitter_consumer_secret'] = Config::getConfigValueByName('twitter_consumer_secret');
-	$GLOBALS['twitter_username'] = Config::getConfigValueByName('twitter_username');
-	
-	//MAIL
-	$GLOBALS['mail_sending_type'] = Config::getConfigValueByName('mail_sending_type');
-	$GLOBALS['mail_sender_adress'] = Config::getConfigValueByName('mail_sender_adress');
-	$GLOBALS['mail_sender_name'] = Config::getConfigValueByName('mail_sender_name');
-	$GLOBALS['mail_smtp_server'] = Config::getConfigValueByName('mail_smtp_server');
-	$GLOBALS['mail_smtp_username'] = Config::getConfigValueByName('mail_smtp_username');
-	$GLOBALS['mail_smtp_password'] = Config::getConfigValueByName('mail_smtp_password');
-	$GLOBALS['mail_smtp_login_auth'] = Config::getConfigValueByName('mail_smtp_login_auth');
-	$GLOBALS['mail_smtp_ssl'] = Config::getConfigValueByName('mail_smtp_ssl');
-	
-	//NETWORK
-	$GLOBALS['community_name'] = Config::getConfigValueByName('community_name');
-	$GLOBALS['enable_network_policy'] = Config::getConfigValueByName('enable_network_policy');
-	$GLOBALS['network_policy_url'] = Config::getConfigValueByName('network_policy_url');
-	
-	//PROJEKT
-	$GLOBALS['hours_to_keep_mysql_crawl_data'] = Config::getConfigValueByName('hours_to_keep_mysql_crawl_data');
-	$GLOBALS['hours_to_keep_history_table'] = Config::getConfigValueByName('hours_to_keep_history_table');
-	
-	//GOOGLEMAPSAPIKEY
-	$GLOBALS['google_maps_api_key'] = Config::getConfigValueByName('google_maps_api_key');
-	//CRAWLER
-	$GLOBALS['crawl_cycle'] = Config::getConfigValueByName('crawl_cycle_length_in_minutes');
-	
-	//TEMPLATE
-	$GLOBALS['template'] = Config::getConfigValueByName('template');
-	
-	//WEBSERVER
-	$GLOBALS['url_to_netmon'] = Config::getConfigValueByName('url_to_netmon');
-
-	/**
-	* Check if dirs a writable
-	*/
-	
-	$GLOBALS['netmon_root_path'] = __DIR__."/";
-
-	$dirs[] = $GLOBALS['netmon_root_path'].'templates_c/';
-	$dirs[] = $GLOBALS['netmon_root_path'].'ccd/';
-	$dirs[] = $GLOBALS['netmon_root_path'].'config/';
-	$dirs[] = $GLOBALS['netmon_root_path'].'config/config.local.inc.php';
-	$dirs[] = $GLOBALS['netmon_root_path'].'tmp/';
-	$dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/images/';
-	$dirs[] = $GLOBALS['netmon_root_path'].'scripts/imagemaker/configurations/';
-	$dirs[] = $GLOBALS['netmon_root_path'].'rrdtool/';
-	$dirs[] = $GLOBALS['netmon_root_path'].'rrdtool/databases/';
-
-	$everything_is_writable = true;
-	foreach($dirs as $dir) {
-	  if (!is_writable($dir))
-	    $not_writable_dirs[] = $dir;
-	}
-
-
-
-	if(!empty($not_writable_dirs)) {
-	  echo "The following files or directories have to be writable to run Netmon:<br><br>";
-	  foreach($not_writable_dirs as $not_writable_dir) {
-	    echo "$not_writable_dir<br>";
-	  }
-	  echo "<br>Please set writable permissions and reload the site.";
-	  die();
-	}
-
-	/**
-	* WICHTIGE KLASSEN
-	*/
-
-	//Class for Systemnotifications
 	require_once('lib/classes/core/message.class.php');
-	//Class hat conains many useull functions
 	require_once('lib/classes/core/helper.class.php');
-	//Usermanagement class
 	require_once('lib/classes/core/usermanagement.class.php');  
-	//Class to generate the menu
 	require_once('lib/classes/core/menus.class.php');
 
-	$UserManagement =  new UserManagement;
-
-	/**
-	* LOAD ZEND FRAMEWORK
-	*/
-
+	//load Zend framework
 	require_once 'lib/classes/extern/Zend/Loader/Autoloader.php';
 	Zend_Loader_Autoloader::getInstance();
 
 	new Zend_Mail_Transport_Smtp();
 	new Zend_Mail();
+	
+	try {
+		DB::getInstance();
+	} catch(PDOException $e) {
+		$exception =  $e->getMessage();
+	}
+	if(empty($exception)) {
+		$GLOBALS['installed'] = Config::getConfigValueByName('installed');
+	}
 
-	/**
-	* Default Setting
-	*/
-	if(!isset($GLOBALS['installation_mode']))
-	  $GLOBALS['installation_mode'] = false;
+	if ($GLOBALS['installed']) {	
+		//JABBER
+		$GLOBALS['jabber_server'] = Config::getConfigValueByName('jabber_server');
+		$GLOBALS['jabber_username'] = Config::getConfigValueByName('jabber_username');
+		$GLOBALS['jabber_password'] = Config::getConfigValueByName('jabber_password');
+		
+		//TWITTER
+		$GLOBALS['twitter_consumer_key'] = Config::getConfigValueByName('twitter_consumer_key');
+		$GLOBALS['twitter_consumer_secret'] = Config::getConfigValueByName('twitter_consumer_secret');
+		$GLOBALS['twitter_username'] = Config::getConfigValueByName('twitter_username');
+		
+		//MAIL
+		$GLOBALS['mail_sending_type'] = Config::getConfigValueByName('mail_sending_type');
+		$GLOBALS['mail_sender_adress'] = Config::getConfigValueByName('mail_sender_adress');
+		$GLOBALS['mail_sender_name'] = Config::getConfigValueByName('mail_sender_name');
+		$GLOBALS['mail_smtp_server'] = Config::getConfigValueByName('mail_smtp_server');
+		$GLOBALS['mail_smtp_username'] = Config::getConfigValueByName('mail_smtp_username');
+		$GLOBALS['mail_smtp_password'] = Config::getConfigValueByName('mail_smtp_password');
+		$GLOBALS['mail_smtp_login_auth'] = Config::getConfigValueByName('mail_smtp_login_auth');
+		$GLOBALS['mail_smtp_ssl'] = Config::getConfigValueByName('mail_smtp_ssl');
+		
+		//NETWORK
+		$GLOBALS['community_name'] = Config::getConfigValueByName('community_name');
+		$GLOBALS['enable_network_policy'] = Config::getConfigValueByName('enable_network_policy');
+		$GLOBALS['network_policy_url'] = Config::getConfigValueByName('network_policy_url');
+		
+		//PROJEKT
+		$GLOBALS['hours_to_keep_mysql_crawl_data'] = Config::getConfigValueByName('hours_to_keep_mysql_crawl_data');
+		$GLOBALS['hours_to_keep_history_table'] = Config::getConfigValueByName('hours_to_keep_history_table');
+		
+		//GOOGLEMAPSAPIKEY
+		$GLOBALS['google_maps_api_key'] = Config::getConfigValueByName('google_maps_api_key');
+		//CRAWLER
+		$GLOBALS['crawl_cycle'] = Config::getConfigValueByName('crawl_cycle_length_in_minutes');
+		
+		//TEMPLATE
+		$GLOBALS['template'] = Config::getConfigValueByName('template');
+		
+		//WEBSERVER
+		$GLOBALS['url_to_netmon'] = Config::getConfigValueByName('url_to_netmon');
+	}
 
-	/**
-	* SMARTY TEMPLATEENGINE
-	*/
-
-	//Smarty main class
+	//load smarty template engine
 	require_once ('lib/classes/extern/smarty/Smarty.class.php');
-
-	//Initialise Smarty
 	$smarty = new Smarty;
 	$smarty->compile_check = true;
-	//Set debugging site off
 	$smarty->debugging = false;
-	//Templatefolder
 	$smarty->template_dir = "templates/$GLOBALS[template]/html";
-	//Compilefolder
 	$smarty->compile_dir = 'templates_c';
+	$smarty->assign('template', $GLOBALS['template']);
+	$smarty->assign('installed', $GLOBALS['installed']);
 
 	/**
 	* Auto Login
 	*/
-
-	if (!$GLOBALS['installation_mode']) {
-		if (!UserManagement::isLoggedIn($_SESSION['user_id'])) {
+	if ($GLOBALS['installed']) {
+		if (!isset($_SESSION['user_id']) OR !UserManagement::isLoggedIn($_SESSION['user_id'])) {
 			//Login Class
 			require_once('lib/classes/core/login.class.php');
 			if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
@@ -235,12 +182,8 @@
 		}
 	}
 
-	/**
-	* Menus
-	*/
-
-	if (!$GLOBALS['installation_mode']) {
-		$smarty->assign('top_menu', Menus::topMenu());
+	//load menus
+	if ($GLOBALS['installed']) {
 		$smarty->assign('loginOutMenu', Menus::loginOutMenu());
 		$smarty->assign('normal_menu', Menus::normalMenu());
 		$smarty->assign('user_menu', Menus::userMenu());
@@ -254,14 +197,19 @@
 	//Give often used variables to smarty
 	$smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
 
-	require_once('lib/classes/core/crawling.class.php');
+/*	if (!$GLOBALS['installed']) {
+		require_once('lib/classes/core/crawling.class.php');
+		
+		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+		$actual_crawl_cycle['crawl_date_end'] = strtotime($actual_crawl_cycle['crawl_date'])+$GLOBALS['crawl_cycle']*60;
+		$actual_crawl_cycle['crawl_date_end_minutes'] = floor(($actual_crawl_cycle['crawl_date_end']-time())/60).':'.(($actual_crawl_cycle['crawl_date_end']-time()) % 60);
+		$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+		$smarty->assign('last_ended_crawl_cycle', $last_ended_crawl_cycle);
+		$smarty->assign('actual_crawl_cycle', $actual_crawl_cycle);
 
-	$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-	$actual_crawl_cycle['crawl_date_end'] = strtotime($actual_crawl_cycle['crawl_date'])+$GLOBALS['crawl_cycle']*60;
-	$actual_crawl_cycle['crawl_date_end_minutes'] = floor(($actual_crawl_cycle['crawl_date_end']-time())/60).':'.(($actual_crawl_cycle['crawl_date_end']-time()) % 60);
-	$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-	$smarty->assign('last_ended_crawl_cycle', $last_ended_crawl_cycle);
-	$smarty->assign('actual_crawl_cycle', $actual_crawl_cycle);
+		//Google Maps API Key
+		$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
+	}*/
 
 	//This is used for redirection after login
 	$_SESSION['last_page'] = "";
@@ -270,18 +218,8 @@
 
 	$_SESSION['current_page'] = "";
 	if(isset($_SERVER['REQUEST_URI']))
-		$_SESSION['current_page'] = $_SERVER['REQUEST_URI'];
+		$_SESSION['current_page'] = Helper::curPageURL();
 
-	/**Google Maps API Key*/
-	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
-
-	/**Template*/
-	$smarty->assign('template', $GLOBALS['template']);
-
-	/**Globals*/
-	$smarty->assign('globals', $GLOBALS);
-
-	$smarty->assign('installation_mode', $GLOBALS['installation_mode']);
 
 	if(!isset($messages)) {
 		$message = array();

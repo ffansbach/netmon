@@ -18,7 +18,7 @@ if ($_GET['section']=="login") {
 	$smarty->display("footer.tpl.php");
 } elseif ($_GET['section']=="login_send" AND $Login->user_login($_POST['nickname'], $_POST['password'], $_POST['remember'])) {
 	if(!empty($_SESSION['redirect_after_login_url'])) {
-		header("Location: .$_SESSION[redirect_after_login_url]");
+		header("Location: $_SESSION[redirect_after_login_url]");
 	} else {
 		header('Location: user.php?user_id='.$_SESSION['user_id']);
 	}
@@ -64,7 +64,7 @@ if ($_GET['section']=="login") {
 				login::user_login (false, false, $_SESSION['openid_login_remember'], false, $short_openid);
 				if(!empty($_SESSION['redirect_after_login_url'])) {
 					unset($_SESSION['openid_login']);
-					header("Location: .$_SESSION[redirect_after_login_url]");
+					header("Location: $_SESSION[redirect_after_login_url]");
 				} else {
 					header('Location: ./user.php?user_id='.$_SESSION['user_id']);
 				}

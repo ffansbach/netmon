@@ -1,41 +1,34 @@
-<h1>Netmon installieren:</h1>
-
-<h2>Informationen zur aktuellen Netmon Version</h2>
-<p><b>Netmon Version:</b> {$netmon_version}<br>
-<b>Codename</b> {$netmon_codename}</p>
+<h1>Netmon installieren</h1>
+<p>Netmon ist ein Monitoring-Portal für Freifunknetzwerke. Du benutzt Version {$netmon_version} ({$netmon_codename}). Dieser Assistent wird dich durch die Installation geleiten. Viel Spaß!</p>
 
 <h2>Informationen im Web</h2>
 <ul>
-<li><a href="http://oldenburg.freifunk.net/">Freifunk Oldenburg</a></li>
-<li><a href="http://wiki.freifunk-ol.de/index.php?title=Netmon">Netmon Wiki</a></li>
-<li><a href="http://trac.freifunk-ol.de/">Netmon Development Repository</a></li>
-
+	<li><a href="http://oldenburg.freifunk.net/">Freifunk Oldenburg</a></li>
+	<li><a href="http://wiki.freifunk-ol.de/index.php?title=Netmon">Netmon Wiki</a></li>
+	<li><a href="http://ticket.freifunk-ol.de/projects/netmon">Netmon Entwicklerportal</a></li>
 </ul>
 
-
 <h2>Systemcheck</h2>
+<p>Der Systemcheck überprüft ob alle wichtigen Funktionen deines Servers zum Betrieb von Netmon eingeschaltet sind.</p>
 <div style="width: 100%; display:inline-block">
     <div style="float:left; width: 33%;">
 		<h3>PHP-Extensions</h3>
-		PDO: {if $pdo_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		PDO MySQL: {if $pdo_mysql_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		Json: {if $json_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		Zip: {if $zip_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		Curl: {if $curl_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		GD: {if $gd_loaded}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		OpenSSL: {if $openssl}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		FTP: {if $ftp}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}
+		PDO: {if $pdo_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		PDO MySQL: {if $pdo_mysql_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		Json: {if $json_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		Curl: {if $curl_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		GD: {if $gd_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 	</div>
 	<div style="float:left; width: 33%;">
 		<h3>PHP-Version</h3>php_version
-		PHP Version 5.2+: {if $php_version}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}
+		PHP Version 5.2+: {if $php_version}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}
 		<h3>PHP-Funktionen</h3> 
-		exec(): {if $exec}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		mail(): {if $mail}<img src="./templates/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/img/ffmap/status_unknown_small.png" alt="nicht aktiviert">{/if}<br>
+		exec(): {if $exec}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		mail(): {if $mail}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" alt="nicht aktiviert">{/if}<br>
 	</div>
 	<div style="float:left; width: 33%;">
 		<h3>Ergebnis</h3>
-		{if !$pdo_loaded OR !$ftp OR !$pdo_mysql_loaded OR !$openssl OR !$json_loaded OR !$zip_loaded OR !$curl_loaded OR !$gd_loaded OR !$exec OR !$php_version}
+		{if !$pdo_loaded OR !$pdo_mysql_loaded OR !$json_loaded OR !$curl_loaded OR !$gd_loaded OR !$exec OR !$php_version}
 			<div class="error" style="margin: 0px;">Einige Funktionen sind inaktiv, es kann zu Problemen bei Installation und Betrieb kommen!</div>
 		{else}
 			<div class="notice" style="margin: 0px;">Alle Funktionen sind aktiv, Installation und Betrieb sollten ohne Probleme ablaufen.</div>
