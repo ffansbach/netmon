@@ -22,6 +22,7 @@
 			header('Location: ./login.php');
 		}
 	}
+	
 	if ($_GET['section'] == "insert") {
 		//Logged in users can add a new router
 		if (UserManagement::checkPermission(4)) {

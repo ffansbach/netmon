@@ -33,6 +33,8 @@
 	$GLOBALS['monitor_root'] = __DIR__."/";
 	set_include_path(get_include_path() .PATH_SEPARATOR. __DIR__."/lib/classes/extern/");
 
+	if(!isset($_GET['section'])) $_GET['section'] = null;
+
 	//copy exemple config files and create needed directories on fresh installation
 	if(!file_exists('config/config.local.inc.php'))	copy('config/config.local.inc.php.example', 'config/config.local.inc.php');
 	$create_dirs[] = 'templates_c/';
@@ -80,18 +82,6 @@
 	//load Zend framework
 	require_once 'lib/classes/extern/Zend/Loader/Autoloader.php';
 	Zend_Loader_Autoloader::getInstance();
-
-	new Zend_Mail_Transport_Smtp();
-	new Zend_Mail();
-	
-	try {
-		DB::getInstance();
-	} catch(PDOException $e) {
-		$exception =  $e->getMessage();
-	}
-	if(empty($exception)) {
-		$GLOBALS['installed'] = Config::getConfigValueByName('installed');
-	}
 
 	if ($GLOBALS['installed']) {	
 		//JABBER
@@ -197,29 +187,18 @@
 	//Give often used variables to smarty
 	$smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
 
-/*	if (!$GLOBALS['installed']) {
-		require_once('lib/classes/core/crawling.class.php');
-		
-		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-		$actual_crawl_cycle['crawl_date_end'] = strtotime($actual_crawl_cycle['crawl_date'])+$GLOBALS['crawl_cycle']*60;
-		$actual_crawl_cycle['crawl_date_end_minutes'] = floor(($actual_crawl_cycle['crawl_date_end']-time())/60).':'.(($actual_crawl_cycle['crawl_date_end']-time()) % 60);
-		$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-		$smarty->assign('last_ended_crawl_cycle', $last_ended_crawl_cycle);
-		$smarty->assign('actual_crawl_cycle', $actual_crawl_cycle);
-
-		//Google Maps API Key
-		$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
-	}*/
-
 	//This is used for redirection after login
-	$_SESSION['last_page'] = "";
-	if(isset($_SESSION['current_page']))
-		$_SESSION['last_page'] = $_SESSION['current_page'];
+	$current_page = Helper::curPageURL();
+	//only take actual site if its not an ai site, see http://ticket.freifunk-ol.de/issues/466
+	if(strpos($current_page, "api") === false) {
+		$_SESSION['last_page'] = "";
+		if(isset($_SESSION['current_page']))
+			$_SESSION['last_page'] = $_SESSION['current_page'];
 
-	$_SESSION['current_page'] = "";
-	if(isset($_SERVER['REQUEST_URI']))
-		$_SESSION['current_page'] = Helper::curPageURL();
-
+		$_SESSION['current_page'] = "";
+		if(isset($_SERVER['REQUEST_URI']))
+			$_SESSION['current_page'] = $current_page;
+	}
 
 	if(!isset($messages)) {
 		$message = array();

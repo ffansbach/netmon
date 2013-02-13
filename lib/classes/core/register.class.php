@@ -29,8 +29,8 @@
  */
 
 require_once("lib/classes/core/login.class.php");
-require_once 'lib/classes/extern/Zend/Mail.php';
-require_once 'lib/classes/extern/Zend/Mail/Transport/Smtp.php';
+require_once('lib/classes/extern/Zend/Mail.php');
+require_once('lib/classes/extern/Zend/Mail/Transport/Smtp.php');
 
 class Register {
 	public function insertNewUser($nickname, $password, $passwordchk, $email, $agb, $openid) {

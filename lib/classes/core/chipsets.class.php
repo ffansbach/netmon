@@ -60,6 +60,7 @@ class Chipsets {
 	}
 
 	public function getChipsets() {
+		$chipsets = array();
 		try {
 			$sql = "SELECT  *
 					FROM chipsets

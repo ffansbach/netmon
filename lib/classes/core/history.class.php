@@ -299,6 +299,7 @@ class History {
 
 	public function getUserHistory($user_id, $countlimit) {
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+		$history_cp = array();
 
 		try {
 			$sql = "SELECT  *
@@ -353,34 +354,33 @@ class History {
 	public function getHistory($countlimit, $hourlimit) {
 		$history = array();
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-		if($countlimit)
-			$range = "
-					  WHERE history.crawl_cycle_id!=$actual_crawl_cycle[id]
-					  ORDER BY history.create_date desc
-					  LIMIT 0, $countlimit";
-		elseif ($hourlimit)
-			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR AND history.crawl_cycle_id!=$actual_crawl_cycle[id]
-					  ORDER BY history.create_date desc";
-		try {
-			$sql = "SELECT id, object, object_id, create_date, data
-			       FROM history
-				   $range";
-
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $key=>$row) {
-				$history[$key] = $row;
-				$history[$key]['data'] = unserialize($history[$key]['data']);
-				if($history[$key]['object'] == "router") {
-					$history[$key]['additional_data'] = Router::getRouterInfo($row['object_id']);
+		if(isset($actual_crawl_cycle['id']) AND (isset($countlimit) OR isset($hourlimit))) {
+			if($countlimit)
+				$range = "
+						WHERE history.crawl_cycle_id!=$actual_crawl_cycle[id]
+						ORDER BY history.create_date desc
+						LIMIT 0, $countlimit";
+			elseif ($hourlimit)
+				$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR AND history.crawl_cycle_id!=$actual_crawl_cycle[id]
+						ORDER BY history.create_date desc";
+			try {
+				$sql = "SELECT id, object, object_id, create_date, data
+					FROM history
+					$range";
+				$result = DB::getInstance()->query($sql);
+				foreach($result as $key=>$row) {
+					$history[$key] = $row;
+					$history[$key]['data'] = unserialize($history[$key]['data']);
+					if($history[$key]['object'] == "router") {
+						$history[$key]['additional_data'] = Router::getRouterInfo($row['object_id']);
+					}
 				}
 			}
+			catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+			return $history;
 		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $history;
-	}
-
-	
+	}	
 }
 ?>

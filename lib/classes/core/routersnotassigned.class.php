@@ -5,6 +5,7 @@ require_once('lib/classes/extern/xmpphp/XMPP.php');
 
 class RoutersNotAssigned {
 	public function getRouterByAutoAssignLoginString($router_auto_assign_login_string) {
+		$routers = array();
 		try {
 			$sql = "SELECT  *
 					FROM routers_not_assigned
@@ -19,6 +20,7 @@ class RoutersNotAssigned {
 	}
 
 	public function getRouters() {
+		$routers = array();
 		try {
 			$sql = "SELECT  *
 					FROM routers_not_assigned";

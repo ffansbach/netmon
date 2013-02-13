@@ -107,7 +107,7 @@
 	<p>
 		Chipset:
 		<select name="chipset_id">
-				<option value="9999999" selected='selected'>Unbekannt</option>
+			<option value="9999999" selected='selected'>Unbekannt</option>
 			{foreach item=chipset from=$chipsets}
 				<option value="{$chipset.id}">{$chipset.name}</option>
 			{/foreach}
@@ -118,8 +118,8 @@
 	<p>
 		Statusaktualisierung:
 		<select name="crawl_method" onChange="getProjectInfo(this.options[this.selectedIndex].value)">
-			<option value="crawler" {if $smarty.get.crawl_method=='crawler' OR empty($smarty.get.crawl_method)}selected='selected'{/if}>Netmon Crawlt den Router</option>
-			<option value="router" {if $smarty.get.crawl_method=='router'}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>
+			<option value="crawler" {if !isset($smarty.get.crawl_method) OR $smarty.get.crawl_method=='crawler'}selected='selected'{/if}>Netmon Crawlt den Router</option>
+			<option value="router" {if isset($smarty.get.crawl_method) AND $smarty.get.crawl_method=='router'}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>
 		</select>
 	</p>
 
@@ -129,7 +129,7 @@
 
 	<h2>Netmon Autozuweisung</h2>
 	<p>
-		<input name="allow_router_auto_assign" type="checkbox" value="1" {if $smarty.get.allow_router_auto_assign==1}checked{/if}> Erlaube automatische Router Zuweisung
+		<input name="allow_router_auto_assign" type="checkbox" value="1" {if isset($smarty.get.allow_router_auto_assign) AND $smarty.get.allow_router_auto_assign==1}checked{/if}> Erlaube automatische Router Zuweisung
 	</p>
 
 	<p>
