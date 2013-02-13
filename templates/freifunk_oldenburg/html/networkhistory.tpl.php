@@ -10,7 +10,7 @@
 <h1>History der letzten {$history_hours} Stunden</h1>
 
 <form action="./networkhistory.php" method="POST" enctype="multipart/form-data">
-<p>Historie der letzten <input name="history_hours" type="text" size="1" value="{$history_hours}"> Stunden anzeigen <input type="submit" value="aktualisieren"></p>
+<p>Historie der letzten <input name="history_hours" type="text" size="1" value="5"> Stunden anzeigen <input type="submit" value="aktualisieren"></p>
 </form>
 
 {if !empty($history)}
@@ -38,6 +38,18 @@
 					{if $hist.data.action == 'firmware_version'}
 						änderte Firmware Version von {$hist.data.from} zu {$hist.data.to}</span>
 					{/if}
+					{if $hist.data.action == 'nodewatcher_version'}
+						änderte Nodewatcher Version von {$hist.data.from} zu {$hist.data.to}</span>
+					{/if}
+					{if $hist.data.action == 'hostname'}
+						änderte Hostname von {$hist.data.from} zu {$hist.data.to}</span>
+					{/if}
+					{if $hist.data.action == 'chipset'}
+						änderte Chipset von {$hist.data.from} zu {$hist.data.to}</span>
+					{/if}
+					{if $hist.data.action == 'chipset'}
+						änderte Chipset von {$hist.data.from} zu {$hist.data.to}</span>
+					{/if}
 				{/if}
 				{if $hist.object == 'not_assigned_router'}
 					<b>{$hist.create_date|date_format:"%e.%m.%Y %H:%M"}:</b> 
@@ -46,9 +58,16 @@
 						 erscheint in der <a href="./routers_trying_to_assign.php">Liste der neuen, nicht zugewiesenen Router</a>
 					{/if}
 				{/if}
+				{if $hist.object == 'ip'}
+					<b>{$hist.create_date|date_format:"%e.%m.%Y %H:%M"}:</b> 
+					{if $hist.data.ipv == 4}IPv4{else if $hist.data.ipv == 6}IPv6{/if} Adresse {$hist.data.ip}
+					{if $hist.data.action == 'new'}
+						 hinzugefügt.
+					{/if}
+				{/if}
 			</li>
 		{/foreach}
 	</ul>
 {else}
-<p>In den letzten {$history_hours} Stunden ist nichts passiert.</p>
+<p>In den letzten {$portal_history_hours} Stunden ist nichts passiert.</p>
 {/if}
