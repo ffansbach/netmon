@@ -23,13 +23,6 @@ $(document).ready(function() {
 {/literal}
 </script>
 
-{if $permitted}
-<ul id="tabnav" style="text-align: right; padding-right: 0px; margin-right: 0px;">
-	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px;" href="./dnseditor.php?section=add_host">Domain hinzufügen</a></li>
-	<li><a style="background-color: #b1dbff; font-style:italic; color: #000000; position: relative; top: 1px; padding-top: 4px; border-right: 0px;" href="./user_edit.php?section=edit&user_id={$smarty.get.user_id}">Benutzereinstellungen</a></li>
-</ul>
-{/if}
-
 <h1>Benutzerseite von {$user.nickname}</h1>
 
 <div style="width: 100%; overflow: hidden;">

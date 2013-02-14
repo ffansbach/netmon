@@ -33,8 +33,6 @@
 	$GLOBALS['monitor_root'] = __DIR__."/";
 	set_include_path(get_include_path() .PATH_SEPARATOR. __DIR__."/lib/classes/extern/");
 
-	if(!isset($_GET['section'])) $_GET['section'] = null;
-
 	//copy exemple config files and create needed directories on fresh installation
 	if(!file_exists('config/config.local.inc.php'))	copy('config/config.local.inc.php.example', 'config/config.local.inc.php');
 	$create_dirs[] = 'templates_c/';
@@ -176,7 +174,6 @@
 	if ($GLOBALS['installed']) {
 		$smarty->assign('loginOutMenu', Menus::loginOutMenu());
 		$smarty->assign('normal_menu', Menus::normalMenu());
-		$smarty->assign('user_menu', Menus::userMenu());
 		$smarty->assign('admin_menu', Menus::adminMenu());
 		$smarty->assign('root_menu', Menus::rootMenu());
 
@@ -206,5 +203,9 @@
 	} else {
 		$smarty->assign('message', $messages);
 	}
+
+	//initialize important variables
+	if(!isset($_GET['section'])) $_GET['section'] = null;
+	if(!isset($_SESSION['user_id'])) $_SESSION['user_id'] = null;
 
 ?>

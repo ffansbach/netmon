@@ -49,17 +49,9 @@
 		}
 	}
 </script>
-
-<script type="text/javascript">
-	document.body.id='tab1';
-</script>
 {/literal}
 
-<ul id="tabnav">
-	<li class="tab1"><a href="./networkstatistic.php">Netzwerkstatistik</a></li>
-	<li class="tab2"><a href="./networkhistory.php">Historie</a></li>
-</ul>
-
+<h1>Statistik</h1>
 {if !empty($last_ended_crawl_cycle)}
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 33%;">

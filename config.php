@@ -41,7 +41,7 @@ if ($_GET['section']=="edit") {
 
 		header('Location: ./config.php?section=edit');
 } elseif($_GET['section']=="edit_netmon") {
-	$smarty->assign('installed', Config::getConfigValueByName("installed"));
+	$smarty->assign('installed', $GLOBALS['installed']);
 	$smarty->assign('url_to_netmon', Config::getConfigValueByName("url_to_netmon"));
 	$smarty->assign('google_maps_api_key', Config::getConfigValueByName("google_maps_api_key"));
 	$smarty->assign('template_name', Config::getConfigValueByName("template"));
@@ -57,8 +57,15 @@ if ($_GET['section']=="edit") {
 } elseif($_GET['section']=="insert_edit_netmon") {
 	if(UserManagement::checkPermission(120)) {
 		if(empty($_POST['installed']))
-			$_POST['installed'] = '0';
-		Config::writeConfigLine('installed', $_POST['installed']);
+			$_POST['installed'] = 'false';
+		else
+			$_POST['installed'] = 'true';
+
+		$file = Install::getFileLineByLine($config_path);
+		$configs[0] = '$GLOBALS[\'installed\'] = '.$_POST['installed'].';';
+		$file = Install::changeConfigSection('//INSTALLED', $file, $configs);
+		Install::writeEmptyFileLineByLine($config_path, $file);
+
 		Config::writeConfigLine('url_to_netmon', $_POST['url_to_netmon']);
 		Config::writeConfigLine('google_maps_api_key', $_POST['google_maps_api_key']);
 		Config::writeConfigLine('template', $_POST['template']);

@@ -1,12 +1,3 @@
-<script type="text/javascript">
-	document.body.id='tab2';
-</script>
-<ul id="tabnav">
-	<li class="tab1"><a href="./networkstatistic.php">Netzwerkstatistik</a></li>
-	<li class="tab2"><a href="./networkhistory.php">Historie</a></li>
-</ul>
-
-
 <h1>History der letzten {$history_hours} Stunden</h1>
 
 <form action="./networkhistory.php" method="POST" enctype="multipart/form-data">

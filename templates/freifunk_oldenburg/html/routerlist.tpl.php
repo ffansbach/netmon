@@ -14,14 +14,6 @@ $(document).ready(function() {
 {/literal}
 </script>
 
-<script type="text/javascript">
-	document.body.id='tab1';
-</script>
-<ul id="tabnav">
-	<li class="tab1"><a href="./routerlist.php">Routerliste</a></li>
-	<li class="tab2"><a href="./routers_trying_to_assign.php">Neue Router</a></li>
-</ul>
-
 <h1>Liste der Router</h1>
 {if !empty($routerlist)}
 	<div style="display: block; float: left;">

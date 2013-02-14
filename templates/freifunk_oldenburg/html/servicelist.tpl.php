@@ -15,7 +15,7 @@ $(document).ready(function() {
 {/literal}
 </script>
 
-<h1>Liste der Dienste im Freifunk Netzwerk</h1>
+<h1>Liste der Dienste</h1>
 {if !empty($servicelist)}
 	<div style="display: block; float: left;">
 		<table class="display" id="servicelist">
@@ -60,7 +60,7 @@ $(document).ready(function() {
 		</table>
 	</div>
 {else}
-	<p>Keine Services vorhanden</p>
+	<p>Keine Dienste vorhanden</p>
 {/if}
 
 <br style="clear: both;">

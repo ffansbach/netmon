@@ -6,9 +6,6 @@
     <title>Freifunk Oldenburg | Netmon</title>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <link href="./templates/{$template}/css/central_netmon.css" rel="stylesheet" type="text/css"/>
-    <!--[if lte IE 7]>
-    <link href="css/central_patches.css" rel="stylesheet" type="text/css" />
-    <![endif]-->
 </head>
 <body>
 
@@ -29,7 +26,6 @@
 							{if $count != 0}| {/if}<a href="{$menu.href}">{$menu.name}</a>
 						{/foreach}
 					{/if}
-					<!--<a href="http://wiki.freifunk-ol.de/index.php?title=Kontakt">Kontakt</a> | <a href="http://wiki.freifunk-ol.de/index.php?title=Freifunk_OL_Wiki:Impressum">Impressum</a>-->
 				</span>
 			</div>
 		    <div id="headerbg">
@@ -55,180 +51,66 @@
                     <input type="hidden" value="all" name="search_range"/>
                   </form>
                 </div>
-			</div>
-			<div id="nav_sub">
-					{if $installed}
-						{if isset($installation_menu)}
+	</div>
+	<div id="nav_sub">
+		{if $installed}
+			{if isset($installation_menu)}
+				<ul>
+					{foreach $installation_menu as $menu}
+						<li><a href="{$menu.href}">{$menu.name}</a></li>
+					{/foreach}
+				</ul>
+			{/if}
+			{if isset($normal_menu)}
+				<ul>
+					{foreach $normal_menu as $menu}
+						<li><a  href="{$menu.0.href}">{$menu.0.name}</a>
 							<ul>
-								{foreach $installation_menu as $menu}
-									<li><a href="{$menu.href}">{$menu.name}</a></li>
-								{/foreach}
-							</ul>
-						{/if}
-					{/if}
-					{if $installed}
-						<ul>
-							{foreach $normal_menu as $normalmenu}
-								<li><a {if $normalmenu.selected=='true'}class="selected"{/if} href="{$normalmenu.href}">{$normalmenu.name}</a>{$normalmenu.selected}</li>
+							{foreach $menu.1 as $submenu}
+								<li><a href="{$submenu.href}">{$submenu.name}</a></li>
 							{/foreach}
-						</ul>
-					{/if}
-			
-					{if $installed}
-						{if isset($user_menu)}
-							<ul>
-								{foreach $user_menu as $usermenu}
-									<li><a {if $usermenu.selected=='true'}class="selected"{/if} href="{$usermenu.href}">{$usermenu.name}</a></li>
-								{/foreach}
 							</ul>
-						{/if}
-					{/if}
-					{if $installed}
-						{if isset($admin_menu)}
+						</li>
+					{/foreach}
+				</ul>
+			{/if}
+			{if isset($admin_menu)}
+				<ul>
+					{foreach $admin_menu as $menu}
+						<li><a {if $menu.selected=='true'}class="selected"{/if} href="{$menu.href}">{$menu.name}</a></li>
+					{/foreach}
+				</ul>
+			{/if}
+			{if isset($root_menu)}
+				<ul>
+					{foreach $root_menu as $menu}
+						<li><a  href="{$menu.0.href}">{$menu.0.name}</a>
 							<ul>
-								{foreach $admin_menu as $menu}
-									<li><a {if $menu.selected=='true'}class="selected"{/if} href="{$menu.href}">{$menu.name}</a></li>
-								{/foreach}
+							{foreach $menu.1 as $submenu}
+								<li><a href="{$submenu.href}">{$submenu.name}</a></li>
+							{/foreach}
 							</ul>
-						{/if}
-					{/if}
-					{if $installed}
-						{if isset($root_menu)}
-							<ul>
-								{foreach $root_menu as $menu}
-									<li><a {if $menu.selected=='true'}class="selected"{/if} href="{$menu.href}">{$menu.name}</a></li>
-								{/foreach}
-							</ul>
-						{/if}
-					{/if}
-			</div>
-		</div>
-		<!-- end: main navigation -->
-		<!-- begin: main content area #main -->
-
-
-
-<!--
-  <head>
-    <TITLE>
-      {$site_title}
-    </TITLE>
-
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
-    
-    
-
-    {$html_head}
-
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-	<link rel="stylesheet" type="text/css" href="./templates/{$template}/css/central_netmon.css">
-  </head>
-  
-  <body>
-
-
-<div id="banner" style="background-image: url(./templates/{$template}/img/header/hafen_oldenburg_nacht.jpg);">
-
-	<div style="float:left">
-	<div id="time">
-		Serverzeit: {$zeit}
-	</div>
-	<br style="clear:both;">
-	<div id="time_next_crawl">
-		Crawl Ende: {$actual_crawl_cycle.crawl_date_end|date_format:"%H:%M"} Uhr (noch {$actual_crawl_cycle.crawl_date_end_minutes} Minuten)
-	</div>
-	</div>
-
-	<div id="topmenu">
-		{if !$installed}
-			{foreach $top_menu as $topmenu}
-				<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}">{$topmenu.name}</a></span>
-			{/foreach}
-				<span class="topmenubox">|</span>
-			{foreach $loginOutMenu as $menu}
-				<span class="topmenubox">{$menu.pretext} <a style="color: #FFFFFF" href="{$menu.href}"><b>{$menu.name}</b></a></span>
-			{/foreach}
+						</li>
+					{/foreach}
+				</ul>
+			{/if}
 		{/if}
 	</div>
 </div>
--->
+<!-- end: main navigation -->
 
-
+<!-- begin: main content area #main -->
 <div id="main">
-	<!--Linkes Menü-->
-<!--	<div id="left_menu">
-		{if $installed}
-			<div class="user_menus">
-				{if isset($installation_menu)}
-					&nbsp;&nbsp;&nbsp;&nbsp;<b>Installationsmenü</b>
-					<ul>
-						{foreach $installation_menu as $menu}
-							<li><a href="{$menu.href}">{$menu.name}</a></li>
-						{/foreach}
-					</ul>
-				{/if}
-			</div>
+	<!--Systemmeldungen-->
+	{foreach $message as $output}
+		{if $output.1==0}
+			<div id="messagebox" style="background-color: #f7ce3e">{$output.0}</div>
 		{/if}
-		{if !$installed}
-			<div class="user_menus">
-				&nbsp;&nbsp;&nbsp;&nbsp;<b>Navigation</b>
-				<ul>
-					{foreach $normal_menu as $normalmenu}
-						<li><a href="{$normalmenu.href}">{$normalmenu.name}</a></li>
-					{/foreach}
-				</ul>
-			</div>
+		{if $output.1==1}
+			<div id="messagebox" style="background-color: #97ff5f">{$output.0}</div>
 		{/if}
-
-		{if !$installed}
-			<div class="user_menus">
-				{if isset($user_menu)}
-					&nbsp;&nbsp;&nbsp;&nbsp;<b>Benutzermenü</b>
-					<ul>
-						{foreach $user_menu as $usermenu}
-							<li><a href="{$usermenu.href}">{$usermenu.name}</a></li>
-						{/foreach}
-					</ul>
-				{/if}
-			</div>
+		{if $output.1==2}
+			<div id="messagebox" style="background-color: #ff5353">{$output.0}</div>
 		{/if}
-		{if !$installed}
-			<div class="user_menus">
-				{if isset($admin_menu)}
-					&nbsp;&nbsp;&nbsp;&nbsp;<b>Adminmenü</b>
-					<ul>
-						{foreach $admin_menu as $menu}
-							<li><a href="{$menu.href}">{$menu.name}</a></li>
-						{/foreach}
-					</ul>
-				{/if}
-			</div>
-		{/if}
-		{if !$installed}
-			<div class="user_menus">
-				{if isset($root_menu)}
-					&nbsp;&nbsp;&nbsp;&nbsp;<b>Rootmenü</b>
-					<ul>
-						{foreach $root_menu as $menu}
-							<li><a href="{$menu.href}">{$menu.name}</a></li>
-						{/foreach}
-					</ul>
-				{/if}
-			</div>
-		{/if}
-
-	</div>-->
-
-  <div id="content">
-    <!--Systemmeldungen-->
-    {foreach $message as $output}
-      {if $output.1==0}
-	<div style="background-color: #f7ce3e">{$output.0}</div>
-      {/if}
-      {if $output.1==1}
-	<div style="background-color: #97ff5f">{$output.0}</div>
-      {/if}
-      {if $output.1==2}
-	<div style="background-color: #ff5353">{$output.0}</div>
-      {/if}
-    {/foreach}
+	{/foreach}
+	<div id="content">
