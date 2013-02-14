@@ -1,9 +1,9 @@
 <?php
 
 require_once('runtime.php');
-require_once('./lib/classes/core/install.class.php');
-require_once('./lib/classes/core/config.class.php');
-require_once('./lib/classes/core/chipsets.class.php');
+require_once('lib/classes/core/install.class.php');
+require_once('lib/classes/core/config.class.php');
+require_once('lib/classes/core/chipsets.class.php');
 require_once('lib/classes/extern/Zend/Oauth/Consumer.php');
 
 
@@ -85,6 +85,10 @@ if ($_GET['section']=="edit") {
 	}
 } elseif($_GET['section']=="edit_community") {
 	$smarty->assign('community_name', Config::getConfigValueByName("community_name"));
+	$smarty->assign('community_slogan', Config::getConfigValueByName("community_slogan"));
+	$smarty->assign('community_location_longitude', Config::getConfigValueByName("community_location_longitude"));
+	$smarty->assign('community_location_latitude', Config::getConfigValueByName("community_location_latitude"));
+	$smarty->assign('community_location_zoom', Config::getConfigValueByName("community_location_zoom"));
 	$smarty->assign('enable_network_policy', Config::getConfigValueByName("enable_network_policy"));
 	$smarty->assign('network_policy_url', Config::getConfigValueByName("network_policy_url"));
 
@@ -96,8 +100,13 @@ if ($_GET['section']=="edit") {
 } elseif($_GET['section']=="insert_edit_community") {
 	if(UserManagement::checkPermission(120)) {
 		Config::writeConfigLine('community_name', $_POST['community_name']);
+		Config::writeConfigLine('community_slogan', $_POST['community_slogan']);
+		Config::writeConfigLine('community_location_longitude', $_POST['community_location_longitude']);
+		Config::writeConfigLine('community_location_latitude', $_POST['community_location_latitude']);
+		Config::writeConfigLine('community_location_zoom', $_POST['community_location_zoom']);
+
 		if(empty($_POST['enable_network_policy']))
-			$_POST['enable_network_policy'] = '0';
+			$_POST['enable_network_policy'] = 'false';
 		Config::writeConfigLine('enable_network_policy', $_POST['enable_network_policy']);
 		Config::writeConfigLine('network_policy_url', $_POST['network_policy_url']);
 

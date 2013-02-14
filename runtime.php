@@ -104,6 +104,7 @@
 		
 		//NETWORK
 		$GLOBALS['community_name'] = Config::getConfigValueByName('community_name');
+		$GLOBALS['community_slogan'] = Config::getConfigValueByName('community_slogan');
 		$GLOBALS['enable_network_policy'] = Config::getConfigValueByName('enable_network_policy');
 		$GLOBALS['network_policy_url'] = Config::getConfigValueByName('network_policy_url');
 		
@@ -132,6 +133,8 @@
 	$smarty->compile_dir = 'templates_c';
 	$smarty->assign('template', $GLOBALS['template']);
 	$smarty->assign('installed', $GLOBALS['installed']);
+	$smarty->assign('community_name', $GLOBALS['community_name']);
+	$smarty->assign('community_slogan', $GLOBALS['community_slogan']);
 
 	/**
 	* Auto Login

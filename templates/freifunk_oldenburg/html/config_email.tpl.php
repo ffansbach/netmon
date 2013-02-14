@@ -1,7 +1,7 @@
 <h1>Konfiguration des Mailversands</h1>
 <form action="./config.php?section=insert_edit_email" method="POST">
 	<h2>Abesender</h2>
-	<p>Absenderadresse:<br><input name="mail_sender_adress" type="text" size="30" value="{$mail_sender_adress}"></p>
+	<p><b>Absenderadresse:</b><br><input name="mail_sender_adress" type="text" size="30" value="{$mail_sender_adress}"></p>
 	<p>Absendername:<br><input name="mail_sender_name" type="text" size="30" value="{$mail_sender_name}"></p>
 
 	<h2>Versandart</h2>

@@ -3,7 +3,7 @@
 
 <html>
 <head>
-    <title>Freifunk Oldenburg | Netmon</title>
+    <title>{$community_name} | Netmon</title>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <link href="./templates/{$template}/css/central_netmon.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -30,8 +30,8 @@
 			</div>
 		    <div id="headerbg">
 		    </div>
-			<h1>Freifunk Oldenburg | Netmon</h1>
-			<span>Die freie WLAN-Community aus Oldenburg &#8226; Freie Netze für alle!</span>
+			<h1>{$community_name} | Netmon</h1>
+			<span>{$community_slogan}</span>
 		</div>				
 		<!-- begin: main navigation #nav -->
 		<div id="nav"> <a id="navigation" name="navigation"></a>

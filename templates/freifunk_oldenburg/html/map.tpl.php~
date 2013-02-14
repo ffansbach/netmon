@@ -1,4 +1,4 @@
-<h1>Freifunk Knoten auf einen Blick</h1>
+<h1>Karte der Router</h1>
 <div style="margin-right: 10px;">
 	<script src='https://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 	<script src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script> 

@@ -9,7 +9,7 @@
 	
 	<div id="map" style="height:600px; width:100%; border:solid 1px black;font-size:9pt;">
 		<script type="text/javascript">
-			fullmap();
+			fullmap('{$community_location_longitude}', '{$community_location_latitude}', '{$community_location_zoom}');
 		</script>
 	</div>
 </div>

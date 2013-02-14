@@ -141,8 +141,8 @@ class Menus extends UserManagement {
 		if (UserManagement::checkPermission(64)) {
 			$submenu = array();
 			$subsubmenu = array();
-			$submenu[] = array('name'=>'Konfiguration', 'href'=>'config.php?section=edit');			
-			$subsubmenu[] = array('name'=>'Netmon', 'href'=>'config.php?section=edit_netmon');
+			$submenu[] = array('name'=>'Konfiguration', 'href'=>'config.php?section=edit_netmon');			
+			$subsubmenu[] = array('name'=>'Datenbank', 'href'=>'config.php?section=edit');
 			$subsubmenu[] = array('name'=>'Community', 'href'=>'config.php?section=edit_community');
 			$subsubmenu[] = array('name'=>'Mail', 'href'=>'config.php?section=edit_email');
 			$subsubmenu[] = array('name'=>'Jabber', 'href'=>'config.php?section=edit_jabber');

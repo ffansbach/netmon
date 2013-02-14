@@ -3,7 +3,6 @@
 <form action="./install.php?section=messages_insert" method="POST">
 	<p>Einige Grundeinstellungen zu Netmon. Alle Weiteren Einstellungen findest du nach der Installation unter dem Menüpunkt <i>Konfiguration</i>.</p>
 	<h2>Community</h2>
-	<p>Communit Name:<br><input name="community_name" type="text" size="30" value="{if isset($community_name)}{$community_name}{/if}"></p>
 	<p>URL zur Netmon Website:<br><input name="url_to_netmon" type="text" size="30" value="{$url_to_netmon}"></p>
 
 	<h2>Email</h2>

@@ -119,8 +119,12 @@ if ($GLOBALS['installed']) {
 		header('Location: ./install.php?section=messages');
 	} else {
 		Config::writeConfigLine('url_to_netmon', $_POST['url_to_netmon']);
-		Config::writeConfigLine('community_name', $_POST['community_name']);
-		
+		Config::writeConfigLine('community_name', "Freifunk Deinestadt");
+		Config::writeConfigLine('community_slogan', "Die freie WLAN-Community aus deiner Stadt • Freie Netze für alle!");
+		Config::writeConfigLine('community_location_longitude', '8.2284163781917');
+		Config::writeConfigLine('community_location_latitude', '53.14416891433');
+		Config::writeConfigLine('community_location_zoom', '11');
+
 		Config::writeConfigLine('mail_sender_adress', $_POST['mail_sender_adress']);
 		Config::writeConfigLine('mail_sender_name', $_POST['mail_sender_name']);
 		Config::writeConfigLine('mail_sending_type', $_POST['mail_sending_type']);
@@ -130,8 +134,8 @@ if ($GLOBALS['installed']) {
 		Config::writeConfigLine('mail_smtp_login_auth', $_POST['mail_smtp_login_auth']);
 		Config::writeConfigLine('mail_smtp_ssl', $_POST['mail_smtp_ssl']);
 		
-		Config::writeConfigLine('enable_network_policy', 0);
-		Config::writeConfigLine('network_policy_url', "");
+		Config::writeConfigLine('enable_network_policy', 'false');
+		Config::writeConfigLine('network_policy_url', 'http://picopeer.net/PPA-de.html');
 		Config::writeConfigLine('template', "freifunk_oldenburg");
 		Config::writeConfigLine('hours_to_keep_mysql_crawl_data', 5);
 		Config::writeConfigLine('hours_to_keep_history_table', 72);

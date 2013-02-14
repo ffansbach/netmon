@@ -4,7 +4,7 @@
   
   $Register = new Register;
     $smarty->assign('enable_network_policy', $GLOBALS['enable_network_policy']);
-    $smarty->assign('networkpolicy', $GLOBALS['network_policy_url']);
+    $smarty->assign('network_policy_url', $GLOBALS['network_policy_url']);
 
 
   if (empty($_POST)) {

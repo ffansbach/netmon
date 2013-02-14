@@ -9,7 +9,7 @@
   <p>Passwort wiederholen:<br><input name="passwordchk" type="password" size="30" value="{if isset($smarty.post.passwordchk)}{$smarty.post.passwordchk}{/if}"></p>{/if}
   <p>Emailadresse:<br><input name="email" type="text" size="30" maxlength="60" value="{if isset($smarty.post.email)}{$smarty.post.email}{/if}"></p>
   {if $enable_network_policy == 'true'}
-  <p><input type="checkbox" {if isset($smarty.post.agb)}checked="checked"{/if} name="agb" value="true"> Ich habe die <a href="{$networkpolicy}">Netzwerkpolicy</a> gelesen und erkäre mich bereit den dort beschriebenen Verpflichtungen nachzukommen.</p>
+  <p><input type="checkbox" {if isset($smarty.post.agb)}checked="checked"{/if} name="agb" value="true"> Ich habe die <a href="{$network_policy_url}" target="_blank" >Netzwerkpolicy</a> gelesen und erkäre mich bereit den dort beschriebenen Verpflichtungen nachzukommen.</p>
   {/if}
   <p><input type="submit" value="Registrieren"></p>
 </form>
