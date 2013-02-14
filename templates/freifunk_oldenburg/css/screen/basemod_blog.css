@@ -1,0 +1,279 @@
+@charset "UTF-8";
+/**
+ * "Yet Another Multicolumn Layout" - (X)HTML/CSS Framework
+ *
+ * (en) Variation of screen layout (basemod.css) for layout example "2col_right_seo"
+ * (de) Variation des Screenlayouts (basemod.css) für Layoutbeispiel "2col_right_seo"
+ *
+ * @copyright       Copyright 2005-2008, Dirk Jesse
+ * @license         CC-A 2.0 (http://creativecommons.org/licenses/by/2.0/),
+ *                  YAML-C (http://www.yaml.de/en/license/license-conditions.html)
+ * @link            http://www.yaml.de
+ * @package         yaml
+ * @version         3.0.6
+ * @revision        $Revision: 202 $
+ * @lastmodified    $Date: 2008-06-07 14:29:18 +0200 (Sa, 07 Jun 2008) $
+ */
+
+@media screen, projection
+{
+
+/***********
+ * Article *
+ ***********/
+
+.entry-meta {
+  margin-bottom: 0.7em;
+}
+
+.entry-meta a {
+  color:#777777;
+}
+
+.entry-meta ul {
+  margin: 0;
+}
+
+.entry-meta li {
+  list-style-type: none;
+  display: inline;
+  margin-left: 0em;
+  color:#BBBBBB;
+}
+
+.meta-start {
+  background:transparent url(../../images/time.png) no-repeat scroll left top;
+  padding:2px 0 2px 20px;
+}
+
+.meta-edit a {
+	border: none;
+	padding: 2px;
+	padding-left: 23px;
+	background: url('../../images/pencil.png') left center no-repeat;
+	height: 16px;
+}
+	
+.meta-tags {
+  background:transparent url(../../images/tag_blue.png) no-repeat scroll left top;
+  padding:2px 0 2px 20px;
+}
+
+.meta-comments {
+  background:transparent url(../../images/comment.png) no-repeat scroll left top;
+  padding:2px 0 2px 20px;
+}
+
+.navigation {
+  margin-top: 1em;
+  margin-left: 1em;
+  margin-right: 1em;
+  margin-bottom: 3em;
+}
+
+.alignleft {
+  float:left;
+}
+
+.alignright {
+  float:right;
+}
+
+/********
+ * Post *
+ ********/
+.post-info {
+  padding: 1em;
+  margin: 1em;
+  color: #777;
+  background-color:#F8F8F8;
+  border-bottom:1px solid #999;
+  border-top:1px solid #999;
+}
+
+.post-info a {
+  color: #555;
+}
+
+#commentbox ul {
+  list-style-type: none;
+}
+
+.comment-meta {
+  background:transparent url(../../images/time.png) no-repeat scroll left top;
+  padding:0px 0 2px 20px;
+  color:#BBBBBB;
+}
+
+.comment-meta a {
+  color:#777777;
+}
+
+.comment_text {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+
+/***********
+ * Content *
+ ***********/
+h2,h3,h4,h5,h6 {
+  margin-top: 0.7em;
+}
+
+
+blockquote p:before {
+  content:open-quote;
+  font-size: 1.5em;
+}
+
+blockquote p:after {
+  content:close-quote;
+  font-size: 1.5em;
+}
+
+/***********
+ * Sidebar *
+ ***********/
+.sidebar ul, .sidebar li, .sidebar ol, .sidebar dl {
+  margin: 0;
+  list-style-type:none;
+}
+
+.widget ul, .widget li{
+  line-height: 1.5em;
+  margin: 0;
+  list-style-type:none;
+}
+.widget ul li:before {
+  content: "\00BB \0020";
+}
+
+/* =Gallery listing
+-------------------------------------------------------------- */
+
+.format-gallery .size-thumbnail img,
+.category-gallery .size-thumbnail img {
+	border: 10px solid #f1f1f1;
+	margin-bottom: 0;
+}
+.format-gallery .gallery-thumb,
+.category-gallery .gallery-thumb {
+	float: left;
+	margin-right: 20px;
+	margin-top: -4px;
+}
+.home #content .format-gallery .entry-utility,
+.home #content .category-gallery .entry-utility {
+	padding-top: 4px;
+}
+
+/* =Images
+-------------------------------------------------------------- */
+
+/*
+Resize images to fit the main content area.
+- Applies only to images uploaded via WordPress by targeting size-* classes.
+- Other images will be left alone. Use "size-auto" class to apply to other images.
+*/
+img.size-auto,
+img.size-full,
+img.size-large,
+img.size-medium,
+.attachment img {
+	max-width: 100%; /* When images are too wide for containing element, force them to fit. */
+	height: auto; /* Override height to match resized width for correct aspect ratio. */
+}
+.alignleft,
+img.alignleft {
+	display: inline;
+	float: left;
+	margin-right: 24px;
+	margin-top: 4px;
+}
+.alignright,
+img.alignright {
+	display: inline;
+	float: right;
+	margin-left: 24px;
+	margin-top: 4px;
+}
+.aligncenter,
+img.aligncenter {
+	clear: both;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+img.alignleft,
+img.alignright,
+img.aligncenter {
+	margin-bottom: 12px;
+}
+.wp-caption {
+	background: #f1f1f1;
+	line-height: 18px;
+	margin-bottom: 20px;
+	max-width: 632px !important; /* prevent too-wide images from breaking layout */
+	padding: 4px;
+	text-align: center;
+}
+.wp-caption img {
+	margin: 5px 5px 0;
+}
+.wp-caption p.wp-caption-text {
+	color: #888;
+	font-size: 12px;
+	margin: 5px;
+}
+.wp-smiley {
+	margin: 0;
+}
+.gallery {
+	margin: 0 auto 18px;
+}
+.gallery .gallery-item {
+	float: left;
+	margin-top: 0;
+	text-align: center;
+	width: 33%;
+}
+.gallery-columns-2 .gallery-item {
+	width: 50%;
+}
+.gallery-columns-4 .gallery-item {
+	width: 25%;
+}
+.gallery img {
+	border: 2px solid #cfcfcf;
+}
+.gallery-columns-2 .attachment-medium {
+	max-width: 92%;
+	height: auto;
+}
+.gallery-columns-4 .attachment-thumbnail {
+	max-width: 84%;
+	height: auto;
+}
+.gallery .gallery-caption {
+	color: #888;
+	font-size: 12px;
+	margin: 0 0 12px;
+}
+.gallery dl {
+	margin: 0;
+}
+.gallery img {
+	border: 10px solid #f1f1f1;
+}
+.gallery br+br {
+	display: none;
+}
+#content .attachment img {/* single attachment images should be centered */
+	display: block;
+	margin: 0 auto;
+}
+
+
+}
