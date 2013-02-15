@@ -65,16 +65,18 @@
 		</table>
 	</div>
 	<div style="float:left; width: 33%;">
-		<h3>Aktueller Crawl</h3>
+		<h2>Aktueller Crawl</h2>
 		<p>
+			<p>Die Daten die Netmon derzeit sammelt, werden nach beendigung dieses Crawls angezeigt.</p>
 			<b>Beginn:</b> {$actual_crawl_cycle.crawl_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
-			<b>Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr (noch {$actual_crawl_cycle.crawl_date_end_minutes} Minuten)
+			<b>Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr ({$actual_crawl_cycle.crawl_date_end_minutes} Minuten)
 		</p>
 		</div>
 		<div style="float:left; width: 33%;">
 		
-		<h3>Letzter Crawl</h3>
+		<h2>Letzter Crawl</h2>
 		<p>
+			<p>Die aktuell in Netmon gezeigten Daten wurden während dieses Crawls gesammelt.</p>
 			<b>Beginn:</b> {$last_ended_crawl_cycle.crawl_date} Uhr<br>
 			<b>Ende:</b> {$last_ended_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr
 		</p>

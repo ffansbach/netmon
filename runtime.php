@@ -34,7 +34,7 @@
 	set_include_path(get_include_path() .PATH_SEPARATOR. __DIR__."/lib/classes/extern/");
 
 	//copy exemple config files and create needed directories on fresh installation
-	if(!file_exists('config/config.local.inc.php'))	copy('config/config.local.inc.php.example', 'config/config.local.inc.php');
+	if(!file_exists($GLOBALS['monitor_root'].'config/config.local.inc.php')) copy($GLOBALS['monitor_root'].'config/config.local.inc.php.example', $GLOBALS['monitor_root'].'config/config.local.inc.php');
 	$create_dirs[] = 'templates_c/';
 	$create_dirs[] = 'tmp/';
 	$create_dirs[] = 'rrdtool/';
@@ -46,11 +46,11 @@
 
 	//check if directories and files are writable
 	$check_writable = $create_dirs;
-	$check_writable[] = $GLOBALS['monitor_root'].'config/';
-	$check_writable[] = $GLOBALS['monitor_root'].'config/config.local.inc.php';
+	$check_writable[] = 'config/';
+	$check_writable[] = 'config/config.local.inc.php';
 	foreach($check_writable as $path) {
-		if (!is_writable($path)) {
-			echo $path."<br>";
+		if (!is_writable($GLOBALS['monitor_root'].$path)) {
+			echo $GLOBALS['monitor_root'].$path."<br>";
 			$not_writable[] = $path;
 		}
 	}
@@ -188,7 +188,8 @@
 	$smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
 
 	//This is used for redirection after login
-	$current_page = Helper::curPageURL();
+	if(isset($_SERVER['REQUEST_URI']) AND isset($_SERVER['SERVER_NAME']))
+		$current_page = Helper::curPageURL();
 	//only take actual site if its not an ai site, see http://ticket.freifunk-ol.de/issues/466
 	if(strpos($current_page, "api") === false) {
 		$_SESSION['last_page'] = "";
