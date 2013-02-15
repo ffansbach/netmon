@@ -11,6 +11,10 @@
 		//Logged in users can add a new router
 		if (UserManagement::checkPermission(4)) {
 			$smarty->assign('message', Message::getMessage());
+
+			$smarty->assign('community_location_longitude', Config::getConfigValueByName('community_location_longitude'));
+			$smarty->assign('community_location_latitude', Config::getConfigValueByName('community_location_latitude'));
+			$smarty->assign('community_location_zoom', Config::getConfigValueByName('community_location_zoom'));
 			$smarty->assign('chipsets', Chipsets::getChipsets());
 			
 			$smarty->display("header.tpl.php");

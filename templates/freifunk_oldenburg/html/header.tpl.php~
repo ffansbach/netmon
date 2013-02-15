@@ -31,7 +31,7 @@
 		    <div id="headerbg">
 		    </div>
 			<h1>{$community_name} | Netmon</h1>
-			<span>{$community_name}</span>
+			<span>{$community_slogan}</span>
 		</div>				
 		<!-- begin: main navigation #nav -->
 		<div id="nav"> <a id="navigation" name="navigation"></a>

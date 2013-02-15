@@ -184,7 +184,7 @@ function fullmap(community_location_longitude, community_location_latitude, comm
 	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
         map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop, olsr_conn]);
 	
-	//Ad control panels
+	//Add control panels
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 	map.addControl(new OpenLayers.Control.PanZoomBar());
 	map.addControl(new OpenLayers.Control.MousePosition());
@@ -432,51 +432,61 @@ function newproject_map() {
 	polycontrol.activate();
 }
 
-function new_router_map() {
+function new_router_map(community_location_longitude, community_location_latitude, community_location_zoom, template) {
 	// Handle image load errors
 	OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 	OpenLayers.Util.onImageLoadErrorColor = "transparent";
 
 	// Initialize the map
 	map = new OpenLayers.Map ("map", {
-		controls:[new OpenLayers.Control.ScaleLine(), new OpenLayers.Control.Navigation()],
-
-		displayProjection: new OpenLayers.Projection("EPSG:4326"),
-		units: "m",
-
-                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
-                                                 20037508.34, 20037508.34)
+		controls:[new OpenLayers.Control.ScaleLine(), 
+				new OpenLayers.Control.TouchNavigation({
+					dragPanOptions: {
+						enableKinetic: true
+					}
+				}),
+				new OpenLayers.Control.Navigation()],
+				displayProjection: new OpenLayers.Projection("EPSG:4326"),
+				units: "m",
+				maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
+								 20037508.34, 20037508.34)
 	} );
 
+	// Define different map type layers and add them to the map
+	var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Open Street Map", {sphericalMercator:true, numZoomLevels: 20});
+        var gstreet = new OpenLayers.Layer.Google("Google Streets", {sphericalMercator:true, numZoomLevels: 20});
+        var gphy = new OpenLayers.Layer.Google("Google Physical", {sphericalMercator:true, type: G_PHYSICAL_MAP, numZoomLevels: 20});
+        var gsat = new OpenLayers.Layer.Google("Google Satellite", {sphericalMercator:true, type: G_SATELLITE_MAP, numZoomLevels: 20});
+	var ghybrid = new OpenLayers.Layer.Google("Google Hybrid", {sphericalMercator:true, type: G_HYBRID_MAP, numZoomLevels: 20});
+        var markerslayer = new OpenLayers.Layer.Markers( "Markers" );
+	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid, markerslayer]);
 
-	// Add the map layer(s)
-	layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Open Street Map");
-          var gsat = new OpenLayers.Layer.Google(
-                "Google Satellite",
-                {sphericalMercator:true, type: G_SATELLITE_MAP, numZoomLevels: 20}
-            );
-
-  	map.addLayers([layerMapnik, gsat]);
-
-	// Set map center
-	point = new OpenLayers.LonLat(lon, lat);
-	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-	map.setCenter(point, zoom);
-
-
+	//Add control panels
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
-	map.addControl(new OpenLayers.Control.PanZoomBar());
+	map.addControl(new OpenLayers.Control.PanZoom());
 	map.addControl(new OpenLayers.Control.MousePosition());
-	map.addControl(new OpenLayers.Control.Permalink());
 	map.addControl(new OpenLayers.Control.Attribution());
 
+	// Set map center
+	point = new OpenLayers.LonLat(community_location_longitude, community_location_latitude);
+	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+	community_location_zoom = parseFloat(community_location_zoom)+1;
+	map.setCenter(point, community_location_zoom);
+	
+	//Register Events
 	map.events.register('click', map, function (e) {
+		var purelonlat = map.getLonLatFromPixel(e.xy);
 		var lonlat = map.getLonLatFromPixel(e.xy).transform(
 			new OpenLayers.Projection("EPSG:900913"),
 			new OpenLayers.Projection("EPSG:4326")
 		);
-	
+		
 		document.getElementById('longitude').value = lonlat.lon;
 		document.getElementById('latitude').value = lonlat.lat;
+
+		markerslayer.clearMarkers();
+                var icon = new OpenLayers.Icon('./templates/'+template+'/img/ffmap/clients_0_traffic_1.png', new OpenLayers.Size(60,60));
+                markerslayer.addMarker(new OpenLayers.Marker(purelonlat, icon));
+		
 	});
 }
