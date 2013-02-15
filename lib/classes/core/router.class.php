@@ -240,15 +240,18 @@ revision,
 
 	public function getRouterListByUserId($user_id) {
 		$routers = array();
+		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		try {
 			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.description, routers.location, routers.latitude, routers.longitude,
-					chipsets.name as chipset_name,
-					users.nickname
+					chipsets.name as chipset_name, chipsets.hardware_name,
+					users.nickname,
+					crawl_routers.status, crawl_routers.nodewatcher_version
 
 					FROM routers
 					LEFT JOIN chipsets on (chipsets.id=routers.chipset_id)
 					LEFT JOIN users on (users.id=routers.user_id)
-					WHERE routers.user_id='$user_id'";
+					LEFT JOIN crawl_routers on (crawl_routers.router_id=routers.id AND crawl_routers.crawl_cycle_id='$last_endet_crawl_cycle[id]')
+					WHERE routers.user_id=$user_id;";
 			$result = DB::getInstance()->query($sql);
 			foreach($result as $row) {
 				$text=$row['location'];
@@ -261,9 +264,28 @@ revision,
 				} 
 				$row['short_location'] = $shorttext;
 
-				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+				$text=$row['chipset_name'];
+				$shorttext=$text;
+				$length = 16;
+				if(strlen($text)>$length){
+					$shorttext = substr($text, 0, $length-1);
+					$var= explode(" ",substr($text, $length, strlen($text)));
+					$shorttext.= $var[0];
+				} 
+				$row['short_chipset_name'] = $shorttext;
+
 				$row['actual_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 				$row['router_reliability'] = Router::getRouterReliability($row['router_id'], 500);
+				$row['client_count'] = Clients::getClientsCountByRouterAndCrawlCycle($row['router_id'], $last_endet_crawl_cycle['id']);
+				$row['originators_count'] = count(BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']));
+				$row['interfaces'] = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $row['router_id']);
+				$row['traffic'] = 0;
+				foreach($row['interfaces'] as $interface) {
+					$row['traffic'] = $row['traffic'] + $interface['traffic_rx_avg'] + $interface['traffic_tx_avg'];
+				}
+				 
+				$row['traffic'] = round($row['traffic']/1024,2);
+
 				$routers[] = $row;
 			}
 		}

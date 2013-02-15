@@ -8,38 +8,28 @@ $(document).ready(function() {
 		"bFilter": false,
 		"bInfo": false,
 		"bPaginate": false,
-		"aaSorting": [[ 0, "asc" ]]
+		"aaSorting": [[ 7, "desc" ]]
 	} );
 } );
 {/literal}
 </script>
 
-<!--<script type="text/javascript">
-	document.body.id='tab1';
-</script>
-<ul id="tabnav">
-	<li class="tab1"><a href="./routerlist.php">Routerliste</a></li>
-	<li class="tab2"><a href="./routers_trying_to_assign.php">Neue Router</a></li>
-</ul>
--->
 <h1>Liste der Router</h1>
 {if !empty($routerlist)}
-	<div style="display: block; float: left;">
-		<table class="display" id="routerlist">
-			<thead>
-				<tr>
-					<th>Hostname</th>
-					<th>O</th>
-					<th>Stand</th>
-					<th>Technik</th>
-					<th>Benutzer</th>
-					<th>Online</th>
-					<th>Uptime</th>
-					<th>Clients</th>
-<!--					<th>Origs</th>-->
-					<th>Traffic</th>
-				</tr>
-			</thead>
+	<table class="display" id="routerlist" style="width: 100%;">
+		<thead>
+			<tr>
+				<th>Hostname</th>
+				<th>O</th>
+				<th>Stand</th>
+				<th>Technik</th>
+				<th>Benutzer</th>
+				<th>Online</th>
+				<th>Uptime</th>
+				<th>Clients</th>
+				<th>Traffic</th>
+			</tr>
+		</thead>
 			<tbody>
 				{foreach key=count item=router from=$routerlist}
 					<tr>
