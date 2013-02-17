@@ -10,7 +10,7 @@ $(document).ready(function() {
 		"bFilter": false,
 		"bInfo": false,
 		"bPaginate": false,
-		"aaSorting": [[ 7, "desc" ]]
+		"aaSorting": [[ 6, "desc" ]]
 	} );
 } );
 

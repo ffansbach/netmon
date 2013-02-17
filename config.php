@@ -181,32 +181,15 @@ if ($_GET['section']=="edit") {
 		header('Location: ./config.php?section=edit_jabber');
 	}
 } elseif($_GET['section']=="edit_twitter") {
-	$smarty->assign('twitter_consumer_key', Config::getConfigValueByName('twitter_consumer_key'));
-	$smarty->assign('twitter_consumer_secret', Config::getConfigValueByName('twitter_consumer_secret'));
-	$smarty->assign('twitter_username', Config::getConfigValueByName('twitter_username'));
+	$smarty->assign('twitter_token', Config::getConfigValueByName('twitter_token'));
 
 	$smarty->assign('message', Message::getMessage());
 	$smarty->display("header.tpl.php");
 	$smarty->display("config_twitter.tpl.php");
 	$smarty->display("footer.tpl.php");
-} elseif($_GET['section']=="insert_edit_twitter_application_data") {
+} elseif($_GET['section']=="delete_twitter_token") {
 	if(UserManagement::checkPermission(120)) {
-		Config::writeConfigLine('twitter_consumer_key', $_POST['twitter_consumer_key']);
-		Config::writeConfigLine('twitter_consumer_secret', $_POST['twitter_consumer_secret']);
-		
-		$message[] = array('Die Daten wurden gespeichert.', 1);
-		Message::setMessage($message);
-		
-		header('Location: ./config.php?section=edit_twitter');
-	} else {
-		$message[] = array('Nur Root kann die Daten ändern.', 2);
-		Message::setMessage($message);
-		
-		header('Location: ./config.php?section=edit_twitter');
-	}
-} elseif($_GET['section']=="insert_edit_twitter_username") {
-	if(UserManagement::checkPermission(120)) {
-		Config::writeConfigLine('twitter_username', $_POST['twitter_username']);
+		Config::writeConfigLine('twitter_token', "");
 		
 		$message[] = array('Die Daten wurden gespeichert.', 1);
 		Message::setMessage($message);
@@ -220,13 +203,12 @@ if ($_GET['section']=="edit") {
 	}
 } elseif($_GET['section']=="recieve_twitter_token") {
 	$config = array(
-		'callbackUrl' => 'http://netmon.freifunk-ol.de/config.php?section=recieve_twitter_token',
+		'callbackUrl' => Config::getConfigValueByName('url_to_netmon').'/config.php?section=recieve_twitter_token',
 		'siteUrl' => 'http://twitter.com/oauth',
 		'consumerKey' => $GLOBALS['twitter_consumer_key'],
 		'consumerSecret' => $GLOBALS['twitter_consumer_secret']
 	);
 	$consumer = new Zend_Oauth_Consumer($config);
-	
 	if (!empty($_GET) && isset($_SESSION['TWITTER_REQUEST_TOKEN'])) {
 		$token = $consumer->getAccessToken(
 			$_GET,
@@ -242,7 +224,7 @@ if ($_GET['section']=="edit") {
 	}
 
 	if(UserManagement::checkPermission(120)) {
-		Config::writeConfigLine('twitter_username', $_SESSION['TWITTER_ACCESS_TOKEN']);
+		Config::writeConfigLine('twitter_token', $_SESSION['TWITTER_ACCESS_TOKEN']);
 		
 		$message[] = array('Die Daten wurden gespeichert.', 1);
 		Message::setMessage($message);
@@ -256,7 +238,7 @@ if ($_GET['section']=="edit") {
 	}
 } elseif($_GET['section']=="get_twitter_token") {
 	$config = array(
-		'callbackUrl' => 'http://netmon.freifunk-ol.de/config.php?section=recieve_twitter_token',
+		'callbackUrl' => Config::getConfigValueByName('url_to_netmon').'/config.php?section=recieve_twitter_token',
 		'siteUrl' => 'http://twitter.com/oauth',
 		'consumerKey' => $GLOBALS['twitter_consumer_key'],
 		'consumerSecret' => $GLOBALS['twitter_consumer_secret']

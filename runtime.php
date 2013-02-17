@@ -32,6 +32,8 @@
 	$GLOBALS['template'] = "freifunk_oldenburg";
 	$GLOBALS['monitor_root'] = __DIR__."/";
 	set_include_path(get_include_path() .PATH_SEPARATOR. __DIR__."/lib/classes/extern/");
+	$GLOBALS['community_name'] = "Freifunk Deinestadt";
+	$GLOBALS['community_slogan'] = "Die freie WLAN-Community aus deiner Stadt • Freie Netze für alle!";
 
 	//copy exemple config files and create needed directories on fresh installation
 	if(!file_exists($GLOBALS['monitor_root'].'config/config.local.inc.php')) copy($GLOBALS['monitor_root'].'config/config.local.inc.php.example', $GLOBALS['monitor_root'].'config/config.local.inc.php');

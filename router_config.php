@@ -21,6 +21,9 @@
   $smarty->assign('services', $services);
 
   $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
+  $smarty->assign('netmon_is_connected_to_network_by_ipv6', $GLOBALS['netmon_is_connected_to_network_by_ipv6']);
+  $smarty->assign('netmon_is_connected_to_network_by_ipv4', $GLOBALS['netmon_is_connected_to_network_by_ipv4']);
+
   if((Router::areAddsAllowed($_GET['router_id']) AND isThisUserOwner($router_data['user_id'])) OR UserManagement::checkPermission(64)) {
     $smarty->assign('show_add_link', true);
   } else {

@@ -60,7 +60,7 @@ class Login {
 					DB::getInstance()->query("UPDATE users SET session_id='$session_id' where id=".$user_data['id']);
 					$_SESSION['user_id'] = $user_data['id'];
 					
-					$messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'], 1);
+					$messages[] = array("Herzlich willkommen ".$user_data['nickname'], 1);
 					Message::setMessage($messages);
 
 					//Autologin (remember me)

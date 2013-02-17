@@ -16,7 +16,8 @@
 			$smarty->assign('community_location_latitude', Config::getConfigValueByName('community_location_latitude'));
 			$smarty->assign('community_location_zoom', Config::getConfigValueByName('community_location_zoom'));
 			$smarty->assign('chipsets', Chipsets::getChipsets());
-			
+			$smarty->assign('twitter_token', Config::getConfigValueByName('twitter_token'));
+
 			$smarty->display("header.tpl.php");
 			$smarty->display("router_new.tpl.php");
 			$smarty->display("footer.tpl.php");

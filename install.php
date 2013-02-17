@@ -19,7 +19,8 @@ if ($GLOBALS['installed']) {
 
 	if (strnatcmp(phpversion(),'5.2') >= 0) $smarty->assign('php_version', true);
 	else $smarty->assign('php_version', false);
-	
+
+	$smarty->assign('openssl_loaded', extension_loaded('openssl'));
 	$smarty->assign('pdo_loaded', extension_loaded('pdo'));
 	$smarty->assign('pdo_mysql_loaded', extension_loaded('pdo_mysql'));
 	$smarty->assign('json_loaded', extension_loaded('json'));
@@ -44,7 +45,7 @@ if ($GLOBALS['installed']) {
 	$smarty->display("footer.tpl.php");
 } elseif ($_GET['section']=="check_connection") {
 	try {
-		new PDO("mysql:host=".$_POST['host'].";dbname=".$_POST['database'], $_POST['user'], $_POST['password']);
+		new PDO("mysql:host=".$_POST['mysql_host'].";dbname=".$_POST['mysql_db'], $_POST['mysql_user'], $_POST['mysql_password']);
 	}
 	catch(PDOException $e) {
 		$exception = $e->getMessage();
@@ -114,10 +115,12 @@ if ($GLOBALS['installed']) {
 	}
 
 	if($exception) {
+		$message[] = array("Das Senden der Testmail an ".$_POST['mail_sender_adress']." ist fehlgeschlagen.", 2);
 		$message[] = array($exception, 2);
 		Message::setMessage($message);
 		header('Location: ./install.php?section=messages');
 	} else {
+		$message[] = array("Das Senden der Testmail an ".$_POST['mail_sender_adress']." war erfolgreich.", 2);
 		Config::writeConfigLine('url_to_netmon', $_POST['url_to_netmon']);
 		Config::writeConfigLine('community_name', "Freifunk Deinestadt");
 		Config::writeConfigLine('community_slogan', "Die freie WLAN-Community aus deiner Stadt • Freie Netze für alle!");
@@ -133,6 +136,9 @@ if ($GLOBALS['installed']) {
 		Config::writeConfigLine('mail_smtp_password', $_POST['mail_smtp_password']);
 		Config::writeConfigLine('mail_smtp_login_auth', $_POST['mail_smtp_login_auth']);
 		Config::writeConfigLine('mail_smtp_ssl', $_POST['mail_smtp_ssl']);
+
+		Config::writeConfigLine('twitter_consumer_key', "dRWT5eeIn9UiHJgcjgpPQ");
+		Config::writeConfigLine('twitter_consumer_secret', "QxcnltPX2sTH8E7eZlxyZeqTIVoIoRjlrmUfkCzGSA");
 		
 		Config::writeConfigLine('enable_network_policy', 'false');
 		Config::writeConfigLine('network_policy_url', 'http://picopeer.net/PPA-de.html');

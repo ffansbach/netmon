@@ -131,20 +131,17 @@
 
 	<p>
 		<b>Automatische Routerzuweisung:</b><br>
-		<input name="allow_router_auto_assign" type="checkbox" value="1" {if isset($smarty.get.allow_router_auto_assign) AND $smarty.get.allow_router_auto_assign==1}checked{/if}> Erlaube automatische Router Zuweisung
+		<input name="allow_router_auto_assign" type="checkbox" value="1" {if isset($smarty.get.allow_router_auto_assign) AND $smarty.get.allow_router_auto_assign==1}checked{/if}> Erlauben <input name="router_auto_assign_login_string" type="text" size="20" maxlength="50" value="{if isset($smarty.get.router_auto_assign_login_string)}{$smarty.get.router_auto_assign_login_string}{else}Mac-Adresse...{/if}">
 	</p>
 	<br>
 
-	<p>
-		<b>Mac-Adresse:</b> <br><input name="router_auto_assign_login_string" type="text" size="35" maxlength="50" value="{if isset($smarty.get.router_auto_assign_login_string)}{$smarty.get.router_auto_assign_login_string}{/if}">
-	</p>
-	<br>
-
+	{if !empty($twitter_token)}
 	<p>
 		<b>Twitterankündigung:</b><br>
 		<input name="twitter_notification" type="checkbox" value="1" checked> Freifunker Per Twitter über den neuen Router informieren.
 	</p>
 	<br>
+	{/if}
 	
 	<p><input type="submit" value="Absenden"></p>
 </form>

@@ -13,7 +13,7 @@ class RouterEditor {
 		}
 
 		if(empty($_POST['hostname'])) {
-			$message[] = array("Bitte geben sie einen Hostname an.", 2);
+			$message[] = array("Bitte geben Sie einen Hostname an.", 2);
 			Message::setMessage($message);
 			return array("result"=>false, "router_id"=>$router_id);
 		} elseif (!empty($check_router_hostname_exist)) {

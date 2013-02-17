@@ -155,7 +155,7 @@ class Register {
 		    }
 		}
 		
-		if ($GLOBALS['enable_network_policy'] AND !$agb)
+		if ($GLOBALS['enable_network_policy']=="true" AND !$agb)
 			$message[] = array("Bitte lesen und akzeptieren Sie die Netzwerkpolicy!",2);
 		
 		//Return

@@ -77,6 +77,7 @@ class Chipsets {
 	}
 
 	public function getChipsetsWithoutName() {
+		$chipsets = array();
 		try {
 			$sql = "SELECT  *
 					FROM chipsets
@@ -94,6 +95,7 @@ class Chipsets {
 	}
 
 	public function getChipsetsWithName() {
+		$chipsets = array();
 		try {
 			$sql = "SELECT  *
 					FROM chipsets

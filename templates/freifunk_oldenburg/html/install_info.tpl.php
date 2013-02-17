@@ -1,5 +1,5 @@
 <h1>Netmon installieren</h1>
-<p>Netmon ist ein Monitoring-Portal für Freifunknetzwerke. Du benutzt Version {$netmon_version} ({$netmon_codename}). Dieser Assistent wird dich durch die Installation geleiten. Viel Spaß!</p>
+<p>Netmon ist ein Monitoring-Portal für Freifunknetzwerke. Du benutzt Version <i>{$netmon_version} ({$netmon_codename})</i>. Dieser Assistent wird dich durch die Installation führen und die wichtigsten Einstellungen vornehmen. Alle weiteren Einstellungen und Anpassungen an deine lokale Community kannst du später als eingeloggter Benutzer im Menü unter <i>Konfiguration</i> vornehmen.<br><br>Viel Spaß!</p>
 
 <h2>Informationen im Web</h2>
 <ul>

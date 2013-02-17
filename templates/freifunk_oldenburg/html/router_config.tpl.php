@@ -87,7 +87,7 @@
 					{if $ip_address.ipv=='4'}
 						<ul>
 							<li>
-								<b>IPv4 Adresse:</b> {$ip_address.ip} {if $globals.netmon_is_connected_to_network_by_ipv4=='true'}(<a href="./ping_ip.php?ip_id={$ip_address.ip_id}">Ping</a>, <a href="./show_crawl_data.php?ip_id={$ip_address.ip_id}">Crawl Daten</a>){/if}
+								<b>IPv4 Adresse:</b> {$ip_address.ip} {if $netmon_is_connected_to_network_by_ipv4=='true'}(<a href="./ping_ip.php?ip_id={$ip_address.ip_id}">Ping</a>, <a href="./show_crawl_data.php?ip_id={$ip_address.ip_id}">Crawl Daten</a>){/if}
 							</li>
 							<li>
 								<b>IPv4 Netmask:</b> {$interface.ipv4_netmask_dot}		
@@ -108,7 +108,7 @@
 					{if $ip_address.ipv=='6'}
 						<ul>
 							<li>
-								<b>IPv6 Adresse:</b> {$ip_address.ip} {if $globals.netmon_is_connected_to_network_by_ipv6=='true'}(<a href="./ping_ip.php?ip_id={$ip_address.ip_id}">Ping</a>, <a href="./show_crawl_data.php?ip_id={$ip_address.ip_id}">Crawl Daten</a>){/if}
+								<b>IPv6 Adresse:</b> {$ip_address.ip} {if $netmon_is_connected_to_network_by_ipv6=='true'}(<a href="./ping_ip.php?ip_id={$ip_address.ip_id}">Ping</a>, <a href="./show_crawl_data.php?ip_id={$ip_address.ip_id}">Crawl Daten</a>){/if}
 							</li>
 						</ul>
 					{/if}

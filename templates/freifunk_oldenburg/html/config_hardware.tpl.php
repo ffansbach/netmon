@@ -1,5 +1,6 @@
 <h1>Konfiguration der Hardwarenamen</h1>
 <h2>Vorhandene Chipsets</h2>
+{if !empty($chipsets_with_name)}
 <table class="display" id="routerlist">
 	<thead>
 		<tr>
@@ -20,9 +21,13 @@
 		{/foreach}
 	</tbody>
 </table>
+{else}
+	<p>Keine Chipsets vorhanden. Neue Chipsets werden wärend der Crawls automatisch hinzugefügt und können dann zugewiesen werden.</p>
+{/if}
 
 
 <h2>Nicht Zugewiesene Chipsets</h2>
+{if !empty($chipsets_without_name)}
 <table class="display" id="routerlist">
 	<thead>
 		<tr>
@@ -41,3 +46,6 @@
 		{/foreach}
 	</tbody>
 </table>
+{else}
+	<p>Keine nicht zugewiesenen Chipsets vorhanden.</p>
+{/if}
