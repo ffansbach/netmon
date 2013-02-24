@@ -60,7 +60,7 @@ if ($_GET['section']=="login") {
 		$openid_validation_result = $openid->ValidateWithServer();
 		if ($openid_validation_result == true){ // OK HERE KEY IS VALID
 			$short_openid = substr($_GET['openid_identity'], 7);
-			if (User::checkIfOpenIdHasUser($short_openid)) {
+			if (count(User::getUserByOpenID($short_openid))) {
 				login::user_login (false, false, $_SESSION['openid_login_remember'], false, $short_openid);
 				if(!empty($_SESSION['redirect_after_login_url'])) {
 					unset($_SESSION['openid_login']);

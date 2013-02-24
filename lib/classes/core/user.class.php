@@ -1,7 +1,7 @@
 <?php
 
 // +---------------------------------------------------------------------------+
-// index.php
+// user.class.php
 // Netmon, Freifunk Netzverwaltung und Monitoring Software
 //
 // Copyright (c) 2009 Clemens John <clemens-john@gmx.de>
@@ -25,11 +25,11 @@ require_once("lib/classes/core/subneteditor.class.php");
 require_once("lib/classes/core/login.class.php");
 
 /**
- * This file contains the class to get the for the user site.
+ * This class is used as a container for static methods that deal operations
+ * on user objects.
  *
  * @author	Clemens John <clemens-john@gmx.de>
- * @version	0.1
- * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
+ * @package	Netmon
  */
 
 class User {
@@ -198,63 +198,56 @@ class User {
 		}
 	}
 
+	/**
+	* Fetches a user by a given id from the database.
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param int $id Id of a user
+	* @return array() Array containing the user data
+	*/
 	function getUserByID($id) {
 		try {
-			$sql = "SELECT *
-				FROM users
-				WHERE id=$id";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$user = $row;
-			}
+			$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE id=?");
+			$stmt->execute(array($id));
+			$rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
 		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $user;
+		return $rows;
 	}
 
-	function getPlublicUserInfoByID($id) {
-		try {
-			$sql = "SELECT nickname, vorname, nachname, strasse, plz, ort, telefon, email, jabber, icq, website, about
-				FROM users
-				WHERE id=$id";
-			$result = DB::getInstance()->query($sql);
-			$user = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $user;
-	}
-
+	/**
+	* Fetches a user by a given email from the database.
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param string $email Email of a user
+	* @return array() Array containing the user data
+	*/
 	public function getUserByEmail($email) {
 		try {
-			$sql = "SELECT * FROM  users WHERE email='$email'";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$user = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM  users WHERE email=?");
+			$stmt->execute(array($email));
+			$rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+		} catch(PDOException $e) {
 		  echo $e->getMessage();
 		};
-		return $user;
+		return $rows;
 	}
 
-	public function checkIfOpenIdHasUser($openid) {
-		$sql = "select openid FROM users WHERE openid='$openid'";
-		$result = DB::getInstance()->query($sql);
-		$user_data = $result->fetch(PDO::FETCH_ASSOC);
-		$login = $result->rowCount();
-		if ($login==1) {
-			return true;
-		} else {
-			return false;
-		}
+	/**
+	* Fetches a user by a given email from the database.
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param string $openid OpenID of a user
+	* @return array() Array containing the user data
+	*/
+	public function getUserByOpenID($openid) {
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM  users WHERE openid=?");
+			$stmt->execute(array($openid));
+			$rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+		} catch(PDOException $e) {
+		  echo $e->getMessage();
+		};
+		return $rows;
 	}
-
-	
 }
 
 ?>
