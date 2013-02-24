@@ -26,7 +26,8 @@ if($_GET['user_id']==$_SESSION['user_id'] AND empty($routerlist)) {
   
   $routersnotassigned_list = RoutersNotAssigned::getRouters();
   $smarty->assign('routersnotassigned_list', $routersnotassigned_list);
-}
+} else
+  $smarty->assign('show_routersnotassigned_list', false);
 
 $is_logged_id = Usermanagement::isLoggedIn($_SESSION['user_id']);
 if($is_logged_id) {
@@ -34,6 +35,9 @@ if($is_logged_id) {
 } else {
 	$view='public';
 }
+$smarty->assign('is_logged_id', $is_logged_id);
+
+
 $servicelist = Service::getServiceList($view="", $_GET['user_id']);
 $smarty->assign('servicelist', $servicelist);
 

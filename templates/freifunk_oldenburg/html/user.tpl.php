@@ -30,19 +30,17 @@ $(document).ready(function() {
 	<div style="float:left; width: 47%;">
 		<h2>Daten</h2>
 		<p>
-			{if !empty($user.vorname) OR !empty($user.nachname)}<b>Name:</b> {$user.vorname} {$user.nachname}<br>{/if}
-			
-			{if !empty($user.strasse)}<b>Strasse: </b>{$user.strasse}<br>{/if}
-			{if !empty($user.plz) OR !empty($user.ort)}</b>Wohnort:</b>  {$user.plz} {$user.ort}<br>{/if}
-			{if !empty($user.telefon)}<b>Telefon:</b> {$user.telefon}<br>{/if}
-			<b>Email:</b> <a href="mailto:{$user.email}">{$user.email}</a><br>
-			
-			{if !empty($user.jabber)}<b>Jabber-ID:</b> {$user.jabber}<br>{/if}
-			{if !empty($user.icq)}<b>ICQ:</b> {$user.icq}<br>{/if}
-			{if !empty($user.website)}<b>Website:</b> <a href="{$user.website}">{$user.website}</a><br>{/if}
-			
-			{if !empty($user.telefon)}<h2>Beschreibung:</h2><p> {$user.about}</p>{/if}
-			
+			{if $is_logged_id}
+				{if !empty($user.vorname) OR !empty($user.nachname)}<b>Name:</b> {$user.vorname} {$user.nachname}<br>{/if}
+				{if !empty($user.strasse)}<b>Strasse: </b>{$user.strasse}<br>{/if}
+				{if !empty($user.plz) OR !empty($user.ort)}</b>Wohnort:</b>  {$user.plz} {$user.ort}<br>{/if}
+				{if !empty($user.telefon)}<b>Telefon:</b> {$user.telefon}<br>{/if}
+				{if !empty($user.email)}<b>Email:</b> <a href="mailto:{$user.email}">{$user.email}</a><br>{/if}
+				{if !empty($user.jabber)}<b>Jabber-ID:</b> {$user.jabber}<br>{/if}
+				{if !empty($user.icq)}<b>ICQ:</b> {$user.icq}<br>{/if}
+				{if !empty($user.website)}<b>Website:</b> <a href="{$user.website}">{$user.website}</a><br>{/if}
+			{/if}
+			{if !empty($user.telefon)}<b>Beschreibung:</b> {$user.about}<br>{/if}
 			<b>Anmeldedatum:</b> {$user.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr
 		</p>
 	</div>

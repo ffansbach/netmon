@@ -28,6 +28,12 @@ class RouterEditor {
 			$message[] = array("Der Router Auto Assign Login String wird bereits verwendet.", 2);
 			Message::setMessage($message);
 			return array("result"=>false, "router_id"=>$router_id);
+		} elseif($_POST['allow_router_auto_assign'] == '1' AND
+			($_POST['router_auto_assign_login_string'] == "Mac-Adresse..." OR empty($_POST['router_auto_assign_login_string']) OR ctype_space ($_POST['router_auto_assign_login_string']))) {
+			$message[] = array("Wenn Automatische Routerzuweisung aktiviert ist, muss eine Mac-Adresse gesetzt werden.", 2);
+			$message[] = array("Du findest die Mac-Adresse oft auf der Rückseite des Routers.", 0);
+			Message::setMessage($message);
+			return array("result"=>false, "router_id"=>$router_id);
 		} else {
 			if(!is_numeric($_POST['latitude']) OR !is_numeric($_POST['longitude'])) {
 				$_POST['latitude'] = 0;

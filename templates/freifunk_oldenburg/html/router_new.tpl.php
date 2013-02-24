@@ -131,7 +131,8 @@
 
 	<p>
 		<b>Automatische Routerzuweisung:</b><br>
-		<input name="allow_router_auto_assign" type="checkbox" value="1" {if isset($smarty.get.allow_router_auto_assign) AND $smarty.get.allow_router_auto_assign==1}checked{/if}> Erlauben <input name="router_auto_assign_login_string" type="text" size="20" maxlength="50" value="{if isset($smarty.get.router_auto_assign_login_string)}{$smarty.get.router_auto_assign_login_string}{else}Mac-Adresse...{/if}">
+		<input name="allow_router_auto_assign" type="checkbox" value="1" {if !isset($smarty.get.allow_router_auto_assign) OR $smarty.get.allow_router_auto_assign==1}checked{/if}> Erlauben <input name="router_auto_assign_login_string" type="text" size="20" maxlength="50" value="{if isset($smarty.get.router_auto_assign_login_string)}{$smarty.get.router_auto_assign_login_string}{else}Mac-Adresse...{/if}"
+ {if !isset($smarty.get.router_auto_assign_login_string) OR $smarty.get.router_auto_assign_login_string == 'Mac-Adresse...'}onfocus="if(this.value == this.defaultValue) this.value = '';" onblur="if(!this.value) this.value = this.defaultValue;"{/if}>
 	</p>
 	<br>
 
