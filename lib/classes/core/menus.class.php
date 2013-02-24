@@ -128,7 +128,6 @@ class Menus extends UserManagement {
 		if (UserManagement::checkPermission(32)) {
 //			$menu[] = array('name'=>'Neues Projekt', 'href'=>'subneteditor.php?section=new');
 			$menu[] = array('name'=>'Neues Projekt', 'href'=>'projecteditor.php?section=new');
-			$menu[] = array('name'=>'Imagemaker', 'href'=>'imagemaker.php');
 //			$menu[] = array('name'=>'CCD regenerieren', 'href'=>'vpn.php?section=regenerate_ccd_subnet');
 			$menu[] = array('name'=>'Projektliste', 'href'=>'projectlist.php');
 		}
