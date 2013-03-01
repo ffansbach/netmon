@@ -30,7 +30,7 @@ $(document).ready(function() {
 	<div style="float:left; width: 47%;">
 		<h2>Daten</h2>
 		<p>
-			{if $is_logged_id}
+			{if $is_logged_in}
 				{if !empty($user.vorname) OR !empty($user.nachname)}<b>Name:</b> {$user.vorname} {$user.nachname}<br>{/if}
 				{if !empty($user.strasse)}<b>Strasse: </b>{$user.strasse}<br>{/if}
 				{if !empty($user.plz) OR !empty($user.ort)}</b>Wohnort:</b>  {$user.plz} {$user.ort}<br>{/if}

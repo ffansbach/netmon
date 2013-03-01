@@ -60,5 +60,6 @@
 <form action="./user_edit.php?section=delete&id={$user.id}" method="POST">
   <h2>Benutzer Löschen?</h2>
   Ja <input type="checkbox" name="delete" value="true">
+  <input type="hidden" name="user_id" value="{$smarty.get.user_id}">
   <p><input type="submit" value="Löschen!"></p>
 </form>

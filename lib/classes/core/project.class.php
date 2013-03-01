@@ -17,6 +17,24 @@ class Project  {
 		}
 		return $projects;
 	}
+	
+	/**
+	* Gets all projects of a given user
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $user_id the id of the user you want to get the projects of
+	* @return array() returns an array containing the project data
+	*/
+	public function getProjectsByUserId($user_id) {
+		$rows = array();
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM projects WHERE user_id=?");
+			$stmt->execute(array($user_id));
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		return $rows;
+	}
 
 	public function getProjectList($only_ip_projects=false) {
 		if($only_ip_projects==true) {

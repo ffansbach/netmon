@@ -34,21 +34,38 @@
 	set_include_path(get_include_path() .PATH_SEPARATOR. __DIR__."/lib/classes/extern/");
 	$GLOBALS['community_name'] = "Freifunk Deinestadt";
 	$GLOBALS['community_slogan'] = "Die freie WLAN-Community aus deiner Stadt • Freie Netze für alle!";
-
+		
+	//check if netmons root path and the config path is writable to created temp dirs and config file
+	$check_writable[] = '';
+	$check_writable[] = 'config/';
+	foreach($check_writable as $path) {
+		if (!is_writable($GLOBALS['monitor_root'].$path)) {
+			echo $GLOBALS['monitor_root'].$path."<br>";
+			$not_writable[] = $path;
+		}
+	}
+	if(!empty($not_writable)) {
+		echo "Please set writable permissions to the above files and directories and reload the site.";
+		die();
+	}
+	unset($check_writable);
+	
 	//copy exemple config files and create needed directories on fresh installation
-	if(!file_exists($GLOBALS['monitor_root'].'config/config.local.inc.php')) copy($GLOBALS['monitor_root'].'config/config.local.inc.php.example', $GLOBALS['monitor_root'].'config/config.local.inc.php');
+	if(!file_exists($GLOBALS['monitor_root'].'config/config.local.inc.php')) copy($GLOBALS['monitor_root'].'config/config.local.inc.php.example', $GLOBALS['monitor_root'].'config/config.local.inc.php');	
+	
+	//create temp directories
 	$create_dirs[] = 'templates_c/';
 	$create_dirs[] = 'tmp/';
 	$create_dirs[] = 'rrdtool/';
 	$create_dirs[] = 'rrdtool/databases/';
 	foreach($create_dirs as $dir) {
 		if(!file_exists($GLOBALS['monitor_root'].$dir))
-			mkdir($GLOBALS['monitor_root'].$dir);
+			@mkdir($GLOBALS['monitor_root'].$dir);
 	}
 
 	//check if directories and files are writable
 	$check_writable = $create_dirs;
-	$check_writable[] = 'config/';
+	$check_writable[] = '';
 	$check_writable[] = 'config/config.local.inc.php';
 	foreach($check_writable as $path) {
 		if (!is_writable($GLOBALS['monitor_root'].$path)) {

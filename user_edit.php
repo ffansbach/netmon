@@ -37,11 +37,17 @@
       header('Location: user_edit.php?section=edit&user_id='.$_SESSION['user_id']);
     }
   } elseif ($_GET['section'] == "delete") {
-    UserManagement::isOwner($smarty, $_SESSION['user_id']);
-    if ($User->userDelete($_SESSION['user_id'])) {
-      header('Location: routerlist.php');
-    } else {
-      header('Location: user_edit.php?section=edit&user_id='.$_SESSION['user_id']);
-    }
+	UserManagement::isOwner($smarty, $_SESSION['user_id']);
+	
+	if ($_POST['delete'] == "true") {
+		User::userDelete($_POST['user_id']);
+		$message[] = array("Der Benutzer mit der ID ".$_POST['user_id']." wurde gelöscht.",1);
+		message::setMessage($message);
+		header('Location: routerlist.php');
+	} else {
+		$message[] = array("Sie müssen das Häckchen bei <i>Ja</i> setzen um den Benutzer zu löschen.", 2);
+		message::setMessage($message);
+		header('Location: user_edit.php?section=edit&user_id='.$_SESSION['user_id']);
+	}
   }
 ?>

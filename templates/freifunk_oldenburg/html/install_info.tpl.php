@@ -15,6 +15,7 @@
 		<h3>PHP-Extensions</h3>
 		PDO: {if $pdo_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 		PDO MySQL: {if $pdo_mysql_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		OpenSSL: {if $openssl_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 		Json: {if $json_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 		Curl: {if $curl_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 		GD: {if $gd_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>

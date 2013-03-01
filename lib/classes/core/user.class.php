@@ -31,9 +31,8 @@ require_once("lib/classes/core/login.class.php");
  * @author	Clemens John <clemens-john@gmx.de>
  * @package	Netmon
  */
-
 class User {
-	function userInsertEdit() {
+	public function userInsertEdit() {
 		if ($this->checkUserEditData($_GET['user_id'], $_POST['changepassword'], $_POST['oldpassword'], $_POST['newpassword'], $_POST['newpasswordchk'], $_POST['email'])) {
 			$user = User::getUserByID($_GET['user_id']);
 			if (!$_POST['changepassword']) {
@@ -170,31 +169,31 @@ class User {
 	}
 	
 	/**
-	* Deletes a user and all of his objects.
+	* Deletes a user and all of the objects he owns
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $user_id the id of the user to delete
 	*/
-	public function userDelete($id) {
-		if ($_POST['delete'] == "true") {
-			//Delete ip´s and services
-			foreach(Helper::getIpsByUserId($id) as $ip) {
-				IpEditor::deleteIp($ip['id']);
-			}
-			
-			//Delete ip´s, serices and subnets
-			foreach(Helper::getSubnetsByUserId($_SESSION['user_id']) as $subnet) {
-				subneteditor::deleteSubnet($subnet['id']);
-			}
-			
-			//Logout the user before deleting him
-			login::user_logout();
-			
-			DB::getInstance()->exec("DELETE FROM users WHERE id='$id';");
-			$message[] = array("Der Benutzer mit der ID ".$id." wurde gelöscht.",1);
-			message::setMessage($message);
-			return true;
-		} else {
-			$message[] = array("Sie müssen das Häckchen bei <i>Ja</i> setzen um den Benutzer zu löschen.", 2);
-			message::setMessage($message);
-			return false;
+	public function userDelete($user_id) {
+		//Delete routers (and with the routers you delete interfaces, ips and services of the user)
+		foreach(Router::getRouterListByUserId($user_id) as $router) {
+			RouterEditor::insertDeleteRouter($router['router_id']);
+		}
+		
+		//Delete ip´s, serices and subnets
+		foreach(Project::getProjectsByUserId($user_id) as $project) {
+			//TODO: implemet ProjectEditor::deleteProject($project_id)
+			//ProjectEditor::deleteProject($project['id']);
+		}
+		
+		//Logout the user before deleting him to get rid of session information an coockies
+		Login::user_logout();
+		
+		//delete the user from the database
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM users WHERE id=?");
+			$stmt->execute(array($user_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
 		}
 	}
 
@@ -208,7 +207,7 @@ class User {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE id=?");
 			$stmt->execute(array($id));
-			$rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
@@ -225,9 +224,9 @@ class User {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM  users WHERE email=?");
 			$stmt->execute(array($email));
-			$rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
-		  echo $e->getMessage();
+			echo $e->getMessage();
 		};
 		return $rows;
 	}
@@ -242,7 +241,7 @@ class User {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM  users WHERE openid=?");
 			$stmt->execute(array($openid));
-			$rows = $stmt->fetchAll(PDO::FETCH_OBJ);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 		  echo $e->getMessage();
 		};
