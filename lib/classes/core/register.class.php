@@ -23,50 +23,93 @@
 /**
  * This file contains the class to register a new user.
  *
- * @author	Clemens John <clemens-john@gmx.de>
- * @version	0.1
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
 require_once("lib/classes/core/login.class.php");
+require_once("lib/classes/core/user.class.php");
 require_once('lib/classes/extern/Zend/Mail.php');
 require_once('lib/classes/extern/Zend/Mail/Transport/Smtp.php');
 
 class Register {
+	/**
+	* Create a new user
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $nickname nickname of the user
+	* @param $password plain text password of the user
+	* @param $passwordchk plain text password doublecheck
+	* @param $email emailaddress of the user
+	* @param $agb has the user accepted the agb (is only beeing checked if the agb is enabled)?
+	* @param $openid openid if the user wants to register by openid
+	* @return boolean true if the was created successfull
+	*/
 	public function insertNewUser($nickname, $password, $passwordchk, $email, $agb, $openid) {
-		if (!empty($openid))
-			$password = Helper::randomPassword(8);
-			$passwordchk = $password;
-
-		if ($this->checkUserData($nickname, $password, $passwordchk, $email, $agb, $openid)) {
-			$password = usermanagement::encryptPassword($password);
-			$activation = md5($nickname);
-			
-			//Give the first user that registers full Root access (User+Mod+Admin+Root; 2^3+2^4+2^5+2^6=120) 
-			//Give further users only user permission (User; 2^3=8=User) 
+		$message = array();
+		//check weatcher the given data is valid
+		if(empty($nickname)) {
+			$message[] = array("Du musst einen Nickname angeben.",2);
+		} elseif(!User::isUniqueNickname($nickname)) {
+			$message[] = array("Der ausgewählte Nickname <i>$nickname</i> existiert bereits.",2);
+		} elseif(empty($password)) {
+			$message[] = array("Du musst ein Passwort angeben.",2);
+		} elseif($password!=$passwordchk) {
+			$message[] = array("Deine beiden Passwörter stimmen nicht überein.",2);
+		} elseif(empty($email)) {
+			$message[] = array("Du musst eine Emailadresse angeben.",2);
+		} elseif(!User::isUniqueEmail($email)) {
+			$message[] = array("Es existiert bereits ein Benutzer mit der ausgewhälten Emailadresse <i>$email</i>.",2);
+		} elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			$message[] = array("Die ausgewählte Emailadresse ".$email." ist keine gültige Emailadresse.",2);
+		} elseif(!empty($openid) AND !isUniqueOpenID($openid)) {
+			$message[] = array("Die ausgewählte OpenID <i>".$openid."</i> ist bereits mit einem Benutzer verknüpft.",2);
+		} elseif($GLOBALS['enable_network_policy']=="true" AND !$agb) {
+			$message[] = array("Du musst die Netzwerkpolicy akzeptieren.",2);
+		}
+		
+		if (count($message)>0) {
+			Message::setMessage($message);
+			return false;
+		} else {
+			//the first user that registers will get root access
 			try {
-				$result = DB::getInstance()->query("select * from users");
-				if ($result->rowCount()<=0)
+				$stmt = DB::getInstance()->prepare("SELECT * FROM users");
+				$stmt->execute();
+				if(!$stmt->rowCount())
 					$permission = 120;
 				else
 					$permission = 8;
-			}
-			catch(PDOException $e) {
+			} catch(PDOException $e) {
 				echo $e->getMessage();
 			}
 			
-			DB::getInstance()->exec("INSERT INTO users (nickname, password, openid, email, notification_method, permission, create_date, activated) VALUES ('$nickname', '$password', '$openid', '$email', 'email', '$permission', NOW(), '$activation');");
-			$id = DB::getInstance()->lastInsertId();
+			//hash password to store in db
+			$password = Usermanagement::encryptPassword($password);
+			//create acivation hash
+			$activation = Helper::randomPassword(8);
 			
-			if($this->sendRegistrationEmail($email, $nickname, $passwordchk, $activation, time(), $openid)) {
-				$message[] = array("Der Benutzer ".$nickname." wurde erfolgreich angelegt.", 1);
+			if(empty($openid))
+				$openid = "";
+			
+			try {
+				$stmt = DB::getInstance()->prepare("INSERT INTO users (nickname, password, openid, email, notification_method, permission, create_date, activated) VALUES (?, ?, ?, ?, 'email', ?, NOW(), ?)");
+				$stmt->execute(array($nickname, $password, $openid, $email, $permission, $activation));
+				$user_id = DB::getInstance()->lastInsertId();
+			} catch(PDOException $e) {
+				$message[] = array("Beim erstellen des Datenbankeintrags ist ein Fehler aufgetreten.", 2);
+				$message[] = array($e->getMessage(), 2);
+				Message::setMessage($message);
+				return false;
+			}
+		
+			if(Register::sendRegistrationEmail($email, $nickname, $passwordchk, $activation, time(), $openid)) {
+				$message[] = array("Dein Benutzer ".$nickname." wurde erfolgreich angelegt.", 1);
 				Message::setMessage($message);
 				return true;
 			} else {
 				$message[] = array("Die Email mit dem Link zum aktivieren des Nutzerkontos konnte nicht an ".$email." verschickt werden.", 2);
-				$message[] = array("Der neu angelegte User mit der ID ".$id." wird wieder gelöscht.", 2);
+				$message[] = array("Der neu angelegte User ".$nickname." wird wieder gelöscht.", 2);
 				Message::setMessage($message);
-				$this->deleteUser($id);
+				User::userDelete($user_id);
 				return false;
 			}
 		}
@@ -94,134 +137,51 @@ class Register {
 			return false;
 		}
 	}
-
-	public function checkUserData($nickname, $password, $passwordchk, $email, $agb, $openid) {
-		//Check if nickname is set
-		if (empty($nickname)) {
-			$message[] = array("Es wurde kein Nickname angegeben.",2);
-		} else {
-			//Check if nickname already exist
-			try {
-				$result = DB::getInstance()->query("select * from users WHERE nickname='$nickname'");
-				if ($result->rowCount()>0)
-					$message[] = array("Ein Benutzer mit dem Namen ".$nickname." existiert bereits.",2);
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-		}
-		
-		if (empty($email)) {
-			$message[] = array("Es wurde keine Emailadresse angegeben.",2);
-		} else {
-			//Check if mailadress already exist
-			try {
-				$result = DB::getInstance()->query("select * from users WHERE email='$email'");
-				if ($result->rowCount()>0) {
-					$message[] = array("Ein Benutzer mit der Emailadresse ".$email." existiert bereits.",2);
-				} else {
-					//Check if systax of adress is correct
-					$syntax = true;
-					if (!$syntax)
-						$message[] = array("Die Emailadresse ".$email." ist syntaktisch falsch.",2);
-				}
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-		}
-		
-		if (!$openid) {
-		    if (empty($password)) {
-			$message[] = array("Es wurde kein Passwort angegeben.",2);
-		    } elseif (empty($passwordchk)) {
-			$message[] = array("Das Passwort wurde kein zweites mal eingegeben.",2);
-		    } elseif ($password != $passwordchk) {
-			$message[] = array("Die Passwörter stimmen nicht überein.",2);
-		    }
-		} else {
-		    if (empty($openid)) {
-			$message[] = array("Es wurde keine Open-ID angegeben.",2);
-		    } else {
-			//Check if nickname already exist
-			try {
-				$result = DB::getInstance()->query("select * from users WHERE openid='$openid'");
-				if ($result->rowCount()>0)
-					$message[] = array("Die Open-ID ".$openid." ist bereits mit einem Benutzer verknüpft.",2);
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-		    }
-		}
-		
-		if ($GLOBALS['enable_network_policy']=="true" AND !$agb)
-			$message[] = array("Bitte lesen und akzeptieren Sie die Netzwerkpolicy!",2);
-		
-		//Return
-		if (isset($message) AND count($message)>0) {
-			Message::setMessage($message);
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	public function deleteUser($id) {
-		DB::getInstance()->exec("DELETE FROM users WHERE id='$id';");
-		$message[] = array("Der Benutzer mit der ID ".$id." wurde gelöscht.",1);
-		Message::setMessage($message);
-		return true;
-	}
 	
 	public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum, $openid) {
-		$text = "Hallo $nickname,
-
-Du hast dich am ".date("d.m.Y H:i:s", $datum)." Uhr bei $GLOBALS[community_name] registriert.
-
-Deine Logindaten sind:\n";
-
-
-if($openid) {
-  $text .= "Open-ID: $openid
-
-Die Open-ID wurde mit folgendem Benutzer verknuepft: $nickname
-
-Aus technischen Gruenden wurde fuer diesen Benutzer auch ein Passwort generiert, dass auch den Login auf herkoemlichem Weg ermoeglicht.
-Das Passwort lautet: $password\n\n";
-} else {
-  $text .= "Nickname: $nickname
-Passwort: $password\n\n";
-}
-
-$text .= "Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalten.
-$GLOBALS[url_to_netmon]/account_activate.php?activation_hash=$activation
-
-Mit freundlichen Gruessen
-$GLOBALS[community_name]";
-
-if ($GLOBALS['mail_sending_type']=='smtp') {
-	$config = array('username' => $GLOBALS['mail_smtp_username'],
-			'password' => $GLOBALS['mail_smtp_password']);
-
-	if(!empty($GLOBALS['mail_smtp_ssl']))
-		$config['ssl'] = $GLOBALS['mail_smtp_ssl'];
-	if(!empty($GLOBALS['mail_smtp_login_auth']))
-		$config['auth'] = $GLOBALS['mail_smtp_login_auth'];
-
-	$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
-}
-
-$mail = new Zend_Mail();
-
-$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
-$mail->addTo($email);
-$mail->setSubject("Anmeldung $GLOBALS[community_name]");
-$mail->setBodyText($text);
-
-$mail->send($transport);
-
-
+		$text = "Hallo $nickname,\n";
+		$text .= "Du hast dich am ".date("d.m.Y H:i:s", $datum)." Uhr bei $GLOBALS[community_name] registriert.\n\n";
+		$text .= "Deine Logindaten sind:\n";
+		if($openid) {
+			$text .= "Open-ID: $openid\n\n";
+			$text .= "Die Open-ID wurde mit folgendem Benutzer verknuepft: $nickname\n\n";
+			$text .= "Aus technischen Gruenden wurde fuer diesen Benutzer auch ein Passwort generiert, dass auch den Login auf herkoemlichem Weg ermoeglicht.\n";
+			$test .= "Das Passwort lautet: $password\n\n";
+		} else {
+			$text .= "Nickname: $nickname\n";
+			$text .= "Passwort: $password\n\n";
+		}
+		$text .= "Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalten.\n";
+		$text .= "$GLOBALS[url_to_netmon]/account_activate.php?activation_hash=$activation\n\n";
+		$text .= "Mit freundlichen Gruessen\n";
+		$text .= "$GLOBALS[community_name]";
+		
+		if ($GLOBALS['mail_sending_type']=='smtp') {
+			$config = array('username' => $GLOBALS['mail_smtp_username'],
+					'password' => $GLOBALS['mail_smtp_password']);
+			if(!empty($GLOBALS['mail_smtp_ssl']))
+				$config['ssl'] = $GLOBALS['mail_smtp_ssl'];
+			if(!empty($GLOBALS['mail_smtp_login_auth']))
+				$config['auth'] = $GLOBALS['mail_smtp_login_auth'];
+			try {
+				$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
+			} catch(Exception $e) {
+				echo $e->getMessage();
+				return false;
+			}
+		}
+		try {
+			$mail = new Zend_Mail();
+			$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
+			$mail->addTo($email);
+			$mail->setSubject("Anmeldung $GLOBALS[community_name]");
+			$mail->setBodyText($text);
+			$mail->send($transport);
+		} catch(Exception $e) {
+			echo $e->getMessage();
+			return false;
+		}
+			
 		$message[] = array("Eine Email mit einem Link zum aktivieren des Nutzerkontos wurde an ".$email." verschickt.", 1);
 		Message::setMessage($message);
 		return true;

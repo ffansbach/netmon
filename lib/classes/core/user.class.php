@@ -23,148 +23,159 @@
 require_once("lib/classes/core/ipeditor.class.php");
 require_once("lib/classes/core/subneteditor.class.php");
 require_once("lib/classes/core/login.class.php");
+require_once("lib/classes/core/router.class.php");
 
 /**
  * This class is used as a container for static methods that deal operations
  * on user objects.
  *
- * @author	Clemens John <clemens-john@gmx.de>
  * @package	Netmon
  */
 class User {
-	public function userInsertEdit() {
-		if ($this->checkUserEditData($_GET['user_id'], $_POST['changepassword'], $_POST['oldpassword'], $_POST['newpassword'], $_POST['newpasswordchk'], $_POST['email'])) {
-			$user = User::getUserByID($_GET['user_id']);
-			if (!$_POST['changepassword']) {
-				$password = $user['password'];
-			} else {
-				$password = usermanagement::encryptPassword($_POST['newpassword']);
-			}
-
-			if (!$_POST['permission']) {
-				$permission = $user['permission'];
-			} else {
-				$permission=0;
-				foreach($_POST['permission'] as $dual) {
-					$permission = $permission+$dual;
-				}
-			}
-
-			$sqlinsert = "UPDATE users
-						  SET 
-							  permission = '$permission',
-							  password = '$password',
-							  openid = '$_POST[openid]',
-							  vorname = '$_POST[vorname]',
-							  nachname = '$_POST[nachname]',
-							  strasse = '$_POST[strasse]',
-							  plz = '$_POST[plz]',
-							  ort = '$_POST[ort]',
-							  telefon = '$_POST[telefon]',
-							  email = '$_POST[email]',
-							  jabber = '$_POST[jabber]',
-							  icq = '$_POST[icq]',
-							  website = '$_POST[website]',
-							  about = '$_POST[about]',
-							  notification_method = '$_POST[notification_method]'
-							  WHERE id = '$_GET[user_id]'";
-			DB::getInstance()->exec($sqlinsert);
-			
-			$message[] = array("Die Daten von $user[nickname] wurden geändert", 1);
-			message::setMessage($message);
-			return true;
-		} else {
+	/**
+	* Insert the changes on a user into the database
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $user_id
+	* @param $changepassword
+	* @param $permission
+	* @param $oldpassword
+	* @param $newpassword
+	* @param $newpasswordchk
+	* @param $openid
+	* @param $vorname
+	* @param $nachname
+	* @param $strasse
+	* @param $plz
+	* @param $ort
+	* @param $telefon
+	* @param $email
+	* @param $jabber
+	* @param $icq
+	* @param $website
+	* @param $about
+	* @param $notification_method
+	* @return boolean if the user was edited successfull
+	*/
+	public function userInsertEdit($user_id, $changepassword, $permission, $oldpassword, $newpassword, $newpasswordchk,
+				       $openid, $vorname, $nachname, $strasse, $plz, $ort, $telefon, $email, $jabber,
+				       $icq, $website, $about, $notification_method) {
+		$user_data = User::getUserByID($user_id);
+	
+		$message = array();
+		//check weatcher the given data is valid
+		if($changepassword AND (User::getPasswordByUserID($user_id) != Usermanagement::encryptPassword($oldpassword))) {
+			$message[] = array("Dein altes Passwort ist nicht richtig.",2);
+		} elseif($changepassword AND empty($newpassword)) {
+			$message[] = array("Du musst ein neues Passwort angeben.",2);
+		} elseif($changepassword AND ($newpassword!=$newpasswordchk)) {
+			$message[] = array("Deine beiden neuen Passwörter stimmen nicht überein.",2);
+		} elseif(empty($email)) {
+			$message[] = array("Du musst eine Emailadresse angeben.",2);
+		} elseif(!User::isUniqueEmail($email, $user_id)) {
+			$message[] = array("Es existiert bereits ein Benutzer mit der ausgewhälten Emailadresse <i>$email</i>.",2);
+		} elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			$message[] = array("Die ausgewählte Emailadresse ".$email." ist keine gültige Emailadresse.",2);
+		} elseif(!empty($openid) AND !User::isUniqueOpenID($openid, $user_id)) {
+			$message[] = array("Die ausgewählte OpenID <i>".$openid."</i> ist bereits mit einem Benutzer verknüpft.",2);
+		}
+		
+		//if the user data is not valid, return false
+		if (count($message)>0) {
+			Message::setMessage($message);
 			return false;
 		}
+		
+		//if user wants to set a new password, encrypt new password
+		if ($changepassword)
+			$newpassword = Usermanagement::encryptPassword($newpassword);
+		else
+			$newpassword = $user_data['password'];
+	
+		if (!$permission) {
+				$newpermission = $user_data['permission'];
+		} else {
+			$newpermission=0;
+			foreach($permission as $dual) {
+				$newpermission += $dual;
+			}
+		}
+		
+		//if all checks are okay, update the data into the database
+		$stmt = DB::getInstance()->prepare("UPDATE users SET 
+							   permission = ?, password = ?, openid = ?, vorname = ?, nachname = ?,
+							   strasse = ?, plz = ?, ort = ?, telefon = ?, email = ?, jabber = ?,
+							   icq = ?, website = ?, about = ?, notification_method = ?
+						    WHERE id = ?");
+		$stmt->execute(array($newpermission, $newpassword, $openid, $vorname, $nachname, $strasse, $plz, $ort, $telefon, $email, $jabber, $icq, $website, $about, $notification_method, $user_id));
+
+		$message[] = array("Die Daten von $user_data[nickname] wurden geändert", 1);
+		message::setMessage($message);
+		return true;
 	}
-
-	public function checkUserEditData($user_id, $changepassword, $oldpassword, $newpassword, $newpasswordchk, $email) {
-		if($changepassword) {
-			try {
-				$sql = "SELECT password from users WHERE id='$user_id';";
-				$result = DB::getInstance()->query($sql);
-				$dbpassword = $result->fetch(PDO::FETCH_ASSOC);
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-			if ($dbpassword['password'] == usermanagement::encryptPassword($oldpassword)) {
-				//Check if password is set.
-				if (empty($newpassword)) {
-					$message[] = array("Es wurde kein Passwort angegeben.",2);
-				} elseif (empty($newpasswordchk)) {
-					$message[] = array("Das Passwort wurde kein zweites mal eingegeben.",2);
-				} elseif ($newpassword !== $newpasswordchk) {
-					$message[] = array("Die neuen Passwörter stimmen nicht überein.", 2);
-				}
+	
+	/**
+	* Checks weather a given emailaddress is already used by another user
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $email emailaddress to check
+	* @param $user_id optional, user to exclude from check (used to check the data in the user edit method)
+	* @return boolean true if the email is unique
+	*/
+	public function isUniqueEmail($email, $user_id=false) {
+		try {
+			if(!$user_id) {
+				$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE email=?");
+				$stmt->execute(array($email));
 			} else {
-				$message[] = array("Das alte Passwort ist Falsch.", 2);
+				$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE email=? AND id!=?");
+				$stmt->execute(array($email, $user_id));
 			}
-		}
-		
-		//Check if email is set.
-		if (!isset($email) OR $email == "") {
-			$message[] = array("Es wurde keine Emailadresse angegeben.",2);
-		} else {
-			//Check if Emailadress already exist.
-			try {
-				$sql = "select * from users WHERE email='$email' AND id!='$user_id'";
-				$result = DB::getInstance()->query($sql);
-				$emailcheck = $result->rowCount();
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-
-			if ($emailcheck>0) {
-				$message[] = array("Ein Benutzer mit der Emailadresse ".$email." existiert bereits.",2);
-			} else {
-				//Check if the syntax of the adress is correct
-				$syntax = true;
-				if (!$syntax) {
-					$message[] = array("Die Emailadresse ".$email." ist syntaktisch falsch.",2);
-				}
-			}
-		}
-		
-		if (isset($message) AND count($message)>0) {
-			message::setMessage($message);
-			return false;
-		} else {
-			return true;
+			return !$stmt->rowCount();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
 		}
 	}
 	
-	public function checkUserData($user_id, $password, $passwordchk, $email) {
-		//Check if email is set.
-		if (!isset($email) OR $email == "") {
-			$message[] = array("Es wurde keine Emailadresse angegeben.",2);
-		} else {
-			//Check if email exist.
-			try {
-				$sql = "select * from users WHERE email='$email' AND id!='$user_id'";
-				$result = DB::getInstance()->query($sql);
-				$emailcheck = $result->rowCount();
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-			if ($emailcheck>0) {
-				$message[] = array("Ein Benutzer mit der Emailadresse ".$email." existiert bereits.",2);
+	/**
+	* Checks weather a given nickname is already used by another user
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $nickname nickname to check
+	* @param $user_id optional, user to exclude from check (used to check the data in the user edit method)
+	* @return boolean true if the nickname is unique
+	*/
+	public function isUniqueNickname($nickname, $user_id=false) {
+		try {
+			if(!$user_id) {
+				$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE nickname=?");
+				$stmt->execute(array($nickname));
 			} else {
-				//Check if the syntax of the adress is correct
-				$syntax = true;
-				if (!$syntax) {
-					$message[] = array("Die Emailadresse ".$email." ist syntaktisch falsch.",2);
-				}
+				$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE nickname=? AND id!=?");
+				$stmt->execute(array($nickname, $user_id));
 			}
+			return !$stmt->rowCount();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
 		}
-		
-		if (isset($message) AND count($message)>0) {
-			message::setMessage($message);
-			return false;
-		} else {
-			return true;
+	}
+	
+	/**
+	* Checks weather a given openid is already used by another user
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $openid openid to check
+	* @param $user_id optional, user to exclude from check (used to check the data in the user edit method)
+	* @return boolean true if the openid is unique
+	*/
+	public function isUniqueOpenID($openid, $user_id=false) {
+		try {
+			if(!$user_id) {
+				$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE openid=?");
+				$stmt->execute(array($openid));
+			} else {
+				$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE openid=? AND id!=?");
+				$stmt->execute(array($openid, $user_id));
+			}
+			return !$stmt->rowCount();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
 		}
 	}
 	
@@ -194,7 +205,9 @@ class User {
 			$stmt->execute(array($user_id));
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -246,6 +259,23 @@ class User {
 		  echo $e->getMessage();
 		};
 		return $rows;
+	}
+	
+	/**
+	* Get the password of a user
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param string $user_id id of the user you want to get the password from
+	* @return string the password of the user
+	*/
+	public function getPasswordByUserID($user_id) {
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT password FROM  users WHERE id=?");
+			$stmt->execute(array($user_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+		  echo $e->getMessage();
+		};
+		return $rows['password'];
 	}
 }
 

@@ -33,7 +33,7 @@ $(document).ready(function() {
 			{if $is_logged_in}
 				{if !empty($user.vorname) OR !empty($user.nachname)}<b>Name:</b> {$user.vorname} {$user.nachname}<br>{/if}
 				{if !empty($user.strasse)}<b>Strasse: </b>{$user.strasse}<br>{/if}
-				{if !empty($user.plz) OR !empty($user.ort)}</b>Wohnort:</b>  {$user.plz} {$user.ort}<br>{/if}
+				{if !empty($user.plz) OR !empty($user.ort)}<b>Wohnort:</b>  {$user.plz} {$user.ort}<br>{/if}
 				{if !empty($user.telefon)}<b>Telefon:</b> {$user.telefon}<br>{/if}
 				{if !empty($user.email)}<b>Email:</b> <a href="mailto:{$user.email}">{$user.email}</a><br>{/if}
 				{if !empty($user.jabber)}<b>Jabber-ID:</b> {$user.jabber}<br>{/if}

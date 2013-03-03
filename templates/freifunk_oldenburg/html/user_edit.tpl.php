@@ -57,7 +57,7 @@
 
   <hr>
 
-<form action="./user_edit.php?section=delete&id={$user.id}" method="POST">
+<form action="./user_edit.php?section=delete&user_id={$user.id}" method="POST">
   <h2>Benutzer Löschen?</h2>
   Ja <input type="checkbox" name="delete" value="true">
   <input type="hidden" name="user_id" value="{$smarty.get.user_id}">
