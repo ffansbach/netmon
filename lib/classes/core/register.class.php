@@ -31,6 +31,12 @@ require_once("lib/classes/core/user.class.php");
 require_once('lib/classes/extern/Zend/Mail.php');
 require_once('lib/classes/extern/Zend/Mail/Transport/Smtp.php');
 
+/**
+ * This class is used as a container for static methods that deal operations during
+ * the registration process and possible complications
+ *
+ * @package	Netmon
+ */
 class Register {
 	/**
 	* Create a new user
@@ -115,29 +121,45 @@ class Register {
 		}
 	}
 
+	/**
+	* Activates a new registered user
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $activation the activation hash the user got by mail
+	* @return boolean true if the user has been activated successfull
+	*/
 	public function userActivate($activation) {
 		if (isset($activation)) {
-			$result = DB::getInstance()->query("SELECT nickname from users WHERE activated='$activation';");
-			$user_data = $result->fetch(PDO::FETCH_ASSOC);
+			//get the nickname of the user that will be activated
+			$stmt = DB::getInstance()->prepare("SELECT nickname from users WHERE activated=?");
+			$stmt->execute(array($activation));
+			$user_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-			$result = DB::getInstance()->exec("UPDATE users SET activated=0 WHERE activated='$activation';");
-			if ($result>0) {
+			//activate the user
+			$stmt = DB::getInstance()->prepare("UPDATE users SET activated=0 WHERE activated=?");
+			$stmt->execute(array($activation));
+			if ($stmt->rowCount()) {			
 				$message[] = array("Der Benutzer ".$user_data['nickname']." wurde erfolgreich aktiviert.", 1);
 				$message[] = array("Sie können sich jetzt mit Ihrem Benutzernamen und Ihrem Passwort einloggen", 1);
 				Message::setMessage($message);
 				return true;
 			} else {
-				$message[] = array("Ein Benutzer mit dem Aktivationcode ".$activation." existiert nicht!", 2);
+				$message[] = array("Ein Benutzer mit dem Aktivierungscode ".$activation." existiert nicht!", 2);
 				Message::setMessage($message);
 				return false;
 			}
 		} else {
-			$message[] = array("Es wurde kein Aktivierungscode übergeben!", 2);
+			$message[] = array("Es wurde kein Aktivierungscode übergeben.", 2);
 			Message::setMessage($message);
 			return false;
 		}
 	}
 	
+	/**
+	* Activates a new registered user
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $activation the activation hash the user got by mail
+	* @return boolean true if the user has been activated successfull
+	*/
 	public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum, $openid) {
 		$text = "Hallo $nickname,\n";
 		$text .= "Du hast dich am ".date("d.m.Y H:i:s", $datum)." Uhr bei $GLOBALS[community_name] registriert.\n\n";
@@ -186,62 +208,82 @@ class Register {
 		Message::setMessage($message);
 		return true;
 	}
-  
+	
+	/**
+	* Sets a new password for a user that forgot his password and requested a new password by mail
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $new_password_hash the hash of the new password. This hash was sent to the user
+	*			    by mail previously and the user sets this hash by clicking on
+	*			    the link in the email
+	* @param $old_password_hash the hash of the old password. This hash was sent to the user
+	*			    by mail previously and is used to check if the user is permitted to
+	*			    set this user a new password
+	* @param $user_id id of the user that wants to set a new password
+	* @return boolean true if the password was changed successfull
+	*/
 	public function setNewPassword($new_password_hash, $old_password_hash, $user_id) {
 		$user_data = User::getUserByID($user_id);
 		if($old_password_hash==$user_data['password']) {
-			$result = DB::getInstance()->exec("UPDATE users SET password = '$new_password_hash' WHERE id = '$user_id'");
-			if ($result>0) {
+			$stmt = DB::getInstance()->prepare("UPDATE users SET password = ? WHERE id = ?");
+			$stmt->execute(array($new_password_hash, $user_id));
+		
+			if ($stmt->rowCount()) {
 				$message[] = array("Dem Benutzer $user_data[nickname] wurde ein neues Passwort gesetzt", 1);
 				Message::setMessage($message);
 				return true;
 			} else {
-				$message[] = array("Dem Benutzer mit der ID ".$user_id." konnte keine neues Passwort gesetzt werden.", 2);
+				$message[] = array("Dem Benutzer $user_data[nickname] konnte keine neues Passwort gesetzt werden.", 2);
 				Message::setMessage($message);
 				return false;
 			}
 		} else {
-			$message[] = array("Der übergebene Passwordhash der User-ID ".$user_id." stimmt nicht mit dem gespeicherten Hash überein.", 2);
-			$message[] = array("Es wurde kein neues Passwort gesetzt!.", 2);
+			$message[] = array("Der übergebene Passwordhash des Benutzers $user_data[nickname] stimmt nicht mit dem gespeicherten Hash überein.", 2);
+			$message[] = array("Es wurde kein neues Passwort gesetzt.", 2);
 			Message::setMessage($message);
 			return false;
 		}
 	}
 	
-	public function sendPassword($user_id, $email, $nickname, $password, $password_md5, $oldpassword_hash) {
-		$text = "Hallo $nickname,
+	/**
+	* Sends a mail to a user who forgot his password with a new password and a link that lets the user set this new password
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $user_id id of the user that wants to set a new password
+	* @param $email email of the user that wants to set a new password
+	* @param $nickname nickname of the user that wants to set a new password
+	* @param $newpassword new plain text password for the user
+	* @param $new_password_hash the hash of the new password. This hash is used to generate a link wich makes
+	*			    the user able to set this hash for his new password
+	* @param $old_password_hash the hash of the old password. This hash is used to generate a link wich makes
+	*			    the user able to set this hash for his new password
+	* @return boolean true if the mail was sent successfull
+	*/
+	public function sendPassword($user_id, $email, $nickname, $newpassword, $new_password_hash, $old_password_hash) {
+		$text = "Hallo $nickname,\n\n";
+		$text .= "Deine neuen Logindaten Sind:\n";
+		$text .= "Nickname: $nickname\n";
+		$text .= "Passwort: $newpassword\n\n";
+		$text .= "Bitte bestaetige die Aenderungen mit einem Klick auf diesen Link:\n";
+		$text .= "$GLOBALS[url_to_netmon]/set_new_password.php?user_id=$user_id&new_passwordhash=$new_password_hash&oldpassword_hash=$old_password_hash\n\n";
+		$text .= "Mit freundlichen Gruessen\n";
+		$text .= "$GLOBALS[community_name]";
+		
+		if ($GLOBALS['mail_sending_type']=='smtp') {
+			$config = array('username' => $GLOBALS['mail_smtp_username'],
+					'password' => $GLOBALS['mail_smtp_password']);
+			if(!empty($GLOBALS['mail_smtp_ssl']))
+				$config['ssl'] = $GLOBALS['mail_smtp_ssl'];
+			if(!empty($GLOBALS['mail_smtp_login_auth']))
+				$config['auth'] = $GLOBALS['mail_smtp_login_auth'];
+			
+			$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
+		}
 
-Deine neuen Logindaten Sind:
-Nickname: $nickname
-Passwort: $password
-
-Bitte bestaetige die Aenderungen mit einem Klick auf diesen Link:
-$GLOBALS[url_to_netmon]/set_new_password.php?user_id=$user_id&new_passwordhash=$password_md5&oldpassword_hash=$oldpassword_hash
-
-Mit freundlichen Gruessen
-$GLOBALS[community_name]";
-
-
-if ($GLOBALS['mail_sending_type']=='smtp') {
-	$config = array('username' => $GLOBALS['mail_smtp_username'],
-			'password' => $GLOBALS['mail_smtp_password']);
-
-	if(!empty($GLOBALS['mail_smtp_ssl']))
-		$config['ssl'] = $GLOBALS['mail_smtp_ssl'];
-	if(!empty($GLOBALS['mail_smtp_login_auth']))
-		$config['auth'] = $GLOBALS['mail_smtp_login_auth'];
-
-	$transport = new Zend_Mail_Transport_Smtp($GLOBALS['mail_smtp_server'], $config);
-}
-
-$mail = new Zend_Mail();
-
-$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
-$mail->addTo($email);
-$mail->setSubject("Neues Passwort $GLOBALS[community_name]");
-$mail->setBodyText($text);
-
-$mail->send($transport);
+		$mail = new Zend_Mail();
+		$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
+		$mail->addTo($email);
+		$mail->setSubject("Neues Passwort $GLOBALS[community_name]");
+		$mail->setBodyText($text);
+		$mail->send($transport);
 
 		$message[] = array("Dir wurde ein neues Passwort zugesendet.", 1);
 		Message::setMessage($message);
