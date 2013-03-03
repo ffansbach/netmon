@@ -43,8 +43,6 @@ if ($_GET['section'] == "edit") {
 	
 	if ($_POST['delete'] == "true") {
 		User::userDelete($_POST['user_id']);
-		$message[] = array("Der Benutzer mit der ID ".$_POST['user_id']." wurde gelöscht.",1);
-		message::setMessage($message);
 		header('Location: routerlist.php');
 	} else {
 		$message[] = array("Sie müssen das Häckchen bei <i>Ja</i> setzen um den Benutzer zu löschen.", 2);

@@ -220,12 +220,12 @@
 			$_SESSION['current_page'] = $current_page;
 	}
 
-	if(!isset($messages)) {
+/*	if(!isset($messages)) {
 		$message = array();
 		$smarty->assign('message', $message);
 	} else {
 		$smarty->assign('message', $messages);
-	}
+	}*/
 
 	//initialize important variables
 	if(!isset($_GET['section'])) $_GET['section'] = null;

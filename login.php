@@ -96,7 +96,7 @@ if ($_GET['section']=="login") {
 		header('Location: login.php');
 	}
 } elseif($_GET['section']=="logout") {
-	$Login->user_logout($message);
+	Login::user_logout();
 	header('Location: index.php');
 } else {
 	$_GET['section'] = "login";

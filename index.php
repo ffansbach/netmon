@@ -28,10 +28,10 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-  require_once('runtime.php');
-  if(!$GLOBALS['installed']) {
-    header('Location: install.php');
-  } else {
-    header('Location: routerlist.php');
-  }
+require_once('runtime.php');
+if(!$GLOBALS['installed'])
+	header('Location: install.php');
+else
+	header('Location: routerlist.php');
+
 ?>

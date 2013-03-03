@@ -185,6 +185,8 @@ class User {
 	* @param $user_id the id of the user to delete
 	*/
 	public function userDelete($user_id) {
+		$user_data = User::getUserByID($user_id);
+	
 		//Delete routers (and with the routers you delete interfaces, ips and services of the user)
 		foreach(Router::getRouterListByUserId($user_id) as $router) {
 			RouterEditor::insertDeleteRouter($router['router_id']);
@@ -207,6 +209,9 @@ class User {
 			echo $e->getMessage();
 			return false;
 		}
+		
+		$message[] = array("Der Benutzer ".$user_data['nickname']." wurde gelöscht.",1);
+		message::setMessage($message);
 		return true;
 	}
 

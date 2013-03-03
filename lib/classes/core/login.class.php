@@ -86,12 +86,23 @@ class Login {
 			Message::setMessage($messages);
 			return false;
 		} else {
-			$_SESSION = array();
-			$_COOKIE = array();
+			//destroy current session
+			//to correctly destroy a session look at http://php.net/manual/de/function.session-destroy.php
+			unset($_SESSION);
+			unset($_COOKIE);
 			setcookie("nickname", "", time() - 60*60*24*14);
 			setcookie("password_hash", "", time() - 60*60*24*14);
 			setcookie("openid", "", time() - 60*60*24*14);
 			setcookie(session_name(), '', time()-3600,'/');
+			
+			if (ini_get("session.use_cookies")) {
+				$params = session_get_cookie_params();
+				setcookie(session_name(), '', time() - 42000, $params["path"],
+					  $params["domain"], $params["secure"], $params["httponly"]);
+			}
+			session_destroy();
+			
+			session_start();
 			$messages[] = array("Sie wurden ausgeloggt und ihre Benutzersession wurde gelöscht!", 1);
 			Message::setMessage($messages);
 			return true;
