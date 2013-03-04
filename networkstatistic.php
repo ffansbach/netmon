@@ -187,6 +187,7 @@ if(!empty($last_ended_crawl_cycle)) {
 	$smarty->assign('router_status_offline', $offline);
 	$smarty->assign('router_status_unknown', $unknown);
 	$smarty->assign('router_status_total', $total);
+	$smarty->assign('clients_connected', Clients::countClientsCrawlCycle($last_ended_crawl_cycle['id']));
 }
 
 /** Display templates **/

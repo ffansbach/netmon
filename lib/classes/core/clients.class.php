@@ -17,13 +17,14 @@ class Clients {
 		$client_count = 0;
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_clients_count WHERE crawl_cycle_id=?");
-			$stmt->execute(array($user_id));
+			$stmt->execute(array($crawl_cycle_id));
 			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
+		
 		foreach($rows as $row) {
-			$client_count = $client_count+$row['client_count'];
+			$client_count += $row['client_count'];
 		}
 
 		return $client_count;
@@ -45,7 +46,7 @@ class Clients {
 			echo $e->getMessage();
 		}
 		
-		if(!empty($clients))
+		if(!empty($rows))
 			return $rows['client_count'];
 		else
 			return 0;

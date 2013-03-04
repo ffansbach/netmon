@@ -64,7 +64,7 @@ $(document).ready(function() {
 					 lines: { show: true, fill: true, fillColor:""} },
 			    'memory_free':{checked:true, color: "#0009c3", 
 					 lines: { show: true, fill: true, fillColor:""} },
-			    'clients':{checked:true, color: "#43c02e", 
+			    'clients':{checked:true, color: "#006c7b", 
 					 lines: { show: true, fill: false} },
 			    'originators':{checked:true, color: "#46ddd4", 
 					 lines: { show: true, fill: false} },
