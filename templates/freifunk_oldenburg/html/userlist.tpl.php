@@ -24,8 +24,8 @@ $(document).ready(function() {
 				<th>Benutzer</th>
 				<th>Router</th>
 				<th>Jabber-ID</th>
-				<th>ICQ</th>
 				<th>Email</th>
+				<th>Benutzerrollen</th>
 				<th>Dabei seit</th>
 			</tr>
 		</thead>
@@ -35,8 +35,20 @@ $(document).ready(function() {
 					<td><a href="./user.php?user_id={$user.id}">{$user.nickname}</a></td>
 					<td>{$user.routercount}</td>
 					<td>{$user.jabber}</td>
-					<td>{$user.icq}</td>
-					<td>{$user.email}</td>
+					<td><a href="mailto:{$user.email}">{$user.email}</a></td>
+					<td>
+						{assign var="first_role" value=true}
+						{foreach item=role from=$user.roles}<!--
+							-->{if $role.check}<!--
+								-->{if !$first_role}, {/if}<!--
+								-->{if $role.role == 3}Benutzer{/if}<!--
+								-->{if $role.role == 4}Moderator{/if}<!--
+								-->{if $role.role == 5}Administrator{/if}<!--
+								-->{if $role.role == 6}Root{/if}<!--
+								-->{assign var="first_role" value=false}<!--
+							-->{/if}<!--
+						-->{/foreach}
+					</td>
 					<td>{$user.create_date|date_format:"%d.%m.%Y"}</td>
 				</tr>
 			{/foreach}

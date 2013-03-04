@@ -41,7 +41,18 @@ $(document).ready(function() {
 				{if !empty($user.website)}<b>Website:</b> <a href="{$user.website}">{$user.website}</a><br>{/if}
 			{/if}
 			{if !empty($user.telefon)}<b>Beschreibung:</b> {$user.about}<br>{/if}
-			<b>Anmeldedatum:</b> {$user.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr
+			<b>Anmeldedatum:</b> {$user.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
+			<b>Benutzerrollen:</b>	{assign var="first_role" value=true}
+						{foreach item=role from=$user.roles}<!--
+							-->{if $role.check}<!--
+								-->{if !$first_role}, {/if}<!--
+								-->{if $role.role == 3}Benutzer{/if}<!--
+								-->{if $role.role == 4}Moderator{/if}<!--
+								-->{if $role.role == 5}Administrator{/if}<!--
+								-->{if $role.role == 6}Root{/if}<!--
+								-->{assign var="first_role" value=false}<!--
+							-->{/if}<!--
+						-->{/foreach}
 		</p>
 	</div>
 	<div style="float:left; width: 53%;">
