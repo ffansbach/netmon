@@ -48,14 +48,6 @@ class Install {
 		foreach($configs as $key=>$value) {
 			$file[$mysql_begin+$key] = $value;
 		}
-/*		$mysql_config[$mysql_begin+1] = '$GLOBALS[\'mysql_host\'] = "'.$_POST['host'].'";';
-		$mysql_config[$mysql_begin+2] = '$GLOBALS[\'mysql_db\'] = "'.$_POST['database'].'";';
-		$mysql_config[$mysql_begin+3] = '$GLOBALS[\'mysql_user\'] = "'.$_POST['user'].'";';
-		$mysql_config[$mysql_begin+4] = '$GLOBALS[\'mysql_password\'] = "'.$_POST['password'].'";';
-
-		for($i=$mysql_begin+1; $i<=$mysql_begin+4; $i++) {
-			$file[$i] = $mysql_config[$i];
-		}*/
 
 		return $file;
 	}
