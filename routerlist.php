@@ -2,7 +2,7 @@
 	require_once('runtime.php');
 	require_once('lib/classes/core/router.class.php');
 	require_once('lib/classes/core/ip.class.php');
-
+	
 	$smarty->assign('message', Message::getMessage());
 	
 	if(!isset($_GET['where']))

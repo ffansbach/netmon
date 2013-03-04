@@ -7,155 +7,137 @@ require_once($GLOBALS['monitor_root'].'lib/classes/core/batmanadvanced.class.php
 require_once($GLOBALS['monitor_root'].'lib/classes/core/user.class.php');
 require_once($GLOBALS['monitor_root'].'lib/classes/extern/xmpphp/XMPP.php');
 
+/**
+ * This class is used as a container for static methods that deal operations
+ * with router objects. Mainly fetching data from the database.
+ *
+ * @package	Netmon
+ */
 class Router {
 	public function getRouterInfo($router_id) {
 		try {
-			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.chipset_id, notify, notification_wait, notified,
-					users.nickname, chipsets.name as chipset_name
-					FROM routers
-					LEFT JOIN users ON (users.id=routers.user_id)
-					LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
-					WHERE routers.id='$router_id'";
-			$result = DB::getInstance()->query($sql);
-			$router = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.chipset_id, notify, notification_wait, notified,
+								    users.nickname, chipsets.name as chipset_name
+							    FROM routers
+							    LEFT JOIN users ON (users.id=routers.user_id)
+							    LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
+							    WHERE routers.id=?");
+			$stmt->execute(array($router_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $router;
+		return $rows;
 	}
-
+	
 	public function getRouterByHostname($hostname) {
 		try {
-			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
-					users.nickname, chipsets.name as chipset_name
-					FROM routers
-					LEFT JOIN users ON (users.id=routers.user_id)
-					LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
-					WHERE routers.hostname='$hostname'";
-			$result = DB::getInstance()->query($sql);
-			$router = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
+								    users.nickname, chipsets.name as chipset_name
+							    FROM routers
+							    LEFT JOIN users ON (users.id=routers.user_id)
+							    LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
+							    WHERE routers.hostname=?");
+			$stmt->execute(array($hostname));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $router;
+		return $rows;
 	}
-
+	
 	public function getRouterByAutoAssignLoginString($auto_assign_login_string) {
 		try {
-			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.trying_to_assign_notified, routers.trying_to_assign_last_notification_time,
-					users.nickname, chipsets.name as chipset_name
-					FROM routers
-					LEFT JOIN users ON (users.id=routers.user_id)
-					LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
-					WHERE routers.router_auto_assign_login_string='$auto_assign_login_string'";
-			$result = DB::getInstance()->query($sql);
-			$router = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.trying_to_assign_notified, routers.trying_to_assign_last_notification_time,
+								    users.nickname, chipsets.name as chipset_name
+							    FROM routers
+							    LEFT JOIN users ON (users.id=routers.user_id)
+							    LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
+							    WHERE routers.router_auto_assign_login_string=?");
+			$stmt->execute(array($auto_assign_login_string));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $router;
+		return $rows;
 	}
-
+	
 	public function getRouterByAutoAssignHash($auto_assign_hash) {
 		try {
-			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
-					users.nickname, chipsets.name as chipset_name
-					FROM routers
-					LEFT JOIN users ON (users.id=routers.user_id)
-					LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
-					WHERE routers.router_auto_assign_hash='$auto_assign_hash'";
-			$result = DB::getInstance()->query($sql);
-			$router = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
+								    users.nickname, chipsets.name as chipset_name
+							    FROM routers
+							    LEFT JOIN users ON (users.id=routers.user_id)
+							    LEFT JOIN chipsets ON (chipsets.id=routers.chipset_id)
+							    WHERE routers.router_auto_assign_hash=?");
+			$stmt->execute(array($auto_assign_hash));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $router;
+		return $rows;
 	}
-
+	
 	public function getCrawlRouterByCrawlCycleId($crawl_cycle_id, $router_id) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_routers
-					WHERE router_id='$router_id' AND crawl_cycle_id='$crawl_cycle_id'";
-			$result = DB::getInstance()->query($sql);
-			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_routers WHERE router_id=? AND crawl_cycle_id=?");
+			$stmt->execute(array($router_id, $crawl_cycle_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $crawl_data;
+		return $rows;
 	}
-
+	
 	public function getCrawlRoutersByCrawlCycleIdAndStatus($crawl_cycle_id, $status) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_routers
-					WHERE crawl_cycle_id='$crawl_cycle_id' AND status='$status'";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$routers[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_routers WHERE crawl_cycle_id=? AND status=?");
+			$stmt->execute(array($crawl_cycle_id, $status));
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $routers;
+		return $rows;
 	}
-
+	
 	public function getCrawlRoutersByCrawlCycleId($crawl_cycle_id) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_routers
-					WHERE crawl_cycle_id='$crawl_cycle_id'
-					ORDER BY status ASC";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$routers[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_routers WHERE crawl_cycle_id=?");
+			$stmt->execute(array($crawl_cycle_id));
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $routers;
+		return $rows;
 	}
-
+	
 	public function getLastOnlineCrawlByRouterId($router_id) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_routers
-					WHERE router_id='$router_id' AND status='online' ORDER BY id desc
-					LIMIT 1";
-			$result = DB::getInstance()->query($sql);
-			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  *
+							    FROM crawl_routers
+							    WHERE router_id=? AND status='online' ORDER BY id desc
+							    LIMIT 1");
+			$stmt->execute(array($router_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $crawl_data;
+		return $rows;
 	}
-
-
-
+	
 	public function getRouters() {
 		$routers = array();
 		try {
-			$sql = "SELECT  *
-					FROM routers";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$routers[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM routers");
+			$stmt->execute(array());
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $routers;
+		return $rows;
 	}
-
+	
+	//TODO
 	public function getRouterList($where, $operator, $value) {
 		if(!empty($where) AND !empty($value)) {
 			$sql_append = "WHERE ".$where.urldecode($operator)."'$value'";
@@ -219,6 +201,7 @@ class Router {
 		return $routers;
 	}
 
+	//TODO
 	public function getRouterListByUserId($user_id) {
 		$routers = array();
 		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
@@ -277,99 +260,86 @@ class Router {
 	}
 
 	public function getRoutersForCrawl($from, $to) {
-		$routers=array();
+		$rows=array();
 		try {
-			$sql = "SELECT  *
-					FROM routers
-				WHERE crawl_method='crawler'
-				ORDER BY id ASC
-				LIMIT $from, $to";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$row['interfaces'] = Interfaces::getInterfacesByRouterId($row['id']);
-				$routers[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM routers WHERE crawl_method='crawler' ORDER BY id ASC LIMIT ?, ?");
+			$stmt->execute(array($from, $to));
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $routers;
+
+		foreach($rows as $key => $row) {
+			$rows[$key]['interfaces'] = Interfaces::getInterfacesByRouterId($row['id']);
+		}
+		return $rows;
 	}
 
 	public function getCrawlRouterHistoryExceptActualCrawlCycle($router_id, $actual_crawl_cycle_id, $limit) {
+		$rows=array();
 		try {
-			$sql = "SELECT  *
-					FROM crawl_routers
-					WHERE router_id='$router_id' AND crawl_cycle_id!='$actual_crawl_cycle_id'
-					ORDER BY id desc
-					LIMIT $limit";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$routers[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT *
+							    FROM crawl_routers
+							    WHERE router_id=? AND crawl_cycle_id!=?
+							    ORDER BY id desc
+							    LIMIT ?");
+			$stmt->execute(array($router_id, $actual_crawl_cycle_id, $limit));
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $routers;
+		return $rows;
 	}
 
 	public function countRoutersByCrawlCycleIdAndStatus($crawl_cycle_id, $status) {
 		try {
-			$sql = "SELECT  COUNT(*) as count
-					FROM crawl_routers
-					WHERE crawl_cycle_id='$crawl_cycle_id' AND status='$status'";
-			$result = DB::getInstance()->query($sql);
-			$count = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as count
+							    FROM crawl_routers
+							    WHERE crawl_cycle_id=? AND status=?");
+			$stmt->execute(array($crawl_cycle_id, $status));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $count['count'];
+		return $rows['count'];
 	}
 
 	public function countRouters() {
 		try {
-			$sql = "SELECT  COUNT(*) as count
-					FROM routers";
-			$result = DB::getInstance()->query($sql);
-			$count = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as count FROM routers");
+			$stmt->execute(array());
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $count['count'];
+		return $rows['count'];
 	}
 
 	public function countRoutersByChipsetId($chipset_id) {
 		try {
-			$sql = "SELECT  COUNT(*) as count
-					FROM routers
-					WHERE chipset_id='$chipset_id'";
-			$result = DB::getInstance()->query($sql);
-			$count = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as count FROM routers WHERE chipset_id=?");
+			$stmt->execute(array($chipset_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $count['count'];
+		return $rows['count'];
 	}
 
 	public function getRouterByMacAndCrawlCycleId($mac_addr, $crawl_cycle_id) {
-		$interfaces = array();
+		$rows = array();
 		try {
-			$sql = "SELECT  crawl_interfaces.router_id, crawl_interfaces.mac_addr,
-					routers.hostname, routers.latitude, routers.longitude
-					FROM crawl_interfaces
-					LEFT JOIN routers on (routers.id=crawl_interfaces.router_id)
-				WHERE crawl_interfaces.crawl_cycle_id='$crawl_cycle_id' AND crawl_interfaces.mac_addr='$mac_addr'";
-			$result = DB::getInstance()->query($sql);
-			$router = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  crawl_interfaces.router_id, crawl_interfaces.mac_addr,
+								    routers.hostname, routers.latitude, routers.longitude
+							    FROM crawl_interfaces
+							    LEFT JOIN routers on (routers.id=crawl_interfaces.router_id)
+							    WHERE crawl_interfaces.crawl_cycle_id=? AND crawl_interfaces.mac_addr=?");
+			$stmt->execute(array($crawl_cycle_id, $mac_addr));
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $router;
+		return $rows;
 	}
 
 	public function getRouterReliability($router_id, $crawl_cycles) {
@@ -391,7 +361,7 @@ class Router {
 		}
 		return($status);
 	}
-
+	
 	public function routerOfflineNotification($router_id, $crawl_data) {
 		$router_data = Router::getRouterInfo($router_id);
 		if($crawl_data['status']=='offline' AND $router_data['notify']==1 AND $router_data['notified']!=1) {
@@ -417,35 +387,30 @@ class Router {
 					} elseif ($user_data['notification_method']=="jabber") {
 						Router::routerNotifyOverJabberIfDown($router_data, $user_data, $router_crawl_history);
 					}
-					DB::getInstance()->exec("UPDATE routers SET
-									notified = 1,
-									last_notification = NOW()
-								 WHERE id = '$router_id'");
+
+					$stmt = DB::getInstance()->prepare("UPDATE routers SET notified = 1, last_notification = NOW() WHERE id = ?");
+					$stmt->execute(array($router_id));
 				}
 			}
 		} elseif($crawl_data['status']=='online' AND $router_data['notify']==1 AND $router_data['notified']==1) {
-			DB::getInstance()->exec("UPDATE routers SET
-							notified = 0
-						 WHERE id = '$router_id'");
+					$stmt = DB::getInstance()->prepare("UPDATE routers SET notified = 0 WHERE id = ?");
+					$stmt->execute(array($router_id));
 		}
 	}
-
+	
 	public function routerNotifyOverJabberIfDown($router_data, $user_data, $router_crawl_history) {
+		$message = "Hallo $user_data[nickname],\n";
+		$message .= "dein Router $router_data[hostname] ist seit dem ".date("d.m H:i", strtotime($router_crawl_history[$router_data['notification_wait']-1]['crawl_date']))." uhr offline.\n";
+		$message .= "Siehe $GLOBALS[url_to_netmon]/router_status.php?router_id=$router_data[router_id]\n\n";
+		$message .= "Bitte stelle den Router zur Erhaltung des Meshnetzwerkes wieder zur Verfuegung oder entferne den Router.\n\n";
+		$message .= "Mit freundlichen Gruessen\n";
+		$message .= "$GLOBALS[community_name]";
+
 		$conn = new XMPPHP_XMPP($GLOBALS['jabber_server'], 5222, $GLOBALS['jabber_username'], $GLOBALS['jabber_password'], 'xmpphp', $server=null, $printlog=false, $loglevel=XMPPHP_Log::LEVEL_INFO);
-		
 		try {
 			$conn->connect();
 			$conn->processUntil('session_start');
 			$conn->presence();
-			$message = "Hallo $user_data[nickname],
-
-dein Router $router_data[hostname] ist seit dem ".date("d.m H:i", strtotime($router_crawl_history[$router_data['notification_wait']-1]['crawl_date']))." uhr offline.
-Siehe $GLOBALS[url_to_netmon]/router_status.php?router_id=$router_data[router_id]
-
-Bitte stelle den Router zur Erhaltung des Meshnetzwerkes wieder zur Verfuegung oder entferne den Router.
-
-Mit freundlichen Gruessen
-$GLOBALS[community_name]";
 			$conn->message($user_data['jabber'], $message);
 			$conn->disconnect();
 		} catch(XMPPHP_Exception $e) {
@@ -454,15 +419,12 @@ $GLOBALS[community_name]";
 	}
 
 	public function routerNotifyOverEmailIfDown($router_data, $user_data, $router_crawl_history) {
-		$text = "Hallo $user_data[nickname],
-
-dein Router $router_data[hostname] ist seit dem ".date("d.m H:i", strtotime($router_crawl_history[$router_data['notification_wait']-1]['crawl_date']))." uhr offline.
-Siehe $GLOBALS[url_to_netmon]/router_status.php?router_id=$router_data[router_id]
-
-Bitte stelle den Router zur Erhaltung des Meshnetzwerkes wieder zur Verfuegung oder entferne den Router.
-
-Mit freundlichen Gruessen
-$GLOBALS[community_name]";
+		$message = "Hallo $user_data[nickname],\n";
+		$message .= "dein Router $router_data[hostname] ist seit dem ".date("d.m H:i", strtotime($router_crawl_history[$router_data['notification_wait']-1]['crawl_date']))." uhr offline.\n";
+		$message .= "Siehe $GLOBALS[url_to_netmon]/router_status.php?router_id=$router_data[router_id]\n\n";
+		$message .= "Bitte stelle den Router zur Erhaltung des Meshnetzwerkes wieder zur Verfuegung oder entferne den Router.\n\n";
+		$message .= "Mit freundlichen Gruessen\n";
+		$message .= "$GLOBALS[community_name]";
 
 		if ($GLOBALS['mail_sending_type']=='smtp') {
 			$config = array('username' => $GLOBALS['mail_smtp_username'],
@@ -484,18 +446,16 @@ $GLOBALS[community_name]";
 		$mail->send($transport);*/
 	}
 
+	//TODO
 	public function notifyAboutRouterTryingToAssign($router_data, $user_data) {
-		$text = "Hallo $user_data[nickname],
-
-ein Router versucht sich vergeblich mit der Kennung deines Routers $router_data[hostname] mit Netmon zu verbinden.
-Eventuell hast du deinen Router vor kurzem neu installiert und vergessen den Anmeldehash deines Routers in Netmon zu resetten.
-Wenn dem so ist, kannst du den Hash unter folgender URL resetten:
-$GLOBALS[url_to_netmon]/routereditor.php?section=edit&router_id=$router_data[router_id]
-
-Wenn du meinst, dass dies ein Fehler ist, dann setze dich bitte mit dem Freifunk Team unter fragen@freifunk-ol.de in Verbindung.
-
-Mit freundlichen Gruessen
-$GLOBALS[community_name]";
+		$text = "Hallo $user_data[nickname],\n\n";
+		$text .= "ein Router versucht sich vergeblich mit der Kennung deines Routers $router_data[hostname] mit Netmon zu verbinden.\n";
+		$text .= "Eventuell hast du deinen Router vor kurzem neu installiert und vergessen den Anmeldehash deines Routers in Netmon zu resetten.\n\n";
+		$text .= "Wenn dem so ist, kannst du den Hash unter folgender URL resetten:\n";
+		$text .= "$GLOBALS[url_to_netmon]/routereditor.php?section=edit&router_id=$router_data[router_id]\n\n";
+		$text .= "Wenn du meinst, dass dies ein Fehler ist, dann setze dich bitte mit dem Freifunk Team unter fragen@freifunk-ol.de in Verbindung.\n\n";
+		$text .= "Mit freundlichen Gruessen\n";
+		$text .= "$GLOBALS[community_name]";
 
 		if ($GLOBALS['mail_sending_type']=='smtp') {
 			$config = array('username' => $GLOBALS['mail_smtp_username'],
@@ -516,99 +476,93 @@ $GLOBALS[community_name]";
 		$mail->setBodyText($text);
 		$mail->send($transport);*/
 	}
-
-
+	
 	public function getSmallerOnlineCrawlRouterByCrawlCycleId($crawl_cycle_id, $router_id) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_routers
-					WHERE router_id='$router_id' AND status='online' AND crawl_cycle_id<'$crawl_cycle_id'
-					ORDER BY crawl_cycle_id DESC
-					LIMIT 1";
-			$result = DB::getInstance()->query($sql);
-			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT *
+							    FROM crawl_routers
+							    WHERE router_id=? AND status='online' AND crawl_cycle_id<?
+							    ORDER BY crawl_cycle_id DESC
+							    LIMIT 1");
+			$stmt->execute(array($router_id, $crawl_cycle_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $crawl_data;
+		return $rows;
 	}
 
 	public function getBiggerOnlineCrawlRouterByCrawlCycleId($crawl_cycle_id, $router_id) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_routers
-					WHERE router_id='$router_id' AND status='online' AND crawl_cycle_id>'$crawl_cycle_id'
-					ORDER BY crawl_cycle_id DESC
-					LIMIT 1";
-			$result = DB::getInstance()->query($sql);
-			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT *
+							    FROM crawl_routers
+							    WHERE router_id=? AND status='online' AND crawl_cycle_id>?
+							    ORDER BY crawl_cycle_id DESC
+							    LIMIT 1");
+			$stmt->execute(array($router_id, $crawl_cycle_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $crawl_data;
+		return $rows;
 	}
 
 	public function getRouterByIpId($ip_id) {
 		try {
-			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.chipset_id, routers.notify, routers.notification_wait, routers.notified, routers.last_notification
-					FROM routers, interfaces, interface_ips
-				WHERE interface_ips.ip_id='$ip_id' AND interface_ips.interface_id=interfaces.id AND routers.id=interfaces.router_id";
-			$result = DB::getInstance()->query($sql);
-			$router = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date,
+								    routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string,
+								    routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
+								    routers.chipset_id, routers.notify, routers.notification_wait, routers.notified, routers.last_notification
+							    FROM routers, interfaces, interface_ips
+							    WHERE interface_ips.ip_id=? AND interface_ips.interface_id=interfaces.id AND routers.id=interfaces.router_id");
+			$stmt->execute(array($ip_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $router;
+		return $rows;
 	}
 
 	public function getRouterByInterfaceId($interface_id) {
 		try {
-			$sql = "SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.chipset_id, routers.notify, routers.notification_wait, routers.notified, routers.last_notification
-					FROM routers, interfaces
-				WHERE interfaces.id='$interface_id' AND routers.id=interfaces.router_id";
-			$result = DB::getInstance()->query($sql);
-			$router = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date,
+								    routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string,
+								    routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
+								    routers.chipset_id, routers.notify, routers.notification_wait, routers.notified, routers.last_notification
+							    FROM routers, interfaces
+							    WHERE interfaces.id=? AND routers.id=interfaces.router_id");
+			$stmt->execute(array($interface_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		return $router;
+		return $rows;
 	}
 
 	public function areAddsAllowed($router_id) {
 		try {
-			$sql = "SELECT  *
-					FROM router_adds
-					WHERE router_id='$router_id'
-					LIMIT 1";
-			$result = DB::getInstance()->query($sql);
-			$data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM router_adds WHERE router_id=? LIMIT 1");
+			$stmt->execute(array($router_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
 
-		if(count($data) AND $data['adds_allowd']=='1') return true;
+		if(count($rows) AND $rows['adds_allowd']=='1') return true;
 		else return false;
 	}
 
 	public function getAddData($router_id) {
 		try {
-			$sql = "SELECT  *
-					FROM router_adds
-					WHERE router_id='$router_id'
-					LIMIT 1";
-			$result = DB::getInstance()->query($sql);
-			$data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM router_adds WHERE router_id=? LIMIT 1");
+			$stmt->execute(array($router_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		$data['add_small_exists'] = file_exists("./data/adds/".$router_id."_add_small.jpg");
-		$data['add_big_exists'] = file_exists("./data/adds/".$router_id."_add_big.jpg");
+		
+		$rows['add_small_exists'] = file_exists("./data/adds/".$router_id."_add_small.jpg");
+		$rows['add_big_exists'] = file_exists("./data/adds/".$router_id."_add_big.jpg");
 
 		return $data;
 	}
