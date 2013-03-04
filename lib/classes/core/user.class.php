@@ -267,6 +267,29 @@ class User {
 	}
 	
 	/**
+	* Fetches a user by a given nickname and the appropriate password.
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param string $nickname nickname of a user
+	* @param string $password plain text password of the user
+	* @param boolean $hashed true if the given password is already hashed with UserManagement::encryptPassword();
+	*		 false if it is plain text
+	* @return array() Array containing the user data
+	*/
+	public function getUserByNicknameAndPassword($nickname, $password, $hashed=false) {
+		//hash the password if it is not already hashed
+		if(!$hashed)
+			$password = UserManagement::encryptPassword($password);
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM  users WHERE nickname=? AND password=?");
+			$stmt->execute(array($nickname, $password));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+		  echo $e->getMessage();
+		};
+		return $rows;
+	}
+	
+	/**
 	* Get the password of a user
 	* @author  Clemens John <clemens-john@gmx.de>
 	* @param string $user_id id of the user you want to get the password from

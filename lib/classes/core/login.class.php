@@ -21,65 +21,68 @@
 // +---------------------------------------------------------------------------+/
 
 /**
- * This file contains the class for logging in a user.
+ * This class is used as a container for static methods that can login and logout a user
  *
- * @author	Clemens John <clemens-john@gmx.de>
- * @version	0.1
- * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
+ * @package	Netmon
  */
-
 class Login {
-	public function user_login ($nickname, $password, $remember=false, $remembered=false, $openid=false) {
+	/**
+	* Logs in a user by nickname and password, by openid or by remember me coockie
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $nickname the nickname of the user that wants to login (false on openid login)
+	* @param $password the password of the user that wants to login (false on openid login). If the password is
+	*		   plain text, set $remembered to false. If the password is already hashed with Usermanagement::encryptPassword()
+	*		   set $remembered true.
+	* @param $remember boolean true if the user wants to be logged in automatically by coockie the next time	
+	* @param $remembered boolean true if the user if beeing logged in automatically by coockie.
+	*		     Sets the mode of the password (plain text or already hashed)			    
+	* @param $openid string openid of the user if it logs in by openid
+	* @return array() some variables that are used by some methods in the api
+	*/
+	public function user_login($nickname, $password, $remember=false, $remembered=false, $openid=false) {
 		if ((empty($nickname) or empty($password)) AND $openid==false) {
 			$messages[] = array("Sie müssen einen Nickname und ein Passwort angeben um sich einzuloggen", 2);
 			Message::setMessage($messages);
 			return false;
+		} elseif ($openid!=false) {
+			$user_data = User::getUserByOpenID($openid);
 		} else {
-			if(!$remembered)
-				$password = usermanagement::encryptPassword($password);
-
-			try {
-				if ($openid!=false) {
-					$sql = "select id , nickname, activated, permission from users WHERE openid='$openid'";
-				} else {
-					$sql = "select id , nickname, activated, permission from users WHERE nickname='$nickname' and password='$password'";
-				}
-				$result = DB::getInstance()->query($sql);
-				$user_data = $result->fetch(PDO::FETCH_ASSOC);
-				$login = $result->rowCount();
-				if ($login<1) {
-					$messages[] = array("Der Benutzername existiert nicht oder das Passwort ist falsch!", 2);
-					Message::setMessage($messages);
-					return false;
-				} elseif ($user_data['activated'] != '0') {
-					$messages[] = array("Der Benutzername wurde noch nicht aktiviert!", 2);
-					Message::setMessage($messages);
-					return false;
-				} else {
-					$session_id = session_id();
-					DB::getInstance()->query("UPDATE users SET session_id='$session_id' where id=".$user_data['id']);
-					$_SESSION['user_id'] = $user_data['id'];
-					
-					$messages[] = array("Herzlich willkommen ".$user_data['nickname'], 1);
-					Message::setMessage($messages);
-
-					//Autologin (remember me)
-					if($remember AND empty($openid)) {
-						setcookie ("nickname", $nickname, time() + 60*60*24*14);
-						setcookie ("password_hash", $password, time() + 60*60*24*14);
-					} elseif($remember AND !empty($openid)) {
-						setcookie ("openid", $openid, time() + 60*60*24*14);
-					}
-
-					return array('result'=>true, 'user_id'=>$user_data['id'], 'permission'=>$user_data['permission'], 'session_id'=>$session_id);
-				}
+			$user_data = User::getUserByNicknameAndPassword($nickname, $password, $remembered);
+		}
+		
+		if (empty($user_data)) {
+			$messages[] = array("Der Benutzername existiert nicht oder das Passwort ist falsch!", 2);
+			Message::setMessage($messages);
+			return false;
+		} elseif ($user_data['activated'] != '0') {
+			$messages[] = array("Der Benutzername wurde noch nicht aktiviert!", 2);
+			Message::setMessage($messages);
+			return false;
+		} else {
+			$stmt = DB::getInstance()->prepare("UPDATE users SET session_id = ? WHERE id = ?");
+			$stmt->execute(array(session_id(), $user_data['id']));
+			
+			$_SESSION['user_id'] = $user_data['id'];
+			
+			//Autologin (remember me)
+			if($remember AND empty($openid)) {
+				setcookie ("nickname", $nickname, time() + 60*60*24*14);
+				setcookie ("password_hash", $password, time() + 60*60*24*14);
+			} elseif($remember AND !empty($openid)) {
+				setcookie ("openid", $openid, time() + 60*60*24*14);
 			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
+
+			$messages[] = array("Herzlich willkommen ".$user_data['nickname'], 1);
+			Message::setMessage($messages);
+			return array('result'=>true, 'user_id'=>$user_data['id'], 'permission'=>$user_data['permission'], 'session_id'=>session_id());
 		}
 	}
 	
+	/**
+	* Logs out a user and resets the complete session
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @return boolean true if the logout was successfull
+	*/
 	public function user_logout() {
 		if (!isset($_SESSION['user_id'])) {
 			$messages[] = array("Sie können sich nicht ausloggen, wenn Sie nicht eingeloggt sind", 2);
@@ -88,6 +91,9 @@ class Login {
 		} else {
 			//destroy current session
 			//to correctly destroy a session look at http://php.net/manual/de/function.session-destroy.php
+			$stmt = DB::getInstance()->prepare("UPDATE users SET session_id = ? WHERE id = ?");
+			$stmt->execute(array('', $_SESSION['user_id']));
+			
 			unset($_SESSION);
 			unset($_COOKIE);
 			setcookie("nickname", "", time() - 60*60*24*14);

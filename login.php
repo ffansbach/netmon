@@ -4,25 +4,21 @@ require_once('lib/classes/core/login.class.php');
 require_once('lib/classes/core/user.class.php');
 require_once('lib/classes/extern/class.openid.php');
 
-$Login = new Login;
-
 if($_SESSION['last_page'] != $_SESSION['current_page'] AND empty($_SESSION['redirect_after_login_url'])) {
 	$_SESSION['redirect_after_login_url'] = $_SESSION['last_page'];
 }
 
 if ($_GET['section']=="login") {
 	$smarty->assign('message', Message::getMessage());
-
+	
 	$smarty->display("header.tpl.php");
 	$smarty->display("login.tpl.php");
 	$smarty->display("footer.tpl.php");
-} elseif ($_GET['section']=="login_send" AND $Login->user_login($_POST['nickname'], $_POST['password'], $_POST['remember'])) {
-	if(!empty($_SESSION['redirect_after_login_url'])) {
+} elseif ($_GET['section']=="login_send" AND Login::user_login($_POST['nickname'], $_POST['password'], $_POST['remember'])) {
+	if(!empty($_SESSION['redirect_after_login_url']))
 		header("Location: $_SESSION[redirect_after_login_url]");
-	} else {
+	else
 		header('Location: user.php?user_id='.$_SESSION['user_id']);
-	}
-/* Open-ID login procedure */
 } elseif ($_GET['section']=="openid_login_send") {
 	if($_POST['remember']) {
 		$_SESSION['openid_login_remember']=$_POST['openid_url'];
@@ -61,7 +57,7 @@ if ($_GET['section']=="login") {
 		if ($openid_validation_result == true){ // OK HERE KEY IS VALID
 			$short_openid = substr($_GET['openid_identity'], 7);
 			if (count(User::getUserByOpenID($short_openid))) {
-				login::user_login (false, false, $_SESSION['openid_login_remember'], false, $short_openid);
+				Login::user_login (false, false, $_SESSION['openid_login_remember'], false, $short_openid);
 				if(!empty($_SESSION['redirect_after_login_url'])) {
 					unset($_SESSION['openid_login']);
 					header("Location: $_SESSION[redirect_after_login_url]");
@@ -99,8 +95,7 @@ if ($_GET['section']=="login") {
 	Login::user_logout();
 	header('Location: index.php');
 } else {
-	$_GET['section'] = "login";
-	require('login.php');
+	header('Location: index.php?section=login');
 }
 
 ?>
