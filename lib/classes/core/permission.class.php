@@ -145,7 +145,7 @@ class Permission {
 	* @return int permission value of the user
 	*/
 	public function getUserPermission($user_id=false) {
-		if(!$user_id)
+		if(!$user_id && isset($_SESSION['user_id']))
 			$user_id = $_SESSION['user_id'];
 		
 		//Each user gets the permission 0
@@ -157,16 +157,18 @@ class Permission {
 			//Each logged in user gets the permission "logged in"
 			$userpermission += pow(2,2);
 		}
-		//Each user get´s the permission from the database		
-		try {
-			$stmt = DB::getInstance()->prepare("SELECT permission FROM users WHERE id=?");
-			$stmt->execute(array($user_id));
-			$user_data = $stmt->fetch(PDO::FETCH_ASSOC);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		$userpermission += $user_data['permission'];
 
+		if(is_numeric($user_id)) {
+			//Each user get´s the permission from the database		
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT permission FROM users WHERE id=?");
+				$stmt->execute(array($user_id));
+				$user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+			$userpermission += $user_data['permission'];
+		}
 		return $userpermission;
 	}
 

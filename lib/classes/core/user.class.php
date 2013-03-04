@@ -207,8 +207,9 @@ class User {
 			//ProjectEditor::deleteProject($project['id']);
 		}
 		
-		//Logout the user before deleting him to get rid of session information an coockies
-		Login::user_logout();
+		//If the user is logged in then logout the user before deleting him to get rid of session information an coockies
+		if($user_id == $_SESSION['user_id'])
+			Login::user_logout();
 		
 		//delete the user from the database
 		try {
@@ -238,7 +239,8 @@ class User {
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		$rows['roles'] = User::getRolesByUserID($user_id);
+		if(!empty($rows))
+			$rows['roles'] = User::getRolesByUserID($user_id);
 		return $rows;
 	}
 
@@ -256,7 +258,8 @@ class User {
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		};
-		$rows['roles'] = User::getRolesByUserID($rows['id']);
+		if(!empty($rows))
+			$rows['roles'] = User::getRolesByUserID($rows['id']);
 		return $rows;
 	}
 
@@ -274,7 +277,8 @@ class User {
 		} catch(PDOException $e) {
 		  echo $e->getMessage();
 		};
-		$rows['roles'] = User::getRolesByUserID($rows['id']);
+		if(!empty($rows))
+			$rows['roles'] = User::getRolesByUserID($rows['id']);
 		return $rows;
 	}
 	
@@ -298,7 +302,8 @@ class User {
 		} catch(PDOException $e) {
 		  echo $e->getMessage();
 		};
-		$rows['roles'] = User::getRolesByUserID($rows['id']);
+		if(!empty($rows))
+			$rows['roles'] = User::getRolesByUserID($rows['id']);
 		return $rows;
 	}
 	
@@ -327,13 +332,16 @@ class User {
 	*	  weather this user has this role
 	*/
 	public function getRolesByUserID($user_id) {
-		$roles = Permission::getEditableRoles();
-		foreach ($roles as $key=>$role) {
-			$roles_edit[$key]['role'] = $role;
-			$roles_edit[$key]['dual'] = pow(2,$role);
-			$roles_edit[$key]['check'] = Permission::checkPermission($roles_edit[$key]['dual'], $user_id);
+		if(!empty($user_id)) {
+			$roles = Permission::getEditableRoles();
+			foreach ($roles as $key=>$role) {
+				$roles_edit[$key]['role'] = $role;
+				$roles_edit[$key]['dual'] = pow(2,$role);
+				$roles_edit[$key]['check'] = Permission::checkPermission($roles_edit[$key]['dual'], $user_id);
+			}
+			return $roles_edit;
 		}
-		return $roles_edit;
+		return array();
 	}
 	
 	public function getUserList() {

@@ -15,7 +15,9 @@ if ($_GET['section']=="login") {
 	$smarty->display("login.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif ($_GET['section']=="login_send" AND Login::user_login($_POST['nickname'], $_POST['password'], $_POST['remember'])) {
-	if(!empty($_SESSION['redirect_after_login_url']))
+	if(!empty($_SESSION['redirect_after_login_url'])
+	   AND strpos($_SESSION['redirect_after_login_url'], "register")===false
+   	   AND strpos($_SESSION['redirect_after_login_url'], "login")===false)
 		header("Location: $_SESSION[redirect_after_login_url]");
 	else
 		header('Location: user.php?user_id='.$_SESSION['user_id']);
@@ -95,7 +97,7 @@ if ($_GET['section']=="login") {
 	Login::user_logout();
 	header('Location: index.php');
 } else {
-	header('Location: index.php?section=login');
+	header('Location: login.php?section=login');
 }
 
 ?>
