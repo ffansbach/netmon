@@ -283,7 +283,7 @@ class User {
 	* @author  Clemens John <clemens-john@gmx.de>
 	* @param string $nickname nickname of a user
 	* @param string $password plain text password of the user
-	* @param boolean $hashed true if the given password is already hashed with UserManagement::encryptPassword();
+	* @param boolean $hashed true if the given password is already hashed with Permission::encryptPassword();
 	*		 false if it is plain text
 	* @return array() Array containing the user data
 	*/
@@ -327,11 +327,11 @@ class User {
 	*	  weather this user has this role
 	*/
 	public function getRolesByUserID($user_id) {
-		$roles = UserManagement::getEditableRoles();
+		$roles = Permission::getEditableRoles();
 		foreach ($roles as $key=>$role) {
 			$roles_edit[$key]['role'] = $role;
 			$roles_edit[$key]['dual'] = pow(2,$role);
-			$roles_edit[$key]['check'] = UserManagement::checkPermission($roles_edit[$key]['dual'], $user_id);
+			$roles_edit[$key]['check'] = Permission::checkPermission($roles_edit[$key]['dual'], $user_id);
 		}
 		return $roles_edit;
 	}

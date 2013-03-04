@@ -93,7 +93,7 @@
 	require_once('lib/classes/core/config.class.php');
 	require_once('lib/classes/core/message.class.php');
 	require_once('lib/classes/core/helper.class.php');
-	require_once('lib/classes/core/usermanagement.class.php');  
+	require_once('lib/classes/core/permission.class.php');  
 	require_once('lib/classes/core/menus.class.php');
 
 	//load Zend framework
@@ -159,7 +159,7 @@
 	* Auto Login
 	*/
 	if ($GLOBALS['installed']) {
-		if (!isset($_SESSION['user_id']) OR !UserManagement::isLoggedIn($_SESSION['user_id'])) {
+		if (!isset($_SESSION['user_id']) OR !Permission::isLoggedIn($_SESSION['user_id'])) {
 			//Login Class
 			require_once('lib/classes/core/login.class.php');
 			if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {

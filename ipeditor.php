@@ -9,7 +9,7 @@
 	if ($_GET['section'] == "add") {
 		$router_data = Router::getRouterInfo($_GET['router_id']);
 		//Moderator and owning user can add ip to interface
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
 			
 			$smarty->assign('router_interfaces', Interfaces::getInterfacesByRouterId($_GET['router_id']));
@@ -28,7 +28,7 @@
 	if ($_GET['section'] == "insert") {
 		$router_data = Router::getRouterInfo($_GET['router_id']);
 		//Moderator and owning user can add ip to interface
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
 
 			if(!empty($_POST['ipv4_addr'])) {
@@ -50,7 +50,7 @@
 	if ($_GET['section'] == "delete") {
 		$router_data = Router::getRouterByIpId($_GET['ip_id']);
 		//Moderator and owning user can add ip to interface
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
 
 			Ip::deleteIPAddress($_GET['ip_id']);

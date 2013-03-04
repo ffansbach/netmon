@@ -2,26 +2,25 @@
 
 require_once('runtime.php');
 require_once('./lib/classes/core/helper.class.php');
-require_once('./lib/classes/core/usermanagement.class.php');
 require_once('./lib/classes/core/user.class.php');
 
 $smarty->assign('message', Message::getMessage());
 
 if ($_GET['section'] == "edit") {
 	//Only owner and Root can access this site.
-	if (!UserManagement::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
-		UserManagement::denyAccess();
+	if (!Permission::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
+		Permission::denyAccess();
 
 	$smarty->assign('user', User::getUserByID($_GET['user_id']));	
-	$smarty->assign('is_root', UserManagement::checkPermission(64, $_SESSION['user_id']));
+	$smarty->assign('is_root', Permission::checkPermission(64, $_SESSION['user_id']));
 	$smarty->assign('permissions', User::getRolesByUserID($_GET['user_id']));
 	
 	$smarty->display("header.tpl.php");
 	$smarty->display("user_edit.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif ($_GET['section'] == "insert_edit") {
-	if (!UserManagement::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
-		UserManagement::denyAccess();
+	if (!Permission::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
+		Permission::denyAccess();
 	
 	if (User::userInsertEdit($_GET['user_id'], $_POST['changepassword'], $_POST['permission'], $_POST['oldpassword'], $_POST['newpassword'],
 				 $_POST['newpasswordchk'], $_POST['openid'], $_POST['vorname'], $_POST['nachname'], $_POST['strasse'],
@@ -32,8 +31,8 @@ if ($_GET['section'] == "edit") {
 		header('Location: user_edit.php?section=edit&user_id='.$_SESSION['user_id']);
 	}
 } elseif ($_GET['section'] == "delete") {
-	if (!UserManagement::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
-		UserManagement::denyAccess();
+	if (!Permission::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
+		Permission::denyAccess();
 	
 	if ($_POST['delete'] == "true") {
 		User::userDelete($_POST['user_id']);

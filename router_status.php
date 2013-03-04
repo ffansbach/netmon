@@ -156,7 +156,7 @@ $smarty->assign('memory_rrd_file_exists', file_exists("./rrdtool/databases/route
 
 
 /** Get Services */
-$is_logged_id = Usermanagement::isLoggedIn($_SESSION['user_id']);
+$is_logged_id = Permission::isLoggedIn($_SESSION['user_id']);
 if($is_logged_id) {
 	$view='all';
 } else {

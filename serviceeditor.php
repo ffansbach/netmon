@@ -8,7 +8,7 @@
 	if ($_GET['section'] == "add") {
 		$router_data = Router::getRouterInfo($_GET['router_id']);
 		//Root and owning user can add service to router
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
 			$smarty->assign('ips', Ip::getIpAddressesByRouterId($_GET['router_id']));
 
@@ -26,7 +26,7 @@
 	if ($_GET['section'] == "insert_add") {
 		$router_data = Router::getRouterInfo($_GET['router_id']);
 		//Root and owning user can add service to router
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
 			$add_result = ServiceEditor::addService($_GET['router_id'], $_POST['title'], $_POST['description'], $_POST['ip_addresses'], $_POST['port'], $_POST['url_prefix'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait'], $_POST['use_netmons_url'], $_POST['url']);
 			if($add_result['result']) {
 				header('Location: ./router_config.php?router_id='.$add_result['router_id']);
@@ -45,7 +45,7 @@
 		$smarty->assign('service_data', $service_data);
 		$router_data = Router::getRouterInfo($service_data['router_id']);
 		//Moderator and owning user can edit service
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->display("header.tpl.php");
 			$smarty->display("service_edit.tpl.php");
 			$smarty->display("footer.tpl.php");
@@ -61,7 +61,7 @@
 		$smarty->assign('service_data', $service_data);
 		$router_data = Router::getRouterInfo($service_data['router_id']);
 		//Moderator and owning user can edit service
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$edit_result = ServiceEditor::insertEditService($_GET['service_id'], $_POST['title'], $_POST['description'], $_POST['port'], $_POST['url_prefix'], $_POST['visible'], $_POST['notify'], $_POST['notification_wait'], $_POST['use_netmons_url'], $_POST['url']);
 			if($edit_result['result']) {
 				header('Location: ./router_config.php?router_id='.$edit_result['router_id']);
@@ -80,7 +80,7 @@
 		$smarty->assign('service_data', $service_data);
 		$router_data = Router::getRouterInfo($service_data['router_id']);
 		//Root and owning user can delete service
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
 			$insert_result = ServiceEditor::deleteService($_GET['service_id']);
 			header('Location: ./router_config.php?router_id='.$service_data['router_id']);
 		} else {

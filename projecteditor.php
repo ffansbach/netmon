@@ -7,7 +7,7 @@
   $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
 
     if ($_GET['section'] == "new") {
-		if (UserManagement::checkPermission(32)) {
+		if (Permission::checkPermission(32)) {
 			$smarty->assign('message', Message::getMessage());
 			$smarty->display("header.tpl.php");
 			$smarty->display("project_new.tpl.php");
@@ -19,7 +19,7 @@
 		}
     }
     if ($_GET['section'] == "insert_new") {
-		if (UserManagement::checkPermission(32)) {
+		if (Permission::checkPermission(32)) {
 			$project_result = ProjectEditor::createNewProject();
 			header('Location: ./project.php?project_id='.$project_result['project_id']);
 		} else {

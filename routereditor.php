@@ -9,7 +9,7 @@
 	
 	if ($_GET['section'] == "new") {
 		//Logged in users can add a new router
-		if (UserManagement::checkPermission(4)) {
+		if (Permission::checkPermission(4)) {
 			$smarty->assign('message', Message::getMessage());
 
 			$smarty->assign('community_location_longitude', Config::getConfigValueByName('community_location_longitude'));
@@ -30,7 +30,7 @@
 	
 	if ($_GET['section'] == "insert") {
 		//Logged in users can add a new router
-		if (UserManagement::checkPermission(4)) {
+		if (Permission::checkPermission(4)) {
 			$insert_result = RouterEditor::insertNewRouter();
 			if($insert_result['result']) {
 				header('Location: ./router_config.php?router_id='.$insert_result['router_id']);
@@ -48,9 +48,9 @@
 		$router_data = Router::getRouterInfo($_GET['router_id']);
 		$smarty->assign('router_data', $router_data);
 		//Moderator and owning user can edit router
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
-			$smarty->assign('is_root', UserManagement::checkPermission(120));
+			$smarty->assign('is_root', Permission::checkPermission(120));
 
 			/** Get and assign Router Informations **/
 			$smarty->assign('chipsets', Chipsets::getChipsets());
@@ -68,7 +68,7 @@
 	if ($_GET['section'] == "insert_edit") {
 		//Moderator and owning user can edit router
 		$router_data = Router::getRouterInfo($_GET['router_id']);
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$insert_result = RouterEditor::insertEditRouter();
 			if($insert_result) {
 				header('Location: ./router_config.php?router_id='.$_GET['router_id']);
@@ -84,7 +84,7 @@
 
 	if ($_GET['section'] == "insert_edit_hash") {
 		//only root can edit hash
-		if(UserManagement::checkPermission(120)) {
+		if(Permission::checkPermission(120)) {
 			$insert_result = RouterEditor::insertEditHash($_GET['router_id'], $_POST['router_auto_assign_hash']);
 			if($insert_result) {
 				header('Location: ./router_config.php?router_id='.$_GET['router_id']);
@@ -104,7 +104,7 @@
 	if ($_GET['section'] == "insert_reset_auto_assign_hash") {
 		$router_data = Router::getRouterInfo($_GET['router_id']);
 		//Admin and owning user can reset hash
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(32, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(32, $router_data['user_id'])) {
 			$insert_result = RouterEditor::resetRouterAutoAssignHash($_GET['router_id']);
 
 			header('Location: ./routereditor.php?section=edit&router_id='.$_GET['router_id']);
@@ -118,7 +118,7 @@
 	if ($_GET['section'] == "insert_delete") {
 		$router_data = Router::getRouterInfo($_GET['router_id']);
 		//Root and owning user can delete router
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
 			if($_POST['really_delete']==1) {
 				$insert_result = RouterEditor::insertDeleteRouter($_GET['router_id']);
 				header('Location: ./user.php?user_id='.$_SESSION['user_id']);

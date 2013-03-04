@@ -55,7 +55,7 @@ if ($_GET['section']=="edit") {
 	$smarty->display("config_netmon.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif($_GET['section']=="insert_edit_netmon") {
-	if(UserManagement::checkPermission(120)) {
+	if(Permission::checkPermission(120)) {
 		if(empty($_POST['installed']))
 			$_POST['installed'] = 'false';
 		else
@@ -98,7 +98,7 @@ if ($_GET['section']=="edit") {
 	$smarty->display("config_community.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif($_GET['section']=="insert_edit_community") {
-	if(UserManagement::checkPermission(120)) {
+	if(Permission::checkPermission(120)) {
 		Config::writeConfigLine('community_name', $_POST['community_name']);
 		Config::writeConfigLine('community_slogan', $_POST['community_slogan']);
 		Config::writeConfigLine('community_location_longitude', $_POST['community_location_longitude']);
@@ -135,7 +135,7 @@ if ($_GET['section']=="edit") {
 	$smarty->display("config_email.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif($_GET['section']=="insert_edit_email") {
-	if(UserManagement::checkPermission(120)) {
+	if(Permission::checkPermission(120)) {
 		Config::writeConfigLine('mail_sender_adress', $_POST['mail_sender_adress']);
 		Config::writeConfigLine('mail_sender_name', $_POST['mail_sender_name']);
 		Config::writeConfigLine('mail_sending_type', $_POST['mail_sending_type']);
@@ -165,7 +165,7 @@ if ($_GET['section']=="edit") {
 	$smarty->display("config_jabber.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif($_GET['section']=="insert_edit_jabber") {
-	if(UserManagement::checkPermission(120)) {
+	if(Permission::checkPermission(120)) {
 		Config::writeConfigLine('jabber_server', $_POST['jabber_server']);
 		Config::writeConfigLine('jabber_username', $_POST['jabber_username']);
 		Config::writeConfigLine('jabber_password', $_POST['jabber_password']);
@@ -188,7 +188,7 @@ if ($_GET['section']=="edit") {
 	$smarty->display("config_twitter.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif($_GET['section']=="delete_twitter_token") {
-	if(UserManagement::checkPermission(120)) {
+	if(Permission::checkPermission(120)) {
 		Config::writeConfigLine('twitter_token', "");
 		
 		$message[] = array('Die Daten wurden gespeichert.', 1);
@@ -223,7 +223,7 @@ if ($_GET['section']=="edit") {
  		exit('Invalid callback request. Oops. Sorry.');
 	}
 
-	if(UserManagement::checkPermission(120)) {
+	if(Permission::checkPermission(120)) {
 		Config::writeConfigLine('twitter_token', $_SESSION['TWITTER_ACCESS_TOKEN']);
 		
 		$message[] = array('Die Daten wurden gespeichert.', 1);

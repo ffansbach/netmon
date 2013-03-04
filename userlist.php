@@ -5,7 +5,7 @@
 	$smarty->assign('message', Message::getMessage());
 	
 	if(empty($_GET['section'])) {
-		if (UserManagement::checkPermission(4)) {
+		if (Permission::checkPermission(4)) {
 			$smarty->assign('userlist', User::getUserList());
 		
 			$smarty->display("header.tpl.php");
@@ -17,7 +17,7 @@
 			header('Location: ./login.php');
 		}
 	} elseif($_GET['section']=="export_vcard30") {
-		if (UserManagement::checkPermission(4)) {
+		if (Permission::checkPermission(4)) {
 			header("Content-Type: text/plain");
 			header("Content-Disposition: attachment; filename=netmon_userlist.vcf");
 			echo User::exportUserListAsvCard30();

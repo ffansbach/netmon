@@ -37,7 +37,7 @@ class ApiService {
 		$service_data = Service::getServiceByServiceId($service_id);
 
 		//If is owning user or if root
-		if(UserManagement::isThisUserOwner($service_data['user_id'], $session['user_id']) OR $session['permission']==120) {
+		if(Permission::isThisUserOwner($service_data['user_id'], $session['user_id']) OR $session['permission']==120) {
 			Service::insertCrawl($service_id, $status, $crawled_ipv4_addr);
 		}
 

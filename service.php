@@ -41,7 +41,7 @@
   $crawl_history = $Service->getCrawlHistory($_GET['service_id'], 35);
   $smarty->assign('crawl_history', $crawl_history);
   $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-  $smarty->assign('isOwner', usermanagement::isThisUserOwner($service_data['user_id']));
+  $smarty->assign('isOwner', Permission::isThisUserOwner($service_data['user_id']));
 
 foreach ($crawl_history as $hist) {
 	$time = date("H:i", strtotime($hist['crawl_time']));

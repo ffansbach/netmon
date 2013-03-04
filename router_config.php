@@ -11,7 +11,7 @@
 
   $smarty->assign('interfaces', $interfaces);
 
-  $is_logged_id = Usermanagement::isLoggedIn($_SESSION['user_id']);
+  $is_logged_id = Permission::isLoggedIn($_SESSION['user_id']);
   if($is_logged_id) {
   	$view='all';
   } else {
@@ -24,7 +24,7 @@
   $smarty->assign('netmon_is_connected_to_network_by_ipv6', $GLOBALS['netmon_is_connected_to_network_by_ipv6']);
   $smarty->assign('netmon_is_connected_to_network_by_ipv4', $GLOBALS['netmon_is_connected_to_network_by_ipv4']);
 
-  if((Router::areAddsAllowed($_GET['router_id']) AND isThisUserOwner($router_data['user_id'])) OR UserManagement::checkPermission(64)) {
+  if((Router::areAddsAllowed($_GET['router_id']) AND isThisUserOwner($router_data['user_id'])) OR Permission::checkPermission(64)) {
     $smarty->assign('show_add_link', true);
   } else {
     $smarty->assign('show_add_link', false);

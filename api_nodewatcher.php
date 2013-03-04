@@ -120,7 +120,7 @@ if($_GET['section']=="insert_crawl_interfaces_data") {
 	$router_data = Router::getRouterInfo($_GET['router_id']);
 
 	//If is owning user or if root
-	if((($_GET['authentificationmethod']=='login') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
+	if((($_GET['authentificationmethod']=='login') AND (Permission::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
 		echo "success;".$router_data['hostname'].";23;";
 
 		$last_crawl_cycle = Crawling::getActualCrawlCycle();
@@ -184,7 +184,7 @@ if($_GET['section']=="insert_crawl_system_data") {
 	$router_data = Router::getRouterInfo($_GET['router_id']);
 
 	//If is owning user or if root
-	if((($_GET['authentificationmethod']=='login') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
+	if((($_GET['authentificationmethod']=='login') AND (Permission::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
 		echo "success;";
 
 		/**Insert Router System Data*/
@@ -226,7 +226,7 @@ if($_GET['section']=="insert_batman_adv_interfaces") {
 	$last_crawl_cycle = Crawling::getActualCrawlCycle();
 
 	//If is owning user or if root
-	if((($_GET['authentificationmethod']=='login') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
+	if((($_GET['authentificationmethod']=='login') AND (Permission::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
 		echo "success;";
 		/**Insert Batman advanced Interfaces*/
 		foreach($_GET['bat_adv_int'] as $bat_adv_int) {
@@ -272,7 +272,7 @@ if($_GET['section']=="insert_batman_adv_originators") {
 	$last_crawl_cycle = Crawling::getActualCrawlCycle();
 
 	//If is owning user or if root
-	if((($_GET['authentificationmethod']=='login') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
+	if((($_GET['authentificationmethod']=='login') AND (Permission::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
 		echo "success;";
 		/**Insert Batman Advanced Originators*/
 		foreach($_GET['bat_adv_orig'] as $bat_adv_orig) {
@@ -331,7 +331,7 @@ if($_GET['section']=="insert_clients") {
 	$last_crawl_cycle = Crawling::getActualCrawlCycle();
 
 	//If is owning user or if root
-	if((($_GET['authentificationmethod']=='login') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
+	if((($_GET['authentificationmethod']=='login') AND (Permission::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_GET['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_GET['router_auto_update_hash']))) {
 		echo "success;";
 		/**Insert Client Data*/
 		try {
@@ -492,7 +492,7 @@ if($_GET['section']=="insert_crawl_data") {
 	$router_data = Router::getRouterInfo($_POST['router_id']);
 
 	//If is owning user or if root
-	if((($_POST['authentificationmethod']=='login') AND (UserManagement::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_POST['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_POST['router_auto_update_hash']))) {
+	if((($_POST['authentificationmethod']=='login') AND (Permission::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_POST['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_POST['router_auto_update_hash']))) {
 		echo "success;".$router_data['hostname'].";";
 
 

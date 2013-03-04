@@ -31,7 +31,7 @@ class Login {
 	* @author  Clemens John <clemens-john@gmx.de>
 	* @param $nickname the nickname of the user that wants to login (false on openid login)
 	* @param $password the password of the user that wants to login (false on openid login). If the password is
-	*		   plain text, set $remembered to false. If the password is already hashed with Usermanagement::encryptPassword()
+	*		   plain text, set $remembered to false. If the password is already hashed with Permission::encryptPassword()
 	*		   set $remembered true.
 	* @param $remember boolean true if the user wants to be logged in automatically by coockie the next time	
 	* @param $remembered boolean true if the user if beeing logged in automatically by coockie.

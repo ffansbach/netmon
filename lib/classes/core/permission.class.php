@@ -40,7 +40,7 @@
  * @package	Netmon
  */
 
-class UserManagement {
+class Permission {
 	/**
 	* Get all roles that are avaliable in netmon. For a description of the roles see class description.
 	* @author  Clemens John <clemens-john@gmx.de>
@@ -99,7 +99,7 @@ class UserManagement {
 	public function checkIfUserIsOwnerOrPermitted($site_permission, $owning_user_id) {
 		if(isset($owning_user_id) AND isset($_SESSION['user_id']) AND $owning_user_id==$_SESSION['user_id'])
 			return true;
-		elseif(isset($_SESSION['user_id']) AND isset($site_permission) AND UserManagement::checkPermission($site_permission, $_SESSION['user_id']))
+		elseif(isset($_SESSION['user_id']) AND isset($site_permission) AND Permission::checkPermission($site_permission, $_SESSION['user_id']))
 			return true;
 		else
 			return false;
@@ -114,7 +114,7 @@ class UserManagement {
 	* @return boolean true if the user has the asked permission.
 	*/
 	public function checkPermission($sitepermission, $user_id=false) {
-		$userpermission = UserManagement::getUserPermission($user_id);
+		$userpermission = Permission::getUserPermission($user_id);
 		
 		//Transform permissions into binary
 		$sitepermission = decbin($sitepermission);
@@ -123,7 +123,7 @@ class UserManagement {
 		$userpermission_len = strlen($userpermission);
 		
 		//get all permissions
-		$roles = UserManagement::getAllRoles();
+		$roles = Permission::getAllRoles();
 		
 		for ($i=count($roles)-1; $i>=0; $i--) {
 			$exponent = $roles[$i];
@@ -177,7 +177,7 @@ class UserManagement {
 	* @return boolean if the current user is logged in.
 	*/
 	public function isLoggedIn($user_id) {
-		return UserManagement::checkPermission(4, $user_id);
+		return Permission::checkPermission(4, $user_id);
 	}
 }
 

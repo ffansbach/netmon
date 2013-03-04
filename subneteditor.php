@@ -77,7 +77,7 @@ SubnetCalculator::tr('HostMax:', '<font color="blue">'.SubnetCalculator::bintodq
   $SubnetEditor = new SubnetEditor;
 
     if ($_GET['section'] == "new") {
-		if (UserManagement::checkPermission(32)) {
+		if (Permission::checkPermission(32)) {
 			$smarty->assign('message', Message::getMessage());
 			$smarty->assign('existing_subnets', EditingHelper::getExistingSubnets());
 			$smarty->assign('subnets_with_defined_vpnserver', $SubnetEditor->getSubnetsWithDefinedVpnserver());
@@ -91,7 +91,7 @@ SubnetCalculator::tr('HostMax:', '<font color="blue">'.SubnetCalculator::bintodq
 		}
     }
     if ($_GET['section'] == "insert_new") {
-		if (UserManagement::checkPermission(32)) {
+		if (Permission::checkPermission(32)) {
 			$checkdata = $SubnetEditor->checkSubnetData();
 			if ($checkdata) {
 				$subnet_result = $SubnetEditor->createNewSubnet($checkdata);
@@ -107,7 +107,7 @@ SubnetCalculator::tr('HostMax:', '<font color="blue">'.SubnetCalculator::bintodq
     }
 
     if ($_GET['section'] == "insert_edit") {
-		if (UserManagement::checkPermission(32)) {
+		if (Permission::checkPermission(32)) {
 			$checkdata = $SubnetEditor->checkSubnetData(true);
 			if ($checkdata) {
 				$subnet_result = $SubnetEditor->updateSubnet($checkdata);
@@ -130,7 +130,7 @@ SubnetCalculator::tr('HostMax:', '<font color="blue">'.SubnetCalculator::bintodq
 	}
 
     if ($_GET['section'] == "delete") {
-		if (UserManagement::checkPermission(32)) {
+		if (Permission::checkPermission(32)) {
 			if ($_POST['delete'] == "true") {
 				$SubnetEditor->deleteSubnet($_GET['subnet_id']);
 				header('Location: ./user.php?id='.$_SESSION['user_id']);
@@ -149,7 +149,7 @@ SubnetCalculator::tr('HostMax:', '<font color="blue">'.SubnetCalculator::bintodq
 
 
     if ($_GET['section'] == "edit") {
-		if (UserManagement::checkPermission(32)) {
+		if (Permission::checkPermission(32)) {
 			$smarty->assign('message', Message::getMessage());
 			$smarty->assign('net_prefix', $GLOBALS['net_prefix']);
 			$smarty->assign('existing_subnets', EditingHelper::getExistingSubnets());

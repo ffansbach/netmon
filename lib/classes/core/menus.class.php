@@ -30,22 +30,22 @@
 
 require_once('lib/classes/core/user.class.php');
 
-class Menus extends UserManagement {
+class Menus extends Permission {
 	function topMenu() {
 		$menu = array();
-		if (UserManagement::checkPermission(1)) {
+		if (Permission::checkPermission(1)) {
 			return $GLOBALS['topMenu'];
 		}
 	}
   
 	public function loginOutMenu() {
 		$menu = array();
-		if (UserManagement::checkPermission(2)) {
+		if (Permission::checkPermission(2)) {
 			$menu[] = array('name'=>'Login', 'href'=>'login.php?section=login');
 			$menu[] = array('name'=>'Registrieren', 'href'=>'register.php');
 		}
 	
-		if (UserManagement::checkPermission(4)) {
+		if (Permission::checkPermission(4)) {
 			$menu[] = array('name'=>'Logout', 'href'=>'login.php?section=logout');
 		}
 		return $menu;
@@ -64,7 +64,7 @@ class Menus extends UserManagement {
 	
 	function normalMenu() {
 		$menu = array();
-		if (UserManagement::checkPermission(1)) {
+		if (Permission::checkPermission(1)) {
 			$submenu = array();
 			$subsubmenu = array();
 			$submenu[] = array('name'=>'Karte', 'href'=>'map.php');
@@ -75,7 +75,7 @@ class Menus extends UserManagement {
 			$subsubmenu = array();
 			$submenu[] = array('name'=>'Router', 'href'=>'routerlist.php');			
 			$subsubmenu[] = array('name'=>'Neue Router', 'href'=>'routers_trying_to_assign.php');
-			if (UserManagement::checkPermission(12)) //if user is logged in and has permission "user"
+			if (Permission::checkPermission(12)) //if user is logged in and has permission "user"
 				$subsubmenu[] = array('name'=>'Router anlegen', 'href'=>'routereditor.php?section=new');
 			$submenu[] = $subsubmenu;
 			$menu[] = $submenu;
@@ -83,7 +83,7 @@ class Menus extends UserManagement {
 			$submenu = array();
 			$subsubmenu = array();
 			$submenu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
-			if (UserManagement::checkPermission(12)) { //if user is logged in and has permission "user"
+			if (Permission::checkPermission(12)) { //if user is logged in and has permission "user"
 				$subsubmenu[] = array('name'=>'Dienst anlegen', 'href'=>'serviceeditor.php?section=add');
 				$subsubmenu[] = array('name'=>'Domain anlegen', 'href'=>'dnseditor.php?section=add_host');
 			}
@@ -103,7 +103,7 @@ class Menus extends UserManagement {
 			$submenu[] = array();
 			$menu[] = $submenu;
 			
-			if (UserManagement::checkPermission(4)) { //if user is logged in
+			if (Permission::checkPermission(4)) { //if user is logged in
 				$submenu = array();
 				$subsubmenu = array();
 				$submenu[] = array('name'=>'Benutzer', 'href'=>'userlist.php');
@@ -125,7 +125,7 @@ class Menus extends UserManagement {
 
 	function adminMenu() {
 		$menu = array();
-		if (UserManagement::checkPermission(32)) {
+		if (Permission::checkPermission(32)) {
 //			$menu[] = array('name'=>'Neues Projekt', 'href'=>'subneteditor.php?section=new');
 			$menu[] = array('name'=>'Neues Projekt', 'href'=>'projecteditor.php?section=new');
 //			$menu[] = array('name'=>'CCD regenerieren', 'href'=>'vpn.php?section=regenerate_ccd_subnet');
@@ -137,7 +137,7 @@ class Menus extends UserManagement {
 
 	function rootMenu() {
 		$menu = array();
-		if (UserManagement::checkPermission(64)) {
+		if (Permission::checkPermission(64)) {
 			$submenu = array();
 			$subsubmenu = array();
 			$submenu[] = array('name'=>'Konfiguration', 'href'=>'config.php?section=edit_netmon');			

@@ -16,7 +16,7 @@
 
 	if ($_GET['section'] == "insert_add_host") {
 		//Logged in users can add a new router
-		if (UserManagement::checkPermission(4)) {
+		if (Permission::checkPermission(4)) {
 			$result = Dns::AddHost($_POST['host'], $_POST['ipv4_id'], $_POST['ipv6_id'], $_SESSION['user_id']);
 			if($result)
 				header("Location: ./user.php?user_id=$_SESSION[user_id]");
@@ -32,7 +32,7 @@
 	if ($_GET['section'] == "edit_host") {
 		$host_data = DNS::getHostById($_GET['host_id']);
 		//Moderator and owning user can add ip to interface
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $host_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $host_data['user_id'])) {
 			$smarty->assign('host_data', $host_data);
 			
 			$smarty->display("header.tpl.php");
@@ -48,7 +48,7 @@
 	if ($_GET['section'] == "delete_host") {
 		$host_data = DNS::getHostById($_GET['host_id']);
 		//Moderator and owning user can add ip to interface
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $host_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $host_data['user_id'])) {
 			if($_POST['really_delete']=='1') {
 				DNS::deleteHost($_GET['host_id']);
 				header("Location: ./user.php?user_id=$_SESSION[user_id]");
@@ -70,7 +70,7 @@
 	if ($_GET['section'] == "insert") {
 		$router_data = Router::getRouterInfo($_GET['router_id']);
 		//Moderator and owning user can add ip to interface
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
 
 			if(!empty($_POST['ipv4_addr'])) {
@@ -92,7 +92,7 @@
 	if ($_GET['section'] == "delete") {
 		$router_data = Router::getRouterByIpId($_GET['ip_id']);
 		//Moderator and owning user can add ip to interface
-		if (UserManagement::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
+		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
 
 			Ip::deleteIPAddress($_GET['ip_id']);
