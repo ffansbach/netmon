@@ -75,6 +75,8 @@ class User {
 			$message[] = array("Es existiert bereits ein Benutzer mit der ausgewhälten Emailadresse <i>$email</i>.",2);
 		} elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			$message[] = array("Die ausgewählte Emailadresse ".$email." ist keine gültige Emailadresse.",2);
+		} elseif(!empty($jabber) AND !filter_var($jabber, FILTER_VALIDATE_EMAIL)) {
+			$message[] = array("Die ausgewählte Jabberadresse ".$jabber." ist keine gültige Jabberadresse.",2);
 		} elseif(!empty($openid) AND !User::isUniqueOpenID($openid, $user_id)) {
 			$message[] = array("Die ausgewählte OpenID <i>".$openid."</i> ist bereits mit einem Benutzer verknüpft.",2);
 		}

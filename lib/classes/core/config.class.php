@@ -1,60 +1,70 @@
 <?php
 
 class Config {
+	/**
+	* Fetches a complete configuration line from the database by name
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @return array() configuration line
+	*/
 	public function getConfigLineByName($name) {
 		try {
-			$sql = "SELECT  *
-					FROM config
-					WHERE name='$name'";
-			$result = DB::getInstance()->query($sql);
-			$config = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM config WHERE name=?");
+			$stmt->execute(array($name));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
-		
-		return $config;
+
+		return $rows;
 	}
 
+	/**
+	* Fetches a configuration value line from the database by name
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @return string configuration value
+	*/
 	public function getConfigValueByName($name) {
 		try {
-			$sql = "SELECT  *
-					FROM config
-					WHERE name='$name'";
-			$result = DB::getInstance()->query($sql);
-			$config = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT value FROM config WHERE name=?");
+			$stmt->execute(array($name));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
 		
-		return $config['value'];
+		return $rows['value'];
 	}
-
+	
+	/**
+	* Writes a configuration line.
+	* If the configuration variable (name) does not exists, then create a new one. Otherwise update.
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $name string name of the configuration value
+	* @param $value string value of the configuration
+	* @return int id of the line created or edited
+	*/
 	public function writeConfigLine($name, $value) {
-		// just ever insert, and on error update
-		//If config line does not exists, create
+		//If config line does not exists, create otherwise update
 		$config_line = Config::getConfigLineByName($name);
 		if(empty($config_line)) {
 			try {
-				DB::getInstance()->exec("INSERT INTO config (name, value, create_date)
-							 VALUES ('$name', '$value', NOW());");
-				$config_line['id'] = DB::getInstance()->lastInsertId();
+				$stmt = DB::getInstance()->prepare("INSERT INTO config (name, value, create_date) VALUES (?, ?, NOW())");
+				$stmt->execute(array($name, $value));
+				return DB::getInstance()->lastInsertId();
 			} catch(PDOException $e) {
 				echo $e->getMessage();
+				return false;
 			}
 		} else {
-			//If config line exists, update
 			try {
-				$result = DB::getInstance()->exec("UPDATE config SET
-									  value='$value'
-								   WHERE name = '$name'");
+				$stmt = DB::getInstance()->prepare("UPDATE config SET value = ? WHERE name = ?");
+				$stmt->execute(array($value, $name));
+				return $config_line['id'];
 			} catch(PDOException $e) {
 				echo $e->getMessage();
+				return false;
 			}
 		}
-
-		return $config_line['id'];
 	}
 }
 
