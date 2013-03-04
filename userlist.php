@@ -1,12 +1,12 @@
 <?php
 	require_once('runtime.php');
-	require_once('lib/classes/core/userlist.class.php');
+	require_once('lib/classes/core/user.class.php');
 	
 	$smarty->assign('message', Message::getMessage());
 	
 	if(empty($_GET['section'])) {
 		if (UserManagement::checkPermission(4)) {
-			$smarty->assign('userlist', UserList::getList());
+			$smarty->assign('userlist', User::getUserList());
 		
 			$smarty->display("header.tpl.php");
 			$smarty->display("userlist.tpl.php");
@@ -20,7 +20,7 @@
 		if (UserManagement::checkPermission(4)) {
 			header("Content-Type: text/plain");
 			header("Content-Disposition: attachment; filename=netmon_userlist.vcf");
-			echo UserList::exportUserListAsvCard30();
+			echo User::exportUserListAsvCard30();
 		} else {
 			$message[] = array("Nur eingeloggte Benutzer dürfen die Beutzerliste exportieren!", 2);
 			Message::setMessage($message);

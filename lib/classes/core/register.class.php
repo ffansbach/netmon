@@ -20,12 +20,6 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
-/**
- * This file contains the class to register a new user.
- *
- * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
- */
-
 require_once("lib/classes/core/login.class.php");
 require_once("lib/classes/core/user.class.php");
 require_once('lib/classes/extern/Zend/Mail.php');
@@ -89,7 +83,7 @@ class Register {
 			}
 			
 			//hash password to store in db
-			$password = Usermanagement::encryptPassword($password);
+			$password = User::encryptPassword($password);
 			//create acivation hash
 			$activation = Helper::randomPassword(8);
 			

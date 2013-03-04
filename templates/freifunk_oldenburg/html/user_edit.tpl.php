@@ -18,7 +18,7 @@
 		<h3>Rechtevergabe</h3>
 		<p>
 			{foreach item=permission from=$permissions}
-				<input type="checkbox" name="permission[]" value="{$permission.dual}" {if $permission.check}checked{/if}> {$permission.name}<br>
+				<input type="checkbox" name="permission[]" value="{$permission.dual}" {if $permission.check}checked{/if}> {if $permission.role == 3}Benutzer{/if}{if $permission.role == 4}Moderator{/if}{if $permission.role == 5}Administrator{/if}{if $permission.role == 6}Root{/if}<br>
 			{/foreach}
 		</p>
 		<hr>

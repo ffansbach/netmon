@@ -21,62 +21,98 @@
 // +---------------------------------------------------------------------------+/
 
 /**
- * This file contains the class for permissionadministration
+ * This class is used as a container for static methods that deal with permissions.
+ * Each user has a permission field in the database. This field represents which roles a user has.
+ * A user can have up to 7 different roles assigned which must not depent on each other. This roles are used
+ * to handle site and function access.
+ * Netmon knows the following roles:
+ * 0 = standart permission. Each user has this role. There is no user without this role so this role can be ignored  (handled by netmon).
+ * 1 = not logged in  (handled by netmon)
+ * 2 = logged in  (handled by netmon)
+ * 3 = user
+ * 4 = moderator
+ * 5 = administrator
+ * 6 = root
+ * To create a permission value, sum up the 2^role values you want to use in your permission value.
+ * In example if you have a section which only root and administrators should have access to do: 2^root + 2^administrator = 2^6+2^5 = 96.
+ * Another example: if you have a section which only logged in persons should have access to do: 2^logged in = 4.
  *
- * @author	Clemens John <clemens-john@gmx.de>
- * @version	0.1
- * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
+ * @package	Netmon
  */
 
 class UserManagement {
-  
-  public function encryptPassword($password) {
-    return md5($password);
-  }
-  
+	/**
+	* Get all roles that are avaliable in netmon. For a description of the roles see class description.
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @return array() array containing the avaliable roles
+	*/
+	public function getAllRoles() {
+		return array(0,1,2,3,4,5,6);
+	}
+	
+	/**
+	* Get all roles that are avaliable in netmon and can freely be assigned to a user (all permission that are not handled
+	* automatically by netmon). For a description of the roles see class description.
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @return array() array containing the avaliable and editable roles
+	*/
+	public function getEditableRoles() {
+		return array(3,4,5,6);
+	}
+	
+	/**
+	* Deny acces to a special section. Sets a deny message and forwards the user to the login site.
+	* @author  Clemens John <clemens-john@gmx.de>
+	*/
 	public function denyAccess() {
-      $message[] = array("Sie haben nicht das Recht auf diesen Bereich zuzugreifen!",2);
-      Message::setMessage($message);
-	  $_SESSION['redirect_url'] = ".".$_SERVER['REQUEST_URI'];
-	  header('Location: ./login.php?section=login');
-      die();
+		$message[] = array("Sie haben nicht das Recht auf diesen Bereich zuzugreifen.",2);
+		Message::setMessage($message);
+		$_SESSION['redirect_url'] = ".".$_SERVER['REQUEST_URI'];
+		header('Location: ./login.php?section=login');
 	}
-
-  public function isOwner(&$smarty, $owning_user_id) {
-    if($owning_user_id!=$_SESSION['user_id'] OR !isset($owning_user_id)) {
-      $message[] = array("Sie haben nicht das Recht auf diesen Bereich zuzugreifen, da Sie nicht der Eigentümer des Objekts sind!",2);
-      Message::setMessage($message);
-	  $_SESSION['redirect_url'] = ".".$_SERVER['REQUEST_URI'];
-	  header('Location: ./login.php?section=login');
-      die();
-    } else {
-      return true;
-    }
-  }
-
-	//Checks if a user is owner or has the permission to access the site
-	public function checkIfUserIsOwnerOrPermitted($site_permission, $owning_user_id) {
-		if(isset($owning_user_id) AND isset($_SESSION['user_id']) AND $owning_user_id==$_SESSION['user_id']) {
-			return true;
-		} elseif(isset($_SESSION['user_id']) AND isset($site_permission) AND UserManagement::checkPermission($site_permission, $_SESSION['user_id'])) {
-			return true;
-		} else {
+	
+	/**
+	* Checks if a user is the owner of an object
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $$owning_user_id user id of the user that own the object for wich the permission should be checked.
+	* @param $user_id the id of the user that is requesting access. If not given, the id of the current logged in user is used.
+	* @return boolean true if the user is the owner of the object.
+	*/
+	public function isThisUserOwner($owning_user_id, $user_id=false) {
+		if(!$user_id)
+			$user_id = $_SESSION['user_id'];
+		
+		if($owning_user_id!=$user_id OR !isset($owning_user_id))
 			return false;
-		}
+		else
+			return true;
 	}
-
-  public function isThisUserOwner($owning_user_id, $user_id=false) {
-	if(!$user_id) {
-		$user_id = $_SESSION['user_id'];
+	
+	/**
+	* Checks if a user is permitted to acces a special section or object or if he is the owner
+	* of this section or object
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $site_permission permission value of the site. See class description on how to calculate the permission value you need.
+	* @param $$owning_user_id user id of the user that own the object for wich the permission should be checked.
+	* @return boolean true if the user has the asced permission or is owner.
+	*/
+	public function checkIfUserIsOwnerOrPermitted($site_permission, $owning_user_id) {
+		if(isset($owning_user_id) AND isset($_SESSION['user_id']) AND $owning_user_id==$_SESSION['user_id'])
+			return true;
+		elseif(isset($_SESSION['user_id']) AND isset($site_permission) AND UserManagement::checkPermission($site_permission, $_SESSION['user_id']))
+			return true;
+		else
+			return false;
 	}
-
-    if($owning_user_id!=$user_id OR !isset($owning_user_id)) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
+	
+	/**
+	* Checks if a user has the requested permission. In example if you want to check if a is root, then
+	* set $sitepermission to 2^root = 2^6 = 64.
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $sitepermission permission value of the site. See class description on how to calculate the permission value you need.
+	* @param $user_id user id of the user for wich the permission should be checked.
+	* @return boolean true if the user has the asked permission.
+	*/
 	public function checkPermission($sitepermission, $user_id=false) {
 		$userpermission = UserManagement::getUserPermission($user_id);
 		
@@ -87,99 +123,61 @@ class UserManagement {
 		$userpermission_len = strlen($userpermission);
 		
 		//get all permissions
-		$permission = UserManagement::getAllPermissions();
+		$roles = UserManagement::getAllRoles();
 		
-		$return = false;
-		for ($i=count($permission)-1; $i>=0; $i--) {
-			$exponent = $permission[$i];
+		for ($i=count($roles)-1; $i>=0; $i--) {
+			$exponent = $roles[$i];
 			if (($sitepermission_len-($exponent+1)>=0) && $sitepermission[$sitepermission_len-($exponent+1)]==1) {
 				if (($sitepermission_len-($exponent+1))>=0 AND $userpermission_len-($exponent+1)>= 0 AND $sitepermission[$sitepermission_len-($exponent+1)]==$userpermission[$userpermission_len-($exponent+1)]) {
-					$return = true;
+					return true;
 				}
 			}
 		}
-		return $return;
+		return false;
 	}
 
+	/**
+	* Get the permission value of the current user. Only this method gives you a correct value that includes
+	* the automatically generated permissions of netmon. Dont fetch the value directly from the database.
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $user_id user id of the user for wich you want to get the permission. If the user id is not set,
+	*       	  the id of the currently logged in user is used.  Can only be the current user.
+	* @return int permission value of the user
+	*/
 	public function getUserPermission($user_id=false) {
-		if($user_id) {
-			//Each user gets the permission 0
-			$userpermission = pow(2,0);
-			//Each logged in user gets the permission "logged in"
-			$userpermission = $userpermission + pow(2,2);
-			try {
-				$sql = "select permission from users WHERE id=$user_id";
-				$result = DB::getInstance()->query($sql);
-				$user_data = $result->fetch(PDO::FETCH_ASSOC);
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-			
-			//Each user get´s the permission from the database
-			$userpermission = $userpermission + $user_data['permission'];
-		}elseif (!isset($_SESSION['user_id'])) {
-			//Jeder Benutzer bekommt das recht 0
-			$userpermission = pow(2,0);
+		if(!$user_id)
+			$user_id = $_SESSION['user_id'];
+		
+		//Each user gets the permission 0
+		$userpermission = pow(2,0);
+		if(!isset($_SESSION['user_id'])) {
 			//Each user that is not logged in gets the permission 1
-			$userpermission = $userpermission + pow(2,1);
+			$userpermission += pow(2,1);
 		} else {
-			//Each user gets the permission 0
-			$userpermission = pow(2,0);
 			//Each logged in user gets the permission "logged in"
-			$userpermission = $userpermission + pow(2,2);
-			try {
-				$sql = "select permission from users WHERE id=$_SESSION[user_id]";
-				$result = DB::getInstance()->query($sql);
-				$user_data = $result->fetch(PDO::FETCH_ASSOC);
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-			
-			//Each user get´s the permission from the database
-			$userpermission = $userpermission + $user_data['permission'];
+			$userpermission += pow(2,2);
 		}
+		//Each user get´s the permission from the database		
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT permission FROM users WHERE id=?");
+			$stmt->execute(array($user_id));
+			$user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+		$userpermission += $user_data['permission'];
+
 		return $userpermission;
 	}
 
+	/**
+	* Wrapper method for checking if the current user is logged in
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param $user_id user id of the user for wich you want to check the login. Can only be the current user.
+	* @return boolean if the current user is logged in.
+	*/
 	public function isLoggedIn($user_id) {
-		if (UserManagement::checkPermission(4, $user_id))
-			return true;
-		else
-			return false;
-	}
-
-	public function getAllPermissions() {
-		/*
-		0 = Alle, permission is generated by Netmon
-		1 = nicht eingeloggte, permission is generated by Netmon
-		2 = eingeloggte, permission is generated by Netmon
-		3 = user, permission in DB
-		4 = mod, permission in DB
-		5 = admin, permission in DB
-		6 = root, permission in DB
-		*/
-		return array(0,1,2,3,4,5,6);
-	}
-	public function getEditablePermissionsWithNames() {
-		//Uncomment all permissions which are automatically set by Netmon
-		/*$permissions[0]['permission'] = 0;
-		$permissions[0]['name'] = 'Alle';
-		$permissions[1]['permission'] = 1;
-		$permissions[1]['name'] = 'Nicht eingeloggt';
-		$permissions[2]['permission'] = 2;
-		$permissions[2]['name'] = 'Eingeloggt';*/
-		$permissions[3]['permission'] = 3;
-		$permissions[3]['name'] = 'Benutzer';
-		$permissions[4]['permission'] = 4;
-		$permissions[4]['name'] = 'Moderator';
-		$permissions[5]['permission'] = 5;
-		$permissions[5]['name'] = 'Administrator';
-		$permissions[6]['permission'] = 6;
-		$permissions[6]['name'] = 'Root';
-
-		return $permissions;
+		return UserManagement::checkPermission(4, $user_id);
 	}
 }
 

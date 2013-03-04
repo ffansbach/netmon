@@ -63,7 +63,7 @@ class User {
 	
 		$message = array();
 		//check weatcher the given data is valid
-		if($changepassword AND (User::getPasswordByUserID($user_id) != Usermanagement::encryptPassword($oldpassword))) {
+		if($changepassword AND (User::getPasswordByUserID($user_id) != User::encryptPassword($oldpassword))) {
 			$message[] = array("Dein altes Passwort ist nicht richtig.",2);
 		} elseif($changepassword AND empty($newpassword)) {
 			$message[] = array("Du musst ein neues Passwort angeben.",2);
@@ -87,7 +87,7 @@ class User {
 		
 		//if user wants to set a new password, encrypt new password
 		if ($changepassword)
-			$newpassword = Usermanagement::encryptPassword($newpassword);
+			$newpassword = User::encryptPassword($newpassword);
 		else
 			$newpassword = $user_data['password'];
 	
@@ -111,6 +111,15 @@ class User {
 		$message[] = array("Die Daten von $user_data[nickname] wurden geändert", 1);
 		message::setMessage($message);
 		return true;
+	}
+	
+	/**
+	* Hashes a given string
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @return the hashed string
+	*/
+	public function encryptPassword($password) {
+		return md5($password);
 	}
 	
 	/**
@@ -218,17 +227,18 @@ class User {
 	/**
 	* Fetches a user by a given id from the database.
 	* @author  Clemens John <clemens-john@gmx.de>
-	* @param int $id Id of a user
+	* @param int $user_id Id of a user
 	* @return array() Array containing the user data
 	*/
-	function getUserByID($id) {
+	function getUserByID($user_id) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE id=?");
-			$stmt->execute(array($id));
+			$stmt->execute(array($user_id));
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}
+		$rows['roles'] = User::getRolesByUserID($user_id);
 		return $rows;
 	}
 
@@ -246,6 +256,7 @@ class User {
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		};
+		$rows['roles'] = User::getRolesByUserID($rows['id']);
 		return $rows;
 	}
 
@@ -263,6 +274,7 @@ class User {
 		} catch(PDOException $e) {
 		  echo $e->getMessage();
 		};
+		$rows['roles'] = User::getRolesByUserID($rows['id']);
 		return $rows;
 	}
 	
@@ -278,7 +290,7 @@ class User {
 	public function getUserByNicknameAndPassword($nickname, $password, $hashed=false) {
 		//hash the password if it is not already hashed
 		if(!$hashed)
-			$password = UserManagement::encryptPassword($password);
+			$password = User::encryptPassword($password);
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM  users WHERE nickname=? AND password=?");
 			$stmt->execute(array($nickname, $password));
@@ -286,13 +298,14 @@ class User {
 		} catch(PDOException $e) {
 		  echo $e->getMessage();
 		};
+		$rows['roles'] = User::getRolesByUserID($rows['id']);
 		return $rows;
 	}
 	
 	/**
 	* Get the password of a user
 	* @author  Clemens John <clemens-john@gmx.de>
-	* @param string $user_id id of the user you want to get the password from
+	* @param int $user_id id of the user you want to get the password from
 	* @return string the password of the user
 	*/
 	public function getPasswordByUserID($user_id) {
@@ -304,6 +317,65 @@ class User {
 		  echo $e->getMessage();
 		};
 		return $rows['password'];
+	}
+	
+	/**
+	* Find out which roles a user as
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param int $user_id id
+	* @return array() an array containing all editable permissions and an boolean field that indicates
+	*	  weather this user has this role
+	*/
+	public function getRolesByUserID($user_id) {
+		$roles = UserManagement::getEditableRoles();
+		foreach ($roles as $key=>$role) {
+			$roles_edit[$key]['role'] = $role;
+			$roles_edit[$key]['dual'] = pow(2,$role);
+			$roles_edit[$key]['check'] = UserManagement::checkPermission($roles_edit[$key]['dual'], $user_id);
+		}
+		return $roles_edit;
+	}
+	
+	public function getUserList() {
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT id, nickname, vorname, nachname, jabber, icq, website, email, create_date
+							    FROM users
+							    ORDER BY create_date DESC");
+			$stmt->execute(array());
+			$userlist = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+		  echo $e->getMessage();
+		};
+		
+		foreach ($userlist as $key=>$user){
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT count(*) as routercount FROM routers WHERE user_id=?");
+				$stmt->execute(array($user['id']));
+				$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+			}
+			
+			$userlist[$key]['routercount'] = $rows['routercount'];
+			$userlist[$key]['roles'] = User::getRolesByUserID($user['id']);
+		}
+		return $userlist;
+	}
+
+	public function exportUserListAsvCard30() {
+		$userlist = User::getUserList();
+		foreach($userlist as $user) {
+			$vcardlist .= "BEGIN:VCARD\n";
+			$vcardlist .= "NICKNAME:$user[nickname]\n";
+			$vcardlist .= "EMAIL:$user[email]\n";
+			if(!empty($user['vorname']) AND !empty($user['nachname'])) {
+				$vcardlist .= "FN:$user[vorname] $user[nachname]\n";
+				$vcardlist .= "N:$user[nachname];$user[vorname];;;\n";
+			}
+			$vcardlist .= "VERSION:3.0\n";
+			$vcardlist .= "END:VCARD\n\n";
+		}
+		return $vcardlist;
 	}
 }
 
