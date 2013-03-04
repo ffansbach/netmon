@@ -106,25 +106,6 @@ class Router {
 		return $routers;
 	}
 
-	public function getMapCrawlRoutersByCrawlCycleIdAndStatus($crawl_cycle_id, $status) {
-		try {
-			$sql = "SELECT  crawl_routers.router_id, crawl_routers.crawl_cycle_id, crawl_routers.crawl_date, crawl_routers.status, crawl_routers.ping, crawl_routers.hostname, crawl_routers.description, crawl_routers.location, crawl_routers.latitude, crawl_routers.longitude, crawl_routers.luciname, crawl_routers.luciversion, crawl_routers.distname, crawl_routers.distversion, crawl_routers.chipset, crawl_routers.cpu, crawl_routers.memory_total, crawl_routers.memory_caching, crawl_routers.memory_buffering, crawl_routers.memory_free, crawl_routers.loadavg, crawl_routers.processes, crawl_routers.uptime, crawl_routers.idletime, crawl_routers.local_time, crawl_routers.community_essid, crawl_routers.community_nickname, crawl_routers.community_email, crawl_routers.community_prefix, crawl_routers.batman_advanced_version, crawl_routers.kernel_version, crawl_routers.nodewatcher_version, crawl_routers.firmware_version, crawl_routers.firmware_revision, crawl_routers.openwrt_core_revision, crawl_routers.openwrt_feeds_packages_
-revision,
-					crawl_clients_count.client_count
-					FROM crawl_routers, crawl_clients_count
-					WHERE crawl_routers.crawl_cycle_id='$crawl_cycle_id' AND crawl_routers.status='$status' AND crawl_clients_count.crawl_cycle_id='$crawl_cycle_id' AND crawl_clients_count.router_id = crawl_routers.router_id
-					ORDER BY crawl_clients_count.client_count ASC";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$routers[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $routers;
-	}
-
 	public function getCrawlRoutersByCrawlCycleId($crawl_cycle_id) {
 		try {
 			$sql = "SELECT  *
@@ -374,20 +355,6 @@ revision,
 		return $count['count'];
 	}
 
-	public function countRoutersByTime($timestamp) {
-		try {
-			$sql = "SELECT  COUNT(*) as count
-					FROM routers
-					WHERE create_date<=FROM_UNIXTIME($timestamp)";
-			$result = DB::getInstance()->query($sql);
-			$count = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $count['count'];
-	}
-
 	public function getRouterByMacAndCrawlCycleId($mac_addr, $crawl_cycle_id) {
 		$interfaces = array();
 		try {
@@ -396,27 +363,6 @@ revision,
 					FROM crawl_interfaces
 					LEFT JOIN routers on (routers.id=crawl_interfaces.router_id)
 				WHERE crawl_interfaces.crawl_cycle_id='$crawl_cycle_id' AND crawl_interfaces.mac_addr='$mac_addr'";
-			$result = DB::getInstance()->query($sql);
-			$router = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $router;
-	}
-
-	public function getRouterByIPv4Addr($ipv4_addr) {
-		$exploded_addr = explode(".", $ipv4_addr);
-		if(count($exploded_addr)>3) {
-			$ipv4_addr = $exploded_addr[2].".".$exploded_addr[3];
-		}
-		$interfaces = array();
-		try {
-			$sql = "SELECT  interfaces.router_id, interfaces.ipv4_addr,
-					routers.hostname, routers.latitude, routers.longitude
-					FROM interfaces
-					LEFT JOIN routers on (routers.id=interfaces.router_id)
-				WHERE interfaces.ipv4_addr='$ipv4_addr'";
 			$result = DB::getInstance()->query($sql);
 			$router = $result->fetch(PDO::FETCH_ASSOC);
 		}
