@@ -4,7 +4,6 @@
   require_once('./lib/classes/core/helper.class.php');
   require_once('./lib/classes/core/subneteditor.class.php');
   require_once('./lib/classes/core/subnetcalculator.class.php');
-  require_once('./lib/classes/core/editinghelper.class.php');
 
 /*print "<form method=\"post\" action=\"$_SERVER[PHP_SELF]\">
 	IP Mask or CIDR: <input type=\"text\" name=\"my_net_info\" size=\"32\" maxlength=\"32\">

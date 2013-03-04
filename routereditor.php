@@ -2,7 +2,6 @@
 	require_once('runtime.php');
 	require_once('./lib/classes/core/router.class.php');
 	require_once('./lib/classes/core/routereditor.class.php');
-	require_once('./lib/classes/core/editinghelper.class.php');
 	require_once('./lib/classes/core/chipsets.class.php');
 	
 	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);

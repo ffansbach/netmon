@@ -1,6 +1,5 @@
 <?php
 	require_once('runtime.php');
-	require_once('./lib/classes/core/editinghelper.class.php');
 	require_once('./lib/classes/core/router.class.php');
 	require_once('./lib/classes/core/service.class.php');
 	require_once('./lib/classes/core/serviceeditor.class.php');
