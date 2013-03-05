@@ -63,12 +63,22 @@ class History {
 
 		if (isset($history_data) AND is_array($history_data)) {
 			foreach ($history_data as $hist_data) {
-				DB::getInstance()->exec("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data) VALUES ('$actual_crawl_cycle[id]', 'router', '$router_id', NOW(), '$hist_data');");
+				History::addHistoryEntry('router', $router_id, $hist_data);
 			}
 		}
 	}
 
-
+	public function addHistoryEntry($object, $object_id, $data) {
+		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+		try {
+			$stmt = DB::getInstance()->prepare("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data)
+							    VALUES (?, ?, ?, NOW(), ?)");
+			$stmt->execute(array($actual_crawl_cycle['id'], $object, $object_id, $data));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+	}
 
 	public function getLastRegisteredUsers($limit, $daylimit) {
 		if($limit)

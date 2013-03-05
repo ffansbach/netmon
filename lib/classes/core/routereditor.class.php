@@ -39,10 +39,15 @@ class RouterEditor {
 				$_POST['latitude'] = 0;
 				$_POST['longitude'] = 0;
 			}
-
-			DB::getInstance()->exec("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, router_auto_assign_login_string, description, location, latitude, longitude, chipset_id, notify, notification_wait)
-						      VALUES ('$_SESSION[user_id]', NOW(), NOW(), '$_POST[crawl_method]', '$_POST[hostname]', '$_POST[allow_router_auto_assign]', '$_POST[router_auto_assign_login_string]', '$_POST[description]', '$_POST[location]', '$_POST[latitude]', '$_POST[longitude]', '$_POST[chipset_id]', '$_POST[notify]', '$_POST[notification_wait]');");
-			$router_id = DB::getInstance()->lastInsertId();
+			try {
+				$stmt = DB::getInstance()->prepare("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, router_auto_assign_login_string, description, location, latitude, longitude, chipset_id, notify, notification_wait)
+								    VALUES (?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
+				$stmt->execute(array($_SESSION['user_id'], $_POST['crawl_method'], $_POST['hostname'], $_POST['allow_router_auto_assign'], $_POST['router_auto_assign_login_string'], $_POST['description'], $_POST['location'], $_POST['latitude'], $_POST['longitude'], $_POST['chipset_id'], $_POST['notify'], $_POST['notification_wait']));
+				$router_id = DB::getInstance()->lastInsertId();
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
 			
 			$crawl_data['status'] = "unknown";
 			$crawl_cycle_id = Crawling::getLastEndedCrawlCycle();
@@ -50,22 +55,19 @@ class RouterEditor {
 			
 			if($_POST['allow_router_auto_assign']=='1' AND !empty($_POST['router_auto_assign_login_string'])) {
 				try {
-					$result = DB::getInstance()->exec("DELETE FROM routers_not_assigned
-									   WHERE router_auto_assign_login_string='$_POST[router_auto_assign_login_string]'
-									   LIMIT 1;");
-				}
-				catch(PDOException $e) {
+					$stmt = DB::getInstance()->prepare("DELETE FROM routers_not_assigned
+									    WHERE router_auto_assign_login_string=?
+									    LIMIT 1");
+					$stmt->execute(array($_POST['router_auto_assign_login_string']));
+				} catch(PDOException $e) {
 					echo $e->getMessage();
+					echo $e->getTraceAsString();
 				}
 			}
-
 			$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
-
-
+			
 			//Make history
-			$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-			$history_data = serialize(array('router_id'=>$router_id, 'action'=>'new'));
-			DB::getInstance()->exec("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data) VALUES ('$actual_crawl_cycle[id]', 'router', '$router_id', NOW(), '$history_data');");
+			History::addHistoryEntry('router', $router_id, serialize(array('router_id'=>$router_id, 'action'=>'new')));
 			
 			//Send Message to twitter
 			if($_POST['twitter_notification']=='1') {
@@ -78,16 +80,23 @@ class RouterEditor {
 	}
 
 	public function resetRouterAutoAssignHash($router_id) {
-		$result = DB::getInstance()->exec("UPDATE routers SET
-							router_auto_assign_hash = '',
-							trying_to_assign_notified = 0
-						WHERE id = '$router_id'");
-		if ($result>0) {
+		try {
+			$stmt = DB::getInstance()->prepare("UPDATE routers SET
+									router_auto_assign_hash = '',
+									trying_to_assign_notified = 0
+							    WHERE id=?");
+			$stmt->execute(array($router_id));
+			$result = $stmt->rowCount();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		if ($result) {
 			$message[] = array("Der Auto Assign Hash wurde zurückgesetzt.", 1);
 			Message::setMessage($message);
 			return true;
 		} else {
-			$message[] = array("Fehler!", 2);
+			$message[] = array("Beim Zurücksetzen des Auto Assign Hashes ist ein Fehler aufgetreten.", 2);
 			Message::setMessage($message);
 			return false;
 		}
@@ -119,26 +128,34 @@ class RouterEditor {
 				$_POST['latitude'] = 0;
 				$_POST['longitude'] = 0;
 			}
-			$result = DB::getInstance()->exec("UPDATE routers SET
-								update_date=NOW(),
-								crawl_method='$_POST[crawl_method]',
-								hostname='$_POST[hostname]',
-								allow_router_auto_assign='$_POST[allow_router_auto_assign]',
-								router_auto_assign_login_string='$_POST[router_auto_assign_login_string]',
-								description='$_POST[description]',
-								location='$_POST[location]',
-								latitude='$_POST[latitude]',
-								longitude='$_POST[longitude]',
-								chipset_id='$_POST[chipset_id]',
-								notify='$_POST[notify]',
-								notification_wait='$_POST[notification_wait]'
-							WHERE id = '$_GET[router_id]'");
+			
+			try {
+				$stmt = DB::getInstance()->prepare("UPDATE routers SET
+										update_date=NOW(),
+										crawl_method=?,
+										hostname=?,
+										allow_router_auto_assign=?,
+										router_auto_assign_login_string=?,
+										description=?,
+										location=?,
+										latitude=?,
+										longitude=?,
+										chipset_id=?,
+										notify=?,
+										notification_wait=?
+								    WHERE id = ?");
+				$stmt->execute(array($_POST['crawl_method'], $_POST['hostname'], $_POST['allow_router_auto_assign'], $_POST['router_auto_assign_login_string'], $_POST['description'], $_POST['location'], $_POST['latitude'], $_POST['longitude'], $_POST['chipset_id'], $_POST['notify'], $_POST['notification_wait'], $_GET['router_id']));
+				$result = $stmt->rowCount();
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
 			if ($result>0) {
-				$message[] = array("Die Änderungen wurden gespeichert.", 1);
+				$message[] = array("Die Änderungen am Router $_POST[hostname] wurden gespeichert.", 1);
 				Message::setMessage($message);
 				return true;
 			} else {
-				$message[] = array("Fehler!", 2);
+				$message[] = array("Beim Ändern des Routers ".$_POST['hostname']." ist ein Fehler aufgetreten.", 2);
 				Message::setMessage($message);
 				return false;
 			}
@@ -146,15 +163,22 @@ class RouterEditor {
 	}
 
 	public function insertEditHash($router_id, $hash) {
-			$result = DB::getInstance()->exec("UPDATE routers SET
-								router_auto_assign_hash='$hash'
-							WHERE id = '$router_id'");
-			if ($result>0) {
+			try {
+				$stmt = DB::getInstance()->prepare("UPDATE routers SET
+								router_auto_assign_hash=?
+							WHERE id = ?");
+				$stmt->execute(array($hash, $router_id));
+				$result = $stmt->rowCount();
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+			if ($result) {
 				$message[] = array("Der geänderte Hash wurde gespeichert.", 1);
 				Message::setMessage($message);
 				return true;
 			} else {
-				$message[] = array("Fehler!", 2);
+				$message[] = array("Beim Ändern des Hashes ist ein Fehler aufgetreten.", 2);
 				Message::setMessage($message);
 				return false;
 			}
@@ -176,8 +200,14 @@ class RouterEditor {
 		}
 
 		//Delete the router itself
-		DB::getInstance()->exec("DELETE FROM routers WHERE id='$router_id';");
-
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM routers WHERE id=?");
+			$stmt->execute(array($router_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
 		$message[] = array("Der Router $router_data[hostname] wurde gelöscht.", 1);
 		Message::setMessage($message);
 		return true;
