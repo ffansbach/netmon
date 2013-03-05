@@ -380,6 +380,7 @@ class Router {
 	}
 
 	public function getRouterReliability($router_id, $crawl_cycles) {
+		$status = array();
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 		$crawl_history = Router::getCrawlRouterHistoryExceptActualCrawlCycle($router_id, $actual_crawl_cycle['id'], $crawl_cycles);
 		if(!empty($crawl_history)) {
