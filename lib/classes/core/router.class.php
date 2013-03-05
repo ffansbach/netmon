@@ -26,6 +26,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -42,6 +43,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -58,6 +60,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -74,6 +77,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -85,6 +89,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -96,6 +101,7 @@ class Router {
 			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -107,6 +113,7 @@ class Router {
 			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -121,18 +128,20 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
 	
 	public function getRouters() {
-		$routers = array();
+		$rows = array();
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM routers");
 			$stmt->execute(array());
 			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -197,6 +206,7 @@ class Router {
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $routers;
 	}
@@ -255,6 +265,7 @@ class Router {
 		}
 		catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $routers;
 	}
@@ -262,11 +273,14 @@ class Router {
 	public function getRoutersForCrawl($from, $to) {
 		$rows=array();
 		try {
-			$stmt = DB::getInstance()->prepare("SELECT * FROM routers WHERE crawl_method='crawler' ORDER BY id ASC LIMIT ?, ?");
-			$stmt->execute(array($from, $to));
+			$stmt = DB::getInstance()->prepare("SELECT * FROM routers WHERE crawl_method='crawler' ORDER BY id ASC LIMIT :from, :to");
+			$stmt->bindValue(':from', (int)$from, PDO::PARAM_INT);
+			$stmt->bindValue(':to', (int)$to, PDO::PARAM_INT);
+			$stmt->execute();			
 			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 
 		foreach($rows as $key => $row) {
@@ -280,13 +294,18 @@ class Router {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT *
 							    FROM crawl_routers
-							    WHERE router_id=? AND crawl_cycle_id!=?
+							    WHERE router_id=:router_id AND crawl_cycle_id!=:crawl_cycle_id
 							    ORDER BY id desc
-							    LIMIT ?");
-			$stmt->execute(array($router_id, $actual_crawl_cycle_id, $limit));
+							    LIMIT :limit");
+			$stmt->bindValue(':router_id', $router_id, PDO::PARAM_INT);
+			$stmt->bindValue(':crawl_cycle_id', $actual_crawl_cycle_id, PDO::PARAM_INT);
+			$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+			$stmt->execute();
+			
 			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -300,6 +319,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows['count'];
 	}
@@ -311,6 +331,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows['count'];
 	}
@@ -322,6 +343,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows['count'];
 	}
@@ -338,6 +360,7 @@ class Router {
 			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -488,6 +511,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -503,6 +527,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -519,6 +544,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -535,6 +561,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		return $rows;
 	}
@@ -546,6 +573,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 
 		if(count($rows) AND $rows['adds_allowd']=='1') return true;
@@ -559,6 +587,7 @@ class Router {
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		
 		$rows['add_small_exists'] = file_exists("./data/adds/".$router_id."_add_small.jpg");
