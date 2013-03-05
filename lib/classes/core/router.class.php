@@ -152,6 +152,7 @@ class Router {
 		//In this case this pdo prepared statements cant to this
 		if(!empty($where) AND !empty($operator) AND !empty($value)
 		   AND (($where == "crawl_routers.status"
+		    OR $where == "crawl_routers.chipset"
 		    OR $where == "crawl_routers.batman_advanced_version"
 		    OR $where == "crawl_routers.kernel_version"
 		    OR $where == "crawl_routers.nodewatcher_version"
@@ -162,7 +163,7 @@ class Router {
 		    OR $where == ">"
 		    OR $where == "<="
 		    OR $where == ">=")
-		   AND (preg_match('/^[a-zA-Z0-9\.\_\-]+$/', $value)))) {		
+		   AND (preg_match('/^[a-zA-Z0-9\.\_\-\s]+$/', $value)))) {		
 			$sql_append = "WHERE ".$where.$operator."'$value'";
 		} else {
 			$sql_append = "";
