@@ -3,17 +3,14 @@
 class VariableSplash {
 	public function getClientByMac($mac_addr) {
 		try {
-			$sql = "SELECT  *
-					FROM variable_splash_clients
-					WHERE mac_addr='$mac_addr'";
-			$result = DB::getInstance()->query($sql);
-			$line = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM variable_splash_clients WHERE mac_addr=?");
+			$stmt->execute(array($mac_addr));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		
-		return $line;
+		return $rows;
 	}
 
 	public function getMacByIp($ip) {
