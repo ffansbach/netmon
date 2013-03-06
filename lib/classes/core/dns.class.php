@@ -38,13 +38,12 @@ class DNS {
 				$check_host = DNS::getHostByHostname($host);
 				if(empty($check_host)) {
 					try {
-						DB::getInstance()->exec("INSERT INTO dns_hosts (user_id, host, ipv4_id, ipv6_id, create_date)
-									VALUES ('$user_id', '$host', '$ipv4_id', '$ipv6_id', NOW());");
-						$ip_id = DB::getInstance()->lastInsertId();
-					}
-					catch(PDOException $e) {
+						$stmt = DB::getInstance()->prepare("INSERT INTO dns_hosts (user_id, host, ipv4_id, ipv6_id, create_date)
+											VALUES (?, ?, ?, ?, NOW())");
+						$stmt->execute(array($user_id, $host, $ipv4_id, $ipv6_id));
+					} catch(PDOException $e) {
 						echo $e->getMessage();
-					}
+					};
 
 					DNS::generateHostsFile();
 
@@ -70,9 +69,13 @@ class DNS {
 
 	public function deleteHost($host_id) {
 		$host_data = DNS::getHostById($host_id);
-
-		//Delete the router itself
-		DB::getInstance()->exec("DELETE FROM dns_hosts WHERE id='$host_id';");
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM dns_hosts WHERE id=?");
+			$stmt->execute(array($host_id));
+		} catch(PDOException $e) {
+				echo $e->getMessage();
+		};
 
 		$message[] = array("Der Host $host_data[host] wurde gelöscht.", 1);
 		Message::setMessage($message);
@@ -101,49 +104,46 @@ class DNS {
 
 	public function getHostByHostname($host) {
 		try {
-			$sql = "SELECT * FROM dns_hosts
-				WHERE host='$host'";
-			$result = DB::getInstance()->query($sql);
-			$host = $result->fetch(PDO::FETCH_ASSOC);
+			$stmt = DB::getInstance()->prepare("SELECT * FROM dns_hosts WHERE host=?");
+			$stmt->execute(array($host));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+				echo $e->getMessage();
 		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $host;
+		return $rows;
 	}
 
 	public function getHostById($host_id) {
 		try {
-			$sql = "SELECT * FROM dns_hosts
-				WHERE id='$host_id'";
-			$result = DB::getInstance()->query($sql);
-			$host = $result->fetch(PDO::FETCH_ASSOC);
+			$stmt = DB::getInstance()->prepare("SELECT * FROM dns_hosts WHERE id=?");
+			$stmt->execute(array($host_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+				echo $e->getMessage();
 		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $host;
+		return $rows;
 	}
 
 	public function getHosts() {
 		try {
-			$sql = "SELECT * FROM dns_hosts";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $key=>$row) {
-				if($row['ipv4_id']!="0") {
-					$row['ipv4_ip'] = IP::getIpById($row['ipv4_id']);
-					$row['ipv4_ip'] = $row['ipv4_ip']['ip'];
-				}
-				
-				if($row['ipv6_id']!="0") {
-					$row['ipv6_ip'] = IP::getIpById($row['ipv6_id']);
-					$row['ipv6_ip'] = $row['ipv6_ip']['ip'];
-				}
-				$hosts[] = $row;
-			}
+			$stmt = DB::getInstance()->prepare("SELECT * FROM dns_hosts");
+			$stmt->execute();
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+				echo $e->getMessage();
 		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
+		
+		foreach($rows as $key=>$row) {
+			if($row['ipv4_id']!="0") {
+				$row['ipv4_ip'] = IP::getIpById($row['ipv4_id']);
+				$row['ipv4_ip'] = $row['ipv4_ip']['ip'];
+			}
+			
+			if($row['ipv6_id']!="0") {
+				$row['ipv6_ip'] = IP::getIpById($row['ipv6_id']);
+				$row['ipv6_ip'] = $row['ipv6_ip']['ip'];
+			}
+			$hosts[] = $row;
 		}
 		return $hosts;
 	}
@@ -151,23 +151,24 @@ class DNS {
 	public function getHostsByUser($user_id) {
 		$hosts = array();
 		try {
-			$sql = "SELECT * FROM dns_hosts WHERE user_id='$user_id'";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $key=>$row) {
-				if($row['ipv4_id']!="0") {
-					$row['ipv4_ip'] = IP::getIpById($row['ipv4_id']);
-					$row['ipv4_ip'] = $row['ipv4_ip']['ip'];
-				}
-				
-				if($row['ipv6_id']!="0") {
-					$row['ipv6_ip'] = IP::getIpById($row['ipv6_id']);
-					$row['ipv6_ip'] = $row['ipv6_ip']['ip'];
-				}
-				$hosts[] = $row;
-			}
+			$stmt = DB::getInstance()->prepare("SELECT * FROM dns_hosts WHERE user_id=?");
+			$stmt->execute(array($user_id));
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+				echo $e->getMessage();
 		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
+		
+		foreach($rows as $key=>$row) {
+			if($row['ipv4_id']!="0") {
+				$row['ipv4_ip'] = IP::getIpById($row['ipv4_id']);
+				$row['ipv4_ip'] = $row['ipv4_ip']['ip'];
+			}
+			
+			if($row['ipv6_id']!="0") {
+				$row['ipv6_ip'] = IP::getIpById($row['ipv6_id']);
+				$row['ipv6_ip'] = $row['ipv6_ip']['ip'];
+			}
+			$hosts[] = $row;
 		}
 		return $hosts;
 	}
