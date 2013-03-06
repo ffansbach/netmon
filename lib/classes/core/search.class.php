@@ -28,51 +28,53 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once('./lib/classes/core/router.class.php');
-require_once('./lib/classes/core/crawling.class.php');
+require_once('lib/classes/core/router.class.php');
+require_once('lib/classes/core/crawling.class.php');
 
 class Search {
 	public function searchForMacAddress($search_string) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_interfaces
-					WHERE mac_addr = '$search_string'
-					GROUP BY router_id
-					ORDER BY id DESC;";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $key=>$row) {
-				$search_result_crawled_interfaces[$key] = $row;
-				$search_result_crawled_interfaces[$key]['object_type'] = 'crawled_interface';
-				$search_result_crawled_interfaces[$key]['router_data'] = Router::getRouterInfo($row['router_id']);
-				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-				$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  *
+							    FROM crawl_interfaces
+							    WHERE mac_addr = ?
+							    GROUP BY router_id
+							    ORDER BY id DESC");
+			$stmt->execute(array($search_string));
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+		};
+			
+		foreach($rows as $key=>$row) {
+			$search_result_crawled_interfaces[$key] = $row;
+			$search_result_crawled_interfaces[$key]['object_type'] = 'crawled_interface';
+			$search_result_crawled_interfaces[$key]['router_data'] = Router::getRouterInfo($row['router_id']);
+			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+			$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 		}
-
+		
 		return $search_result_crawled_interfaces;
 	}
 
 	public function searchForIPv6Address($search_string) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_interfaces
-					WHERE ipv6_addr LIKE '%$search_string%' OR ipv6_link_local_addr LIKE '%$search_string%'
-					GROUP BY router_id
-					ORDER BY id DESC;";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $key=>$row) {
-				$search_result_crawled_interfaces[$key] = $row;
-				$search_result_crawled_interfaces[$key]['object_type'] = 'crawled_interface';
-				$search_result_crawled_interfaces[$key]['router_data'] = Router::getRouterInfo($row['router_id']);
-				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-				$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  *
+							    FROM crawl_interfaces
+							    WHERE ipv6_addr LIKE '%?%' OR ipv6_link_local_addr LIKE '%?%'
+							    GROUP BY router_id
+							    ORDER BY id DESC");
+			$stmt->execute(array($search_string, $search_string));
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+		};
+		
+		foreach($rows as $key=>$row) {
+			$search_result_crawled_interfaces[$key] = $row;
+			$search_result_crawled_interfaces[$key]['object_type'] = 'crawled_interface';
+			$search_result_crawled_interfaces[$key]['router_data'] = Router::getRouterInfo($row['router_id']);
+			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+			$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 		}
 
 		return $search_result_crawled_interfaces;
