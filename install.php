@@ -29,6 +29,9 @@ if ($GLOBALS['installed']) {
 	$smarty->assign('gd_loaded', extension_loaded('gd'));
 	$smarty->assign('exec', function_exists('exec'));
 	
+	exec('rrdtool', $rrdToolCheckOutput, $rrdToolCheckReturn);
+	$smarty->assign('rrdtool_installed', ($rrdToolCheckReturn == 127) ? false : true);
+	
 	if (mail("noreply@noreply.org", "Netmon Mailtest", "This is a Mail that was send by netmon Mailtest", "From: noreply@noreply.org")) {
 		$smarty->assign('mail', true);
 		$_SESSION['mail'] = "php_mail";
@@ -149,8 +152,7 @@ if ($GLOBALS['installed']) {
 		Config::writeConfigLine('crawl_cycle_length_in_minutes', 10);
 
 		//create an initial crawl cycle
-		$crawl_cycle_id = Crawling::newCrawlCycle();
-		Crawling::closeCrawlCycle($crawl_cycle_id);
+		$crawl_cycle_id = Crawling::newCrawlCycle(10);
 		Crawling::organizeCrawlCycles();
 		header('Location: ./install.php?section=finish');
 	}

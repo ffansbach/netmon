@@ -45,10 +45,10 @@ class Crawling {
 		}
 	}
 
-	public function newCrawlCycle() {
+	public function newCrawlCycle($minuteOffset=0) {
 		try {
-			$stmt = DB::getInstance()->prepare("INSERT INTO crawl_cycle (crawl_date) VALUES (NOW())");
-			$stmt->execute();
+			$stmt = DB::getInstance()->prepare("INSERT INTO crawl_cycle (crawl_date) VALUES (NOW()-INTERVAL ? MINUTE)");
+			$stmt->execute(array($minuteOffset));
 			return DB::getInstance()->lastInsertId();
 		} catch(PDOException $e) {
 			echo $e->getMessage();
