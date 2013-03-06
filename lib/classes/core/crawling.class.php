@@ -297,7 +297,7 @@ class Crawling {
 	public function getLastEndedCrawlCycle() {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_cycle ORDER BY id desc LIMIT 1,1");
-			$stmt->execute(array($history_start, $history_end));
+			$stmt->execute();
 			return $stmt->fetch();
 		} catch(PDOException $e) {
 			echo $e->getMessage();
@@ -313,7 +313,7 @@ class Crawling {
 								SELECT max( id )
 								FROM crawl_cycle AS t2
 							    )");
-			$stmt->execute(array($history_start, $history_end));
+			$stmt->execute();
 			return $stmt->fetch();
 		} catch(PDOException $e) {
 			echo $e->getMessage();
