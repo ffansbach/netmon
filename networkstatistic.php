@@ -113,7 +113,7 @@ if(!empty($last_ended_crawl_cycle)) {
 							    FROM crawl_routers
 							    WHERE crawl_cycle_id=? AND status='online' AND firmware_version=?");
 			$stmt->execute(array($last_ended_crawl_cycle['id'], $firmware_versions_count[$key]['firmware_version']));
-			$count = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$count = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		};
@@ -141,7 +141,7 @@ if(!empty($last_ended_crawl_cycle)) {
 							    FROM crawl_routers
 							    WHERE crawl_cycle_id=? AND status='online' AND nodewatcher_version=?");
 			$stmt->execute(array($last_ended_crawl_cycle['id'], $nodewatcher_versions_count[$key]['nodewatcher_version']));
-			$count = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$count = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		};
