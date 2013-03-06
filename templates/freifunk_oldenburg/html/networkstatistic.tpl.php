@@ -55,7 +55,7 @@
 {if !empty($last_ended_crawl_cycle)}
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 21%;">
-		<h2>Routers</h2>
+		<h2>Router</h2>
 		<table style="text-align: center; vertical-align: baseline; font-size: 2em; font-weight: bold;">
 			<tr>
 				<td style="width: 33%; color: #007B0F;" ><img src="/templates/{$template}/img/status_up_big.png" title="up - node is reachable" alt="up"/><br><a style="color: #007B0F;" href="./routerlist.php?where=crawl_routers.status&operator=%3D&value=online">{$router_status_online}</a></td>
@@ -143,7 +143,7 @@
 
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 47%;">
-	<h2>Router status History</h2>
+	<h2>Router</h2>
 	<script type="text/javascript">
 		fname='./rrdtool/databases/netmon_history_router_status.rrd';
 		html_graph_id="routers_status_graph"
@@ -157,7 +157,7 @@
 	<div id="routers_status_graph" style="width: 100%;"></div>
 	</div>
 	<div style="float:left; width: 53%;">
-	<h2>Historie der Verbundenen Clients</h2>
+	<h2>Clients</h2>
 	<script type="text/javascript">
 		fname='./rrdtool/databases/netmon_history_client_count.rrd';
 		html_graph_id="client_count_graph"
