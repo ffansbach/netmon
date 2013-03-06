@@ -3,6 +3,7 @@
 require_once('runtime.php');
 require_once('lib/classes/core/config.class.php');
 require_once('lib/classes/core/install.class.php');
+require_once('lib/classes/core/crawling.class.php');
 require_once 'lib/classes/extern/Zend/Mail.php';
 require_once 'lib/classes/extern/Zend/Mail/Transport/Smtp.php';
 
@@ -146,7 +147,11 @@ if ($GLOBALS['installed']) {
 		Config::writeConfigLine('hours_to_keep_mysql_crawl_data', 5);
 		Config::writeConfigLine('hours_to_keep_history_table', 72);
 		Config::writeConfigLine('crawl_cycle_length_in_minutes', 10);
-		
+
+		//create an initial crawl cycle
+		$crawl_cycle_id = Crawling::newCrawlCycle();
+		Crawling::closeCrawlCycle($crawl_cycle_id);
+		Crawling::organizeCrawlCycles();
 		header('Location: ./install.php?section=finish');
 	}
 } elseif ($_GET['section']=="finish") {

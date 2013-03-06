@@ -40,7 +40,7 @@ class RoutersNotAssigned {
 		$rows = array();
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM routers_not_assigned");
-			$stmt->execute(array($router_auto_assign_login_string));
+			$stmt->execute();
 			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();

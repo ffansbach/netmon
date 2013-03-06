@@ -12,18 +12,16 @@ class Crawling {
 		//Get last ended crawl cycle
 		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 
-		if(strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
-			//Initialise new crawl cycle before closing old crawl cycle
+		//if no crawl cycle has been created until now or
+		//if its time to create a new crawl cycle
+		if(empty($actual_crawl_cycle) OR strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
+			//Initialise new crawl cycle
 			Crawling::newCrawlCycle();
-
+		}
+		
+		if(!empty($actual_crawl_cycle) AND strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
 			//Close old Crawl cycle
-			try {
-				$stmt = DB::getInstance()->prepare("UPDATE crawl_cycle SET crawl_date_end = NOW() WHERE id=?");
-				$stmt->execute(array($actual_crawl_cycle['id']));
-			} catch(PDOException $e) {
-				echo $e->getMessage();
-				echo $e->getTraceAsString();
-			}
+			Crawling::closeCrawlCycle($actual_crawl_cycle['id']);
 
 			//Set all routers in old crawl cycle that have not been crawled yet to status offline
 			$routers = Router::getRouters();
@@ -48,15 +46,23 @@ class Crawling {
 	}
 
 	public function newCrawlCycle() {
-		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-		if(strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
-			try {
-				$stmt = DB::getInstance()->prepare("INSERT INTO crawl_cycle (crawl_date) VALUES (NOW())");
-				$stmt->execute();
-			} catch(PDOException $e) {
-				echo $e->getMessage();
-				echo $e->getTraceAsString();
-			}
+		try {
+			$stmt = DB::getInstance()->prepare("INSERT INTO crawl_cycle (crawl_date) VALUES (NOW())");
+			$stmt->execute();
+			return DB::getInstance()->lastInsertId();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+	}
+	
+	public function closeCrawlCycle($crawl_cycle_id) {
+		try {
+			$stmt = DB::getInstance()->prepare("UPDATE crawl_cycle SET crawl_date_end = NOW() WHERE id=?");
+			$stmt->execute(array($crawl_cycle_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 	}
 	
