@@ -24,6 +24,7 @@ if(!empty($last_ended_crawl_cycle)) {
 	
 	/**Get number of routers by chipset **/
 	$chipsets = Chipsets::getChipsets();
+	$router_chipsets = array();
 	foreach ($chipsets as $key=>$chipset) {
 		$router_chipsets[$key]['chipset_id'] = $chipset['id'];
 		$router_chipsets[$key]['chipset_name'] = $chipset['name'];
@@ -35,146 +36,117 @@ if(!empty($last_ended_crawl_cycle)) {
 
 	/**Get number of routers by batman advanced version **/
 	try {
-		$sql = "SELECT  batman_advanced_version 
-				FROM crawl_routers
-			WHERE crawl_cycle_id=$last_ended_crawl_cycle[id]
-			GROUP BY batman_advanced_version";
-		$result = DB::getInstance()->query($sql);
-		foreach($result as $row) {
-			if(!empty($row['batman_advanced_version'])) {
-				$batman_advanced_versions[] = $row;
-			}
-		}
-	}
-	catch(PDOException $e) {
+		$stmt = DB::getInstance()->prepare("SELECT  batman_advanced_version 
+						    FROM crawl_routers
+						    WHERE crawl_cycle_id=?
+						    GROUP BY batman_advanced_version");
+		$stmt->execute(array($last_ended_crawl_cycle['id']));
+		$batman_advanced_versions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	} catch(PDOException $e) {
 		echo $e->getMessage();
-	}
+	};
 
+	$batman_advanced_versions_count = array();
 	foreach($batman_advanced_versions as $key=>$batman_advanced_version) {
 		$batman_advanced_versions_count[$key]['batman_advanced_version'] = $batman_advanced_version['batman_advanced_version'];
 
 		try {
-			$sql = "SELECT  COUNT(*) as count
-					FROM crawl_routers
-				WHERE crawl_cycle_id=$last_ended_crawl_cycle[id] AND status='online' AND batman_advanced_version='".$batman_advanced_versions_count[$key]['batman_advanced_version']."'";
-			$result = DB::getInstance()->query($sql);
-			$count = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  COUNT(*) as count
+							    FROM crawl_routers
+							    WHERE crawl_cycle_id=? AND status='online' AND batman_advanced_version=?");
+			$stmt->execute(array($last_ended_crawl_cycle['id'], $batman_advanced_versions_count[$key]['batman_advanced_version']));
+			$count = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
-		}
-
+		};
 		$batman_advanced_versions_count[$key]['count'] = $count['count'];
 	}
-
 	$smarty->assign('batman_advanced_versions_count', $batman_advanced_versions_count);
 
 	/**Get number of routers by kernel version **/
 	try {
-		$sql = "SELECT  kernel_version 
-				FROM crawl_routers
-			WHERE crawl_cycle_id=$last_ended_crawl_cycle[id]
-			GROUP BY kernel_version";
-		$result = DB::getInstance()->query($sql);
-		foreach($result as $row) {
-			if(!empty($row['kernel_version'])) {
-				$kernel_versions[] = $row;
-			}
-		}
-	}
-	catch(PDOException $e) {
+		$stmt = DB::getInstance()->prepare("SELECT  kernel_version 
+						    FROM crawl_routers
+						    WHERE crawl_cycle_id=$last_ended_crawl_cycle[id]
+						    GROUP BY kernel_version");
+		$stmt->execute(array($last_ended_crawl_cycle['id']));
+		$kernel_versions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	} catch(PDOException $e) {
 		echo $e->getMessage();
-	}
+	};
 
+	$kernel_versions_count = array();
 	foreach($kernel_versions as $key=>$kernel_version) {
 		$kernel_versions_count[$key]['kernel_version'] = $kernel_version['kernel_version'];
 
 		try {
-			$sql = "SELECT  COUNT(*) as count
-					FROM crawl_routers
-				WHERE crawl_cycle_id=$last_ended_crawl_cycle[id] AND status='online' AND kernel_version='".$kernel_versions_count[$key]['kernel_version']."'";
-			$result = DB::getInstance()->query($sql);
-			$count = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  COUNT(*) as count
+							    FROM crawl_routers
+							    WHERE crawl_cycle_id=? AND status='online' AND kernel_version=?");
+			$stmt->execute(array($last_ended_crawl_cycle['id'], $kernel_versions_count[$key]['kernel_version']));
+			$count = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
-		}
-
+		};
 		$kernel_versions_count[$key]['count'] = $count['count'];
 	}
-
 	$smarty->assign('kernel_versions_count', $kernel_versions_count);
 
 	/**Get number of routers by firmware version **/
 	try {
-		$sql = "SELECT  firmware_version  
-				FROM crawl_routers
-			WHERE crawl_cycle_id=$last_ended_crawl_cycle[id]
-			GROUP BY firmware_version";
-		$result = DB::getInstance()->query($sql);
-		foreach($result as $row) {
-			if(!empty($row['firmware_version'])) {
-				$firmware_versions[] = $row;
-			}
-		}
-	}
-	catch(PDOException $e) {
+		$stmt = DB::getInstance()->prepare("SELECT  firmware_version  
+						    FROM crawl_routers
+						    WHERE crawl_cycle_id=?
+						    GROUP BY firmware_version");
+		$stmt->execute(array($last_ended_crawl_cycle['id']));
+		$firmware_versions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	} catch(PDOException $e) {
 		echo $e->getMessage();
-	}
+	};
 
+	$firmware_versions_count = array();
 	foreach($firmware_versions as $key=>$firmware_version) {
 		$firmware_versions_count[$key]['firmware_version'] = $firmware_version['firmware_version'];
 
 		try {
-			$sql = "SELECT  COUNT(*) as count
-					FROM crawl_routers
-				WHERE crawl_cycle_id=$last_ended_crawl_cycle[id] AND status='online' AND firmware_version='".$firmware_versions_count[$key]['firmware_version']."'";
-			$result = DB::getInstance()->query($sql);
-			$count = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  COUNT(*) as count
+							    FROM crawl_routers
+							    WHERE crawl_cycle_id=? AND status='online' AND firmware_version=?");
+			$stmt->execute(array($last_ended_crawl_cycle['id'], $firmware_versions_count[$key]['firmware_version']));
+			$count = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
-		}
-
+		};
 		$firmware_versions_count[$key]['count'] = $count['count'];
 	}
-
 	$smarty->assign('firmware_versions_count', $firmware_versions_count);
 
 	/**Get number of routers by nodewatcher version **/
 	try {
-		$sql = "SELECT  nodewatcher_version  
-				FROM crawl_routers
-			WHERE crawl_cycle_id=$last_ended_crawl_cycle[id]
-			GROUP BY nodewatcher_version";
-		$result = DB::getInstance()->query($sql);
-		foreach($result as $row) {
-			if(!empty($row['nodewatcher_version'])) {
-				$nodewatcher_versions[] = $row;
-			}
-		}
-	}
-	catch(PDOException $e) {
+		$stmt = DB::getInstance()->prepare("SELECT  nodewatcher_version  
+						    FROM crawl_routers
+						    WHERE crawl_cycle_id=?
+						    GROUP BY nodewatcher_version");
+		$stmt->execute(array($last_ended_crawl_cycle['id']));
+		$nodewatcher_versions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+	} catch(PDOException $e) {
 		echo $e->getMessage();
-	}
+	};
 
+	$nodewatcher_versions_count = array();
 	foreach($nodewatcher_versions as $key=>$nodewatcher_version) {
 		$nodewatcher_versions_count[$key]['nodewatcher_version'] = $nodewatcher_version['nodewatcher_version'];
-
 		try {
-			$sql = "SELECT  COUNT(*) as count
-					FROM crawl_routers
-				WHERE crawl_cycle_id=$last_ended_crawl_cycle[id] AND status='online' AND nodewatcher_version='".$nodewatcher_versions_count[$key]['nodewatcher_version']."'";
-			$result = DB::getInstance()->query($sql);
-			$count = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  COUNT(*) as count
+							    FROM crawl_routers
+							    WHERE crawl_cycle_id=? AND status='online' AND nodewatcher_version=?");
+			$stmt->execute(array($last_ended_crawl_cycle['id'], $nodewatcher_versions_count[$key]['nodewatcher_version']));
+			$count = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
-		}
-
+		};
 		$nodewatcher_versions_count[$key]['count'] = $count['count'];
 	}
-
 	$smarty->assign('nodewatcher_versions_count', $nodewatcher_versions_count);
 	
 	 //Count router statuses
