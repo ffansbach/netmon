@@ -17,9 +17,13 @@ class Crawling {
 			Crawling::newCrawlCycle();
 
 			//Close old Crawl cycle
-			$result = DB::getInstance()->exec("UPDATE crawl_cycle SET
-								  crawl_date_end = NOW()
-							   WHERE id = '$actual_crawl_cycle[id]'");
+			try {
+				$stmt = DB::getInstance()->prepare("UPDATE crawl_cycle SET crawl_date_end = NOW() WHERE id=?");
+				$stmt->execute(array($actual_crawl_cycle['id']));
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
 
 			//Set all routers in old crawl cycle that have not been crawled yet to status offline
 			$routers = Router::getRouters();
@@ -47,89 +51,63 @@ class Crawling {
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 		if(strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
 			try {
-				DB::getInstance()->exec("INSERT INTO crawl_cycle (crawl_date)
-								      VALUES (NOW());");
-			}
-			catch(PDOException $e) {
+				$stmt = DB::getInstance()->prepare("INSERT INTO crawl_cycle (crawl_date) VALUES (NOW())");
+				$stmt->execute();
+			} catch(PDOException $e) {
 				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 		}
 	}
 	
 	public function getCrawlCycleById($crawl_cycle_id) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_cycle
-					WHERE id=$crawl_cycle_id";
-			$result = DB::getInstance()->query($sql);
-			$count_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_cycle WHERE id=?");
+			$stmt->execute(array($crawl_cycle_id));
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $count_data;
+		return $rows;
 	}
 
 	public function getNextSmallerCrawlCycleById($crawl_cycle_id) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_cycle
-					WHERE id<$crawl_cycle_id
-					ORDER BY id DESC
-					LIMIT 1";
-			$result = DB::getInstance()->query($sql);
-			$count_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_cycle WHERE id<? ORDER BY id DESC LIMIT 1");
+			$stmt->execute(array($crawl_cycle_id));
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $count_data;
 	}
 
 	public function getNextBiggerCrawlCycleById($crawl_cycle_id) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_cycle
-					WHERE id>$crawl_cycle_id
-					ORDER BY id ASC
-					LIMIT 1";
-			$result = DB::getInstance()->query($sql);
-			$count_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_cycle WHERE id>? ORDER BY id ASC LIMIT 1");
+			$stmt->execute(array($crawl_cycle_id));
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $count_data;
 	}
-
-	public function deleteOldCrawlData($seconds) {
-		DB::getInstance()->exec("DELETE FROM crawl_cycle WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
-		DB::getInstance()->exec("DELETE FROM crawl_routers WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
-		DB::getInstance()->exec("DELETE FROM crawl_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
-		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
-		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_originators WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
-		DB::getInstance()->exec("DELETE FROM crawl_olsr WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
-		DB::getInstance()->exec("DELETE FROM crawl_services WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
-		DB::getInstance()->exec("DELETE FROM crawl_clients_count WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
-	}
-
+	
 	public function deleteOldCrawlDataExceptLastOnlineCrawl($seconds) {
 		//Get last online CrawlCycleId of every router
-		$last_online_crawl_cycle_ids = array();
 		try {
-			$sql = "SELECT crawl_cycle_id, router_id FROM 
-					(SELECT * FROM crawl_routers
-						WHERE crawl_routers.status='online'
-						ORDER BY crawl_cycle_id DESC)
-				AS s
-				GROUP BY router_id;";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$last_online_crawl_cycles[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT crawl_cycle_id, router_id FROM 
+							      (SELECT * FROM crawl_routers
+							       WHERE crawl_routers.status='online'
+							       ORDER BY crawl_cycle_id DESC)
+							     AS s
+							     GROUP BY router_id");
+			$stmt->execute();
+			$last_online_crawl_cycles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 
 		//Make an Where string that excludes the last online crawl cycles from query
@@ -140,42 +118,101 @@ class Crawling {
 			$except .= " AND crawl_cycle_id!=$last_online_crawl_cycle[crawl_cycle_id]";
 			$except_crawl_cycle_ids .= " AND id!=$last_online_crawl_cycle[crawl_cycle_id]";
 		}
-
-		DB::getInstance()->exec("DELETE FROM crawl_cycle WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except_crawl_cycle_ids");
-
-		DB::getInstance()->exec("DELETE FROM crawl_routers WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
-		DB::getInstance()->exec("DELETE FROM crawl_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
-		DB::getInstance()->exec("DELETE FROM crawl_ips WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
-		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
-		DB::getInstance()->exec("DELETE FROM crawl_batman_advanced_originators WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
-		DB::getInstance()->exec("DELETE FROM crawl_olsr WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
-		DB::getInstance()->exec("DELETE FROM crawl_clients_count WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds $except");
-
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_cycle WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except_crawl_cycle_ids");
+			$stmt->execute(array($seconds));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_routers WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except");
+			$stmt->execute(array($seconds));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except");
+			$stmt->execute(array($seconds));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_ips WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except");
+			$stmt->execute(array($seconds));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_batman_advanced_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except");
+			$stmt->execute(array($seconds));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_batman_advanced_originators WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except");
+			$stmt->execute(array($seconds));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_olsr WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except");
+			$stmt->execute(array($seconds));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_clients_count WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except");
+			$stmt->execute(array($seconds));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
 		//Normal delete
-		DB::getInstance()->exec("DELETE FROM crawl_services WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_services WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-?");
+			$stmt->execute(array($seconds));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
 	}
 
 	public function deleteOldHistoryData($seconds) {
-		DB::getInstance()->exec("DELETE FROM history WHERE UNIX_TIMESTAMP(create_date) < UNIX_TIMESTAMP(NOW())-$seconds");
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM history WHERE UNIX_TIMESTAMP(create_date) < UNIX_TIMESTAMP(NOW())-?");
+			$stmt->execute(array($seconds));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
 	}
 
 	//Returns true if router has already been crawled
 	public function checkIfRouterHasBeenCrawled($router_id, $crawl_cycle_id) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_routers
-					WHERE router_id='$router_id' AND crawl_cycle_id='$crawl_cycle_id'";
-			$result = DB::getInstance()->query($sql);
-			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  *
+							    FROM crawl_routers
+							    WHERE router_id=? AND crawl_cycle_id=?");
+			$stmt->execute(array($router_id, $crawl_cycle_id));
+			return $stmt->rowCount();
+		} catch(PDOException $e) {
 			echo $e->getMessage();
-		}
-
-		if(!empty($crawl_data)) {
-			return true;
-		} else {
-			return false;
 		}
 	}
 
@@ -224,12 +261,16 @@ class Crawling {
 
 			//insert data into the database
 			try {
-				DB::getInstance()->exec("INSERT INTO crawl_routers (router_id, crawl_cycle_id, crawl_date, status, ping, hostname, description, location, latitude, longitude, luciname, luciversion, distname, distversion, chipset, cpu, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, uptime, idletime, local_time, community_essid, community_nickname, community_email, community_prefix, batman_advanced_version, kernel_version, nodewatcher_version, firmware_version, firmware_revision, openwrt_core_revision, 	openwrt_feeds_packages_revision)
-							 VALUES ('$router_id', '$actual_crawl_cycle[id]', NOW(), '$crawl_data[status]', '$crawl_data[ping]', '$crawl_data[hostname]', '$crawl_data[description]', '$crawl_data[location]', '$crawl_data[latitude]', '$crawl_data[longitude]', '$crawl_data[luciname]', '$crawl_data[luciversion]', '$crawl_data[distname]', '$crawl_data[distversion]', '$crawl_data[chipset]', '$crawl_data[cpu]', '$crawl_data[memory_total]', '$crawl_data[memory_caching]', '$crawl_data[memory_buffering]', '$crawl_data[memory_free]', '$crawl_data[loadavg]', '$crawl_data[processes]', '$crawl_data[uptime]', '$crawl_data[idletime]', '$crawl_data[local_time]', '$crawl_data[community_essid]', '$crawl_data[community_nickname]', '$crawl_data[community_email]', '$crawl_data[community_prefix]', '$crawl_data[batman_advanced_version]', '$crawl_data[kernel_version]', '$crawl_data[nodewatcher_version]', '$crawl_data[firmware_version]', '$crawl_data[firmware_revision]', '$crawl_data[openwrt_core_revision]', '$crawl_data[openwrt_feeds_packages_revision]')
-;");
-			}
-			catch(PDOException $e) {
+				$stmt = DB::getInstance()->prepare("INSERT INTO crawl_routers (router_id, crawl_cycle_id, crawl_date, status, ping, hostname, description, location, latitude, longitude, luciname, luciversion, distname, distversion, chipset, cpu, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, uptime, idletime, local_time, community_essid, community_nickname, community_email, community_prefix, batman_advanced_version, kernel_version, nodewatcher_version, firmware_version, firmware_revision, openwrt_core_revision, 	openwrt_feeds_packages_revision)
+								    VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				$stmt->execute(array($router_id, $actual_crawl_cycle['id'], $crawl_data['status'], $crawl_data['ping'], $crawl_data['hostname'], $crawl_data['description'], $crawl_data['location'],
+						     $crawl_data['latitude'], $crawl_data['longitude'], $crawl_data['luciname'], $crawl_data['luciversion'], $crawl_data['distname'], $crawl_data['distversion'], $crawl_data['chipset'],
+						     $crawl_data['cpu'], $crawl_data['memory_total'], $crawl_data['memory_caching'], $crawl_data['memory_buffering'], $crawl_data['memory_free'], $crawl_data['loadavg'],
+						     $crawl_data['processes'], $crawl_data['uptime'], $crawl_data['idletime'], $crawl_data['local_time'], $crawl_data['community_essid'], $crawl_data['community_nickname'], $crawl_data['community_email'], $crawl_data['community_prefix'], $crawl_data['batman_advanced_version'],
+						     $crawl_data['kernel_version'], $crawl_data['nodewatcher_version'], $crawl_data['firmware_version'], $crawl_data['firmware_revision'], $crawl_data['openwrt_core_revision'], $crawl_data['openwrt_feeds_packages_revision']));
+			} catch(PDOException $e) {
 				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 		}
 
@@ -241,57 +282,43 @@ class Crawling {
 
 	public function getCrawlCycleHistory($history_start, $history_end) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_cycle
-				WHERE crawl_date >= FROM_UNIXTIME($history_start) AND crawl_date <= FROM_UNIXTIME($history_end)
-				ORDER BY id desc";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$cycles[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  *
+							    FROM crawl_cycle
+							    WHERE crawl_date >= FROM_UNIXTIME(?) AND crawl_date <= FROM_UNIXTIME(?)
+							    ORDER BY id desc");
+			$stmt->execute(array($history_start, $history_end));
+			return $stmt->fetchAll();
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $cycles;
 	}
 
 	public function getLastEndedCrawlCycle() {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_cycle
-					ORDER BY id desc
-					LIMIT 1,1";
-			$result = DB::getInstance()->query($sql);
-			$count_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_cycle ORDER BY id desc LIMIT 1,1");
+			$stmt->execute(array($history_start, $history_end));
+			return $stmt->fetch();
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $count_data;
 	}
 
 	public function getActualCrawlCycle() {
 		try {
-			$sql = "SELECT *
-				FROM crawl_cycle AS t1
-				WHERE id = (
-						SELECT max( id )
-						FROM crawl_cycle AS t2
-					   )";
-			$result = DB::getInstance()->query($sql);
-			$count_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT *
+							    FROM crawl_cycle AS t1
+							    WHERE id = (
+								SELECT max( id )
+								FROM crawl_cycle AS t2
+							    )");
+			$stmt->execute(array($history_start, $history_end));
+			return $stmt->fetch();
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $count_data;
-	}
-
-	public function crawlRouter($crawl_data, $router_id) {
-
-
-
 	}
 }
 
