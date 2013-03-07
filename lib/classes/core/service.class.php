@@ -40,7 +40,7 @@ class Service {
 			$sql_add = '';
 		}
 
-		if ($user_id!=false) {
+		if ($user_id!=false AND is_numeric($user_id)) {
 			if ($sql_add=='') {
 				$sql_add.=' WHERE ';
 			} else {
@@ -49,7 +49,7 @@ class Service {
 			$sql_add.="routers.user_id='$user_id'";
 		}
 
-		if ($router_id!=false) {
+		if ($router_id!=false AND is_numeric($router_id)) {
 			if ($sql_add=='') {
 				$sql_add.=' WHERE ';
 			} else {
@@ -61,105 +61,58 @@ class Service {
 		$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		$servicelist = array();
 		try {
-			$sql = "SELECT  services.id as service_id, services.router_id, services.title, services.description, services.port, services.url_prefix, services.visible, services.notify, services.notification_wait, services.notified, services.last_notification, services.use_netmons_url, services.url, services.create_date,
-					routers.hostname, routers.user_id,
-					users.id as user_id, users.nickname,
-					crawl_routers.status as router_status
-					FROM services
-					LEFT JOIN routers on (routers.id=services.router_id)
-					LEFT JOIN users on (users.id=routers.user_id)
-					LEFT JOIN crawl_routers on (crawl_routers.crawl_cycle_id='$last_ended_crawl_cycle[id]' AND crawl_routers.router_id=services.router_id)
-				$sql_add";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $key=>$row) {
-				//Get ip addresses assigned to the service
-				$sql2 = "SELECT ips.ip, ips.ipv
-					FROM ips, service_ips
-					WHERE ips.id=service_ips.ip_id AND service_ips.service_id='$row[service_id]';";
-				$result2 = DB::getInstance()->query($sql2);
-				foreach($result2 as $key2=>$row2) {
-					$row['ips'][] = $row2;
-				}
-
-/*deprecated				$interfaces = Interfaces::getIPv4InterfacesByRouterId($row['router_id']);
-				if(!empty($interfaces)) {
-					$row['service_ipv4_addr'] = $interfaces[0]['ipv4_addr'];
-				}
-*/
-
-				$service_crawl = Service::getCrawlServiceByCrawlCycleId($last_ended_crawl_cycle['id'], $row['service_id']);
-				$row['service_status'] = $service_crawl['status'];
-				$row['service_status_crawled_ipv4_addr'] = $service_crawl['crawled_ipv4_addr'];
-				$row['service_status_crawl_date'] = $service_crawl['crawl_date'];
-
-/*
-				if(!empty($row['service_ipv4_addr']) AND !empty($row['url_prefix']) AND !empty($row['port'])) {
-					$row['combined_url_to_service'] = $row['url_prefix'].$interfaces[0]['ipv4_addr'].":".$row['port'];
-				}*/
-
-				$servicelist[] = $row;
+			$stmt = DB::getInstance()->prepare("SELECT  services.id as service_id, services.router_id, services.title, services.description, services.port, services.url_prefix, services.visible, services.notify, services.notification_wait, services.notified, services.last_notification, services.use_netmons_url, services.url, services.create_date,
+								    routers.hostname, routers.user_id,
+								    users.id as user_id, users.nickname,
+								    crawl_routers.status as router_status
+							    FROM services
+							    LEFT JOIN routers on (routers.id=services.router_id)
+							    LEFT JOIN users on (users.id=routers.user_id)
+							    LEFT JOIN crawl_routers on (crawl_routers.crawl_cycle_id=? AND crawl_routers.router_id=services.router_id)
+							    $sql_add");
+			$stmt->execute(array($last_ended_crawl_cycle['id']));
+			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		foreach($rows as $key=>$row) {
+			//Get ip addresses assigned to the service
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT ips.ip, ips.ipv
+								    FROM ips, service_ips
+								    WHERE ips.id=service_ips.ip_id AND service_ips.service_id=?");
+				$stmt->execute(array($row['service_id']));
+				$rows2 = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
 
-		return $servicelist;
-	}
-
-	public function getServiceListByUserId($user_id, $view) {
-		if($view=='public') {
-			$sql_add = 'AND services.visible=1';
-		} elseif($view=='all') {
-			$sql_add = '';
-		} else {
-			$sql_add = '';
-		}
-
-		$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-		$servicelist = array();
-		try {
-			$sql = "SELECT  services.id as service_id, services.router_id, services.title, services.description, services.port, services.url_prefix, services.visible, services.notify, services.notification_wait, services.notified, services.last_notification, services.use_netmons_url, services.url, services.create_date,
-					routers.hostname, routers.user_id,
-					users.id as user_id, users.nickname,
-					crawl_routers.status as router_status
-					FROM services
-					LEFT JOIN routers on (routers.id=services.router_id)
-					LEFT JOIN users on (users.id=routers.user_id)
-					LEFT JOIN crawl_routers on (crawl_routers.crawl_cycle_id='$last_ended_crawl_cycle[id]' AND crawl_routers.router_id=services.router_id)
-					WHERE routers.user_id='$user_id' $sql_add";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $key=>$row) {
-				$interfaces = Interfaces::getIPv4InterfacesByRouterId($row['router_id']);
-				if(!empty($interfaces) AND !empty($row['url_prefix']) AND !empty($row['port'])) {
-					$row['service_ipv4_addr'] = $interfaces[0]['ipv4_addr'];
-					$row['combined_url_to_service'] = $row['url_prefix'].$interfaces[0]['ipv4_addr'].":".$row['port'];
-					$service_crawl = Service::getCrawlServiceByCrawlCycleId($last_ended_crawl_cycle['id'], $row['service_id']);
-					$row['service_status'] = $service_crawl['status'];
-					$row['service_status_crawled_ipv4_addr'] = $service_crawl['crawled_ipv4_addr'];
-				}
-
-				$servicelist[] = $row;
+			foreach($rows2 as $key2=>$row2) {
+				$row['ips'][] = $row2;
 			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
+			
+			$service_crawl = Service::getCrawlServiceByCrawlCycleId($last_ended_crawl_cycle['id'], $row['service_id']);
+			$row['service_status'] = $service_crawl['status'];
+			$row['service_status_crawled_ipv4_addr'] = $service_crawl['crawled_ipv4_addr'];
+			$row['service_status_crawl_date'] = $service_crawl['crawl_date'];
+			
+			$servicelist[] = $row;
 		}
 		return $servicelist;
 	}
 
 	public function getServiceByServiceId($service_id) {
 		try {
-			$sql = "SELECT  *
-					FROM services
-					WHERE id='$service_id'";
-			$result = DB::getInstance()->query($sql);
-			$service_data = $result->fetch(PDO::FETCH_ASSOC);
+			$stmt = DB::getInstance()->prepare("SELECT * FROM services WHERE id=?");
+			$stmt->execute(array($service_id));
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $service_data;
 	}
 
 	public function getServicesByRouterId($router_id, $view) {
@@ -171,117 +124,48 @@ class Service {
 			$sql_add = '';
 		}
 
-		$servicelist = array();
 		try {
-			$sql = "SELECT  *
-					FROM services
-					WHERE router_id='$router_id' $sql_add";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$servicelist[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-		  echo $e->getMessage();
-		}
-		return $servicelist;
-	}
-
-	public function insertEditService($service_id, $typ, $crawler, $title, $description, $visible, $notify, $notification_wait, $use_netmons_url, $url) {
-		DB::getInstance()->exec("UPDATE services SET
-										title = '$title',
-										description = '$description',
-										typ = '$typ',
-										crawler = '$crawler',
-										visible = '$visible',
-										notify = '$notify',
-										notification_wait = '$notification_wait',
-										use_netmons_url = '$use_netmons_url',
-										url = '$url'
-								WHERE id = '$service_id'");
-		
-		$message[] = array("Der Service mit der ID ".$service_id." wurde geändert.", 1);
-		Message::setMessage($message);
-		return array("result"=>true, "service_id"=>$service_id);
-	}
-
-	public function deleteService($service_id, $force=false) {
-		if ($_POST['delete']=="true") {
-
-			$service_data = Helper::getServiceDataByServiceId($service_id);
-			if(count(Helper::getServicesByIpId($service_data['ip_id']))<2 AND !$force) {
-				$link1 = "<a href=\"./serviceeditor.php?section=new&ip_id=$service_data[ip_id]\">hier</a>";
-				$link2 = "<a href=\"./ipeditor.php?section=edit&id=$service_data[ip_id]\">hier</a>";
-				$message[] = array("Sie können diesen Service nicht löschen da eine IP durch mindestens einen Service spezifiziert werden muss.<br>"
-									."Um einen 2. Service zu erstellen klicken Sie bitte $link1<br>"
-									."Um die IP zu komplett zu löschen, klicken Sie bitte $link2", 2);
-				Message::setMessage($message);
-				return false;
-			} else {
-				DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
-				$message[] = array("Der Service mit der ID ".$service_id." wurde gelöscht.",1);
-				
-				DB::getInstance()->exec("DELETE FROM crawl_services WHERE service_id='$service_id';");
-				$message[] = array("Die Crawl-Daten des Service mit der ID ".$service_id." wurden gelöscht.",1);
-
-				DB::getInstance()->exec("DELETE FROM history WHERE object='service' AND object_id='$service_id';");
-				$message[] = array("Die History-Daten des Service mit der ID ".$service_id." wurden gelöscht.",1);
-				
-				Message::setMessage($message);
-				return true;
-			}
-		} else {
-			$message[] = array("Zum löschen des Services bitte das Häckchen bei \"Ja\" setzen.",2);
-
-			Message::setMessage($message);
-			return false;
+			$stmt = DB::getInstance()->prepare("SELECT * FROM services WHERE router_id=? $sql_add");
+			$stmt->execute(array($router_id));
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 	}
-
+	
 	public function insertCrawl($service_id, $status, $crawled_ipv4_addr, $crawl_cycle=array()) {
 		if (empty($crawl_cycle)) {
 			$crawl_cycle = Crawling::getActualCrawlCycle();
 		}
 
 		//Check if interface has already been crawled in current crawl cycle
-		try {
-			$sql = "SELECT *
-        			FROM  crawl_services
-				WHERE service_id='$service_id' AND crawl_cycle_id='$crawl_cycle[id]'";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$crawl_service[] = $row;
-			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
+		$crawl_service = Service::getCrawlServiceByCrawlCycleId($service_id, $crawl_cycle['id']);
 		
 		//Make DB insert if service has not been crawled in current crawl cycle
 		if(empty($crawl_service)) {
-			//Make DB Insert
 			try {
-				DB::getInstance()->exec("INSERT INTO crawl_services (service_id, crawl_cycle_id, crawl_date, status, crawled_ipv4_addr)
-							 VALUES ('$service_id', '$crawl_cycle[id]', NOW(), '$status', '$crawled_ipv4_addr');");
-			}
-			catch(PDOException $e) {
+				$stmt = DB::getInstance()->prepare("INSERT INTO crawl_services (service_id, crawl_cycle_id, crawl_date, status, crawled_ipv4_addr)
+								    VALUES (?, ?, NOW(), ?, ?");
+				$stmt->execute(array($service_id, $crawl_cycle['id'], $status, $crawled_ipv4_addr));
+			} catch(PDOException $e) {
 				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 		}
 	}
 
 	public function getCrawlServiceByCrawlCycleId($crawl_cycle_id, $service_id) {
 		try {
-			$sql = "SELECT  *
-					FROM crawl_services
-					WHERE service_id='$service_id' AND crawl_cycle_id='$crawl_cycle_id'";
-			$result = DB::getInstance()->query($sql);
-			$crawl_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT  *
+							    FROM crawl_services
+							    WHERE service_id=? AND crawl_cycle_id=?");
+			$stmt->execute(array($service_id, $crawl_cycle_id));
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $crawl_data;
 	}
 }
 ?>

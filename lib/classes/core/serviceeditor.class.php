@@ -111,6 +111,22 @@ class ServiceEditor {
 			echo $e->getTraceAsString();
 		}
 		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_services WHERE service_id=?");
+			$stmt->execute(array($service_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM history WHERE object='service' AND object_id=?");
+			$stmt->execute(array($service_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
 		$message[] = array("Der Service $service_data[title] wurde entfernt.",1);
 		Message::setMessage($message);
 		return true;
