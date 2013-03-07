@@ -108,7 +108,7 @@ class Router {
 	
 	public function getCrawlRoutersByCrawlCycleId($crawl_cycle_id) {
 		try {
-			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_routers WHERE crawl_cycle_id=?");
+			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_routers WHERE crawl_cycle_id=? ORDER BY status ASC");
 			$stmt->execute(array($crawl_cycle_id));
 			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
@@ -372,11 +372,11 @@ class Router {
 							    LEFT JOIN routers on (routers.id=crawl_interfaces.router_id)
 							    WHERE crawl_interfaces.crawl_cycle_id=? AND crawl_interfaces.mac_addr=?");
 			$stmt->execute(array($crawl_cycle_id, $mac_addr));
-			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 			echo $e->getTraceAsString();
-		}
+		}		
 		return $rows;
 	}
 
@@ -609,6 +609,6 @@ class Router {
 		$rows['add_small_exists'] = file_exists("./data/adds/".$router_id."_add_small.jpg");
 		$rows['add_big_exists'] = file_exists("./data/adds/".$router_id."_add_big.jpg");
 
-		return $data;
+		return $rows;
 	}
 }

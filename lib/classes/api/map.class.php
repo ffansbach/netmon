@@ -379,95 +379,74 @@ class ApiMap {
 						}
 						
 						if($do) {
-
 							//Make B.A.T.M.A.N advanced informaions
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
 									$xw->writeRaw("<![CDATA[Router <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
-										$box_inhalt = "<b>Status:</b> $crawl_router[status]<br>
-										<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>
-												   <b>Clients:</b> ".$client_count."<br>
-												   <b>Benutzer:</b> <a href='./user.php?user_id=$router_data[user_id]'>$router_data[nickname]</a><br>";
-												   if(!empty($location)) {
-													   $box_inhalt .= "<b>Standortbeschreibung:</b> $location<br>";
-												   }
-												   $box_inhalt .= "<b>Letztes Update:</b> ".date("d.m.Y H:i", strtotime($crawl_router['crawl_date']))." Uhr <br><br>";
+										$box_inhalt  = "<b>Status:</b> $crawl_router[status]<br>";
+										$box_inhalt .= "<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>";
+										$box_inhalt .= "<b>Clients:</b> ".$client_count."<br>";
+										$box_inhalt .= "<b>Benutzer:</b> <a href='./user.php?user_id=$router_data[user_id]'>$router_data[nickname]</a><br>";
+										if(!empty($location)) {
+											   $box_inhalt .= "<b>Standortbeschreibung:</b> $location<br>";
+										}
+										$box_inhalt .= "<b>Letztes Update:</b> ".date("d.m.Y H:i", strtotime($crawl_router['crawl_date']))." Uhr <br><br>";
 										if(isset($add_data['adds_allowed']) AND $add_data['adds_allowed']==1 AND $add_data['add_small_exists']) {
 											$box_inhalt .= "<b>Sponsored by:</b><br><img src=\"./data/adds/".$router_data['router_id']."_add_small.jpg\">";
 										}
-
-
-$box_inhalt .= "<h3>Nachbarn</h3>";
-		if(!empty($batman_adv_originators)) {
-$box_inhalt .= '			<table>
-				<thead>
-					<tr>
-						<th>Originator</th>
-						<th>Last Seen</th>
-						<th>Quality</th>
-						<th>Nexthop</th>
-						<th>Outgoing Interface</th>
-					</tr>
-				</thead>
-				<tbody>';
-					foreach ($batman_adv_originators as $originators) {
-$box_inhalt .= '					<tr style="background-color:';
-if($originators['link_quality'] >= 0 AND $originators['link_quality'] < 105) {
-$box_inhalt .= '#ff1e1e';
-} elseif($originators['link_quality'] >= 105 AND $originators['link_quality'] < 130) {
-$box_inhalt .= '#ff4949';
-} elseif($originators['link_quality'] >= 130 AND $originators['link_quality'] < 155) {
-$box_inhalt .= '#ff6a6a';
-} elseif($originators['link_quality'] >= 155 AND $originators['link_quality'] < 180) {
-$box_inhalt .= '#ffac53';
-} elseif($originators['link_quality'] >= 180 AND $originators['link_quality'] < 205) {
-$box_inhalt .= '#ffeb79';
-} elseif($originators['link_quality'] >= 205 AND $originators['link_quality'] < 230) {
-$box_inhalt .= '#79ff7c';
-} elseif($originators['link_quality'] >= 230) {
-$box_inhalt .= '#04ff0a';
-};
-$box_inhalt .= "\">
-							<td><a href=\"search.php?search_range=mac_addr&search_string=$originators[originator]\">$originators[originator]</a></td>
-							<td>$originators[last_seen]</td>
-							<td>$originators[link_quality]</td>
-							<td>$originators[nexthop]</td>
-							<td>$originators[outgoing_interface]</td>
-						</tr>";
-					}
-$box_inhalt .= '			</tbody>
-			</table>';
-		} else {
-$box_inhalt .= '	<p>Keine Originators gefunden</p>';
-		}
-
-
-
-
-
+										$box_inhalt .= "<h3>Nachbarn</h3>";
+										if(!empty($batman_adv_originators)) {
+											$box_inhalt .= "<table>";
+											$box_inhalt .= 		"<thead>";
+											$box_inhalt .= 			"<tr>";
+											$box_inhalt .= 				"<th>Originator</th>";
+											$box_inhalt .= 				"<th>Last Seen</th>";
+											$box_inhalt .= 				"<th>Quality</th>";
+											$box_inhalt .= 				"<th>Nexthop</th>";
+											$box_inhalt .= 				"<th>Outgoing Interface</th>";
+											$box_inhalt .= 			"</tr>";
+											$box_inhalt .= 		"</thead>";
+											$box_inhalt .= "<tbody>";
+											foreach ($batman_adv_originators as $originators) {
+												$box_inhalt .= '<tr style="background-color:';
+												if($originators['link_quality'] >= 0 AND $originators['link_quality'] < 105) {
+													$box_inhalt .= '#ff1e1e';
+												} elseif($originators['link_quality'] >= 105 AND $originators['link_quality'] < 130) {
+													$box_inhalt .= '#ff4949';
+												} elseif($originators['link_quality'] >= 130 AND $originators['link_quality'] < 155) {
+													$box_inhalt .= '#ff6a6a';
+												} elseif($originators['link_quality'] >= 155 AND $originators['link_quality'] < 180) {
+													$box_inhalt .= '#ffac53';
+												} elseif($originators['link_quality'] >= 180 AND $originators['link_quality'] < 205) {
+													$box_inhalt .= '#ffeb79';
+												} elseif($originators['link_quality'] >= 205 AND $originators['link_quality'] < 230) {
+													$box_inhalt .= '#79ff7c';
+												} elseif($originators['link_quality'] >= 230) {
+													$box_inhalt .= '#04ff0a';
+												}
+												$box_inhalt .= "\">";
+												$box_inhalt .= "<td><a href=\"search.php?search_range=mac_addr&search_string=$originators[originator]\">$originators[originator]</a></td>";
+												$box_inhalt .= "<td>$originators[last_seen]</td>";
+												$box_inhalt .= "<td>$originators[link_quality]</td>";
+												$box_inhalt .= "<td>$originators[nexthop]</td>";
+												$box_inhalt .= "<td>$originators[outgoing_interface]</td>";
+												$box_inhalt .= "</tr>";
+											}
+											$box_inhalt .= "</tbody>";
+											$box_inhalt .= "</table>";
+										} else {
+											$box_inhalt .= '	<p>Keine Originators gefunden</p>';
+										}
+										
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 								$xw->endElement();
 								$xw->startElement('styleUrl');
 									if(isset($_GET['highlight_router_id']) AND $_GET['highlight_router_id']==$router_data['router_id']) {
 										$xw->writeRaw('#sh_blue-pushpin');
 									} elseif($crawl_router['status']=='online') {
-	$xw->writeRaw('#sh_green-pushpin');
-/*if($traffic<40)
-	$xw->writeRaw('#sh_green-pushpin-1');
-elseif($traffic<80)
-	$xw->writeRaw('#sh_green-pushpin-2');
-elseif($traffic<120)
-	$xw->writeRaw('#sh_green-pushpin-3');
-elseif($traffic<160)
-	$xw->writeRaw('#sh_green-pushpin-3');
-elseif($traffic<200)
-	$xw->writeRaw('#sh_green-pushpin-4');
-elseif($traffic<240)
-	$xw->writeRaw('#sh_green-pushpin-5');
-else
-	$xw->writeRaw('#sh_green-pushpin-6');*/
+										$xw->writeRaw('#sh_green-pushpin');
 									} elseif($crawl_router['status']=='offline') {
 										$xw->writeRaw('#sh_red-pushpin');
 									} elseif($crawl_router['status']=='unknown') {
