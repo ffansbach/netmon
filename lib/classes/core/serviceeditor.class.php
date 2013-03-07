@@ -33,28 +33,33 @@ require_once 'lib/classes/core/service.class.php';
 class ServiceEditor {
 	public function addService($router_id, $title, $description, $ip_addresses, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {
 		//Create service in the database
-		DB::getInstance()->exec("INSERT INTO services (router_id, title, description, port, url_prefix, visible, notify, notification_wait, use_netmons_url, url, create_date)
-					 VALUES ('$router_id', '$title', '$description', '$port', '$url_prefix', '$visible', '$notify', '$notification_wait', '$use_netmons_url', '$url', NOW());");
-		$service_id = DB::getInstance()->lastInsertId();
+		try {
+			$stmt = DB::getInstance()->prepare("INSERT INTO services (router_id, title, description, port, url_prefix, visible, notify, notification_wait, use_netmons_url, url, create_date)
+							    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+			$stmt->execute(array($router_id, $title, $description, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url, $url));
+			$service_id = DB::getInstance()->lastInsertId();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
 
 		//Link selected ip addresses to the service
 		foreach($ip_addresses as $ip_id) {
-			DB::getInstance()->exec("INSERT INTO service_ips (service_id, ip_id)
-						VALUES ('$service_id', '$ip_id');");
+			try {
+				$stmt = DB::getInstance()->prepare("INSERT INTO service_ips (service_id, ip_id) VALUES (?, ?)");
+				$stmt->execute(array($service_id, $ip_id));
+				$service_id = DB::getInstance()->lastInsertId();
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
 		}
-
+		
 		//Create first crawl entry for the service with status unknown
 		$crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		Service::insertCrawl($service_id, "unknown", "", $crawl_cycle);
 
-		try {
-			$sql = "select hostname FROM routers WHERE id='$router_id'";
-			$result = DB::getInstance()->query($sql);
-			$router_data = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
+		$router_data = Router::getRouterByIpId($router_id);		
 		$message[] = array("Ein Service auf Port $port wurde dem Router $router_data[hostname] hinzugefügt.",1);
 		Message::setMessage($message);
 		
@@ -63,18 +68,25 @@ class ServiceEditor {
 
 	public function insertEditService($service_id, $title, $description, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url, $url) {
 		$service_data = Service::getServiceByServiceId($service_id);
-
-		$result = DB::getInstance()->exec("UPDATE services SET
-							title='$title',
-							description='$description',
-							port='$port',
-							url_prefix='$url_prefix',
-							visible='$visible',
-							notify='$notify',
-							notification_wait='$notification_wait',
-							use_netmons_url='$use_netmons_url',
-							url='$url'
-						WHERE id = '$service_id'");
+		
+		try {
+			$stmt = DB::getInstance()->prepare("UPDATE services SET
+							title=?,
+							description=?,
+							port=?,
+							url_prefix=?,
+							visible=?,
+							notify=?,
+							notification_wait=?,
+							use_netmons_url=?,
+							url=?
+						WHERE id = ?");
+			$stmt->execute(array($title, $description, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url, $url, $service_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
 
 		if ($result>0) {
 			$message[] = array("Der Dienst $title wurde geändert",1);
@@ -92,12 +104,13 @@ class ServiceEditor {
 
 		//Delete Service
 		try {
-			DB::getInstance()->exec("DELETE FROM services WHERE id='$service_id';");
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("DELETE FROM services WHERE id=?");
+			$stmt->execute(array($service_id));
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-
+		
 		$message[] = array("Der Service $service_data[title] wurde entfernt.",1);
 		Message::setMessage($message);
 		return true;
