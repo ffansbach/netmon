@@ -1,6 +1,6 @@
 <?php
 class Olsr {
-	public function insertOlsrData($crawl_id, $service_id, $current_crawl_data) {
+/*	public function insertOlsrData($crawl_id, $service_id, $current_crawl_data) {
 		try {
 			DB::getInstance()->exec("INSERT INTO olsr_crawl_data (crawl_id, olsrd_hna, olsrd_neighbors, olsrd_links, olsrd_mid, olsrd_routes, olsrd_topology)
 						VALUES ('$crawl_id', '$current_crawl_data[olsrd_hna]', '$current_crawl_data[olsrd_neighbors]', '$current_crawl_data[olsrd_links]', '$current_crawl_data[olsrd_mid]', '$current_crawl_data[olsrd_routes]', '$current_crawl_data[olsrd_topology]');");
@@ -23,7 +23,7 @@ class Olsr {
 			echo $e->getMessage();
 		}
 		return $data;
-	}
+	}*/
 
 	public function getCurrentlyEstablishedOLSRConnections($crawl_id) {
 		$olsrd_data = Olsr::getOlsrCrawlDataByCrawlId($crawl_id);

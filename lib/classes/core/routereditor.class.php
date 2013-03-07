@@ -191,7 +191,7 @@ class RouterEditor {
 
 	public function insertDeleteRouter($router_id) {
 		$router_data=Router::getRouterInfo($router_id);
-
+		
 		//Delete all Interfaces of the router
 		$interfaces = Interfaces::getInterfacesByRouterId($router_id);
 		foreach($interfaces as $interface) {
@@ -204,6 +204,66 @@ class RouterEditor {
 			ServiceEditor::deleteService($service['id']);
 		}
 
+		//Delete all crawl data of the router
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_batman_advanced_interfaces WHERE router_id=?");
+			$stmt->execute(array($router_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_batman_advanced_originators WHERE router_id=?");
+			$stmt->execute(array($router_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_clients_count WHERE router_id=?");
+			$stmt->execute(array($router_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_interfaces WHERE router_id=?");
+			$stmt->execute(array($router_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_olsr WHERE router_id=?");
+			$stmt->execute(array($router_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_routers WHERE router_id=?");
+			$stmt->execute(array($router_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		//delete other data assigned to the router
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM variable_splash_clients WHERE router_id=?");
+			$stmt->execute(array($router_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM router_adds WHERE router_id=?");
+			$stmt->execute(array($router_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
 		//Delete the router itself
 		try {
 			$stmt = DB::getInstance()->prepare("DELETE FROM routers WHERE id=?");
