@@ -14,15 +14,9 @@ if(!empty($_SERVER['REMOTE_ADDR'])) {
 }
 
 require_once('runtime.php');
-require_once('lib/classes/core/helper.class.php');
 require_once('lib/classes/core/interfaces.class.php');
-require_once('lib/classes/core/project.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/api/crawl.class.php');
-
-require_once('lib/classes/core/service.class.php');
-require_once('lib/classes/core/crawling.class.php');
-require_once('lib/classes/core/rrdtool.class.php');
 
 class IntegratedXmlIPv6Crawler {
 	public function simplexml2array($xml) {

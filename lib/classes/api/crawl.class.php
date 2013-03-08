@@ -20,14 +20,15 @@ class Crawl {
 
 		$last_crawl_cycle = Crawling::getActualCrawlCycle();
 		$router_has_been_crawled = Crawling::checkIfRouterHasBeenCrawled($data['router_id'], $last_crawl_cycle['id']);
-
 		if(!$router_has_been_crawled) {
 			/**Insert Router System Data*/
 			Crawling::insertRouterCrawl($data['router_id'], $data['system_data']);
 			//Update router memory rrd hostory
 			RrdTool::updateRouterMemoryHistory($data['router_id'], $data['system_data']['memory_free'], $data['system_data']['memory_caching'], $data['system_data']['memory_buffering']);
+			$processes = explode("/", $data['processes']);
+			RrdTool::updateRouterProcessHistory($data['router_id'], $processes[0], $processes[1]);
+			
 			//Check if Chipset is set right, if not create new chipset and assign to router
-
 			if( $router_data['chipset_name'] != $data['system_data']['chipset'] AND !empty($data['system_data']['chipset'])) {
 				$chipset = Chipsets::getChipsetByName($data['system_data']['chipset']);
 				if(empty($chipset)) {
