@@ -8,9 +8,13 @@
 <!-- rrdFlot class needs the following four include files !-->
 <script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlotSupport.js"></script>
 <script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlot.js"></script>
-<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.js"></script>
-<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.selection.js"></script>
+<!--<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.selection.js"></script>-->
 
+	<script language="javascript" type="text/javascript" src="lib/classes/extern/flot/jquery.js"></script>
+	<script language="javascript" type="text/javascript" src="lib/classes/extern/flot/jquery.flot.js"></script>
+	<script language="javascript" type="text/javascript" src="lib/classes/extern/flot/jquery.flot.pie.js"></script>
+	<script language="javascript" type="text/javascript" src="lib/classes/extern/flot/jquery.flot.selection.js"></script>
 {literal}
 <script type="text/javascript">
 	// This function updates the Web Page with the data from the RRD archive header
@@ -49,7 +53,266 @@
 		}
 	}
 </script>
-{/literal}
+<script type="text/javascript">
+		$(function() {
+			var placeholder = $("#chipset_chart");
+			
+			var data = [
+				{/literal}{foreach item=router_chipset from=$router_chipsets key=i}{literal}
+					{ label: "{/literal}{if !empty($router_chipset.hardware_name)}{$router_chipset.hardware_name}{else}{$router_chipset.chipset_name}{/if}{literal}",
+					data: {/literal}{$router_chipset.count}{literal}},
+				{/literal}{/foreach}{literal}
+			];
+			
+			$.plot(placeholder, data, {
+				series: {
+					pie: { 
+						show: true,
+						radius: 0.6,
+						label: {
+							show: true,
+							radius: 0.4,
+							threshold: 0.15,
+							formatter: labelFormatter,
+						}
+					}
+				},
+				grid: {
+					hoverable: true,
+					clickable: true
+				},
+				legend: {
+					show: true,
+					labelFormatter: legendFormatter,
+					noColumns: 1
+				}
+			});
+			
+			placeholder.bind("plothover", function(event, pos, obj) {
+				if (!obj) {
+					return;
+				}
+
+				var percent = parseFloat(obj.series.percent).toFixed(2);
+				$("#hover").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + percent + "%)</span>");
+			});
+
+			placeholder.bind("plotclick", function(event, pos, obj) {
+				if (!obj) {
+					return;
+				}
+				
+				var win=window.open('./routerlist.php?where=crawl_routers.chipset&operator=%3D&value='+obj.series.chipset_name, '_blank');
+				win.focus();
+			});
+		});
+		
+		function labelFormatter(label, series) {
+			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
+		}
+    </script>
+    
+    <script type="text/javascript">
+		$(function() {
+			var placeholder = $("#firmwareversions_chart");
+			
+			var data = [
+				{/literal}{foreach item=firmware_version_count from=$firmware_versions_count key=i}{literal}
+					{ label: "{/literal}{$firmware_version_count.firmware_version}{literal}",
+					data: {/literal}{$firmware_version_count.count}{literal},
+					color: '{/literal}#{dechex(hexdec(16e211)+$i*10)}{literal}'},
+				{/literal}{/foreach}{literal}
+			];
+			
+			$.plot(placeholder, data, {
+				series: {
+					pie: { 
+						show: true,
+						radius: 0.6,
+						label: {
+							show: true,
+							radius: 0.4,
+							threshold: 0.10,
+							formatter: labelFormatter,
+						}
+					}
+				},
+				grid: {
+					hoverable: true,
+					clickable: true
+				},
+				legend: {
+					show: true,
+					labelFormatter: function(label, series) {
+			return label.substr(0,17)+"...";
+		},
+					noColumns: 1
+				}
+			});
+			
+			placeholder.bind("plothover", function(event, pos, obj) {
+				if (!obj) {
+					return;
+				}
+
+				var percent = parseFloat(obj.series.percent).toFixed(2);
+				$("#hover").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + percent + "%)</span>");
+			});
+
+			placeholder.bind("plotclick", function(event, pos, obj) {
+				if (!obj) {
+					return;
+				}
+				
+				var win=window.open('./routerlist.php?where=crawl_routers.firmware_version&operator=%3D&value='+obj.series.label, '_blank');
+				win.focus();
+			});
+		});
+		
+		function labelFormatter(label, series) {
+			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
+		}
+		
+		function legendFormatter(label, series) {
+			return label.substr(0,10) ;
+		}
+    </script>
+    
+    <script type="text/javascript">
+		$(function() {
+			var placeholder = $("#batmanadv_div");
+			
+			var data = [
+				{/literal}{foreach item=batman_advanced_version_count from=$batman_advanced_versions_count key=i}{literal}
+					{ label: "{/literal}{$batman_advanced_version_count.batman_advanced_version}{literal}",
+					data: {/literal}{$batman_advanced_version_count.count}{literal},
+					color: '{/literal}#{dechex(hexdec(320000)+$i*30)}{literal}'},
+				{/literal}{/foreach}{literal}
+			];
+			
+			$.plot(placeholder, data, {
+				series: {
+					pie: { 
+						show: true,
+						radius: 0.6,
+						label: {
+							show: true,
+							radius: 0.4,
+							threshold: 0.15,
+							formatter: labelFormatter,
+						}
+					}
+				},
+				grid: {
+					hoverable: true,
+					clickable: true
+				},
+				legend: {
+					show: true,
+					labelFormatter: legendFormatter,
+					noColumns: 1
+				}
+			});
+			
+			placeholder.bind("plothover", function(event, pos, obj) {
+				if (!obj) {
+					return;
+				}
+
+				var percent = parseFloat(obj.series.percent).toFixed(2);
+				$("#hover").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + percent + "%)</span>");
+			});
+
+			placeholder.bind("plotclick", function(event, pos, obj) {
+				if (!obj) {
+					return;
+				}
+				
+				var win=window.open('./routerlist.php?where=crawl_routers.firmware_version&operator=%3D&value='+obj.series.label, '_blank');
+				win.focus();
+			});
+		});
+		
+		function labelFormatter(label, series) {
+			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
+		}
+		
+		function legendFormatter(label, series) {
+			return label.substr(0,25) ;
+		}
+    </script>
+    
+    <script type="text/javascript">
+		$(function() {
+			var placeholder = $("#kernelversions_chart");
+			
+			var data = [
+				{/literal}{foreach item=kernel_version_count from=$kernel_versions_count key=i}{literal}
+					{ label: "{/literal}{$kernel_version_count.kernel_version}{literal}",
+					data: {/literal}{$kernel_version_count.count}{literal},
+					color: '{/literal}#{dechex(hexdec(ff9600)+$i*30)}{literal}'},
+				{/literal}{/foreach}{literal}
+			];
+			
+			$.plot(placeholder, data, {
+				series: {
+					pie: { 
+						show: true,
+						radius: 0.6,
+						label: {
+							show: true,
+							radius: 0.4,
+							threshold: 0.15,
+							formatter: labelFormatter,
+						}
+					}
+				},
+				grid: {
+					hoverable: true,
+					clickable: true
+				},
+				legend: {
+					show: true,
+					labelFormatter: legendFormatter,
+					noColumns: 1
+				}
+			});
+			
+			placeholder.bind("plothover", function(event, pos, obj) {
+				if (!obj) {
+					return;
+				}
+
+				var percent = parseFloat(obj.series.percent).toFixed(2);
+				$("#hover").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + percent + "%)</span>");
+			});
+
+			placeholder.bind("plotclick", function(event, pos, obj) {
+				if (!obj) {
+					return;
+				}
+				
+				var win=window.open('./routerlist.php?where=crawl_routers.firmware_version&operator=%3D&value='+obj.series.label, '_blank');
+				win.focus();
+			});
+		});
+		
+		function labelFormatter(label, series) {
+			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
+		}
+		
+		function legendFormatter(label, series) {
+			return label.substr(0,25) ;
+		}
+		</script>
+		<style type="text/css">
+			.legendLabel {
+				width: 110px;
+			}
+		</style>
+    {/literal}
+
+
 
 <h1>Statistik</h1>
 {if !empty($last_ended_crawl_cycle)}
@@ -92,52 +355,68 @@
 </div>
 <br>
 
-
 <div style="width: 100%; overflow: hidden;">
-	<div style="float:left; width: 33%;">
-		<h2>Batman adv. version</h2>
+	<div style="float:left; width: 50%;">
+	<h2>Routers</h2>
+	<div style="height: 300px;" id="chipset_chart"></div>
+<!--	    <div id="chipset_chart"></div>-->
+
+<!--	<h2>Batman adv. version</h2>
 		<p>
 		{foreach item=batman_advanced_version_count from=$batman_advanced_versions_count}
 			<b>{$batman_advanced_version_count.batman_advanced_version}:</b> <a href="./routerlist.php?where=crawl_routers.batman_advanced_version&operator=%3D&value={$batman_advanced_version_count.batman_advanced_version}">{$batman_advanced_version_count.count}</a> Router<br>
 		{/foreach}
-		</p>
+		</p>-->
 	</div>
-	<div style="float:left; width: 33%;">
-		<h2>Kernel Version</h2>
+	<div style="float:left; width: 50%;">
+	<h2>Firmware</h2>
+	<div style="height: 300px;" id="firmwareversions_chart"></div>
+<!--		<h2>Kernel Version</h2>
 		<p>
 		{foreach item=kernel_version_count from=$kernel_versions_count}
 			<b>{$kernel_version_count.kernel_version}:</b> <a href="./routerlist.php?where=crawl_routers.kernel_version&operator=%3D&value={$kernel_version_count.kernel_version}">{$kernel_version_count.count}</a>  Router<br>
-		{/foreach}
+		{/foreach}-->
 		</p>
 	</div>
-	<div style="float:left; width: 33%;">
+<!--	<div style="float:left; width: 33%;">
 		<h2>Nodewatcher Version</h2>
 		<p>
 		{foreach item=nodewatcher_version_count from=$nodewatcher_versions_count}
 			<b>{$nodewatcher_version_count.nodewatcher_version}:</b> <a href="./routerlist.php?where=crawl_routers.nodewatcher_version&operator=%3D&value={$nodewatcher_version_count.nodewatcher_version}">{$nodewatcher_version_count.count}</a> Router<br>
 		{/foreach}
 		</p>
-	</div>
+	</div>-->
 </div>
 <br>
 
 <div style="width: 100%; overflow: hidden;">
-	<div style="float:left; width: 47%;">
-		<h2>Router nach Chipset</h2>
+	<div style="float:left; width: 50%;">
+		<h2>B.A.T.M.A.N advanced</h2>
+		<div style="height: 300px;" id="batmanadv_div"></div>
+	
+<!--
+    <div id="batmanadv_div"></div>    
+
+<h2>Router nach Chipset</h2>
 		<p>
 		{foreach item=router_chipset from=$router_chipsets}
 			<b>{if !empty($router_chipset.hardware_name)}{$router_chipset.hardware_name}{else}{$router_chipset.chipset_name}{/if}</b> {if !empty($router_chipset.hardware_name)}({$router_chipset.chipset_name}){/if}: <a href="./routerlist.php?where=crawl_routers.chipset&operator=%3D&value={$router_chipset.chipset_name}">{$router_chipset.count}</a><br>
 		{/foreach}
-		</p>
+		</p>-->
 	</div>
-	<div style="float:left; width: 53%;">
-		<h2>Router nach Firmware Version</h2>
+	<div style="float:left; width: 50%;">
+		<h2>Kernel</h2>
+		<div style="height: 300px;" id="kernelversions_chart"></div>
+
+<!--
+	    <div id="kernelversions_chart"></div>
+<h2>Router nach Firmware Version</h2>
 		<p>
 		{foreach item=firmware_version_count from=$firmware_versions_count}
 			<b>{$firmware_version_count.firmware_version}:</b> <a href="./routerlist.php?where=crawl_routers.firmware_version&operator=%3D&value={$firmware_version_count.firmware_version}">{$firmware_version_count.count}</a><br>
 		{/foreach}
 		</p>
-	</div>
+	</div>-->
 </div>
 <br>
 
