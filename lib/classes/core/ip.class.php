@@ -37,21 +37,24 @@ class Ip {
 	public function addIPv4Address($router_id, $project_id, $interface_id, $ipv4_addr) {
 		//Add new IPv4-Address
 		try {
-			DB::getInstance()->exec("INSERT INTO ips (router_id, project_id, ip, ipv, create_date)
-						 VALUES ('$router_id', '$project_id', '$ipv4_addr', 4, NOW());");
+			$stmt = DB::getInstance()->prepare("INSERT INTO ips (router_id, project_id, ip, ipv, create_date)
+												VALUES (?, ?, ?, 4, NOW())");
+			$stmt->execute(array($router_id, $project_id, $ipv4_addr));
 			$ip_id = DB::getInstance()->lastInsertId();
-		}
-		catch(PDOException $e) {
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
+		
 		try {
-			DB::getInstance()->exec("INSERT INTO interface_ips (interface_id, ip_id)
-						 VALUES ('$interface_id', '$ip_id');");
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("INSERT INTO interface_ips (interface_id, ip_id)
+												VALUES (?, ?)");
+			$stmt->execute(array($interface_id, $ip_id));
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-
+		
 		$message[] = array("Dem Interface $interface_id wurde die IPv4 Adresse $ipv4_addr hinzugefügt.", 1);
 		Message::setMessage($message);
 	}
@@ -61,19 +64,22 @@ class Ip {
 		$ip_exist = Ip::getIpByIp($ipv6_addr);
 		if(empty($ip_exist)) {
 			try {
-				DB::getInstance()->exec("INSERT INTO ips (router_id, project_id, ip, ipv, create_date)
-							 VALUES ('$router_id', '$project_id', '$ipv6_addr', 6, NOW());");
+				$stmt = DB::getInstance()->prepare("INSERT INTO ips (router_id, project_id, ip, ipv, create_date)
+													VALUES (?, ?, ?, 6, NOW())");
+				$stmt->execute(array($router_id, $project_id, $ipv6_addr));
 				$ip_id = DB::getInstance()->lastInsertId();
-			}
-			catch(PDOException $e) {
+			} catch(PDOException $e) {
 				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
+			
 			try {
-				DB::getInstance()->exec("INSERT INTO interface_ips (interface_id, ip_id)
-							 VALUES ('$interface_id', '$ip_id');");
-			}
-			catch(PDOException $e) {
+				$stmt = DB::getInstance()->prepare("INSERT INTO interface_ips (interface_id, ip_id)
+													VALUES (?, ?)");
+				$stmt->execute(array($interface_id, $ip_id));
+			} catch(PDOException $e) {
 				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 			
 			$message[] = array("Dem Interface $interface[name] ($interface_id) wurde die IPv6 Adresse $ipv6_addr hinzugefügt.", 1);
@@ -86,141 +92,122 @@ class Ip {
 			return false;
 		}
 	}
-
+	
 	public function deleteIPAddress($ip_id) {
 		$ip = Ip::getIpById($ip_id);
-		DB::getInstance()->exec("DELETE FROM ips WHERE id='$ip_id';");
-		DB::getInstance()->exec("DELETE FROM interface_ips WHERE ip_id='$ip_id';");
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM ips WHERE id=?");
+			$stmt->execute(array($ip_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM interface_ips WHERE ip_id=?");
+			$stmt->execute(array($ip_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
 		$message[] = array("Die IP $ip[ip] wurde gelöscht.",1);
 		Message::setMessage($message);
 	}
 
 	public function getIpById($ip_id) {
 		try {
-			$sql = "SELECT * FROM ips
-				WHERE id='$ip_id'";
-			$result = DB::getInstance()->query($sql);
-			$ip = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM ips
+												WHERE id=?");
+			$stmt->execute(array($ip_id));
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $ip;
 	}
 	
 	public function getIpByIp($ip) {
-		$ips = array();
 		try {
-			$sql = "SELECT * FROM ips
-				WHERE ip='$ip'";
-			$result = DB::getInstance()->query($sql);
-			$ip = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM ips
+												WHERE ip=?");
+			$stmt->execute(array($ip));
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $ip;
 	}
 
 	public function getIpAddressesByRouterId($router_id) {
-		$ips = array();
 		try {
-			$sql = "SELECT ips.id as ip_id, ips.ip, ips.ipv FROM ips WHERE ips.router_id=$router_id";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$ips[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id, ips.ip, ips.ipv FROM ips WHERE ips.router_id=?");
+			$stmt->execute(array($router_id));
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $ips;
 	}
 	
 	public function getIpAdressesByInterfaceId($interface_id) {
-		$ips = array();
 		try {
-			$sql = "SELECT ips.id as ip_id, ips.ip, ips.ipv FROM ips, interface_ips WHERE interface_ips.interface_id='$interface_id' AND interface_ips.ip_id=ips.id";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$ips[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id, ips.ip, ips.ipv FROM ips, interface_ips WHERE interface_ips.interface_id=? AND interface_ips.ip_id=ips.id");
+			$stmt->execute(array($interface_id));
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $ips;
 	}
 
 	public function getExistingIPv4Ips() {
-		$ips = array();
 		try {
-			$sql = "SELECT * FROM ips
-				WHERE ipv='4'
-				ORDER BY ip ASC";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$ips[] = $row['ip'];
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM ips WHERE ipv='4' ORDER BY ip ASC");
+			$stmt->execute();
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $ips;
 	}
-
+	
 	public function getExistingIPs($ipv="all") {
 		if($ipv=="all")
 			$sql_append = "";
-		else
+		elseif ($ipv == 4 OR $ipv = 6)
 			$sql_append = "WHERE ipv='$ipv'";
 
-		$ips = array();
 		try {
-			$sql = "SELECT * FROM ips
-				$sql_append
-				ORDER BY ip ASC";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$ips[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM ips $sql_append ORDER BY ip ASC");
+			$stmt->execute();
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $ips;
 	}
 
 	public function getExistingIPv4IpsByProjectId($project_id) {
-		$ips = array();
 		try {
-			$sql = "SELECT * FROM ips
-				WHERE ipv='4' AND project_id='$project_id'
-				ORDER BY ip ASC";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$ips[] = $row['ip'];
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM ips WHERE ipv='4' AND project_id=? ORDER BY ip ASC");
+			$stmt->execute(array($project_id));
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $ips;
 	}
 
 	public function getExistingIpRangesByProjectId($project_id) {
-		$ips = array();
 		try {
-			$sql = "SELECT * FROM ip_ranges WHERE project_id='$project_id';";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$ip_ranges[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM ip_ranges WHERE project_id=?");
+			$stmt->execute(array($project_id));
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-		return $ip_ranges;
 	}
 
 	public function getIpsOfIpRangesByProjectId($project_id) {
