@@ -54,26 +54,16 @@ $(document).ready(function() {
       // when a new file is selected
       function update_fname(html_graph_id) {
         var graph_opts={legend: {position:"ne", noColumns:2} };
-        var ds_graph_opts={'traffic_rx':{checked:true, color: "#3118c3", 
-                                         lines: { show: true, fill: true, fillColor:""} },
-                           'traffic_tx':{checked:true, color: "#ef2700", 
-                                         lines: { show: true, fill: true, fillColor:""} },
-			   'memory_caching':{checked:true, color: "#e30f0f", 
-					 lines: { show: true, fill: true, fillColor:""} },
-			   'memory_buffering':{checked:true, color: "#56f5e4", 
-					 lines: { show: true, fill: true, fillColor:""} },
-			    'memory_free':{checked:true, color: "#0009c3", 
-					 lines: { show: true, fill: true, fillColor:""} },
-			    'clients':{checked:true, color: "#006c7b", 
-					 lines: { show: true, fill: false} },
-			    'originators':{checked:true, color: "#46ddd4", 
-					 lines: { show: true, fill: false} },
-			    'total':{checked:true, color: "#46ddd4", 
-					 lines: { show: true, fill: false} },
-			    'runnable':{checked:true, color: "#46ddd4", 
-					 lines: { show: true, fill: false} },
-			    'quality':{checked:true, color: "#3118c3", 
-					 lines: { show: true, fill: true, fillColor:""} } };
+        var ds_graph_opts={	'traffic_rx':{checked:true, color: "#3118c3", lines: { show: true, fill: true, fillColor:""} },
+							'traffic_tx':{checked:true, color: "#ef2700", lines: { show: true, fill: true, fillColor:""} },
+							'memory_caching':{checked:true, color: "#e30f0f", lines: { show: true, fill: true, fillColor:""} },
+							'memory_buffering':{checked:true, color: "#56f5e4", lines: { show: true, fill: true, fillColor:""} },
+							'memory_free':{checked:true, color: "#0009c3", lines: { show: true, fill: true, fillColor:""} },
+							'clients':{checked:true, color: "#006c7b", lines: { show: true, fill: false} },
+							'originators':{checked:true, color: "#46ddd4", lines: { show: true, fill: false} },
+							'total':{checked:true, color: "#d97500", lines: { show: true, fill: false} },
+							'runnable':{checked:true, color: "#d90000", lines: { show: true, fill: false} },
+							'quality':{checked:true, color: "#3118c3", lines: { show: true, fill: true, fillColor:""} } };
 
         // the rrdFlot object creates and handles the graph
         var f=new rrdFlot(html_graph_id,rrd_data,graph_opts,ds_graph_opts);
