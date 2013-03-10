@@ -68,6 +68,10 @@ $(document).ready(function() {
 					 lines: { show: true, fill: false} },
 			    'originators':{checked:true, color: "#46ddd4", 
 					 lines: { show: true, fill: false} },
+			    'total':{checked:true, color: "#46ddd4", 
+					 lines: { show: true, fill: false} },
+			    'runnable':{checked:true, color: "#46ddd4", 
+					 lines: { show: true, fill: false} },
 			    'quality':{checked:true, color: "#3118c3", 
 					 lines: { show: true, fill: true, fillColor:""} } };
 
@@ -329,6 +333,20 @@ $(document).ready(function() {
 		<div id="memory_graph" style="float:left; width: 100%;"></div>
 		{/if}
 
+		<h3>Prozesse</h3>
+		{if $processes_rrd_file_exists}
+		<script type="text/javascript">
+			fname='./rrdtool/databases/router_{$router_data.router_id}_processes.rrd';
+			html_graph_id="processes_graph"
+			try {
+				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+			} catch (err) {
+				alert("Failed loading "+fname+"\n"+err);
+			}
+		</script>
+		<div id="processes_graph" style="float:left; width: 100%;"></div>
+		{/if}
+		
 		<h3>Client Historie</h3>
 		{if $clients_rrd_file_exists}
 		<script type="text/javascript">

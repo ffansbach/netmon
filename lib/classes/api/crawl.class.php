@@ -17,7 +17,6 @@ class Crawl {
 	if((($_POST['authentificationmethod']=='login') AND (Permission::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_POST['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_POST['router_auto_update_hash']))) {
 		echo "success;".$router_data['hostname'].";";
 */
-
 		$last_crawl_cycle = Crawling::getActualCrawlCycle();
 		$router_has_been_crawled = Crawling::checkIfRouterHasBeenCrawled($data['router_id'], $last_crawl_cycle['id']);
 		if(!$router_has_been_crawled) {
@@ -25,7 +24,7 @@ class Crawl {
 			Crawling::insertRouterCrawl($data['router_id'], $data['system_data']);
 			//Update router memory rrd hostory
 			RrdTool::updateRouterMemoryHistory($data['router_id'], $data['system_data']['memory_free'], $data['system_data']['memory_caching'], $data['system_data']['memory_buffering']);
-			$processes = explode("/", $data['processes']);
+			$processes = explode("/", $data['system_data']['processes']);
 			RrdTool::updateRouterProcessHistory($data['router_id'], $processes[0], $processes[1]);
 			
 			//Check if Chipset is set right, if not create new chipset and assign to router

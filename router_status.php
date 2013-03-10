@@ -153,7 +153,7 @@ $smarty->assign('clients_rrd_file_exists', file_exists("./rrdtool/databases/rout
 
 /**Memory */
 $smarty->assign('memory_rrd_file_exists', file_exists("./rrdtool/databases/router_$_GET[router_id]_memory.rrd"));
-
+$smarty->assign('processes_rrd_file_exists', file_exists("./rrdtool/databases/router_$_GET[router_id]_processes.rrd"));
 
 /** Get Services */
 $is_logged_id = Permission::isLoggedIn($_SESSION['user_id']);
