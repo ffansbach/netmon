@@ -29,6 +29,7 @@
  */
 
 require_once 'lib/classes/core/service.class.php';
+require_once 'lib/classes/core/event.class.php';
 
 class ServiceEditor {
 	public function addService($router_id, $title, $description, $ip_addresses, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {
@@ -119,13 +120,7 @@ class ServiceEditor {
 			echo $e->getTraceAsString();
 		}
 		
-		try {
-			$stmt = DB::getInstance()->prepare("DELETE FROM history WHERE object='service' AND object_id=?");
-			$stmt->execute(array($service_id));
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
+		Event::deleteEventsByObjectAndObjectId('service', $service_id);
 		
 		$message[] = array("Der Service $service_data[title] wurde entfernt.",1);
 		Message::setMessage($message);

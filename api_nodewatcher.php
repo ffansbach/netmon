@@ -25,8 +25,6 @@ if($_GET['section']=="update") {
 }
 
 if($_GET['section']=="version") {
-//	DB::getInstance()->exec("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data) VALUES ('', 'api_check_for_nodewatcher_update', '', NOW(), '$_SERVER[REMOTE_ADDR]');");
-
 	if(empty($_GET['nodewatcher_version']) OR $_GET['nodewatcher_version']<20) {
 		$version=25;
 		echo "success;$version";

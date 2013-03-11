@@ -199,16 +199,6 @@ class Crawling {
 		}
 	}
 
-	public function deleteOldHistoryData($seconds) {
-		try {
-			$stmt = DB::getInstance()->prepare("DELETE FROM history WHERE UNIX_TIMESTAMP(create_date) < UNIX_TIMESTAMP(NOW())-?");
-			$stmt->execute(array($seconds));
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-	}
-
 	//Returns true if router has already been crawled
 	public function checkIfRouterHasBeenCrawled($router_id, $crawl_cycle_id) {
 		try {

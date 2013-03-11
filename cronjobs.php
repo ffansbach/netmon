@@ -17,6 +17,7 @@ require_once('lib/classes/core/service.class.php');
 require_once('lib/classes/core/crawling.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/rrdtool.class.php');
+require_once('lib/classes/core/event.class.php');
 
 /**
 * Crawl cycles and offline crawls
@@ -32,7 +33,7 @@ Crawling::organizeCrawlCycles();
 //Delete old Crawls
 echo "Bereinige Datenbank\n";
 Crawling::deleteOldCrawlDataExceptLastOnlineCrawl(($GLOBALS['hours_to_keep_mysql_crawl_data']*60*60));
-Crawling::deleteOldHistoryData(($GLOBALS['hours_to_keep_history_table']*60*60));
+Event::cleanEventsTable($GLOBALS['hours_to_keep_history_table']*60*60);
 
 
 //Delete Old not assigned routers

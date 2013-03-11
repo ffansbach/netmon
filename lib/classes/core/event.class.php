@@ -6,9 +6,39 @@ class Event {
 	public function addEvent($object, $object_id, $data) {
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 		try {
-			$stmt = DB::getInstance()->prepare("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data)
+			$stmt = DB::getInstance()->prepare("INSERT INTO events (crawl_cycle_id, object, object_id, create_date, data)
 							    VALUES (?, ?, ?, NOW(), ?)");
 			$stmt->execute(array($actual_crawl_cycle['id'], $object, $object_id, $data));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+	}
+	
+	public function deleteEvent($event_id) {
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM events WHERE id=?)");
+			$stmt->execute($event_id);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+	}
+	
+	public function deleteEventsByObjectAndObjectId($object, $object_id) {
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM events WHERE object=? AND object_id=?");
+			$stmt->execute(array($object, $object_id));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+	}
+	
+	public function cleanEventsTable($seconds) {
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM events WHERE UNIX_TIMESTAMP(create_date) < UNIX_TIMESTAMP(NOW())-?");
+			$stmt->execute(array($seconds));
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 			echo $e->getTraceAsString();
@@ -18,7 +48,7 @@ class Event {
 	public function getEvent($event_id) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT *
-												FROM history
+												FROM events
 												WHERE id = $event_id");
 			$stmt->execute(array($event_id));
 			return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -33,14 +63,14 @@ class Event {
 		if($countlimit AND is_numeric($countlimit) AND is_numeric($router_id))
 			$range = "
 						WHERE object='router' AND object_id=$router_id AND crawl_cycle_id<'$actual_crawl_cycle[id]'
-						ORDER BY history.create_date desc
+						ORDER BY events.create_date desc
 					  LIMIT 0, $countlimit";
 		elseif ($hourlimit AND is_numeric($hourlimit) AND is_numeric($actual_crawl_cycle['id']))
-			$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR AND object='service' AND crawl_cycle_id<'$actual_crawl_cycle[id]'
-					  ORDER BY history.create_date desc";
+			$range = "WHERE events.create_date>=NOW() - INTERVAL $hourlimit HOUR AND object='service' AND crawl_cycle_id<'$actual_crawl_cycle[id]'
+					  ORDER BY events.create_date desc";
 		try {
 			$sql = "SELECT id, object, object_id, create_date, data
-			       FROM history
+			       FROM events
 				   $range";
 
 			$result = DB::getInstance()->query($sql);
@@ -72,9 +102,9 @@ class Event {
 		foreach($routers as $router) {
 			try {
 				$stmt = DB::getInstance()->prepare("SELECT id, object, object_id, create_date, data
-					FROM history
+					FROM events
 					WHERE object='router' AND object_id=:router_id AND crawl_cycle_id<:crawl_cycle_id
-					ORDER BY history.create_date desc
+					ORDER BY events.create_date desc
 					LIMIT 0, :limit");
 					$stmt->bindValue(':limit', (int)$countlimit, PDO::PARAM_INT);
 					$stmt->bindValue(':router_id', (int)$router['id'], PDO::PARAM_INT);
@@ -115,15 +145,15 @@ class Event {
 		if(isset($actual_crawl_cycle['id']) AND (isset($countlimit) OR isset($hourlimit))) {
 			if($countlimit AND is_numeric($countlimit))
 				$range = "
-						WHERE history.crawl_cycle_id!=$actual_crawl_cycle[id]
-						ORDER BY history.create_date desc
+						WHERE events.crawl_cycle_id!=$actual_crawl_cycle[id]
+						ORDER BY events.create_date desc
 						LIMIT 0, $countlimit";
 			elseif ($hourlimit AND is_numeric($hourlimit))
-				$range = "WHERE history.create_date>=NOW() - INTERVAL $hourlimit HOUR AND history.crawl_cycle_id!=$actual_crawl_cycle[id]
-						ORDER BY history.create_date desc";
+				$range = "WHERE events.create_date>=NOW() - INTERVAL $hourlimit HOUR AND events.crawl_cycle_id!=$actual_crawl_cycle[id]
+						ORDER BY events.create_date desc";
 						
 			try {
-				$stmt = DB::getInstance()->prepare("SELECT id, object, object_id, create_date, data FROM history $range");
+				$stmt = DB::getInstance()->prepare("SELECT id, object, object_id, create_date, data FROM events $range");
 				$stmt->execute();
 				$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			} catch(PDOException $e) {

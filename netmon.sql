@@ -1,23 +1,23 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.6
+-- version 3.5.3
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 07, 2013 at 08:31 PM
--- Server version: 5.5.30-log
--- PHP Version: 5.4.12
+-- Erstellungszeit: 11. Mrz 2013 um 15:09
+-- Server Version: 5.5.29-MariaDB-mariadb1~wheezy-log
+-- PHP-Version: 5.4.4-14
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Database: `netmon`
+-- Datenbank: `freifunksql5`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `chipsets`
+-- Tabellenstruktur für Tabelle `chipsets`
 --
 
 CREATE TABLE IF NOT EXISTS `chipsets` (
@@ -29,12 +29,12 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `hardware_name` (`hardware_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `config`
+-- Tabellenstruktur für Tabelle `config`
 --
 
 CREATE TABLE IF NOT EXISTS `config` (
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_batman_advanced_interfaces`
+-- Tabellenstruktur für Tabelle `crawl_batman_advanced_interfaces`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
@@ -63,12 +63,12 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
   KEY `crawl_batman_advanced_interfaces_id` (`id`),
   KEY `router_id` (`router_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_batman_advanced_originators`
+-- Tabellenstruktur für Tabelle `crawl_batman_advanced_originators`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
@@ -84,12 +84,12 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
   PRIMARY KEY (`id`),
   KEY `router_id` (`router_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_clients_count`
+-- Tabellenstruktur für Tabelle `crawl_clients_count`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_clients_count` (
@@ -101,12 +101,12 @@ CREATE TABLE IF NOT EXISTS `crawl_clients_count` (
   PRIMARY KEY (`id`),
   KEY `router_id` (`router_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_cycle`
+-- Tabellenstruktur für Tabelle `crawl_cycle`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_cycle` (
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `crawl_cycle` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_interfaces`
+-- Tabellenstruktur für Tabelle `crawl_interfaces`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
@@ -148,12 +148,12 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   KEY `crawl_id` (`crawl_id`),
   KEY `router_id` (`router_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_ips`
+-- Tabellenstruktur für Tabelle `crawl_ips`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_ips` (
@@ -165,12 +165,12 @@ CREATE TABLE IF NOT EXISTS `crawl_ips` (
   PRIMARY KEY (`id`),
   KEY `ip_id` (`ip_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_olsr`
+-- Tabellenstruktur für Tabelle `crawl_olsr`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_olsr` (
@@ -190,7 +190,7 @@ CREATE TABLE IF NOT EXISTS `crawl_olsr` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_routers`
+-- Tabellenstruktur für Tabelle `crawl_routers`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_routers` (
@@ -237,12 +237,12 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   KEY `router_id` (`router_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`),
   KEY `status` (`status`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_services`
+-- Tabellenstruktur für Tabelle `crawl_services`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_services` (
@@ -255,12 +255,12 @@ CREATE TABLE IF NOT EXISTS `crawl_services` (
   PRIMARY KEY (`id`),
   KEY `service_id` (`service_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `dns_hosts`
+-- Tabellenstruktur für Tabelle `dns_hosts`
 --
 
 CREATE TABLE IF NOT EXISTS `dns_hosts` (
@@ -272,15 +272,15 @@ CREATE TABLE IF NOT EXISTS `dns_hosts` (
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `host` (`host`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `history`
+-- Tabellenstruktur für Tabelle `events`
 --
 
-CREATE TABLE IF NOT EXISTS `history` (
+CREATE TABLE IF NOT EXISTS `events` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `crawl_cycle_id` int(11) NOT NULL,
   `object` varchar(20) NOT NULL,
@@ -289,12 +289,12 @@ CREATE TABLE IF NOT EXISTS `history` (
   `data` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `imagemaker_configs`
+-- Tabellenstruktur für Tabelle `imagemaker_configs`
 --
 
 CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
@@ -305,12 +305,12 @@ CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
   `description` text NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `imagemaker_images`
+-- Tabellenstruktur für Tabelle `imagemaker_images`
 --
 
 CREATE TABLE IF NOT EXISTS `imagemaker_images` (
@@ -320,12 +320,12 @@ CREATE TABLE IF NOT EXISTS `imagemaker_images` (
   `description` text NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `interfaces`
+-- Tabellenstruktur für Tabelle `interfaces`
 --
 
 CREATE TABLE IF NOT EXISTS `interfaces` (
@@ -339,12 +339,12 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
   `vpn_client_key` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `router_id` (`router_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `interface_ips`
+-- Tabellenstruktur für Tabelle `interface_ips`
 --
 
 CREATE TABLE IF NOT EXISTS `interface_ips` (
@@ -354,12 +354,12 @@ CREATE TABLE IF NOT EXISTS `interface_ips` (
   PRIMARY KEY (`id`),
   KEY `ip_id` (`ip_id`),
   KEY `interface_id` (`interface_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ips`
+-- Tabellenstruktur für Tabelle `ips`
 --
 
 CREATE TABLE IF NOT EXISTS `ips` (
@@ -374,12 +374,12 @@ CREATE TABLE IF NOT EXISTS `ips` (
   KEY `router_id` (`router_id`),
   KEY `ipv` (`ipv`),
   KEY `project_id` (`project_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ip_ranges`
+-- Tabellenstruktur für Tabelle `ip_ranges`
 --
 
 CREATE TABLE IF NOT EXISTS `ip_ranges` (
@@ -391,12 +391,30 @@ CREATE TABLE IF NOT EXISTS `ip_ranges` (
   `ip_end` varchar(100) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `olsr_crawl_data`
+--
+
+CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `crawl_id` int(11) NOT NULL,
+  `olsrd_hna` text NOT NULL,
+  `olsrd_neighbors` text NOT NULL,
+  `olsrd_links` text NOT NULL,
+  `olsrd_mid` text NOT NULL,
+  `olsrd_routes` text NOT NULL,
+  `olsrd_topology` text NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `projects`
+-- Tabellenstruktur für Tabelle `projects`
 --
 
 CREATE TABLE IF NOT EXISTS `projects` (
@@ -438,12 +456,12 @@ CREATE TABLE IF NOT EXISTS `projects` (
   PRIMARY KEY (`id`),
   KEY `is_ipv4` (`is_ipv4`),
   KEY `is_batman_adv` (`is_batman_adv`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `routers`
+-- Tabellenstruktur für Tabelle `routers`
 --
 
 CREATE TABLE IF NOT EXISTS `routers` (
@@ -468,12 +486,12 @@ CREATE TABLE IF NOT EXISTS `routers` (
   `trying_to_assign_notified` tinyint(1) NOT NULL,
   `trying_to_assign_last_notification_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `routers_not_assigned`
+-- Tabellenstruktur für Tabelle `routers_not_assigned`
 --
 
 CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
@@ -484,12 +502,12 @@ CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
   `router_auto_assign_login_string` varchar(50) NOT NULL,
   `interface` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `router_adds`
+-- Tabellenstruktur für Tabelle `router_adds`
 --
 
 CREATE TABLE IF NOT EXISTS `router_adds` (
@@ -497,12 +515,12 @@ CREATE TABLE IF NOT EXISTS `router_adds` (
   `router_id` int(11) NOT NULL,
   `adds_allowed` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `services`
+-- Tabellenstruktur für Tabelle `services`
 --
 
 CREATE TABLE IF NOT EXISTS `services` (
@@ -521,12 +539,12 @@ CREATE TABLE IF NOT EXISTS `services` (
   `url` varchar(250) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `service_ips`
+-- Tabellenstruktur für Tabelle `service_ips`
 --
 
 CREATE TABLE IF NOT EXISTS `service_ips` (
@@ -534,12 +552,12 @@ CREATE TABLE IF NOT EXISTS `service_ips` (
   `service_id` int(11) NOT NULL,
   `ip_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `subnets`
+-- Tabellenstruktur für Tabelle `subnets`
 --
 
 CREATE TABLE IF NOT EXISTS `subnets` (
@@ -572,12 +590,12 @@ CREATE TABLE IF NOT EXISTS `subnets` (
   `ftp_ccd_password` varchar(30) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Tabellenstruktur für Tabelle `users`
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
@@ -603,12 +621,12 @@ CREATE TABLE IF NOT EXISTS `users` (
   `create_date` datetime DEFAULT NULL,
   `activated` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `variable_splash_clients`
+-- Tabellenstruktur für Tabelle `variable_splash_clients`
 --
 
 CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
@@ -619,4 +637,4 @@ CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
   `ipv` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;

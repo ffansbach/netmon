@@ -9,6 +9,7 @@ require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/ip.class.php');
 require_once('lib/classes/core/crawling.class.php');
 require_once('lib/classes/core/chipsets.class.php');
+require_once('lib/classes/core/event.class.php');
 require_once('lib/classes/extern/FwToolHash.class.php');
 
 if($_GET['section']=="test_login_strings") {
@@ -50,7 +51,7 @@ if($_GET['section']=="router_auto_assign") {
 			//Make history
 			$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 			$history_data = serialize(array('router_auto_assign_login_string'=>$_GET['router_auto_assign_login_string'], 'action'=>'new'));
-			DB::getInstance()->exec("INSERT INTO history (crawl_cycle_id, object, object_id, create_date, data) VALUES ('$actual_crawl_cycle[id]', 'not_assigned_router', '$not_assigned_id', NOW(), '$history_data');");
+			Event::addEvent('not_assigned_router', $not_assigned_id, $history_data);
 			
 			echo "error;new_not_assigned;;$_GET[router_auto_assign_login_string]";
 		} else {
