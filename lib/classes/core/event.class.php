@@ -14,7 +14,19 @@ class Event {
 			echo $e->getTraceAsString();
 		}
 	}
-
+	
+	public function getEvent($event_id) {
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT *
+												FROM history
+												WHERE id = $event_id");
+			$stmt->execute(array($event_id));
+			return $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+	
 	public function getEventsByRouterId($router_id, $countlimit, $hourlimit) {
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 		

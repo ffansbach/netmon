@@ -8,8 +8,8 @@
 	<ul>
 		{foreach key=count item=hist from=$history}
 			<li>
+				<b><a href="event.php?event_id={$hist.id}">{$hist.create_date|date_format:"%e.%m.%Y %H:%M"}</a>:</b> 
 				{if $hist.object == 'router'}
-					<b>{$hist.create_date|date_format:"%e.%m.%Y %H:%M"}:</b> 
 					<a href="./router_status.php?router_id={$hist.additional_data.router_id}">{$hist.additional_data.hostname}</a> (<a href="./user.php?user_id={$hist.additional_data.user_id}">{$hist.additional_data.nickname}</a>)
 					{if $hist.data.action == 'status' AND $hist.data.to == 'online'}
 						geht <span style="color: #007B0F;">online</span>
@@ -43,14 +43,12 @@
 					{/if}
 				{/if}
 				{if $hist.object == 'not_assigned_router'}
-					<b>{$hist.create_date|date_format:"%e.%m.%Y %H:%M"}:</b> 
 					{$hist.data.router_auto_assign_login_string} 
 					{if $hist.data.action == 'new'}
 						 erscheint in der <a href="./routers_trying_to_assign.php">Liste der neuen, nicht zugewiesenen Router</a>
 					{/if}
 				{/if}
 				{if $hist.object == 'ip'}
-					<b>{$hist.create_date|date_format:"%e.%m.%Y %H:%M"}:</b> 
 					{if $hist.data.ipv == 4}IPv4{else if $hist.data.ipv == 6}IPv6{/if} Adresse {$hist.data.ip}
 					{if $hist.data.action == 'new'}
 						 hinzugefügt.
