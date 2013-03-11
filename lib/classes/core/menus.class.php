@@ -91,10 +91,11 @@ class Menus extends Permission {
 			$menu[] = $submenu;
 
 			$submenu = array();
-			$subsubmenu = array();
 			$submenu[] = array('name'=>'Statistik', 'href'=>'networkstatistic.php');
-			$subsubmenu[] = array('name'=>'Historie', 'href'=>'networkhistory.php');
-			$submenu[] = $subsubmenu;
+			$menu[] = $submenu;
+
+			$submenu = array();
+			$submenu[] = array('name'=>'Events', 'href'=>'eventlist.php');
 			$menu[] = $submenu;
 
 			$submenu = array();

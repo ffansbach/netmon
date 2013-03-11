@@ -20,7 +20,7 @@ $smarty->assign('history', $history);
 
 /** Display templates **/
 $smarty->display("header.tpl.php");
-$smarty->display("networkhistory.tpl.php");
+$smarty->display("eventlist.tpl.php");
 $smarty->display("footer.tpl.php");
 
 ?>
