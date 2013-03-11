@@ -5,6 +5,7 @@ require_once('lib/classes/core/service.class.php');
 require_once('lib/classes/core/dns.class.php');
 require_once('lib/classes/core/user.class.php');
 require_once('lib/classes/core/routersnotassigned.class.php');
+require_once('lib/classes/core/event.class.php');
 
 //get messages of the message system
 $smarty->assign('message', Message::getMessage());
@@ -16,7 +17,7 @@ $smarty->assign('is_logged_in', Permission::isLoggedIn($_SESSION['user_id']));
 
 //get main page data
 $smarty->assign('user', User::getUserByID($_GET['user_id']));
-$smarty->assign('user_history', History::getUserHistory($_GET['user_id'], 5));
+$smarty->assign('user_history', Event::getEventsByUserId($_GET['user_id'], 5));
 $smarty->assign('routersnotassigned_list', RoutersNotAssigned::getRouters());
 $smarty->assign('routerlist', Router::getRouterListByUserId($_GET['user_id']));
 $smarty->assign('servicelist', Service::getServiceList(Permission::isLoggedIn($_SESSION['user_id']) ? 'all' : 'public', $_GET['user_id']));

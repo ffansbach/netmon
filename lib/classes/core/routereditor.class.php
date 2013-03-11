@@ -4,6 +4,7 @@ require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/service.class.php');
 require_once('lib/classes/core/serviceeditor.class.php');
 require_once('lib/classes/core/crawling.class.php');
+require_once('lib/classes/core/event.class.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
@@ -72,7 +73,7 @@ class RouterEditor {
 			$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
 			
 			//Make history
-			History::addHistoryEntry('router', $router_id, serialize(array('router_id'=>$router_id, 'action'=>'new')));
+			Event::addEvent('router', $router_id, serialize(array('router_id'=>$router_id, 'action'=>'new')));
 			
 			//Send Message to twitter
 			if($_POST['twitter_notification']=='1') {

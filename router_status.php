@@ -7,7 +7,7 @@ require_once('./lib/classes/core/interfaces.class.php');
 require_once('./lib/classes/core/batmanadvanced.class.php');
 require_once('./lib/classes/core/olsr.class.php');
 require_once('./lib/classes/core/crawling.class.php');
-require_once('./lib/classes/core/history.class.php');
+require_once('./lib/classes/core/event.class.php');
 require_once('./lib/classes/core/clients.class.php');
 require_once('./lib/classes/core/service.class.php');
 
@@ -53,7 +53,7 @@ $router_reliability = Router::getRouterReliability($_GET['router_id'], 500);
 $smarty->assign('router_reliability', $router_reliability);
 
 /** Get Router History **/
-$router_history = History::getRouterHistoryByRouterIdExceptActualCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id'], 6, false);
+$router_history = Event::getEventsByRouterId($_GET['router_id'], 6, false);
 $smarty->assign('router_history', $router_history);
 
 /** Get and assign Router Informations **/

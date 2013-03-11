@@ -2,7 +2,7 @@
 
 /** Include Classes **/
 require_once('runtime.php');
-require_once('./lib/classes/core/history.class.php');
+require_once('lib/classes/core/event.class.php');
 
 /** Get and assign global messages **/
 $smarty->assign('message', Message::getMessage());
@@ -14,7 +14,7 @@ if(empty($_POST['history_hours'])) {
 	$history_hours = $_POST['history_hours'];
 }
 
-$history = History::getHistory(false, $history_hours);
+$history = Event::getEvents(false, $history_hours);
 $smarty->assign('history_hours', $history_hours);
 $smarty->assign('history', $history);
 
