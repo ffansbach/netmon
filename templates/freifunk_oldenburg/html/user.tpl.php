@@ -81,7 +81,7 @@ $(document).ready(function() {
 	</div>
 </div>
 
-{if $show_routersnotassigned_list}
+{if $smarty.get.user_id==$smarty.session.user_id AND empty($routerlist)}
 	<h2>Neu bei Freifunk?</h2>
 	<p>Du hast noch keine Router angelegt. Wenn dein Router schon angeschlossen ist, kannst du ihn aus dieser Liste übernehmen. Wenn dein Router trotzdem noch nicht in dieser Liste auftaucht, versuche die Seite in ein paar Minuten (5-10) noch einmal neu zu laden.</p>
 

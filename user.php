@@ -12,7 +12,6 @@ $smarty->assign('message', Message::getMessage());
 
 //get some status variables
 $smarty->assign('permitted', Permission::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']));
-$smarty->assign('show_routersnotassigned_list', ($_GET['user_id']==$_SESSION['user_id'] AND empty($routerlist)));
 $smarty->assign('is_logged_in', Permission::isLoggedIn($_SESSION['user_id']));
 
 //get main page data
