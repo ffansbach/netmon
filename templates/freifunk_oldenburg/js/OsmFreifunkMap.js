@@ -175,7 +175,7 @@ function fullmap(community_location_longitude, community_location_latitude, comm
         var gsat = new OpenLayers.Layer.Google("Google Satellite", {sphericalMercator:true, type: G_SATELLITE_MAP, numZoomLevels: 20});
 	var ghybrid = new OpenLayers.Layer.Google("Google Hybrid", {sphericalMercator:true, type: G_HYBRID_MAP, numZoomLevels: 20});
   	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid]);
-
+	
 	//Define data layers shown on top of the map and add them to the map
 	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters');
 	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');

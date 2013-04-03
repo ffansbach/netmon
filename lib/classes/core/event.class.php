@@ -115,7 +115,7 @@ class Event {
 				echo $e->getMessage();
 				echo $e->getTraceAsString();
 			}
-			foreach($result as $key=>$row) {
+			foreach($rows as $key=>$row) {
 				$history[$key] = $row;
 				$history[$key]['data'] = unserialize($history[$key]['data']);
 				$history[$key]['additional_data'] = Router::getRouterInfo($row['object_id']);
