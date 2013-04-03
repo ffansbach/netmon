@@ -51,7 +51,17 @@ class Login {
 		}
 		
 		if (empty($user_data)) {
-			$messages[] = array("Der Benutzername existiert nicht oder das Passwort ist falsch!", 2);
+			if(!$remembered) {
+					$messages[] = array("Der Benutzername existiert nicht oder das Passwort ist falsch!", 2);
+			} else {
+					setcookie("nickname", "", time() - 60*60*24*14);
+					setcookie("password_hash", "", time() - 60*60*24*14);
+					setcookie("openid", "", time() - 60*60*24*14);
+					
+					$messages[] = array("Autologin fehlgeschlagen.", 2);
+					$messages[] = array("Zu den gespeicherten Autologindaten existiert kein Benutzer.", 2);
+					$messages[] = array("Deaktiviere Autologin.", 2);
+			}
 			Message::setMessage($messages);
 			return false;
 		} elseif ($user_data['activated'] != '0') {
@@ -67,7 +77,7 @@ class Login {
 			//Autologin (remember me)
 			if($remember AND empty($openid)) {
 				setcookie ("nickname", $nickname, time() + 60*60*24*14);
-				setcookie ("password_hash", $password, time() + 60*60*24*14);
+				setcookie ("password_hash", $password = User::encryptPassword($password), time() + 60*60*24*14);
 			} elseif($remember AND !empty($openid)) {
 				setcookie ("openid", $openid, time() + 60*60*24*14);
 			}
