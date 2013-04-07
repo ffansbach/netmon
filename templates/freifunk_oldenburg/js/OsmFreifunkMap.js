@@ -155,7 +155,8 @@ function fullmap(community_location_longitude, community_location_latitude, comm
 
 	// Initialize the map
 	map = new OpenLayers.Map ("map", {
-		controls:[new OpenLayers.Control.ScaleLine(), 
+		controls:[
+				new OpenLayers.Control.ScaleLine(), 
 				new OpenLayers.Control.TouchNavigation({
 					dragPanOptions: {
 						enableKinetic: true
@@ -183,6 +184,15 @@ function fullmap(community_location_longitude, community_location_latitude, comm
 	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
 	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
         map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop, olsr_conn]);
+
+	// Set map center
+	point = new OpenLayers.LonLat(community_location_longitude, community_location_latitude);
+	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+	community_location_zoom = parseFloat(community_location_zoom);
+	map.setCenter(point, community_location_zoom);
+
+	//get and apply params from permalink (overwrites values set before)
+	map.addControl(new OpenLayers.Control.ArgParser());
 	
 	//Add control panels
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -190,12 +200,6 @@ function fullmap(community_location_longitude, community_location_latitude, comm
 	map.addControl(new OpenLayers.Control.MousePosition());
 	map.addControl(new OpenLayers.Control.Permalink());
 	map.addControl(new OpenLayers.Control.Attribution());
-	
-	// Set map center
-	point = new OpenLayers.LonLat(community_location_longitude, community_location_latitude);
-	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-	community_location_zoom = parseFloat(community_location_zoom)+1;
-	map.setCenter(point, community_location_zoom);
 	
 	// Define bubbles
 	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
