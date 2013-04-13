@@ -39,6 +39,7 @@ if(!empty($last_ended_crawl_cycle)) {
 		$stmt = DB::getInstance()->prepare("SELECT  batman_advanced_version 
 						    FROM crawl_routers
 						    WHERE crawl_cycle_id=?
+							AND batman_advanced_version != \"\"
 						    GROUP BY batman_advanced_version");
 		$stmt->execute(array($last_ended_crawl_cycle['id']));
 		$batman_advanced_versions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -68,6 +69,7 @@ if(!empty($last_ended_crawl_cycle)) {
 		$stmt = DB::getInstance()->prepare("SELECT  kernel_version 
 						    FROM crawl_routers
 						    WHERE crawl_cycle_id=$last_ended_crawl_cycle[id]
+							AND kernel_version != \"\"
 						    GROUP BY kernel_version");
 		$stmt->execute(array($last_ended_crawl_cycle['id']));
 		$kernel_versions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -97,6 +99,7 @@ if(!empty($last_ended_crawl_cycle)) {
 		$stmt = DB::getInstance()->prepare("SELECT  firmware_version  
 						    FROM crawl_routers
 						    WHERE crawl_cycle_id=?
+							AND firmware_version != \"\"
 						    GROUP BY firmware_version");
 		$stmt->execute(array($last_ended_crawl_cycle['id']));
 		$firmware_versions = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -126,6 +129,7 @@ if(!empty($last_ended_crawl_cycle)) {
 		$stmt = DB::getInstance()->prepare("SELECT  nodewatcher_version  
 						    FROM crawl_routers
 						    WHERE crawl_cycle_id=?
+							AND nodewatcher_version != \"\"
 						    GROUP BY nodewatcher_version");
 		$stmt->execute(array($last_ended_crawl_cycle['id']));
 		$nodewatcher_versions = $stmt->fetchAll(PDO::FETCH_ASSOC);
