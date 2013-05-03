@@ -86,13 +86,14 @@ class Register {
 			$password = User::encryptPassword($password);
 			//create acivation hash
 			$activation = Helper::randomPassword(8);
+			$api_key = Helper::randomPassword(32);
 			
 			if(empty($openid))
 				$openid = "";
 			
 			try {
-				$stmt = DB::getInstance()->prepare("INSERT INTO users (nickname, password, openid, email, notification_method, permission, create_date, activated) VALUES (?, ?, ?, ?, 'email', ?, NOW(), ?)");
-				$stmt->execute(array($nickname, $password, $openid, $email, $permission, $activation));
+				$stmt = DB::getInstance()->prepare("INSERT INTO users (nickname, password, openid, api_key, email, notification_method, permission, create_date, activated) VALUES (?, ?, ?, ?, ?, 'email', ?, NOW(), ?)");
+				$stmt->execute(array($nickname, $password, $openid, $api_key, $email, $permission, $activation));
 				$user_id = DB::getInstance()->lastInsertId();
 			} catch(PDOException $e) {
 				$message[] = array("Beim erstellen des Datenbankeintrags ist ein Fehler aufgetreten.", 2);

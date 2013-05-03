@@ -48,6 +48,10 @@
 		$smarty->assign('router_data', $router_data);
 		//Moderator and owning user can edit router
 		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
+			$smarty->assign('community_location_longitude', Config::getConfigValueByName('community_location_longitude'));
+			$smarty->assign('community_location_latitude', Config::getConfigValueByName('community_location_latitude'));
+			$smarty->assign('community_location_zoom', Config::getConfigValueByName('community_location_zoom'));
+			
 			$smarty->assign('message', Message::getMessage());
 			$smarty->assign('is_root', Permission::checkPermission(120));
 

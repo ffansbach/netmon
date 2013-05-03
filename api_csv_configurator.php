@@ -92,8 +92,19 @@ if($_GET['section']=="router_auto_assign") {
 							router_auto_assign_hash = '$hash'
 						WHERE id = '$router_data[router_id]'");
 
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT api_key
+												FROM routers, users
+												WHERE routers.id=? AND users.id=routers.user_id");
+			$stmt->execute(array($router_data['router_id']));
+			$row = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+
 		//Make output
-		echo "success;".$router_data['router_id'].";".$hash.";".$router_data['hostname'];
+		echo "success;".$router_data['router_id'].";".$hash.";".$router_data['hostname'].";".$row['api_key'];
 	}
 }
 
