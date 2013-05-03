@@ -3,12 +3,18 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 11. Mrz 2013 um 15:09
--- Server Version: 5.5.29-MariaDB-mariadb1~wheezy-log
+-- Erstellungszeit: 04. Mai 2013 um 00:58
+-- Server Version: 5.5.30-MariaDB-mariadb1~wheezy-log
 -- PHP-Version: 5.4.4-14
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Datenbank: `freifunksql5`
@@ -285,6 +291,7 @@ CREATE TABLE IF NOT EXISTS `events` (
   `crawl_cycle_id` int(11) NOT NULL,
   `object` varchar(20) NOT NULL,
   `object_id` int(11) NOT NULL,
+  `action` varchar(200) NOT NULL,
   `create_date` datetime NOT NULL,
   `data` text NOT NULL,
   PRIMARY KEY (`id`),
@@ -604,6 +611,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `nickname` varchar(30) NOT NULL,
   `password` varchar(32) NOT NULL,
   `openid` varchar(100) NOT NULL,
+  `api_key` varchar(32) NOT NULL,
   `vorname` varchar(50) NOT NULL,
   `nachname` varchar(50) NOT NULL,
   `strasse` varchar(50) NOT NULL,
@@ -638,3 +646,7 @@ CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
