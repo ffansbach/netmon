@@ -69,7 +69,7 @@ class Event {
 			$range = "WHERE events.create_date>=NOW() - INTERVAL $hourlimit HOUR AND object='service' AND crawl_cycle_id<'$actual_crawl_cycle[id]'
 					  ORDER BY events.create_date desc";
 		try {
-			$sql = "SELECT id, object, object_id, create_date, data
+			$sql = "SELECT *
 			       FROM events
 				   $range";
 
@@ -101,7 +101,7 @@ class Event {
 		if(!empty($routers)) {
 		foreach($routers as $router) {
 			try {
-				$stmt = DB::getInstance()->prepare("SELECT id, object, object_id, create_date, data
+				$stmt = DB::getInstance()->prepare("SELECT *
 					FROM events
 					WHERE object='router' AND object_id=:router_id AND crawl_cycle_id<:crawl_cycle_id
 					ORDER BY events.create_date desc
@@ -153,7 +153,7 @@ class Event {
 						ORDER BY events.create_date desc";
 						
 			try {
-				$stmt = DB::getInstance()->prepare("SELECT id, object, object_id, create_date, data FROM events $range");
+				$stmt = DB::getInstance()->prepare("SELECT * FROM events $range");
 				$stmt->execute();
 				$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			} catch(PDOException $e) {

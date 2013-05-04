@@ -31,6 +31,7 @@ $(document).ready(function() {
 		<h2>Daten</h2>
 		<p>
 			{if $is_logged_in}
+				{if $smarty.session.user_id == $user.id}<b>API Key:</b> {$user.api_key}<br>{/if}
 				{if !empty($user.vorname) OR !empty($user.nachname)}<b>Name:</b> {$user.vorname} {$user.nachname}<br>{/if}
 				{if !empty($user.strasse)}<b>Strasse: </b>{$user.strasse}<br>{/if}
 				{if !empty($user.plz) OR !empty($user.ort)}<b>Wohnort:</b>  {$user.plz} {$user.ort}<br>{/if}
@@ -63,14 +64,17 @@ $(document).ready(function() {
 					<li>
 						<b>{$hist.create_date|date_format:"%e.%m. %H:%M:%S"}:</b> <a href="./router_status.php?router_id={$hist.additional_data.router_id}">Router {$hist.additional_data.hostname}</a> 
 
-						{if $hist.data.action == 'status' AND $hist.data.to == 'online'}
-							geht <span style="color: #007B0F;">online</span>
+						{if isset($hist.data.action) AND $hist.data.action == 'status' AND $hist.data.to == 'online'}
+							Router geht <span style="color: #007B0F;">online</span>
 						{/if}
-						{if $hist.data.action == 'status' AND $hist.data.to == 'offline'}
-							geht <span style="color: #CB0000;">offline</span>
+						{if isset($hist.data.action) AND $hist.data.action == 'status' AND $hist.data.to == 'offline'}
+							Router geht <span style="color: #CB0000;">offline</span>
 						{/if}
-						{if $hist.data.action == 'reboot'}
-							wurde <span style="color: #000f9c;">Rebootet</span>
+						{if isset($hist.data.action) AND $hist.data.action == 'reboot'}
+							Router wurde <span style="color: #000f9c;">Rebootet</span>
+						{/if}
+						{if isset($hist.action) AND $hist.action == 'watchdog_ath9k_bug'}
+							<a href="./event.php?event_id={$hist.id}">ATH9K Bug registriert</a>
 						{/if}
 					</li>
 				{/foreach}

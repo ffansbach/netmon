@@ -7,7 +7,9 @@ require_once('lib/classes/core/event.class.php');
 $smarty->assign('message', Message::getMessage());
 
 //get data
-$smarty->assign('event', Event::getEvent($_GET['event_id']));
+$event = Event::getEvent($_GET['event_id']);
+$smarty->assign('event', $event);
+$smarty->assign('event_data', unserialize($event['data']));
 
 //load the temlate
 $smarty->display("header.tpl.php");

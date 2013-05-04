@@ -292,14 +292,17 @@ $(document).ready(function() {
 				{foreach $router_history as $hist}
 					<li>
 						<b>{$hist.create_date|date_format:"%e.%m. %H:%M:%S"}:</b> 
-						{if $hist.data.action == 'status' AND $hist.data.to == 'online'}
+						{if isset($hist.data.action) AND $hist.data.action == 'status' AND $hist.data.to == 'online'}
 							Router geht <span style="color: #007B0F;">online</span>
 						{/if}
-						{if $hist.data.action == 'status' AND $hist.data.to == 'offline'}
+						{if isset($hist.data.action) AND $hist.data.action == 'status' AND $hist.data.to == 'offline'}
 							Router geht <span style="color: #CB0000;">offline</span>
 						{/if}
-						{if $hist.data.action == 'reboot'}
+						{if isset($hist.data.action) AND $hist.data.action == 'reboot'}
 							Router wurde <span style="color: #000f9c;">Rebootet</span>
+						{/if}
+						{if isset($hist.action) AND $hist.action == 'watchdog_ath9k_bug'}
+							<a href="./event.php?event_id={$hist.id}">ATH9K Bug registriert</a>
 						{/if}
 					</li>
 				{/foreach}

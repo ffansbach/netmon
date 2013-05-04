@@ -71,23 +71,14 @@
 				<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 				
 				<div id="map" style="height:400px; width:600px; border:solid 1px black;font-size:9pt;">
-					{literal}
 						<script type="text/javascript">
-							new_router_map();
+							edit_router_map('{$community_location_longitude}', '{$community_location_latitude}', '{$router_data.longitude}', '{$router_data.latitude}', '{$community_location_zoom}', '{$template}');
 						</script>
-					{/literal}
 				</div>
 			</div>
-				
-			<p>
-				<div style="float: right; width: 60%;">
-					Länge:<br><input id="longitude" name="longitude" size="20" maxlength="15" value="{$router_data.longitude}">
-				</div>
-				<div style="width: 40%;">
-					Breite:<br><input id="latitude" name="latitude" size="20" maxlength="15" value="{$router_data.latitude}">
-				</div>
-				<br style="clear:both;">
-			</p>
+			
+			<input type="hidden" id="longitude" name="longitude" size="20" maxlength="15" value="{$router_data.longitude}">
+			<input type="hidden" id="latitude" name="latitude" size="20" maxlength="15" value="{$router_data.latitude}">
 			
 			<p>Kurze Beschreibung des Standorts:<br><input id="location" name="location" type="text" size="60" maxlength="60" value="{$router_data.location}"></p>
 		</div>
