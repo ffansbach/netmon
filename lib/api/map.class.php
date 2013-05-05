@@ -155,7 +155,7 @@ class ApiMap {
 							$xw->startElement('LineStyle');
 							$xw->startElement('color');
 							if (Config::getConfigValueByName('routervpnif') == $originator['outgoing_interface']) {
-                                                                $xw->writeRaw("40ff0000");
+                                                                $xw->writeRaw("20ff0000");
                                                         } else {
 								if($originator['link_quality']>=0 AND $originator['link_quality']<105) {
 									$xw->writeRaw("ff1e1eff");
