@@ -22,12 +22,9 @@
   #nav_sub {
   width: 100%; /* Einfassen der Floats im IE */
   float:left; /* Einfassen der Floats in allen anderen Browsern */
-  background: #4e5155 url("../../yaml/navigation/images/shiny_buttons/background_active.gif") repeat-x bottom right;
+  background: #4e5155;
 /*   border-top: 1px #666 solid; */
-  line-height: 0px;
-  font-size: 90%;
-  height: 1.5em; /* 2.2em; */
-  overflow:hidden;
+  height: 16px;
   }
 
   #nav_sub ul {
@@ -39,16 +36,16 @@
 
   border-left: 0px #aaa solid;
   border-right: 0px #fff solid;
-  border-bottom: #f00 1px solid;
   }
   
   #nav_sub ul li {
+  position: relative;
   float: left;
   display:inline; /* Fix für IE Doubled Float Margin Bug */
   margin: 0;
   padding: 0;
   font-size: 1.0em;
-  line-height: 1em;
+  line-height: 1.0em;
   list-style-type: none;
   border-left: 0px #fff solid;
   border-right: 0px #aaa solid;
@@ -63,7 +60,7 @@
   text-decoration: none;
   color: #aaa;
   margin: 0;
-  padding: 0.25em 0.4em 0.6em 0.8em; /* 0.6em 0.8em; */
+  padding: 2px 4px 2px 8px; /* 0.6em 0.8em; */
   }
   
   #nav_sub ul li a:focus,
@@ -71,7 +68,7 @@
   #nav_sub ul li a:active {
   color: #fff;
   text-decoration: none;
-  background: #4e5155 url("../../yaml/navigation/images/shiny_buttons/background_active.gif") repeat-x top right;
+  background: #4e5155;
   }
   
   #nav_sub ul li .selected {
@@ -90,6 +87,69 @@
   #nav_sub ul li .selected a:focus,
   #nav_sub ul li .selected a:hover,
   #nav_sub ul li .selected a:active {
-    background: #4e5155 url("../../yaml/navigation/images/shiny_buttons/background_active.gif") repeat-x top right; 
+    background: #4e5155; 
   }
+  
+
+  
+
+  
+#nav_sub ul ul {
+  margin:0; /* Standard-Listendefinition zurücksetzen */
+  padding: 0;
+
+  border-left: 0px #aaa solid;
+  border-right: 0px #fff solid;
+	
+  position: absolute;
+  top: 16px;
+  left: 0;
+   
+  opacity: 0;
+  background: #4e5155; 
+  -webkit-transition: opacity .25s ease .1s;
+  -moz-transition: opacity .25s ease .1s;
+  -o-transition: opacity .25s ease .1s;
+  -ms-transition: opacity .25s ease .1s;
+  transition: opacity .25s ease .1s;
+}
+ 
+#nav_sub ul li:hover > ul { opacity: 1; }
+ 
+#nav_sub ul ul li {	
+    height: 0;
+    overflow: hidden;
+    padding: 0;
+ 
+    -webkit-transition: height .25s ease .1s;
+    -moz-transition: height .25s ease .1s;
+    -o-transition: height .25s ease .1s;
+    -ms-transition: height .25s ease .1s;
+    transition: height .25s ease .1s;
+}
+ 
+#nav_sub ul li:hover > ul li {
+    height: 16px;
+    overflow: visible;
+    padding: 0;
+}
+
+#nav_sub ul ul li a {
+  display:block;
+  width: 110px;
+  font-size: 1em;
+  font-weight: normal;
+  background: transparent;
+  text-decoration: none;
+  color: #aaa;
+  margin: 0;
+  padding: 2px 4px 2px 8px; /* 0.6em 0.8em; */
+ 
+  border: none;
+  border-bottom: 1px solid #353539;
+}
+ 
+#nav_sub ul ul li:last-child a { border: none; }
+
+
 }

@@ -62,7 +62,7 @@
 
   #header #topnav {
     right:40px;
-    top:0;
+    top:10px;
   }
   
   /* (en) adjustment of main navigation */
@@ -75,6 +75,10 @@
     padding: 1em;
   }
 
+  #messagebox {
+    margin-left: 1em;
+  }
+  
   #footer { 
     color:#666;
     background: #efefef url("../../yaml/navigation/images/shiny_buttons/background_active.gif") repeat-x bottom right;

@@ -1,18 +1,21 @@
-/* http://pascalkremp.com/div-elemente-nebeneinander-anordnen/ */
-.clearfix:before,
-.clearfix:after {
-	content: " ";
-	display: table;
+Body {
+font-family: sans-serif;
+background: #aaad9a;
 }
 
-.clearfix:after {
-	clear: both;
-}
+/*Normaler Link*/
+A:link, A:visited, A:focus{text-decoration:none; font-weight:normal; color:#010752; border:0 none;}
+/*Link während Mausover*/
+A:hover {text-decoration:underline; font-weight:normal; color:#2f4d84; border:0 none;}
+/*Zurzeit angeklickter Link*/
+A:active {text-decoration:none; font-weight:normal; color:#000000; border:0 none;}
 
-.clearfix {
-	*zoom: 1;
-}
 
+
+
+#banner {
+margin: auto; max-width: 1280px; height: 182px; background-position: left; background-repeat: no-repeat;
+}
 
 #topmenu {
   display: block;
@@ -56,11 +59,14 @@ background: #FFFFFF;
 }
 
 #content{
+border-left: 1px solid #dc0067;
 min-height: 550px;
+background: #FFFFFF;
 font-size: 10pt;
 text-align: left;
+margin-left: 200px;
+margin-right: 0px;
 padding-left: 10px;
-padding-right: 10px;
 padding-top: 16px;
 padding-bottom: 20px;
 }
@@ -73,20 +79,60 @@ padding-bottom: 20px;
 width:200px;
 float:left;
 color:#000000;
+text-decoration:none;
+font-weight: normal;
+font-family: sans-serif;
 font-size: 12pt;
+background: #FFFFFF;
+line-height : 100.01%;
+text-align: left;
+vertical-align: top;
 
 padding-top: 16px;
 padding-bottom: 20px;
-}
+
+margin: auto;}
 
 .user_menus {
 width:200px;
 
 color:#000000;
 text-decoration:none;
+font-weight: normal;
+font-family: sans-serif;
 font-size: 12pt;
+background: #FFFFFF;
+line-height : 100.01%;
+text-align: left;
+vertical-align: top;
 
-padding-bottom: 20px;}
+padding-bottom: 20px;
+margin: auto;}
+
+
+#footer {
+width:100%;
+clear: both;
+
+color:#000000;
+text-decoration:none;
+font-weight: normal;
+font-family: Verdana, "Bitstream Vera Sans", sans-serif;
+font-size: 10pt;
+background: #FFFFFF;
+text-align: center;
+vertical-align: top;
+
+border: #000000;
+border-style: dotted;
+border-top-width: 1px;
+border-bottom-width: 1px;
+border-right-width: 0px;
+border-left-width: 0px;
+
+padding-top: 4px;
+padding-bottom: 4px;
+margin-top: 10px;}
 
 .error
 {
@@ -123,6 +169,7 @@ padding-bottom: 20px;}
 
 
 /* begin css tabs */
+
 ul#tabnav { /* general settings */
 text-align: left; /* set to left, right or center */
 margin: 1em 0 1em 0; /* set margins as desired */
@@ -163,4 +210,4 @@ ul#tabnav a:hover { /* settings for hover effect */
 background: #fff; /* set desired hover color */
 }
 
-/* end css tabs */ 
+/* end css tabs */

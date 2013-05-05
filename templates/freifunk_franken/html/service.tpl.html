@@ -1,0 +1,112 @@
+<script src="lib/extern/jquery/jquery.min.js"></script>
+<script src="lib/extern/DataTables/jquery.dataTables.min.js"></script>
+<script src="lib/extern/DataTables/jquery.dataTables.Plugin.DateSort.js"></script>
+
+<script type="text/javascript">
+{literal}
+$(document).ready(function() {
+	$('#iplist').dataTable( {
+		"bFilter": false,
+		"bInfo": false,
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "date-eu" },
+			{ "sType": "date-eu" }
+		],
+		"aaSorting": [[ 0, "desc" ]]
+	} );
+	
+	$('#dns_ressource_record_list').dataTable( {
+		"bFilter": false,
+		"bInfo": false,
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "html" },
+			{ "sType": "date-eu" },
+			{ "sType": "date-eu" }
+		],
+		"aaSorting": [[ 0, "desc" ]]
+	} );
+} );
+{/literal}
+</script>
+
+<h1>Dienst <i>{$service->getTitle()}</i></h1>
+<h2>Grunddaten</h2>
+<p>
+	<b>Benutzer:</b> <a href="./user.php?user_id={$service->getUserId()}">{$service->getUser()->getNickname()}</a><br>
+	<b>Angelegt am:</b> {$service->getCreateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
+	<b>Letztes Update am:</b> {$service->getUpdateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
+	<b>Sichtbar:</b> {if $service->getVisible()==1}Ja{else}Nein{/if}<br>
+	<b>Beschreibung:</b> {$service->getDescription()}<br>
+<p>
+
+<h2>IP-Adressen</h2>
+{if $service->getIplist()->getNumberOfElements()>0}
+	<table class="display" id="iplist" style="width: 100%;">
+		<thead>
+			<tr>
+				<th>IP</th>
+				<th>IPv</th>
+				<th>Erstellt</th>
+				<th>Letztes Update</th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach item=ip from=$service->getIplist()->getIplist()}
+				<tr>
+					<td>{$ip->getIpCompressed()}</td>
+					<td>{$ip->getNetwork()->getIpv()}</td>
+					<td>{$ip->getCreateDate()|date_format:"%d.%m.%Y"}</td>
+					<td>{$ip->getUpdateDate()|date_format:"%d.%m.%Y %H:%M"}</td>
+				</tr>
+			{/foreach}
+		</tbody>
+	</table>
+{else}
+	<p>Diesem Service ist nicht direkt eine IP-Adresse zugewiesen. Der Service ist über einen DNS Ressource-Record erreichbar.<p>
+{/if}
+
+<h2>DNS Ressource Records</h2>
+{if $service->getDnsRessourceRecordList()->getNumberOfElements()>0}
+	<table class="display" id="dns_ressource_record_list" style="width: 100%;">
+		<thead>
+			<tr>
+				<th>Host</th>
+				<th>Type</th>
+				<th>Destination</th>
+				<th>Pri</th>
+				<th>Benutzer</th>
+				<th>Erstellt</th>
+				<th>Letztes Update</th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach item=dns_ressource_record from=$service->getDnsRessourceRecordList()->getDnsRessourceRecordList()}
+				<tr>
+					<td>{$dns_ressource_record->getHost()}.{$dns_ressource_record->getDnsZone()->getName()}</td>
+					<td>{$dns_ressource_record->getType()}</td>
+					<td>
+						{if $dns_ressource_record->getType() == 'A' OR $dns_ressource_record->getType() == 'AAAA'}
+							{$dns_ressource_record->getDestination()->getIpCompressed()}
+						{else}
+							{$dns_ressource_record->getDestinationId()}
+						{/if}
+					</td>
+					<td>{$dns_ressource_record->getPri()}</td>
+					<td><a href="./user.php?user_id={$dns_ressource_record->getUser()->getUserId()}">{$dns_ressource_record->getUser()->getNickname()}</a></td>
+					<td>{$dns_ressource_record->getCreateDate()|date_format:"%d.%m.%Y"}</td>
+					<td>{$dns_ressource_record->getUpdateDate()|date_format:"%d.%m.%Y %H:%M"}</td>
+				</tr>
+			{/foreach}
+		</tbody>
+	</table>
+{else}
+	<p>Diesem Service ist nicht direkt ein DNS Ressource Record zugewiesen. Der Service ist über eine IP-Adresse erreichbar.<p>
+{/if}
