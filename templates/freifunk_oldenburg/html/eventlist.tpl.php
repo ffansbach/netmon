@@ -1,6 +1,6 @@
 <h1>Events der letzten {$history_hours} Stunden</h1>
 
-<form action="./networkhistory.php" method="POST" enctype="multipart/form-data">
+<form action="./eventlist.php" method="POST" enctype="multipart/form-data">
 <p>Events der letzten <input name="history_hours" type="text" size="1" value="{$history_hours}"> Stunden anzeigen <input type="submit" value="aktualisieren"></p>
 </form>
 
