@@ -2,7 +2,10 @@
     RewriteEngine On
 
 	RewriteRule ^event/([0-9]+)/?$ api.php?rquest=event&id=$1 [L]
-    
+	RewriteRule ^ip/([0-9]+)/?$ api.php?rquest=ip&id=$1 [L]
+	RewriteRule ^iplist/([0-9]+)/?$ api.php?rquest=iplist&id=$1 [L]
+	RewriteRule ^networkinterface/([0-9]+)/?$ api.php?rquest=networkinterface&id=$1 [L]
+	
 	RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-s
 	RewriteRule ^(.*)$ api.php?rquest=$1 [QSA,NC,L]

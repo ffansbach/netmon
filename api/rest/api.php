@@ -1,6 +1,9 @@
 <?php
 	require_once("../../config/config.local.inc.php");
 	require_once("../../lib/classes/core/db.class.php");
+	require_once("../../lib/classes/core/Iplist.class.php");
+	require_once("../../lib/classes/core/Ip.class.php");
+	require_once("../../lib/classes/core/Networkinterface.class.php");
 	require_once("../../lib/classes/core/Event.class.php");
 	require_once("../../lib/classes/extern/rest/rest.inc.php");
 	
@@ -39,6 +42,54 @@
 				$this->response('',404);				// If the method not exist with in this class, response would be "Page not found".
 		}
 		
+		private function iplist() {
+			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+				$iplist = new Iplist($this->_request['id']);
+				$domxmldata = $iplist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} elseif($this->get_request_method() == "GET") {
+				$iplist = new Iplist();
+				$domxmldata = $iplist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The iplist could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
+		private function ip() {
+			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+				$ip = new Ip((int)$this->_request['id']);
+				if($ip->getIpId() == 0) {
+					$this->error_code = 1;
+					$this->error_message = "IP not found";
+					$this->response($this->finishxml(), 404);
+				} else {
+					$domxmldata = $ip->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				}
+			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
+				header('Location: http://netmon.freifunk-ol.de/api/rest/iplist/');
+			}
+		}
+		
+		private function networkinterface() {
+			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+				$networkinterface = new Networkinterface((int)$this->_request['id']);
+				if($networkinterface->getInterfaceId() == 0) {
+					$this->error_code = 1;
+					$this->error_message = "Networkinterface not found";
+					$this->response($this->finishxml(), 404);
+				} else {
+					$domxmldata = $networkinterface->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				}
+			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
+				header('Location: http://netmon.freifunk-ol.de/api/rest/networkinterfaclist/');
+			}
+		}
+		
 		private function event() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
 				$event = new Event((int)$this->_request['id']);
@@ -49,7 +100,7 @@
 				} else {
 					$domxmldata = $this->domxml->createElement("event");
 					$domxmldata->appendChild($this->domxml->createElement("event_id", $event->getEventId()));
-					$domxmldata->appendChild($this->domxml->createElement("crawl_cycle_id", $event->getCrawlCycleId()));
+//					$domxmldata->appendChild($this->domxml->createElement("crawl_cycle_id", $event->getCrawlCycleId()));
 					$domxmldata->appendChild($this->domxml->createElement("object", $event->getObject()));
 					$domxmldata->appendChild($this->domxml->createElement("object_id", $event->getObjectId()));
 					$domxmldata->appendChild($this->domxml->createElement("action", $event->getAction()));

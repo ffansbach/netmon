@@ -1,5 +1,4 @@
 <?php
-
 	class Event {
 		private $event_id = 0;
 		private $crawl_cycle_id = 0;
