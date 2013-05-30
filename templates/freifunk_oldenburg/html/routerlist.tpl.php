@@ -1,5 +1,5 @@
-<script src="lib/classes/extern/jquery/jquery.js"></script>
-<script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
+<script src="lib/classes/extern/jquery/jquery.min.js"></script>
+<script src="lib/classes/extern/DataTables/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 {literal}
@@ -8,6 +8,17 @@ $(document).ready(function() {
 		"bFilter": false,
 		"bInfo": false,
 		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "html" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "html" },
+			{ "sType": "string" }, // zuverlässigkeit need own
+			{ "sType": "numeric" },
+			{ "sType": "numeric" },
+			{ "sType": "numeric" }
+		],
 		"aaSorting": [[ 7, "desc" ]]
 	} );
 } );
@@ -25,7 +36,7 @@ $(document).ready(function() {
 				<th>Technik</th>
 				<th>Benutzer</th>
 				<th>Online</th>
-				<th>Uptime</th>
+				<th>Up (Std.)</th>
 				<th>Clients</th>
 				<th>Traffic</th>
 			</tr>
@@ -47,7 +58,7 @@ $(document).ready(function() {
 					<td>{if !empty($router.hardware_name)}{$router.hardware_name}{else}{$router.short_chipset_name}{if $router.short_chipset_name!=$router.chipset_name}...{/if}{/if}</td>
 					<td><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></td>
 					<td value="{math equation='round(x,1)' x=$router.router_reliability.online_percent}">{math equation="round(x,1)" x=$router.router_reliability.online_percent}%</td>
-					<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60} Std.</td>
+					<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60}</td>
 					<td>{$router.client_count}</td>
 					<td>{$router.traffic}</td>
 				</tr>

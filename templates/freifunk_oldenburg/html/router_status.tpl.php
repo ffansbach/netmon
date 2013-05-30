@@ -1,10 +1,5 @@
-<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
-
-<script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
-
-<link rel="stylesheet" type="text/css" href="templates/{$template}/css/jquery_data_tables.css">
+<script src="lib/classes/extern/jquery/jquery.min.js"></script>
+<script src="lib/classes/extern/DataTables/jquery.dataTables.min.js"></script>
 
 <!-- Javascript for the graphs -->
 <script type="text/javascript" src="lib/classes/extern/javascriptrrd/binaryXHR.js"></script>
@@ -21,7 +16,9 @@ $(document).ready(function() {
 	$('#batman_adv_originator_list').dataTable( {
 		"bFilter": false,
 		"bInfo": false,
-		"bPaginate": false
+		"sScrollY": "300px",
+		"bPaginate": false,
+		"aaSorting": [[ 2, "desc" ]]
 	} );
 } );
 {/literal}
@@ -379,9 +376,9 @@ $(document).ready(function() {
 					<tr>
 						<th>Originator</th>
 						<th>Last Seen</th>
-						<th>Quality</th>
+						<th>Qual.</th>
 						<th>Nexthop</th>
-						<th>Outgoing Interface</th>
+						<th>Out. Iface</th>
 					</tr>
 				</thead>
 				<tbody>

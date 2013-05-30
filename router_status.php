@@ -79,7 +79,7 @@ $smarty->assign('router_crawl_history', $router_crawl_history);
 /** Get and assign actual B.A.T.M.A.N advanced status **/
 $crawl_batman_adv_interfaces = BatmanAdvanced::getCrawlBatmanAdvInterfacesByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 $smarty->assign('crawl_batman_adv_interfaces', $crawl_batman_adv_interfaces);
-$batman_adv_originators = BatmanAdvanced::getCrawlBatmanAdvNexthopsByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
+$batman_adv_originators = BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 $smarty->assign('batman_adv_originators', $batman_adv_originators);
 
 /** Set settings for B.A.T.M.A.N advanced graphs **/
