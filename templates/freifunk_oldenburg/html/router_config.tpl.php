@@ -166,12 +166,6 @@
 				{/if}
 			</div>
 			<div style="float:left; width: 50%;">
-				{if $interface.is_vpn=='1'}
-					<p>
-						<a href="./vpn.php?section=new&interface_id={$interface.interface_id}">VPN-Zertifikate generieren</a><br>
-						<a href="./vpn.php?section=download&interface_id={$interface.interface_id}">VPN-Zertifikate und Config-Datei downloaden</a><br>
-					</p>
-				{/if}
 				<p>
 					<a href="./ipeditor.php?section=add&router_id={$router_data.router_id}&interface_id={$interface.interface_id}">IP hinzufügen</a><br>
 					<a href="./interfaceeditor.php?section=delete&interface_id={$interface.interface_id}">Interface entfernen</a>
@@ -233,15 +227,5 @@
 	
 	<p>
 		<a href="./ipeditor.php?section=edit&id={$ip.ip_id}">Ip Editieren</a><br>
-		<a href="./imagemaker.php?section=new&ip_id={$ip.ip_id}">Image Downloaden</a><br>
-		<!--  <a href="./vpn.php?section=edit&ip_id={$ip.ip_id}">VPN-Optionen</a>-->
-	</p>
-	
-	<p>
-		<a href="./vpn.php?section=new&ip_id={$ip.ip_id}">Neue VPN-Zertifikate generieren</a><br>
-		<a href="./vpn.php?section=info&ip_id={$ip.ip_id}">VPN-Zertifikat, VPN-Config und CCD ansehen</a><br>
-		<a href="./vpn.php?section=insert_regenerate_ccd&ip_id={$ip.ip_id}">CCD neu anlegen</a><br>
-		<a href="./vpn.php?section=insert_delete_ccd&ip_id={$ip.ip_id}">CCD löschen</a><br>
-		<a href="./vpn.php?section=download&ip_id={$ip.ip_id}">VPN-Zertifikate und Config-Datei downloaden</a><br>
 	</p>
 {/if}

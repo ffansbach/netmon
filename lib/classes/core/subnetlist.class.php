@@ -32,24 +32,20 @@ class SubnetList {
 	function getList() {
 		$subnetlist = array();
 		try {
-			$sql = "SELECT subnets.id, subnets.host, subnets.netmask, subnets.title, subnets.user_id,
-						   users.nickname,
-						   COUNT(ips.id) as ips_in_net
-					FROM subnets
-					LEFT JOIN users ON (users.id=subnets.user_id)
-					LEFT JOIN ips ON (ips.subnet_id=subnets.id)
-					GROUP BY subnets.id
-					ORDER BY subnets.host ASC";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$subnetlist[] = $row;
-			}
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT subnets.id, subnets.host, subnets.netmask, subnets.title, subnets.user_id,
+													   users.nickname,
+													   COUNT(ips.id) as ips_in_net
+												FROM subnets
+												LEFT JOIN users ON (users.id=subnets.user_id)
+												LEFT JOIN ips ON (ips.subnet_id=subnets.id)
+												GROUP BY subnets.id
+												ORDER BY subnets.host ASC");
+			$stmt->execute(array($router_id));
+			return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
-
-    	return $subnetlist;
 	}	
 }
 

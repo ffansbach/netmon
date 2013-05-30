@@ -5,6 +5,8 @@
 	require_once('./lib/classes/core/project.class.php');
 	require_once('./lib/classes/core/router.class.php');
 	
+	$smarty->assign('google_maps_api_key', Config::getConfigValueByName('google_maps_api_key'));
+	
 	if ($_GET['section'] == "add") {
 		$router_data = Router::getRouterInfo($_GET['router_id']);
 		//Moderator and owning user can add interface to router

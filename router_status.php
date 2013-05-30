@@ -166,7 +166,7 @@ if($is_logged_id) {
 $servicelist = Service::getServiceList($view, false, $_GET['router_id']);
 $smarty->assign('servicelist', $servicelist);
 
-$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
+$smarty->assign('google_maps_api_key', Config::getConfigValueByName('google_maps_api_key'));
 
 //Display Templates
 $smarty->display("header.tpl.php");

@@ -162,14 +162,31 @@ class Ip {
 	}
 
 	public function getExistingIPv4Ips() {
+		$plain_ips = array();
 		try {
-			$stmt = DB::getInstance()->prepare("SELECT * FROM ips WHERE ipv='4' ORDER BY ip ASC");
+			$stmt = DB::getInstance()->prepare("SELECT ips.ip FROM ips WHERE ipv='4' ORDER BY ip ASC");
 			$stmt->execute();
 			return $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 			echo $e->getTraceAsString();
 		}
+	}
+	
+	public function getExistingIPv4IpsPlain() {
+		$plain_ips = array();
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT ips.ip FROM ips WHERE ipv='4' ORDER BY ip ASC");
+			$stmt->execute();
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		foreach($result as $ip) {
+			$plain_ips[] = $ip['ip'];
+		}
+		return $plain_ips;
 	}
 	
 	public function getExistingIPs($ipv="all") {
@@ -197,6 +214,23 @@ class Ip {
 			echo $e->getMessage();
 			echo $e->getTraceAsString();
 		}
+	}
+	
+	public function getExistingIPv4IpsByProjectIdPlain($project_id) {
+		$result = array();
+		$ips = array();
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT * FROM ips WHERE ipv='4' AND project_id=? ORDER BY ip ASC");
+			$stmt->execute(array($project_id));
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		foreach($result as $ip) {
+			$ips[] = $ip['ip'];
+		}
+		return $ips;
 	}
 
 	public function getExistingIpRangesByProjectId($project_id) {
@@ -230,12 +264,13 @@ class Ip {
 				}
 			}
 		}
+		
 		return $rangelist;
 	}
 
 	public function getAFreeIPv4IPByProjectId($project_id) {
 		//Get all existing IP´s
-		$existingips = Ip::getExistingIPv4Ips();
+		$existingips = Ip::getExistingIPv4IpsPlain();
 
 		//Get all existing IP´s of IP-Ranges
 		$ips_of_ip_ranges = Ip::getIpsOfIpRangesByProjectId($project_id);
@@ -284,12 +319,13 @@ class Ip {
 
 	public function getExistingIpsAndRangesByProjectId($project_id) {
 		//Get all existing IP´s
-		$existingips = Ip::getExistingIPv4IpsByProjectId($project_id);
+		$existingips = Ip::getExistingIPv4IpsByProjectIdPlain($project_id);
 
 		//Get all existing IP´s of IP-Ranges
 		$ips_of_ip_ranges = Ip::getIpsOfIpRangesByProjectId($project_id);
 
 		$existingips = array_merge($existingips, $ips_of_ip_ranges);
+		
 		return $existingips;
 	}
 
@@ -308,6 +344,8 @@ class Ip {
 		$first_ip = explode(".", $first_ip);
 		$last_ip = explode(".", $last_ip);
 
+		die("Too much load in this function!");
+		
 		for($i=$first_ip[0]; $i<=$last_ip[0]; $i++) {
 			for($ii=$first_ip[1]; $ii<=$last_ip[1]; $ii++) {
 				for($iii=$first_ip[2]; $iii<=$last_ip[2]; $iii++) {
@@ -320,14 +358,14 @@ class Ip {
 				}
 			}
 		}
-
+		
 		return $free_ips;
 	}
 
 	public function getFreeIpRangeByProjectId($project_id, $range, $ip="") {
 		if ($range > 0) {
 			$free_ips = Ip::getFreeIpsInProject($project_id);
-			if(!empty($ip)) {
+/*			if(!empty($ip)) {
 				$ip_key = array_search($ip, $free_ips, TRUE);
 				unset($free_ips[$ip_key]);
 			}
@@ -373,7 +411,7 @@ class Ip {
 				return array('start'=>$first_dhcp_ip, 'end'=>$last_dhcp_ip);
 			} else {
 				return false;
-			}
+			}*/
 		} else {
 			return array('start'=>"NULL", 'end'=>"NULL");
 		}

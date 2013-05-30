@@ -214,12 +214,12 @@ class ApiMap {
 
 	public function getProjectGeoPolygons() {
 		try {
-			$sql = "select geo_polygons FROM projects WHERE id='$_GET[project_id]';";
-			$result = DB::getInstance()->query($sql);
-			$poligons = $result->fetch(PDO::FETCH_ASSOC);
-		}
-		catch(PDOException $e) {
+			$stmt = DB::getInstance()->prepare("SELECT geo_polygons FROM projects WHERE id=?");
+			$stmt->execute(array($_GET['project_id']));
+			$poligons = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
 			echo $e->getMessage();
+			echo $e->getTraceAsString();
 		}
 		
 		echo $poligons['geo_polygons'];
@@ -385,7 +385,7 @@ class ApiMap {
 									$xw->writeRaw("<![CDATA[Router <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
-										$box_inhalt  = "<b>Status:</b> $crawl_router[status]<br>";
+										$box_inhalt .= "<b>Status:</b> $crawl_router[status]<br>";
 										$box_inhalt .= "<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>";
 										$box_inhalt .= "<b>Clients:</b> ".$client_count."<br>";
 										$box_inhalt .= "<b>Benutzer:</b> <a href='./user.php?user_id=$router_data[user_id]'>$router_data[nickname]</a><br>";
@@ -398,7 +398,7 @@ class ApiMap {
 										}
 										$box_inhalt .= "<h3>Nachbarn</h3>";
 										if(!empty($batman_adv_originators)) {
-											$box_inhalt .= "<table>";
+											$box_inhalt = "<table>";
 											$box_inhalt .= 		"<thead>";
 											$box_inhalt .= 			"<tr>";
 											$box_inhalt .= 				"<th>Originator</th>";
@@ -439,7 +439,6 @@ class ApiMap {
 										} else {
 											$box_inhalt .= '	<p>Keine Originators gefunden</p>';
 										}
-										
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 								$xw->endElement();
 								$xw->startElement('styleUrl');
