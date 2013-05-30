@@ -48,6 +48,18 @@ class RoutersNotAssigned {
 		}
 		return $rows;
 	}
+	
+	public function deleteByAutoAssignLoginString($router_auto_assign_login_string) {
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM routers_not_assigned
+												WHERE router_auto_assign_login_string=?
+												LIMIT 1");
+			$stmt->execute(array($router_auto_assign_login_string));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+	}
 }
 
 ?>

@@ -5,6 +5,7 @@ require_once('lib/classes/core/service.class.php');
 require_once('lib/classes/core/serviceeditor.class.php');
 require_once('lib/classes/core/crawling.class.php');
 require_once('lib/classes/core/event.class.php');
+require_once('lib/classes/core/routersnotassigned.class.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
@@ -60,15 +61,7 @@ class RouterEditor {
 			Crawling::insertRouterCrawl($router_id, $crawl_data, $crawl_cycle_id);
 			
 			if($_POST['allow_router_auto_assign']=='1' AND !empty($_POST['router_auto_assign_login_string'])) {
-				try {
-					$stmt = DB::getInstance()->prepare("DELETE FROM routers_not_assigned
-									    WHERE router_auto_assign_login_string=?
-									    LIMIT 1");
-					$stmt->execute(array($_POST['router_auto_assign_login_string']));
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
+				RoutersNotAssigned::deleteByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
 			}
 			$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
 			
@@ -156,6 +149,11 @@ class RouterEditor {
 				echo $e->getMessage();
 				echo $e->getTraceAsString();
 			}
+			
+			if($_POST['allow_router_auto_assign']=='1' AND !empty($_POST['router_auto_assign_login_string'])) {
+				RoutersNotAssigned::deleteByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
+			}
+			
 			if ($result>0) {
 				$message[] = array("Die Änderungen am Router $_POST[hostname] wurden gespeichert.", 1);
 				Message::setMessage($message);
