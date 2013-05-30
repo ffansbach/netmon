@@ -10,7 +10,8 @@
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT events.id as event_id
 														FROM events
-														WHERE events.object=? AND events.object_id=? AND events.action=?");
+														WHERE events.object=? AND events.object_id=? AND events.action=?
+														ORDER BY events.id DESC");
 					$stmt->execute(array($object, $object_id, $action));
 					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
@@ -21,7 +22,8 @@
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT events.id as event_id
 														FROM events
-														WHERE events.object=? AND events.object_id=?");
+														WHERE events.object=? AND events.object_id=?
+														ORDER BY events.id DESC");
 					$stmt->execute(array($object, $object_id));
 					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
@@ -32,7 +34,8 @@
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT events.id as event_id
 														FROM events
-														WHERE events.object=?");
+														WHERE events.object=?
+														ORDER BY events.id DESC");
 					$stmt->execute(array($object));
 					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
@@ -43,7 +46,8 @@
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT events.id as event_id
 														FROM events
-														WHERE events.action=?");
+														WHERE events.action=?
+														ORDER BY events.id DESC");
 					$stmt->execute(array($action));
 					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
@@ -53,7 +57,8 @@
 			} else {
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT events.id as event_id
-														FROM events");
+														FROM events
+														ORDER BY events.id DESC");
 					$stmt->execute(array());
 					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {

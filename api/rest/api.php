@@ -111,7 +111,11 @@
 		}
 		
 		private function routerlist() {
-			if($this->get_request_method() == "GET") {
+			if($this->get_request_method() == "GET" && isset($this->_request['user_id'])) {
+				$routerlist = new Routerlist($this->_request['user_id']);
+				$domxmldata = $routerlist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} elseif($this->get_request_method() == "GET") {
 				$routerlist = new Routerlist();
 				$domxmldata = $routerlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
@@ -139,7 +143,19 @@
 		}
 		
 		private function eventlist() {
-			if($this->get_request_method() == "GET") {
+			if($this->get_request_method() == "GET" && isset($this->_request['router_id']) && isset($this->_request['action'])) {
+				$eventlist = new Eventlist('router', $this->_request['router_id'], $this->_request['action']);
+				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} elseif($this->get_request_method() == "GET" && isset($this->_request['router_id'])) {
+				$eventlist = new Eventlist('router', $this->_request['router_id']);
+				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} elseif($this->get_request_method() == "GET" && isset($this->_request['action'])) {
+				$eventlist = new Eventlist(false, false, $this->_request['action']);
+				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} elseif($this->get_request_method() == "GET") {
 				$eventlist = new Eventlist();
 				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
