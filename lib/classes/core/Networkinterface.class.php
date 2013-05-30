@@ -1,12 +1,12 @@
 <?php
+	require_once('../../lib/classes/core/Object.class.php');
 	require_once('../../lib/classes/core/Iplist.class.php');
 	
-	class Networkinterface {
+	class Networkinterface extends Object {
 		private $networkinterface_id = 0;
 		private $router_id = 0;
 		private $name = "";
 		private $mac_addr = "";
-		private $create_date = 0;
 		private $statusdata = array();
 		private $statusdata_history = array();
 		private $iplist = array();
@@ -59,16 +59,6 @@
 				$this->mac_addr = $mac_addr;
 		}
 		
-		public function setCreateDate($create_date=false) {
-			if($create_date == false)
-				$this->create_date = time();
-			else if(is_string($create_date)) {
-				$date = new DateTime($create_date);
-				$this->create_date = $date->getTimestamp();
-			} else if(is_int($create_date))
-				$this->create_date = $create_date;
-		}
-		
 		public function setIplist($iplist=false) {
 			if($iplist!=false && is_array($iplist))
 				$this->iplist = $iplist;
@@ -92,17 +82,13 @@
 			return $this->mac_addr;
 		}
 		
-		public function getCreateDate() {
-			return $this->create_date;
-		}
-		
 		public function getIpList() {
 			return $this->iplist;
 		}
 		
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('networkinterface');
-			$domxmlelement->appendChild($domdocument->createElement("interface_id", $this->getInterfaceId()));
+			$domxmlelement->appendChild($domdocument->createElement("networkinterface_id", $this->getInterfaceId()));
 			$domxmlelement->appendChild($domdocument->createElement("router_id", $this->getRouterId()));
 			$domxmlelement->appendChild($domdocument->createElement("name", $this->getName()));
 			$domxmlelement->appendChild($domdocument->createElement("mac_addr", $this->getMacAddr()));

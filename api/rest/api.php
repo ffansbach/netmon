@@ -3,7 +3,11 @@
 	require_once("../../lib/classes/core/db.class.php");
 	require_once("../../lib/classes/core/Iplist.class.php");
 	require_once("../../lib/classes/core/Ip.class.php");
+	require_once("../../lib/classes/core/Networkinterfacelist.class.php");
 	require_once("../../lib/classes/core/Networkinterface.class.php");
+	require_once("../../lib/classes/core/Routerlist.class.php");
+	require_once("../../lib/classes/core/Router.class.php");
+	require_once("../../lib/classes/core/Eventlist.class.php");
 	require_once("../../lib/classes/core/Event.class.php");
 	require_once("../../lib/classes/extern/rest/rest.inc.php");
 	
@@ -74,6 +78,22 @@
 			}
 		}
 		
+		private function networkinterfacelist() {
+			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+				$networkinterfacelist = new Networkinterfacelist($this->_request['id']);
+				$domxmldata = $networkinterfacelist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} elseif($this->get_request_method() == "GET") {
+				$networkinterfacelist = new Networkinterfacelist();
+				$domxmldata = $networkinterfacelist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The networkinterfacelist could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
 		private function networkinterface() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
 				$networkinterface = new Networkinterface((int)$this->_request['id']);
@@ -90,6 +110,46 @@
 			}
 		}
 		
+		private function routerlist() {
+			if($this->get_request_method() == "GET") {
+				$routerlist = new Routerlist();
+				$domxmldata = $routerlist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The routerlist could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
+		private function router() {
+			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+				$router = new Router((int)$this->_request['id']);
+				if($router->getRouterId() == 0) {
+					$this->error_code = 1;
+					$this->error_message = "Router not found";
+					$this->response($this->finishxml(), 404);
+				} else {
+					$domxmldata = $router->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				}
+			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
+				header('Location: http://netmon.freifunk-ol.de/api/rest/routerlist/');
+			}
+		}
+		
+		private function eventlist() {
+			if($this->get_request_method() == "GET") {
+				$eventlist = new Eventlist();
+				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The eventlist could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
 		private function event() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
 				$event = new Event((int)$this->_request['id']);
@@ -98,17 +158,7 @@
 					$this->error_message = "Event not found";
 					$this->response($this->finishxml(), 404);
 				} else {
-					$domxmldata = $this->domxml->createElement("event");
-					$domxmldata->appendChild($this->domxml->createElement("event_id", $event->getEventId()));
-//					$domxmldata->appendChild($this->domxml->createElement("crawl_cycle_id", $event->getCrawlCycleId()));
-					$domxmldata->appendChild($this->domxml->createElement("object", $event->getObject()));
-					$domxmldata->appendChild($this->domxml->createElement("object_id", $event->getObjectId()));
-					$domxmldata->appendChild($this->domxml->createElement("action", $event->getAction()));
-					$domxmldata->appendChild($this->domxml->createElement("create_date", $event->getCreateDate()));
-					$data = $this->domxml->createElement("data");
-					$this->fromMixed($event->getData(), $data);
-					$domxmldata->appendChild($data);
-  					
+					$domxmldata = $event->getDomXMLElement($this->domxml);
 					$this->response($this->finishxml($domxmldata), 200);
 				}
 			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
@@ -140,28 +190,6 @@
 		
 		private function events() {
 			$this->response($this->finishxml(), 200);
-		}
-		
-		public function fromMixed($mixed, DOMElement $domElement = null) {
-			if (is_array($mixed)) {
-				foreach( $mixed as $index => $mixedElement ) {
-					if ( is_int($index) ) {
-						if ( $index == 0 ) {
-							$node = $domElement;
-						} else {
-							$node = $this->domxml->createElement($domElement->tagName);
-							$domElement->parentNode->appendChild($node);
-						}
-					} else {
-						$node = $this->domxml->createElement($index);
-						$domElement->appendChild($node);
-					}
-					
-					$this->fromMixed($mixedElement, $node);
-				}
-			} else {
-				$domElement->appendChild($this->domxml->createTextNode($mixed));
-			}
 		}
 		
 		public function isApiKeyValid($api_key) {

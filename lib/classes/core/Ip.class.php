@@ -1,11 +1,12 @@
 <?php
-	class Ip {
+	require_once('../../lib/classes/core/Object.class.php');
+	
+	class Ip extends Object {
 		private $ip_id = 0;
 		private $interface_id = 0;
 		private $ip = "";
 		private $ipv = 0;
 		private $netmask = 0;
-		private $create_date = 0;
 		private $statusdata = array();
 		private $statusdata_history = array();
 		
@@ -66,16 +67,6 @@
 				$this->netmask = $netmask;
 		}
 		
-		public function setCreateDate($create_date=false) {
-			if($create_date == false)
-				$this->create_date = time();
-			else if(is_string($create_date)) {
-				$date = new DateTime($create_date);
-				$this->create_date = $date->getTimestamp();
-			} else if(is_int($create_date))
-				$this->create_date = $create_date;
-		}
-		
 		public function getIpId() {
 			return $this->ip_id;
 		}
@@ -94,10 +85,6 @@
 		
 		public function getNetmask() {
 			return $this->netmask;
-		}
-		
-		public function getCreateDate() {
-			return $this->create_date;
 		}
 		
 		public function getDomXMLElement($domdocument) {

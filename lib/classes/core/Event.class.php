@@ -1,11 +1,12 @@
 <?php
-	class Event {
+	require_once('../../lib/classes/core/Object.class.php');
+	
+	class Event extends Object {
 		private $event_id = 0;
 		private $crawl_cycle_id = 0;
 		private $object = "";
 		private $object_id = 0;
 		private $action="";
-		private $create_date = "";
 		private $data = null;
 		
 		public function __construct($event_id=false, $object=false, $object_id=false, $action=false, $data=false) {
@@ -82,16 +83,6 @@
 				$this->action = $action;
 		}
 		
-		public function setCreateDate($create_date=false) {
-			if($create_date == false)
-				$this->create_date = time();
-			else if(is_string($create_date)) {
-				$date = new DateTime($create_date);
-				$this->create_date = $date->getTimestamp();
-			} else if(is_int($create_date))
-				$this->create_date = $create_date;
-		}
-		
 		public function setData($data) {
 				if(@unserialize($data)!==false)
 					$this->data = $data;
@@ -119,12 +110,45 @@
 			return $this->action;
 		}
 		
-		public function getCreateDate() {
-			return $this->create_date;
-		}
-		
 		public function getData() {
 			return unserialize($this->data);
+		}
+		
+		public function getDomXMLElement($domdocument) {
+			$domxmlelement = $domdocument->createElement('event');
+			$domxmlelement->appendChild($domdocument->createElement("event_id", $this->getEventId()));
+			$domxmlelement->appendChild($domdocument->createElement("object", $this->getObject()));
+			$domxmlelement->appendChild($domdocument->createElement("object_id", $this->getObjectId()));
+			$domxmlelement->appendChild($domdocument->createElement("action", $this->getAction()));
+			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
+			
+			$data = $domdocument->createElement("data");
+			$this->fromMixed($this->getData(), $data, $domdocument);
+			$domxmlelement->appendChild($data);
+			
+			return $domxmlelement;
+		}
+		
+		private function fromMixed($mixed, DOMElement $domElement = null, $domdocument) {
+			if (is_array($mixed)) {
+				foreach( $mixed as $index => $mixedElement ) {
+					if ( is_int($index) ) {
+						if ( $index == 0 ) {
+							$node = $domElement;
+						} else {
+							$node = $domdocument->createElement($domElement->tagName);
+							$domElement->parentNode->appendChild($node);
+						}
+					} else {
+						$node = $domdocument->createElement($index);
+						$domElement->appendChild($node);
+					}
+					
+					$this->fromMixed($mixedElement, $node, $domdocument);
+				}
+			} else {
+				$domElement->appendChild($domdocument->createTextNode($mixed));
+			}
 		}
 	}
 ?>

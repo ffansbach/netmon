@@ -1,10 +1,14 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+	RewriteRule ^eventlist/?$ api.php?rquest=eventlist [L]
 	RewriteRule ^event/([0-9]+)/?$ api.php?rquest=event&id=$1 [L]
-	RewriteRule ^ip/([0-9]+)/?$ api.php?rquest=ip&id=$1 [L]
 	RewriteRule ^iplist/([0-9]+)/?$ api.php?rquest=iplist&id=$1 [L]
+	RewriteRule ^ip/([0-9]+)/?$ api.php?rquest=ip&id=$1 [L]
+	RewriteRule ^networkinterfacelist/([0-9]+)/?$ api.php?rquest=networkinterfacelist&id=$1 [L]
 	RewriteRule ^networkinterface/([0-9]+)/?$ api.php?rquest=networkinterface&id=$1 [L]
+	RewriteRule ^routerlist/([0-9]+)/?$ api.php?rquest=routerlist&id=$1 [L]
+	RewriteRule ^router/([0-9]+)/?$ api.php?rquest=router&id=$1 [L]
 	
 	RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-s

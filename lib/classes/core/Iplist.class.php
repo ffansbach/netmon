@@ -21,7 +21,7 @@
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id
 														FROM ips");
-					$stmt->execute(array($interface_id));
+					$stmt->execute(array());
 					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
 					echo $e->getMessage();
