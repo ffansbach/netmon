@@ -1,6 +1,7 @@
 <?php
 	require_once('../../lib/classes/core/Object.class.php');
 	require_once('../../lib/classes/core/Networkinterfacelist.class.php');
+	require_once('../../lib/classes/core/RouterStatus.class.php');
 	
 	class Router extends Object {
 		private $router_id;
@@ -42,6 +43,8 @@
 				$this->setLatitude($result['latitude']);
 				$this->setLongitude($result['longitude']);
 				$this->setNetworkinterfacelist();
+				$this->setStatusdata();
+				
 			}
 		}
 		
@@ -86,6 +89,13 @@
 				$this->networkinterfacelist = new Networkinterfacelist($this->router_id);
 		}
 		
+		private function setStatusdata($routerstatus=false) {
+			if($routerstatus!=false)
+				$this->statusdata = $routerstatus;
+			else
+				$this->statusdata = new RouterStatus(false, $this->router_id);
+		}
+		
 		public function getRouterId() {
 			return $this->router_id;
 		}
@@ -118,6 +128,10 @@
 			return  $this->networkinterfacelist;
 		}
 		
+		private function getStatusdata() {
+			return  $this->statusdata;
+		}
+		
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('router');
 			$domxmlelement->appendChild($domdocument->createElement("router_id", $this->getRouterId()));
@@ -130,9 +144,8 @@
 			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
 			$domxmlelement->appendChild($domdocument->createElement("update_date", $this->getUpdateDate()));
 			
-			$domxmlnetworkinterfacelist = $domdocument->createElement('networkinterfacelist');
-			$domxmlnetworkinterfacelist->appendChild($this->getNetworkinterfacelist()->getDomXMLElement($domdocument));
-			$domxmlelement->appendChild($domxmlnetworkinterfacelist);
+			$domxmlelement->appendChild($this->getNetworkinterfacelist()->getDomXMLElement($domdocument));
+			$domxmlelement->appendChild($this->getStatusdata()->getDomXMLElement($domdocument));
 			return $domxmlelement;
 		}
 	}

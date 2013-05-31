@@ -18,7 +18,7 @@
 				echo $e->getMessage();
 				echo $e->getTraceAsString();
 			}
-			$this->setCrawlCycleId((int)$result['id']);
+			$this->setCrawlCycleId((int)$result['crawl_cycle_id']);
 		}
 		
 		protected function setStatusId($status_id) {
