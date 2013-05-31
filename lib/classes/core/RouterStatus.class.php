@@ -5,6 +5,7 @@
 		private $router_id = 0;
 		private $status = "";
 		private $hostname = "";
+		private $client_count = 0;
 		private $chipset = "";
 		private $cpu = "";
 		private $memory_total = 0;
@@ -34,11 +35,12 @@
 			$result = array();
 			if($router_id!=false) {
 				// initialize with data from last endet crawl cycle
+				$this->setRouterId($router_id);
 				try {
 						$stmt = DB::getInstance()->prepare("SELECT *
 															FROM crawl_routers
-															WHERE crawl_cycle_id = ?");
-					$stmt->execute(array($this->getCrawlCycleId()));
+															WHERE crawl_cycle_id = ? AND router_id = ?");
+					$stmt->execute(array($this->getCrawlCycleId(), $this->getRouterId()));
 					$result = $stmt->fetch(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
 					echo $e->getMessage();
@@ -84,6 +86,20 @@
 			$this->setNodewatcherVersion($result['nodewatcher_version']);
 			$this->setFastdVersion($result['fastd_version']);
 			$this->setBatmanAdvancedVersion($result['batman_advanced_version']);
+			
+			// initialize client count
+			try {
+					$stmt = DB::getInstance()->prepare("SELECT *
+														FROM crawl_clients_count
+														WHERE crawl_cycle_id = ? AND router_id = ?");
+				$stmt->execute(array($this->getCrawlCycleId(), $this->getRouterId()));
+				$client_count = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+			$this->setClientCount((int)$client_count['client_count']);
+			
 		}
 		
 		public function setRouterId($router_id) {
@@ -98,6 +114,11 @@
 		
 		public function setHostname($hostname) {
 			$this->hostname = $hostname;
+		}
+		
+		public function setClientCount($client_count) {
+			if(is_int($client_count))
+				$this->client_count = $client_count;
 		}
 		
 		public function setChipset($chipset) {
@@ -196,6 +217,10 @@
 			return $this->hostname;
 		}
 		
+		public function getClientCount() {
+			return $this->client_count;
+		}
+		
 		public function getChipset() {
 			return $this->chipset;
 		}
@@ -288,6 +313,7 @@
 			$domxmlelement->appendChild($domdocument->createElement("status", $this->getStatus()));
 			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
 			$domxmlelement->appendChild($domdocument->createElement("hostname", $this->getHostname()));
+			$domxmlelement->appendChild($domdocument->createElement("client_count", $this->getClientCount()));
 			$domxmlelement->appendChild($domdocument->createElement("chipset", $this->getChipset()));
 			$domxmlelement->appendChild($domdocument->createElement("cpu", $this->getCpu()));
 			$domxmlelement->appendChild($domdocument->createElement("memory_total", $this->getMemoryTotal()));
