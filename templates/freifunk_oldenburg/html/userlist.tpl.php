@@ -1,16 +1,42 @@
-<script src="lib/classes/extern/jquery/jquery.js"></script>
-<script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
-
-<link rel="stylesheet" type="text/css" href="templates/css/jquery_data_tables.css">
+<script src="lib/classes/extern/jquery/jquery.min.js"></script>
+<script src="lib/classes/extern/DataTables/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 {literal}
+jQuery.fn.dataTableExt.oSort['uk_date-asc']  = function(a,b) {
+    var ukDatea = a.split('.');
+    var ukDateb = b.split('.');
+     
+    var x = (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+    var y = (ukDateb[2] + ukDateb[1] + ukDateb[0]) * 1;
+     
+    return ((x < y) ? -1 : ((x > y) ?  1 : 0));
+};
+ 
+jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
+    var ukDatea = a.split('.');
+    var ukDateb = b.split('.');
+     
+    var x = (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+    var y = (ukDateb[2] + ukDateb[1] + ukDateb[0]) * 1;
+     
+    return ((x < y) ? 1 : ((x > y) ?  -1 : 0));
+};
+
 $(document).ready(function() {
 	$('#routerlist').dataTable( {
 		"bFilter": false,
 		"bInfo": false,
 		"bPaginate": false,
-		"bAutoWidth": false
+		"aoColumns": [ 
+			{ "sType": "html" },
+			{ "sType": "numeric" },
+			{ "sType": "string" },
+			{ "sType": "html" },
+			{ "sType": "string" },
+			{ "sType": "uk_date" }
+		],
+		"aaSorting": [[ 0, "asc" ]]
 	} );
 } );
 {/literal}
