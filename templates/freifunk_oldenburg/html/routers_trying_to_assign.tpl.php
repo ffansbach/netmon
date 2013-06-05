@@ -1,7 +1,5 @@
-<script src="lib/classes/extern/jquery/jquery.js"></script>
-<script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
-
-<link rel="stylesheet" type="text/css" href="templates/css/jquery_data_tables.css">
+<script src="lib/classes/extern/jquery/jquery.min.js"></script>
+<script src="lib/classes/extern/DataTables/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 {literal}
@@ -9,7 +7,15 @@ $(document).ready(function() {
 	$('#routerlist').dataTable( {
 		"bFilter": false,
 		"bInfo": false,
-		"bPaginate": false
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "html" }
+		],
+		"aaSorting": [[ 0, "asc" ]]
 	} );
 } );
 {/literal}

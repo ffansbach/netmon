@@ -1,7 +1,5 @@
-<script src="lib/classes/extern/jquery/jquery.js"></script>
-<script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
-
-<link rel="stylesheet" type="text/css" href="templates/{$template}/css/jquery_data_tables.css">
+<script src="lib/classes/extern/jquery/jquery.min.js"></script>
+<script src="lib/classes/extern/DataTables/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 {literal}
@@ -10,7 +8,17 @@ $(document).ready(function() {
 		"bFilter": false,
 		"bInfo": false,
 		"bPaginate": false,
-		"aaSorting": [[ 6, "desc" ]]
+		"aoColumns": [ 
+			{ "sType": "html" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" }, // zuverlässigkeit need own
+			{ "sType": "numeric" },
+			{ "sType": "numeric" },
+			{ "sType": "numeric" }
+		],
+		"aaSorting": [[ 0, "asc" ]]
 	} );
 } );
 
@@ -18,7 +26,31 @@ $(document).ready(function() {
 	$('#servicelist').dataTable( {
 		"bFilter": false,
 		"bInfo": false,
-		"bPaginate": false
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "html" },
+			{ "sType": "html" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "html" },
+			{ "sType": "html" }
+		],
+		"aaSorting": [[ 0, "asc" ]]
+	} );
+} );
+
+$(document).ready(function() {
+	$('#domainlist').dataTable( {
+		"bFilter": false,
+		"bInfo": false,
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "html" }
+		],
+		"aaSorting": [[ 0, "asc" ]]
 	} );
 } );
 {/literal}
@@ -204,7 +236,7 @@ $(document).ready(function() {
 
 <h2>Domains von {$user.nickname}</h2>
 {if !empty($dns_hosts)}
-	<table class="display" id="servicelist" style="width: 100%;">
+	<table class="display" id="domainlist" style="width: 100%;">
 		<thead>
 			<tr>
 				<th>Domain</th>

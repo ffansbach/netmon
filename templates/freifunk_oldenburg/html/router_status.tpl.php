@@ -650,16 +650,4 @@ $(document).ready(function() {
 	<p>Hinweis: {$hidden_service_count} Dienste wurden versteckt und werden nur <a href="./login.php?section=login">eingeloggten</a> Benutzern angezeigt.</p>
 {/if}
 
-
-{if $ip.is_ip_owner}
-	<h2>Aktionen</h2>
-	<p>
-		<a href="./serviceeditor.php?section=new&ip_id={$ip.ip_id}">Dienst hinzufügen</a>
-	</p>
-	
-	<p>
-		<a href="./ipeditor.php?section=edit&id={$ip.ip_id}">Ip Editieren</a><br>
-	</p>
-{/if}
-
 <br style="clear: both">

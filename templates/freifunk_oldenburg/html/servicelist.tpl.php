@@ -1,7 +1,5 @@
-<script src="lib/classes/extern/jquery/jquery.js"></script>
-<script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
-
-<link rel="stylesheet" type="text/css" href="templates/{$template}/css/jquery_data_tables.css">
+<script src="lib/classes/extern/jquery/jquery.min.js"></script>
+<script src="lib/classes/extern/DataTables/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 {literal}
@@ -9,9 +7,19 @@ $(document).ready(function() {
 	$('#servicelist').dataTable( {
 		"bFilter": false,
 		"bInfo": false,
-		"bPaginate": false
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "html" },
+			{ "sType": "html" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" }
+		],
+		"aaSorting": [[ 0, "asc" ]]
 	} );
 } );
+
 {/literal}
 </script>
 
