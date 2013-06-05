@@ -112,17 +112,17 @@
 							</li>
 						</ul>
 					{/if}
+					{if $ip_address.ipv=='no' OR empty($interface.ip_addresses)}
+						<ul>
+							<li>
+								<b>IP Adresse:</b> Keine (Layer 2)
+							</li>
+						</ul>
+					{/if}
 					<li>
 						<a href="./ipeditor.php?section=delete&ip_id={$ip_address.ip_id}&router_id={$router_data.router_id}">IP-Adresse entfernen</a>
 					</li>
 				{/foreach}
-				{if $interface.ipv=='no' OR empty($interface.ip_addresses)}
-					<ul>
-						<li>
-							<b>IP Adresse:</b> Keine (Layer 2)
-						</li>
-					</ul>
-				{/if}
 			
 				{if $interface.is_wlan=='1'}
 					<ul>
@@ -217,15 +217,4 @@
 	{/foreach}
 {else}
 	<p>Es sind keine Dienste eingetragen</p>
-{/if}
-
-{if $ip.is_ip_owner}
-	<h2>Aktionen</h2>
-	<p>
-		<a href="./serviceeditor.php?section=new&ip_id={$ip.ip_id}">Dienst hinzufügen</a>
-	</p>
-	
-	<p>
-		<a href="./ipeditor.php?section=edit&id={$ip.ip_id}">Ip Editieren</a><br>
-	</p>
 {/if}
