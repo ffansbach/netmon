@@ -385,7 +385,7 @@ class ApiMap {
 									$xw->writeRaw("<![CDATA[Router <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
-										$box_inhalt .= "<b>Status:</b> $crawl_router[status]<br>";
+										$box_inhalt = "<b>Status:</b> $crawl_router[status]<br>";
 										$box_inhalt .= "<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>";
 										$box_inhalt .= "<b>Clients:</b> ".$client_count."<br>";
 										$box_inhalt .= "<b>Benutzer:</b> <a href='./user.php?user_id=$router_data[user_id]'>$router_data[nickname]</a><br>";
