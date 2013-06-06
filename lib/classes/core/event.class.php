@@ -1,6 +1,6 @@
 <?php
-require_once($GLOBALS['monitor_root'].'lib/classes/core/router.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/crawling.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
 
 class Event {
 	public function addEvent($object, $object_id, $data) {

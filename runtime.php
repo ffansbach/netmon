@@ -26,7 +26,9 @@
 	* @version	0.1
 	* @package	Netmon Freifunk Netzverwaltung und Monitoring Software
 	*/
-
+	
+	define('ROOT_DIR', dirname(__FILE__));
+	
 	//Set default values
 	$GLOBALS['installed'] = false;
 	$GLOBALS['template'] = "freifunk_oldenburg";
@@ -85,19 +87,19 @@
 	date_default_timezone_set('Europe/Berlin');
 	
 	//include important configuration files
-	require_once('config/config.local.inc.php');
-	require_once('config/release.php');
+	require_once(ROOT_DIR.'/config/config.local.inc.php');
+	require_once(ROOT_DIR.'/config/release.php');
 
 	//include important classes
-	require_once('lib/classes/core/db.class.php');
-	require_once('lib/classes/core/config.class.php');
-	require_once('lib/classes/core/message.class.php');
-	require_once('lib/classes/core/helper.class.php');
-	require_once('lib/classes/core/permission.class.php');  
-	require_once('lib/classes/core/menus.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/db.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/config.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/message.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/helper.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/permission.class.php');  
+	require_once(ROOT_DIR.'/lib/classes/core/menus.class.php');
 
 	//load Zend framework
-	require_once 'lib/classes/extern/Zend/Loader/Autoloader.php';
+	require_once(ROOT_DIR.'/lib/classes/extern/Zend/Loader/Autoloader.php');
 	Zend_Loader_Autoloader::getInstance();
 
 	if ($GLOBALS['installed']) {	
@@ -144,12 +146,12 @@
 	}
 
 	//load smarty template engine
-	require_once ('lib/classes/extern/smarty/Smarty.class.php');
+	require_once (ROOT_DIR.'/lib/classes/extern/smarty/Smarty.class.php');
 	$smarty = new Smarty;
 	$smarty->compile_check = true;
 	$smarty->debugging = false;
-	$smarty->template_dir = "templates/$GLOBALS[template]/html";
-	$smarty->compile_dir = 'templates_c';
+	$smarty->template_dir = ROOT_DIR.'/templates/'.$GLOBALS['template'].'/html';
+	$smarty->compile_dir = ROOT_DIR.'/templates_c';
 	$smarty->assign('template', $GLOBALS['template']);
 	$smarty->assign('installed', $GLOBALS['installed']);
 	$smarty->assign('community_name', $GLOBALS['community_name']);
@@ -161,11 +163,11 @@
 	if ($GLOBALS['installed']) {
 		if (!isset($_SESSION['user_id']) OR !Permission::isLoggedIn($_SESSION['user_id'])) {
 			//Login Class
-			require_once('lib/classes/core/login.class.php');
+			require_once(ROOT_DIR.'/lib/classes/core/login.class.php');
 			if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
 				Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
 			} elseif (!empty($_COOKIE["openid"])) {
-				require_once('lib/classes/extern/class.openid.php');
+				require_once(ROOT_DIR.'/lib/classes/extern/class.openid.php');
 				if (empty($_SESSION['redirect_url'])) {
 					$_SESSION['redirect_url'] = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER['REQUEST_URI'];
 				}

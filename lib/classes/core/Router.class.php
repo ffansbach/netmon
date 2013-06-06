@@ -1,10 +1,10 @@
 <?php
-	require_once('../../lib/classes/core/Object.class.php');
-	require_once('../../lib/classes/core/Networkinterfacelist.class.php');
-	require_once('../../lib/classes/core/RouterStatus.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Networkinterfacelist.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
 	
 	class Router extends Object {
-		private $router_id;
+ 		public $router_id;
 		private $user_id;
 		private $hostname;
 		private $description;
@@ -48,17 +48,17 @@
 			}
 		}
 		
-		private function setRouterId($router_id) {
+		public function setRouterId($router_id) {
 			if(is_int($router_id))
 				$this->router_id = $router_id;
 		}
 		
-		private function setUserId($user_id) {
+		public function setUserId($user_id) {
 			if(is_int($user_id))
 				$this->user_id = $user_id;
 		}
 		
-		private function setHostname($hostname) {
+		public function setHostname($hostname) {
 			if(!preg_match('/^([a-zA-Z0-9])+$/i', $hostname)) {
 				return false;
 			} else {
@@ -66,30 +66,30 @@
 			}
 		}
 		
-		private function setDescription($description) {
+		public function setDescription($description) {
 			$this->description = $description;
 		}
 		
-		private function setLocation($location) {
+		public function setLocation($location) {
 			$this->location = $location;
 		}
 		
-		private function setLatitude($latitude) {
+		public function setLatitude($latitude) {
 			$this->latitude = $latitude;
 		}
 		
-		private function setLongitude($longitude) {
+		public function setLongitude($longitude) {
 			$this->longitude = $longitude;
 		}
 		
-		private function setNetworkinterfacelist($networkinterfacelist=false) {
+		public function setNetworkinterfacelist($networkinterfacelist=false) {
 			if($networkinterfacelist!=false && is_array($networkinterfacelist))
 				$this->networkinterfacelist = $networkinterfacelist;
 			else
 				$this->networkinterfacelist = new Networkinterfacelist($this->router_id);
 		}
 		
-		private function setStatusdata($routerstatus=false) {
+		public function setStatusdata($routerstatus=false) {
 			if($routerstatus!=false)
 				$this->statusdata = $routerstatus;
 			else
@@ -104,31 +104,31 @@
 			return $this->user_id;
 		}
 		
-		private function getHostname() {
+		public function getHostname() {
 			return $this->hostname;
 		}
 		
-		private function getDescription() {
+		public function getDescription() {
 			return $this->description;
 		}
 		
-		private function getLocation() {
+		public function getLocation() {
 			return $this->location;
 		}
 		
-		private function getLatitude() {
+		public function getLatitude() {
 			return $this->latitude;
 		}
 		
-		private function getLongitude() {
+		public function getLongitude() {
 			return  $this->longitude;
 		}
 		
-		private function getNetworkinterfacelist() {
+		public function getNetworkinterfacelist() {
 			return  $this->networkinterfacelist;
 		}
 		
-		private function getStatusdata() {
+		public function getStatusdata() {
 			return  $this->statusdata;
 		}
 		

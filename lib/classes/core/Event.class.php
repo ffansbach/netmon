@@ -22,7 +22,7 @@
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT *
 														FROM events
-														WHERE id = $event_id");
+														WHERE id = ?");
 					$stmt->execute(array($event_id));
 					$result = $stmt->fetch(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {

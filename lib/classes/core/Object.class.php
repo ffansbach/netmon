@@ -3,7 +3,7 @@
 		protected $create_date;
 		protected $update_date;
 		
-		protected function setCreateDate($create_date) {
+		public function setCreateDate($create_date=false) {
 			if($create_date == false)
 				$this->create_date = time();
 			else if(is_string($create_date)) {
@@ -13,7 +13,7 @@
 				$this->create_date = $create_date;
 		}
 		
-		protected function setUpdateDate($update_date) {
+		public function setUpdateDate($update_date) {
 			if($update_date == false)
 				$this->update_date = time();
 			else if(is_string($update_date)) {
@@ -23,11 +23,11 @@
 				$this->update_date = $update_date;
 		}
 		
-		protected function getCreateDate() {
+		public function getCreateDate() {
 			return $this->create_date;
 		}
 		
-		protected function getUpdateDate() {
+		public function getUpdateDate() {
 			return $this->update_date;
 		}
 	}

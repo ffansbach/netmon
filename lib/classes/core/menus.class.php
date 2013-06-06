@@ -28,8 +28,6 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once('lib/classes/core/user.class.php');
-
 class Menus extends Permission {
 	function topMenu() {
 		$menu = array();
@@ -112,10 +110,12 @@ class Menus extends Permission {
 				$submenu = array();
 				$subsubmenu = array();
 				$submenu[] = array('name'=>'Benutzer', 'href'=>'userlist.php');
-				$subsubmenu[] = array('name'=>'Mein Benutzer', 'href'=>'user.php?user_id='.$_SESSION['user_id']);
+				$subsubmenu[] = array('name'=>'Benutzerseite', 'href'=>'user.php?user_id='.$_SESSION['user_id']);
 
-				if(pathinfo($_SERVER['SCRIPT_NAME'],  PATHINFO_BASENAME) == "user.php" AND Permission::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
-					$subsubmenu[] = array('name'=>'Bearbeiten', 'href'=>'user_edit.php?section=edit&user_id='.$_GET['user_id']);
+				if(Permission::checkIfUserIsOwnerOrPermitted(64, $_SESSION['user_id']))
+					$subsubmenu[] = array('name'=>'Einstellungen', 'href'=>'user_edit.php?section=edit&user_id='.$_SESSION['user_id']);
+				if(Permission::checkIfUserIsOwnerOrPermitted(64, $_SESSION['user_id']))
+					$subsubmenu[] = array('name'=>'Benachrichtigungen', 'href'=>'event_notifications.php?section=edit&user_id='.$_SESSION['user_id']);
 				$submenu[] = $subsubmenu;
 				$menu[] = $submenu;
 			}

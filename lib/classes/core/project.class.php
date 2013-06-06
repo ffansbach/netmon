@@ -1,6 +1,6 @@
 <?php
 
-require_once($GLOBALS['monitor_root'].'lib/classes/core/subnetcalculator.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/subnetcalculator.class.php');
 
 class Project  {
 	public function getProjects() {

@@ -1,5 +1,5 @@
 <?php
-	require_once('../../lib/classes/core/Object.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
 	
 	class ObjectStatus extends Object {
 		protected $status_id = 0;

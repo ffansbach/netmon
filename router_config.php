@@ -8,7 +8,7 @@
   $router_data = Router::getRouterInfo($_GET['router_id']);
   $smarty->assign('router_data', $router_data);
   $interfaces = Interfaces::getInterfacesByRouterId($_GET['router_id']);
-
+  
   $smarty->assign('interfaces', $interfaces);
 
   $is_logged_id = Permission::isLoggedIn($_SESSION['user_id']);

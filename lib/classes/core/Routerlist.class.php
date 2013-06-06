@@ -1,6 +1,6 @@
 <?php
-	require_once('../../lib/classes/core/ObjectList.class.php');
-	require_once('../../lib/classes/core/Router.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/ObjectList.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Router.class.php');
 
 	class Routerlist extends ObjectList {
 		private $routerlist = array();
@@ -16,7 +16,7 @@
 					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
 														FROM routers
 														WHERE routers.user_id=?");
-					$stmt->execute(array());
+					$stmt->execute(array($user_id));
 					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
 					echo $e->getMessage();
@@ -75,6 +75,10 @@
 			foreach($result as $router) {
 				$this->routerlist[] = new Router((int)$router['router_id']);
 			}
+		}
+		
+		public function getRouterlist() {
+			return $this->routerlist;
 		}
 		
 		public function getDomXMLElement($domdocument) {

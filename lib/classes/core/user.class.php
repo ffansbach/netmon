@@ -20,10 +20,10 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
-require_once("lib/classes/core/ipeditor.class.php");
-require_once("lib/classes/core/subneteditor.class.php");
-require_once("lib/classes/core/login.class.php");
-require_once("lib/classes/core/router.class.php");
+require_once(ROOT_DIR.'/lib/classes/core/ipeditor.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/subneteditor.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/login.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
 
 /**
  * This class is used as a container for static methods that deal operations

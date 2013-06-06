@@ -164,7 +164,10 @@ if($is_logged_id) {
 }
 
 $servicelist = Service::getServiceList($view, false, $_GET['router_id']);
+$servicelist_all = Service::getServiceList('all', false, $_GET['router_id']);
 $smarty->assign('servicelist', $servicelist);
+$smarty->assign('hidden_service_count', count($servicelist_all)-count($servicelist));
+
 
 $smarty->assign('google_maps_api_key', Config::getConfigValueByName('google_maps_api_key'));
 

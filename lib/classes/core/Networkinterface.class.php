@@ -1,6 +1,6 @@
 <?php
-	require_once('../../lib/classes/core/Object.class.php');
-	require_once('../../lib/classes/core/Iplist.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Iplist.class.php');
 	
 	class Networkinterface extends Object {
 		private $networkinterface_id = 0;

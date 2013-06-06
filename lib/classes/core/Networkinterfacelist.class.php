@@ -1,5 +1,5 @@
 <?php
-	require_once('../../lib/classes/core/Networkinterface.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Networkinterface.class.php');
 
 	class Networkinterfacelist {
 		private $networkinterfacelist = array();

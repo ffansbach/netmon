@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once($GLOBALS['monitor_root'].'lib/classes/core/ip.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/ip.class.php');
 
 class DNS {
 	public function addHost($host, $ipv4_id, $ipv6_id, $user_id) {

@@ -1,5 +1,5 @@
 <?php
-	require_once('../../lib/classes/core/ObjectStatus.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/ObjectStatus.class.php');
 	
 	class RouterStatus extends ObjectStatus {
 		private $router_id = 0;

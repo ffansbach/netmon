@@ -1,5 +1,5 @@
 <?php
-	require_once('../../lib/classes/core/Ip.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Ip.class.php');
 	
 	class Iplist {
 		private $iplist = array();

@@ -1,8 +1,8 @@
 <?php
 require_once('runtime.php');
-require_once('lib/classes/core/login.class.php');
-require_once('lib/classes/core/user.class.php');
-require_once('lib/classes/extern/class.openid.php');
+require_once(ROOT_DIR.'/lib/classes/core/login.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/user.class.php');
+require_once(ROOT_DIR.'/lib/classes/extern/class.openid.php');
 
 if($_SESSION['last_page'] != $_SESSION['current_page'] AND empty($_SESSION['redirect_after_login_url'])) {
 	$_SESSION['redirect_after_login_url'] = $_SESSION['last_page'];

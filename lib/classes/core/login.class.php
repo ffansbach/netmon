@@ -20,6 +20,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
+require_once(ROOT_DIR.'/lib/classes/core/user.class.php');
+
 /**
  * This class is used as a container for static methods that can login and logout a user
  *

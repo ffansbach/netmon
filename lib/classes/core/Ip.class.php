@@ -1,5 +1,5 @@
 <?php
-	require_once('../../lib/classes/core/Object.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
 	
 	class Ip extends Object {
 		private $ip_id = 0;

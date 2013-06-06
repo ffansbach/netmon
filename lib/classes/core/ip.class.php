@@ -28,10 +28,10 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once($GLOBALS['monitor_root'].'lib/classes/core/subnetcalculator.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/project.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/ip.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/interfaces.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/subnetcalculator.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/project.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/ip.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/interfaces.class.php');
 
 class Ip {
 	public function addIPv4Address($router_id, $project_id, $interface_id, $ipv4_addr) {
