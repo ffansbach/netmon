@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 04. Mai 2013 um 00:58
--- Server Version: 5.5.30-MariaDB-mariadb1~wheezy-log
--- PHP-Version: 5.4.4-14
+-- Generation Time: Jun 06, 2013 at 11:20 PM
+-- Server version: 5.5.31-MariaDB-1~wheezy-log
+-- PHP Version: 5.4.15-1~dotdeb.2
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,13 +17,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Datenbank: `freifunksql5`
+-- Database: `freifunksql5`
 --
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `chipsets`
+-- Table structure for table `chipsets`
 --
 
 CREATE TABLE IF NOT EXISTS `chipsets` (
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `config`
+-- Table structure for table `config`
 --
 
 CREATE TABLE IF NOT EXISTS `config` (
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `config` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `crawl_batman_advanced_interfaces`
+-- Table structure for table `crawl_batman_advanced_interfaces`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `crawl_batman_advanced_originators`
+-- Table structure for table `crawl_batman_advanced_originators`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `crawl_clients_count`
+-- Table structure for table `crawl_clients_count`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_clients_count` (
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `crawl_clients_count` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `crawl_cycle`
+-- Table structure for table `crawl_cycle`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_cycle` (
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `crawl_cycle` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `crawl_interfaces`
+-- Table structure for table `crawl_interfaces`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `crawl_ips`
+-- Table structure for table `crawl_ips`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_ips` (
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS `crawl_ips` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `crawl_olsr`
+-- Table structure for table `crawl_olsr`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_olsr` (
@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS `crawl_olsr` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `crawl_routers`
+-- Table structure for table `crawl_routers`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_routers` (
@@ -231,7 +231,9 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `community_email` varchar(100) NOT NULL,
   `community_prefix` varchar(15) NOT NULL,
   `batman_advanced_version` varchar(20) NOT NULL,
+  `fastd_version` varchar(20) NOT NULL,
   `kernel_version` varchar(30) NOT NULL,
+  `configurator_version` int(11) NOT NULL,
   `nodewatcher_version` int(11) NOT NULL,
   `firmware_version` varchar(250) NOT NULL,
   `firmware_revision` varchar(250) NOT NULL,
@@ -248,7 +250,7 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `crawl_services`
+-- Table structure for table `crawl_services`
 --
 
 CREATE TABLE IF NOT EXISTS `crawl_services` (
@@ -266,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `crawl_services` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `dns_hosts`
+-- Table structure for table `dns_hosts`
 --
 
 CREATE TABLE IF NOT EXISTS `dns_hosts` (
@@ -283,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `dns_hosts` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `events`
+-- Table structure for table `events`
 --
 
 CREATE TABLE IF NOT EXISTS `events` (
@@ -301,7 +303,25 @@ CREATE TABLE IF NOT EXISTS `events` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `imagemaker_configs`
+-- Table structure for table `event_notifications`
+--
+
+CREATE TABLE IF NOT EXISTS `event_notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `action` varchar(200) NOT NULL,
+  `object` varchar(30) NOT NULL,
+  `notify` int(11) NOT NULL,
+  `notified` tinyint(1) NOT NULL,
+  `notification_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `imagemaker_configs`
 --
 
 CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
@@ -317,7 +337,7 @@ CREATE TABLE IF NOT EXISTS `imagemaker_configs` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `imagemaker_images`
+-- Table structure for table `imagemaker_images`
 --
 
 CREATE TABLE IF NOT EXISTS `imagemaker_images` (
@@ -332,7 +352,7 @@ CREATE TABLE IF NOT EXISTS `imagemaker_images` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `interfaces`
+-- Table structure for table `interfaces`
 --
 
 CREATE TABLE IF NOT EXISTS `interfaces` (
@@ -351,7 +371,7 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `interface_ips`
+-- Table structure for table `interface_ips`
 --
 
 CREATE TABLE IF NOT EXISTS `interface_ips` (
@@ -366,7 +386,7 @@ CREATE TABLE IF NOT EXISTS `interface_ips` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `ips`
+-- Table structure for table `ips`
 --
 
 CREATE TABLE IF NOT EXISTS `ips` (
@@ -386,7 +406,7 @@ CREATE TABLE IF NOT EXISTS `ips` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `ip_ranges`
+-- Table structure for table `ip_ranges`
 --
 
 CREATE TABLE IF NOT EXISTS `ip_ranges` (
@@ -403,7 +423,7 @@ CREATE TABLE IF NOT EXISTS `ip_ranges` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `olsr_crawl_data`
+-- Table structure for table `olsr_crawl_data`
 --
 
 CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
@@ -421,7 +441,7 @@ CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `projects`
+-- Table structure for table `projects`
 --
 
 CREATE TABLE IF NOT EXISTS `projects` (
@@ -468,7 +488,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `routers`
+-- Table structure for table `routers`
 --
 
 CREATE TABLE IF NOT EXISTS `routers` (
@@ -498,7 +518,7 @@ CREATE TABLE IF NOT EXISTS `routers` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `routers_not_assigned`
+-- Table structure for table `routers_not_assigned`
 --
 
 CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
@@ -514,7 +534,7 @@ CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `router_adds`
+-- Table structure for table `router_adds`
 --
 
 CREATE TABLE IF NOT EXISTS `router_adds` (
@@ -527,7 +547,7 @@ CREATE TABLE IF NOT EXISTS `router_adds` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `services`
+-- Table structure for table `services`
 --
 
 CREATE TABLE IF NOT EXISTS `services` (
@@ -551,7 +571,7 @@ CREATE TABLE IF NOT EXISTS `services` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `service_ips`
+-- Table structure for table `service_ips`
 --
 
 CREATE TABLE IF NOT EXISTS `service_ips` (
@@ -564,7 +584,7 @@ CREATE TABLE IF NOT EXISTS `service_ips` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `subnets`
+-- Table structure for table `subnets`
 --
 
 CREATE TABLE IF NOT EXISTS `subnets` (
@@ -602,7 +622,7 @@ CREATE TABLE IF NOT EXISTS `subnets` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
@@ -610,6 +630,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `session_id` varchar(32) NOT NULL,
   `nickname` varchar(30) NOT NULL,
   `password` varchar(32) NOT NULL,
+  `salt` varchar(32) NOT NULL,
   `openid` varchar(100) NOT NULL,
   `api_key` varchar(32) NOT NULL,
   `vorname` varchar(50) NOT NULL,
@@ -634,7 +655,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `variable_splash_clients`
+-- Table structure for table `variable_splash_clients`
 --
 
 CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
