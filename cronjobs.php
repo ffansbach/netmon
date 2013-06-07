@@ -70,7 +70,7 @@ for ($i=0; $i<=Router::countRouters(); $i+=10) {
 /**
 * Service Crawls
 **/
-echo "Crawle Services...\n";
-require_once($GLOBALS['netmon_root_path'].'lib/classes/crawler/json_service_crawler.php');
+/*echo "Crawle Services...\n";
+require_once($GLOBALS['netmon_root_path'].'lib/classes/crawler/json_service_crawler.php');*/
 
 ?>

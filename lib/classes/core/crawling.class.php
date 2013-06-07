@@ -272,7 +272,6 @@ class Crawling {
 
 		//Make router history
 		Crawling::makeRouterHistoryEntry($crawl_data, $router_id, $actual_crawl_cycle, $last_endet_crawl_cycle);
-		Router::routerOfflineNotification($router_id, $crawl_data);
 	}
 	
 	public function makeRouterHistoryEntry($current_crawl_data, $router_id, $actual_crawl_cycle=array(), $last_endet_crawl_cycle=array()){

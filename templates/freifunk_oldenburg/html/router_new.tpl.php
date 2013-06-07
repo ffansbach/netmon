@@ -123,11 +123,11 @@
 	</p>
 	<br>
 
-	<p>
+<!--	<p>
 		<b>Offlinebenachrichtigung:</b><br>
 		<input name="notify" type="checkbox" value="1" checked> Ich möchte benachrichtigt werden, wenn dieser Router <input name="notification_wait" type="text" size="1" maxlength="5" value="6"> Crawlzyklen offline ist.
 	</p>
-	<br>
+	<br>-->
 
 	<p>
 		<b>Automatische Routerzuweisung:</b><br>

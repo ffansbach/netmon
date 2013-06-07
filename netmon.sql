@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 06, 2013 at 11:20 PM
+-- Generation Time: Jun 07, 2013 at 06:36 PM
 -- Server version: 5.5.31-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.15-1~dotdeb.2
 
@@ -312,7 +312,7 @@ CREATE TABLE IF NOT EXISTS `event_notifications` (
   `create_date` datetime NOT NULL,
   `action` varchar(200) NOT NULL,
   `object` varchar(30) NOT NULL,
-  `notify` int(11) NOT NULL,
+  `notify` tinyint(1) NOT NULL,
   `notified` tinyint(1) NOT NULL,
   `notification_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -506,10 +506,6 @@ CREATE TABLE IF NOT EXISTS `routers` (
   `latitude` varchar(15) NOT NULL,
   `longitude` varchar(15) NOT NULL,
   `chipset_id` int(20) NOT NULL,
-  `notify` tinyint(1) NOT NULL,
-  `notification_wait` int(11) NOT NULL,
-  `notified` tinyint(1) NOT NULL,
-  `last_notification` datetime NOT NULL,
   `trying_to_assign_notified` tinyint(1) NOT NULL,
   `trying_to_assign_last_notification_time` datetime NOT NULL,
   PRIMARY KEY (`id`)

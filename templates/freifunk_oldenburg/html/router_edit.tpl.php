@@ -104,8 +104,8 @@
 		</select>
 	</p>
 
-	<h2>Offline Benachrichtigung</h2>
-	<p><input name="notify" type="checkbox" value="1" {if $router_data.notify==1}checked{/if}> Ich möchte benachrichtigt werden, wenn dieser Router <input name="notification_wait" type="text" size="1" maxlength="5" value="{$router_data.notification_wait}"> Crawlzyklen offline ist.</p>
+<!--	<h2>Offline Benachrichtigung</h2>
+	<p><input name="notify" type="checkbox" value="1" {if $router_data.notify==1}checked{/if}> Ich möchte benachrichtigt werden, wenn dieser Router <input name="notification_wait" type="text" size="1" maxlength="5" value="{$router_data.notification_wait}"> Crawlzyklen offline ist.</p>-->
 
 	<h2>Netmon Autozuweisung</h2>
 	<p>

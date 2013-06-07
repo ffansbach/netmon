@@ -47,9 +47,9 @@ class RouterEditor {
 				$_POST['longitude'] = 0;
 			}
 			try {
-				$stmt = DB::getInstance()->prepare("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, router_auto_assign_login_string, description, location, latitude, longitude, chipset_id, notify, notification_wait)
+				$stmt = DB::getInstance()->prepare("INSERT INTO routers (user_id, create_date, update_date, crawl_method, hostname, allow_router_auto_assign, router_auto_assign_login_string, description, location, latitude, longitude, chipset_id)
 								    VALUES (?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-				$stmt->execute(array($_SESSION['user_id'], $_POST['crawl_method'], $_POST['hostname'], $_POST['allow_router_auto_assign'], $_POST['router_auto_assign_login_string'], $_POST['description'], $_POST['location'], $_POST['latitude'], $_POST['longitude'], $_POST['chipset_id'], $_POST['notify'], $_POST['notification_wait']));
+				$stmt->execute(array($_SESSION['user_id'], $_POST['crawl_method'], $_POST['hostname'], $_POST['allow_router_auto_assign'], $_POST['router_auto_assign_login_string'], $_POST['description'], $_POST['location'], $_POST['latitude'], $_POST['longitude'], $_POST['chipset_id']));
 				$router_id = DB::getInstance()->lastInsertId();
 			} catch(PDOException $e) {
 				echo $e->getMessage();
@@ -139,11 +139,9 @@ class RouterEditor {
 										location=?,
 										latitude=?,
 										longitude=?,
-										chipset_id=?,
-										notify=?,
-										notification_wait=?
+										chipset_id=?
 								    WHERE id = ?");
-				$stmt->execute(array($_POST['crawl_method'], $_POST['hostname'], $_POST['allow_router_auto_assign'], $_POST['router_auto_assign_login_string'], $_POST['description'], $_POST['location'], $_POST['latitude'], $_POST['longitude'], $_POST['chipset_id'], $_POST['notify'], $_POST['notification_wait'], $_GET['router_id']));
+				$stmt->execute(array($_POST['crawl_method'], $_POST['hostname'], $_POST['allow_router_auto_assign'], $_POST['router_auto_assign_login_string'], $_POST['description'], $_POST['location'], $_POST['latitude'], $_POST['longitude'], $_POST['chipset_id'], $_GET['router_id']));
 				$result = $stmt->rowCount();
 			} catch(PDOException $e) {
 				echo $e->getMessage();
