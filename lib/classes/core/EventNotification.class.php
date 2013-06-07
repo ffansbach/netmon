@@ -1,6 +1,7 @@
 <?php
 	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/Router.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Routerlist.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/User.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/ConfigLine.class.php');
 	require_once(ROOT_DIR.'/lib/classes/extern/xmpphp/XMPP.php');
@@ -104,42 +105,35 @@
 		
 		public function notify() {
 			//check if notification has not already been send
-			if($this->getNotify() == true AND $this->getNotified() == false) {
+			if($this->getNotify() == true) {
 				//check which event to test
 				if($this->getAction() == 'router_offline') {
-					//check which object to test
-					if($this->getObject() == 'any') {
+					$router = new Router((int)$this->getObject());
 					
-					} elseif($this->getObject() == 'any_of_mine') {
-					
-					} else {
-						$router = new Router((int)$this->getObject());
-						
-						$online = false;
-						$statusdata_history = $router->getStatusdataHistory()->getRouterStatusList();
-						foreach($statusdata_history as $key=>$statusdata) {
-							if ($statusdata->getStatus() == 'online') {
-								$online = true;
-								break;
-							} elseif($key>=6) {
-								break;
-							}
+					$online = false;
+					$statusdata_history = $router->getStatusdataHistory()->getRouterStatusList();
+					foreach($statusdata_history as $key=>$statusdata) {
+						if ($statusdata->getStatus() == 'online') {
+							$online = true;
+							break;
+						} elseif($key>=6) {
+							break;
 						}
-						
-						if(!$online) {
-							//if router is marked as offline in each of the 6 last crawl cycles, then
-							//send a notification
-							$this->notifyRouterOffline($router, $statusdata_history[6]->getCreateDate());
-							//store into database that the router has been notified
-							$this->setNotified(1);
-							$this->setNotificationDate(time());
+					}
+					
+					if(!$online) {
+						//if router is marked as offline in each of the 6 last crawl cycles, then
+						//send a notification
+						$this->notifyRouterOffline($router, $statusdata_history[6]->getCreateDate());
+						//store into database that the router has been notified
+						$this->setNotified(1);
+						$this->setNotificationDate(time());
+						$this->store();
+					} else {
+						//if the router has been notified but is not offline anymore, then reset notification
+						if($this->getNotified() == 1) {
+							$this->setNotified(0);
 							$this->store();
-						} else {
-							//if the router has been notified but is not offline anymore, then reset notification
-							if($this->getNotified() == 1) {
-								$this->setNotified(0);
-								$this->store();
-							}
 						}
 					}
 				} elseif($this->getAction() == 'network_down') {
@@ -152,7 +146,7 @@
 			$user = new User($router->getUserId());
 
 			$message = "Hallo ".$user->getNickname().",\n\n";
-			$message .= "dein Router ".$router->getHostname()." ist seit dem ".date("d.m H:i", $datetime)." uhr offline.\n";
+			$message .= "dein Router ".$router->getHostname()." ist seit dem ".date("d.m H:i", $datetime)." Uhr offline.\n";
 			$message .= "Bitte stelle den Router zur Erhaltung des Freifunknetzwerkes wieder zur Verfuegung oder entferne den Router aus Netmon.\n\n";
 			$message .= "Statusseite ansehen:\n$GLOBALS[url_to_netmon]/router_status.php?router_id=".$router->getRouterId()."\n\n";
 			$message .= "Router bearbeiten/entfernen:\n$GLOBALS[url_to_netmon]/routereditor.php?section=edit&router_id=".$router->getRouterId()."\n\n";

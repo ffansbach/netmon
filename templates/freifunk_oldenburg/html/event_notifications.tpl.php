@@ -20,9 +20,14 @@ $(document).ready(function() {
 } );
 
 var object_list = new Array();
-object_list['router_offline'] = new Array( new Array('any', 'Irgendein Router'),
-									new Array('any_of_mine', 'Einer meiner Router')
-								  );
+
+object_list['router_offline'] = new Array();
+{/literal}
+{foreach key=count item=router from=$routerlist}
+	object_list['router_offline'].push(new Array({$router->getRouterId()}, '{$router->getHostname()}'));
+{/foreach}
+{literal}
+
 object_list['network_down'] = new Array( new Array('netmon', 'Netmon'));
 
 
@@ -33,7 +38,7 @@ function apply_object_list(f) {
 		f.object.options[i].value = object_list[action][i][0];
 		f.object.options[i].text = object_list[action][i][1];
 	}
-	
+	/*
 	if(action=='router_offline') {
 		// ganze XML-datei einlesen und in variable 'XMLmediaArray' speichern
         $.get("./api/rest/routerlist", function(XMLmediaArray){
@@ -57,7 +62,7 @@ function apply_object_list(f) {
 							 null);
 			});
 		});
-   }
+	}*/
 }
 
 {/literal}
@@ -75,8 +80,8 @@ Diese Benachrichtigungen können hier konfiguriert werden.</p>
 			<tr>
 				<th>Was passiert</th>
 				<th>Wer meldet</th>
-				<th>Aktuell benachrichtigt</th>
-				<th>Datum der Benachrichtigung</th>
+				<th>Benachrichtigung pausiert</th>
+				<th>Letzte Benachrichtigung</th>
 				<th>Aktionen</h2>
 			</tr>
 		</thead>
@@ -104,10 +109,8 @@ Diese Benachrichtigungen können hier konfiguriert werden.</p>
 			<option value="network_down">Großer Teil des Netzwerks offline</option>
 		</select>
 		<select name="object">
-			<option value="any" selected='selected'>Irgendein Router</option>
-			<option value="any_of_mine">Einer meiner Router</option>
 			{foreach key=count item=router from=$routerlist}
-				<option value="{$router->getRouterId()}">Bestimmer Router {$router->getHostname()}</option>
+				<option value="{$router->getRouterId()}">{$router->getHostname()}</option>
 			{/foreach}
 		</select>
 		<input type="submit" value="Eintragen">
