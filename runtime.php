@@ -28,6 +28,8 @@
 	*/
 	
 	define('ROOT_DIR', dirname(__FILE__));
+	if(!isset($GLOBALS['cronjob']))
+		$GLOBALS['cronjob'] = false;
 	
 	//Set default values
 	$GLOBALS['installed'] = false;
@@ -160,7 +162,7 @@
 	/**
 	* Auto Login
 	*/
-	if ($GLOBALS['installed']) {
+	if ($GLOBALS['installed'] AND !$GLOBALS['cronjob']) {
 		if (!isset($_SESSION['user_id']) OR !Permission::isLoggedIn($_SESSION['user_id'])) {
 			//Login Class
 			require_once(ROOT_DIR.'/lib/classes/core/login.class.php');

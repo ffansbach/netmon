@@ -1,16 +1,20 @@
 <?php
 	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
-		
+	require_once(ROOT_DIR.'/lib/classes/core/Router.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/User.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/ConfigLine.class.php');
+	require_once(ROOT_DIR.'/lib/classes/extern/xmpphp/XMPP.php');
+	
 	class EventNotification extends Object {
 		private $event_notification_id = 0;
 		private $user_id = 0;
 		private $action="";
 		private $object="";
-		private $notify=0;
-		private $notified=0;
+		private $notify=false;
+		private $notified=false;
 		private $notification_date=0;
 	
-		public function __construct($event_notification_id=false, $user_id=false, $action=false, $object=false, $create_date=false, $notify=false, $notified=false, $notification_date=false) {
+		public function __construct($event_notification_id=false, $user_id=false, $action=false, $object=false, $notify=false, $notified=false, $create_date=false, $notification_date=false) {
 			if($event_notification_id==false AND $user_id!=false AND $action!=false) {
 				$this->setUserId((int)$user_id);
 				$this->setCreateDate();
@@ -34,18 +38,37 @@
 				}
 				
 				$this->setEventNotificationId((int)$result['id']);
-				$this->setUserId($result['user_id']);
+				$this->setUserId((int)$result['user_id']);
 				$this->setCreateDate($result['create_date']);
 				$this->setAction($result['action']);
 				$this->setObject($result['object']);
-				$this->setNotify($result['notify']);
-				$this->setNotified($result['notified']);
+				$this->setNotify((bool)$result['notify']);
+				$this->setNotified((bool)$result['notified']);
 				$this->setNotificationDate($result['notification_date']);
 			}
 		}
 		
 		public function store() {
-			if($this->getUserId() != 0 AND $this->getAction()!="" AND $this->getCreateDate() != 0) {
+			if($this->getEventNotificationId() != 0) {
+				try {
+					$stmt = DB::getInstance()->prepare("UPDATE event_notifications SET
+																user_id = ?,
+																create_date = FROM_UNIXTIME(?),
+																action = ?,
+																object = ?,
+																notify = ?,
+																notified = ?,
+																notification_date = FROM_UNIXTIME(?)
+														WHERE id=?");
+					$stmt->execute(array($this->getUserId(), $this->getCreateDate(), $this->getAction(), $this->getObject(),
+										 $this->getNotify(), $this->getNotified(), $this->getNotificationDate(),
+										 $this->getEventNotificationId()));
+					$result = $stmt->rowCount();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			} elseif($this->getUserId() != 0 AND $this->getAction()!="" AND $this->getCreateDate() != 0) {
 				try {
 					$stmt = DB::getInstance()->prepare("INSERT INTO event_notifications (user_id, create_date, action, object, notify, notified, notification_date)
 														VALUES (?, FROM_UNIXTIME(?), ?, ?, ?, ?, ?)");
@@ -79,6 +102,97 @@
 			}
 		}
 		
+		public function notify() {
+			//check if notification has not already been send
+			if($this->getNotify() == true AND $this->getNotified() == false) {
+				//check which event to test
+				if($this->getAction() == 'router_offline') {
+					//check which object to test
+					if($this->getObject() == 'any') {
+					
+					} elseif($this->getObject() == 'any_of_mine') {
+					
+					} else {
+						$router = new Router((int)$this->getObject());
+						
+						$online = false;
+						$statusdata_history = $router->getStatusdataHistory()->getRouterStatusList();
+						foreach($statusdata_history as $key=>$statusdata) {
+							if ($statusdata->getStatus() == 'online') {
+								$online = true;
+								break;
+							} elseif($key>=6) {
+								break;
+							}
+						}
+						
+						if(!$online) {
+							//if router is marked as offline in each of the 6 last crawl cycles, then
+							//send a notification
+							$this->notifyRouterOffline($router, $statusdata_history[6]->getCreateDate());
+							//store into database that the router has been notified
+							$this->setNotified(1);
+							$this->setNotificationDate(time());
+							$this->store();
+						} else {
+							//if the router has been notified but is not offline anymore, then reset notification
+							if($this->getNotified() == 1) {
+								$this->setNotified(0);
+								$this->store();
+							}
+						}
+					}
+				} elseif($this->getAction() == 'network_down') {
+				
+				}
+			}
+		}
+		
+		public function notifyRouterOffline($router, $datetime) {
+			$user = new User($router->getUserId());
+
+			$message = "Hallo ".$user->getNickname().",\n\n";
+			$message .= "dein Router ".$router->getHostname()." ist seit dem ".date("d.m H:i", $datetime)." uhr offline.\n";
+			$message .= "Bitte stelle den Router zur Erhaltung des Freifunknetzwerkes wieder zur Verfuegung oder entferne den Router aus Netmon.\n\n";
+			$message .= "Statusseite ansehen:\n$GLOBALS[url_to_netmon]/router_status.php?router_id=".$router->getRouterId()."\n\n";
+			$message .= "Router bearbeiten/entfernen:\n$GLOBALS[url_to_netmon]/routereditor.php?section=edit&router_id=".$router->getRouterId()."\n\n";
+			$message .= "Liebe Gruesse\n";
+			$message .= "$GLOBALS[community_name]";
+			$this->sendNotification($user, "Freifunk Router ".$router->getHostname()." offline", $message);
+		}
+		
+		public function sendNotification($user, $subject, $message) {
+			if($user->getNotificationMethod() == 'jabber') {
+
+				$conn = new XMPPHP_XMPP(ConfigLine::configByName('jabber_server'), 5222, ConfigLine::configByName('jabber_username'), ConfigLine::configByName('jabber_password'), 'xmpphp', $server=null, $printlog=false, $loglevel=XMPPHP_Log::LEVEL_INFO);
+				try {
+					$conn->connect();
+					$conn->processUntil('session_start');
+					$conn->presence();
+					$conn->message($user->getJabber(), $message);
+					$conn->disconnect();
+				} catch(XMPPHP_Exception $e) {
+					die($e->getMessage());
+				}
+			} elseif($user->getNotificationMethod() == 'email') {
+				if ($GLOBALS['mail_sending_type']=='smtp') {
+					$config['username'] = ConfigLine::configByName('mail_smtp_username');
+					$config['password'] = ConfigLine::configByName('mail_smtp_password');
+					$config['ssl'] = ConfigLine::configByName('mail_smtp_ssl');
+					$config['auth'] = ConfigLine::configByName('mail_smtp_login_auth');
+					
+					$transport = new Zend_Mail_Transport_Smtp(ConfigLine::configByName('mail_smtp_server'), $config);
+				}
+				
+				$mail = new Zend_Mail();
+				$mail->setFrom(ConfigLine::configByName('mail_sender_adress'), ConfigLine::configByName('mail_sender_name'));
+				$mail->addTo($user->getEmail());
+				$mail->setSubject($subject);
+				$mail->setBodyText($message);
+				$mail->send($transport);
+			}
+		}
+		
 		public function setEventNotificationId($event_notification_id) {
 			if(is_int($event_notification_id))
 				$this->event_notification_id = $event_notification_id;
@@ -99,17 +213,17 @@
 		}
 		
 		public function setNotify($notify) {
-			if(is_bool($notify))
+			if(is_bool($notify) OR $notify==1 OR $notify==0)
 				$this->notify = $notify;
 		}
 		
 		public function setNotified($notified) {
-			if(is_bool($notified))
+			if(is_bool($notified) OR $notified==1 OR $notified==0)
 				$this->notified = $notified;
 		}
 		
 		public function setNotificationDate($notification_date) {
-			if($notification_date == false)
+			if($notification_date === false)
 				$this->notification_date = time();
 			else if(is_string($notification_date)) {
 				$date = new DateTime($notification_date);

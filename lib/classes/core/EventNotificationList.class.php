@@ -37,5 +37,11 @@
 		public function getEventNotificationList() {
 			return $this->event_notification_list;
 		}
+		
+		public function notify() {
+			foreach($this->getEventNotificationList() as $event_notification) {
+				$event_notification->notify();
+			}
+		}
 	}
 ?>

@@ -19,7 +19,7 @@
 		$smarty->display("event_notifications.tpl.php");
 		$smarty->display("footer.tpl.php");
 	} else {
-		$event_notification = new EventNotification(false, $_SESSION['user_id'], $_POST['action'], $_POST['object']);
+		$event_notification = new EventNotification(false, $_SESSION['user_id'], $_POST['action'], $_POST['object'], true);
 		$event_notification->store();
 		header('Location: ./event_notifications.php');
 	}

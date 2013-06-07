@@ -85,7 +85,7 @@ Diese Benachrichtigungen können hier konfiguriert werden.</p>
 				<tr>
 					<td>{$event_notification->getAction()}</td>
 					<td>{$event_notification->getObject()}</td>
-					<td>{$event_notification->getNotified()}</td>
+					<td>{if $event_notification->getNotified() == true}Ja{else}Nein{/if}</td>
 					<td>{$event_notification->getNotificationDate()|date_format:"%H:%M"} Uhr</td>
 					<td><a href="./event_notifications.php?action=delete&event_notification_id={$event_notification->getEventNotificationId()}">Nicht mehr benachrichtigen</a></td>
 				</tr>
