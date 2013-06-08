@@ -204,7 +204,7 @@ if ($_GET['section']=="edit") {
 } elseif($_GET['section']=="recieve_twitter_token") {
 	$config = array(
 		'callbackUrl' => Config::getConfigValueByName('url_to_netmon').'/config.php?section=recieve_twitter_token',
-		'siteUrl' => 'http://twitter.com/oauth',
+		'siteUrl' => 'https://api.twitter.com/oauth',
 		'consumerKey' => $GLOBALS['twitter_consumer_key'],
 		'consumerSecret' => $GLOBALS['twitter_consumer_secret']
 	);
@@ -224,9 +224,10 @@ if ($_GET['section']=="edit") {
 	}
 
 	if(Permission::checkPermission(120)) {
+		Config::writeConfigLine('twitter_username', $token->getParam( 'screen_name' ));
 		Config::writeConfigLine('twitter_token', $_SESSION['TWITTER_ACCESS_TOKEN']);
 		
-		$message[] = array('Die Daten wurden gespeichert.', 1);
+		$message[] = array('Netmon wurde an den Twitteraccount <a href="https://twitter.com/'.$token->getParam( 'screen_name' ).'">'.$token->getParam( 'screen_name' ).'</a> angebunden.', 1);
 		Message::setMessage($message);
 		
 		header('Location: ./config.php?section=edit_twitter');
@@ -239,7 +240,7 @@ if ($_GET['section']=="edit") {
 } elseif($_GET['section']=="get_twitter_token") {
 	$config = array(
 		'callbackUrl' => Config::getConfigValueByName('url_to_netmon').'/config.php?section=recieve_twitter_token',
-		'siteUrl' => 'http://twitter.com/oauth',
+		'siteUrl' => 'https://api.twitter.com/oauth',
 		'consumerKey' => $GLOBALS['twitter_consumer_key'],
 		'consumerSecret' => $GLOBALS['twitter_consumer_secret']
 	);
