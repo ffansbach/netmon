@@ -11,6 +11,7 @@
 		private $user_id = 0;
 		private $action="";
 		private $object="";
+		private $object_data=null;
 		private $notify=false;
 		private $notified=false;
 		private $notification_date=0;
@@ -46,6 +47,10 @@
 				$this->setNotify((bool)$result['notify']);
 				$this->setNotified((bool)$result['notified']);
 				$this->setNotificationDate($result['notification_date']);
+				
+				if($this->getAction() == 'router_offline') {
+					$this->setObjectData(new Router($this->getObject()));
+				}
 			}
 		}
 		
@@ -121,7 +126,7 @@
 						}
 					}
 					
-					if(!$online) {
+					if(!$online AND $this->getNotified() == 0) {
 						//if router is marked as offline in each of the 6 last crawl cycles, then
 						//send a notification
 						$this->notifyRouterOffline($router, $statusdata_history[6]->getCreateDate());
@@ -129,12 +134,10 @@
 						$this->setNotified(1);
 						$this->setNotificationDate(time());
 						$this->store();
-					} else {
+					} elseif($online AND $this->getNotified() == 1) {
 						//if the router has been notified but is not offline anymore, then reset notification
-						if($this->getNotified() == 1) {
-							$this->setNotified(0);
-							$this->store();
-						}
+						$this->setNotified(0);
+						$this->store();
 					}
 				} elseif($this->getAction() == 'network_down') {
 				
@@ -206,6 +209,10 @@
 			$this->object = $object;
 		}
 		
+		public function setObjectData($object_data) {
+			$this->object_data = $object_data;
+		}
+		
 		public function setNotify($notify) {
 			if(is_bool($notify) OR $notify==1 OR $notify==0)
 				$this->notify = $notify;
@@ -240,6 +247,10 @@
 		
 		public function getObject() {
 			return $this->object;
+		}
+		
+		public function getObjectData() {
+			return $this->object_data;
 		}
 		
 		public function getNotify() {

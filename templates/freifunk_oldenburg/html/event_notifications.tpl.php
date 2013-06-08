@@ -88,8 +88,8 @@ Diese Benachrichtigungen können hier konfiguriert werden.</p>
 		<tbody>
 			{foreach item=event_notification from=$event_notification_list}
 				<tr>
-					<td>{$event_notification->getAction()}</td>
-					<td>{$event_notification->getObject()}</td>
+					<td>{if $event_notification->getAction() == 'router_offline'}Router ist offline{else}{$event_notification->getAction()}{/if}</td>
+					<td>{if $event_notification->getAction() == 'router_offline'}<a href="./router_status.php?router_id={$event_notification->getObject()}">{$event_notification->getObjectData()->getHostname()}</a>{else}{$event_notification->getObject()}{/if}</td>
 					<td>{if $event_notification->getNotified() == true}Ja{else}Nein{/if}</td>
 					<td>{$event_notification->getNotificationDate()|date_format:"%H:%M"} Uhr</td>
 					<td><a href="./event_notifications.php?action=delete&event_notification_id={$event_notification->getEventNotificationId()}">Nicht mehr benachrichtigen</a></td>
