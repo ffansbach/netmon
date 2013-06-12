@@ -1,13 +1,14 @@
 <?php
 /** Include Classes **/
 require_once('runtime.php');
+require_once('lib/classes/core/config.class.php');
 require_once('lib/classes/core/ip.class.php');
 
 $ip = Ip::getIpById($_GET['ip_id']);
 
 if ($ip['ipv']=='6') {
 	$ipv6_address = explode("/", $ip['ip']);
-	$address="[$ipv6_address[0]%$GLOBALS[netmon_ipv6_interface]]";
+	$address="[$ipv6_address[0]%".Config::getConfigValueByName("network_connection_ipv6_interface");
 } elseif ($ip['ipv']=='4') {
 	$address = $ip['ip'];
 }

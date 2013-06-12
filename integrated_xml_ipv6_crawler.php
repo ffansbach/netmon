@@ -17,6 +17,7 @@ require_once('runtime.php');
 require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/api/crawl.class.php');
+require_once('lib/classes/core/config.class.php');
 
 class IntegratedXmlIPv6Crawler {
 	public function simplexml2array($xml) {
@@ -40,6 +41,8 @@ class IntegratedXmlIPv6Crawler {
 	}
 	
 	public function crawl($from, $to) {
+		$network_connection_ipv6_interface = Config::getConfigValueByName("network_connection_ipv6_interface");
+	
 		$routers = Router::getRoutersForCrawl($from, $to);
 		
 		foreach($routers as $router) {
@@ -55,7 +58,7 @@ class IntegratedXmlIPv6Crawler {
 								//ping the router to preestablish a connection
 								$ipv6_address = explode("/", $ip_address['ip']);
 								$return = array();
-								$command = "ping6 -c 4 -I $GLOBALS[netmon_ipv6_interface] $ipv6_address[0]";
+								$command = "ping6 -c 4 -I $network_connection_ipv6_interface $ipv6_address[0]";
 								exec($command, $return);
 									
 								foreach($return as $key=>$line) {
@@ -79,7 +82,7 @@ class IntegratedXmlIPv6Crawler {
 
 								//fetch crawl data from router
 								$return = array();
-								$command = "curl -s --connect-timeout 4 -m8 -g http://[$ipv6_address[0]%25\$(cat /sys/class/net/$GLOBALS[netmon_ipv6_interface]/ifindex)]/node.data";
+								$command = "curl -s --connect-timeout 4 -m8 -g http://[$ipv6_address[0]%25\$(cat /sys/class/net/$network_connection_ipv6_interface/ifindex)]/node.data";
 								exec($command, $return);
 								$return_string = "";
 								foreach($return as $string) {

@@ -1,8 +1,9 @@
 <?php
   require_once('runtime.php');
-  require_once('./lib/classes/core/interfaces.class.php');
-  require_once('./lib/classes/core/router.class.php');
-  require_once('./lib/classes/core/service.class.php');
+  require_once('lib/classes/core/interfaces.class.php');
+  require_once('lib/classes/core/router.class.php');
+  require_once('lib/classes/core/service.class.php');
+  require_once('lib/classes/core/config.class.php');
 
   $smarty->assign('message', Message::getMessage());
   $router_data = Router::getRouterInfo($_GET['router_id']);
@@ -20,9 +21,9 @@
   $services = Service::getServiceList($view="", false, $_GET['router_id']);
   $smarty->assign('services', $services);
 
-  $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
-  $smarty->assign('netmon_is_connected_to_network_by_ipv6', $GLOBALS['netmon_is_connected_to_network_by_ipv6']);
-  $smarty->assign('netmon_is_connected_to_network_by_ipv4', $GLOBALS['netmon_is_connected_to_network_by_ipv4']);
+  $smarty->assign('google_maps_api_key', Config::getConfigValueByName("google_maps_api_key"));
+  $smarty->assign('network_connection_ipv4', Config::getConfigValueByName("network_connection_ipv4"));
+  $smarty->assign('network_connection_ipv6', Config::getConfigValueByName("network_connection_ipv6"));
 
   if((Router::areAddsAllowed($_GET['router_id']) AND isThisUserOwner($router_data['user_id'])) OR Permission::checkPermission(64)) {
     $smarty->assign('show_add_link', true);

@@ -121,6 +121,39 @@ if ($_GET['section']=="edit") {
 
 		header('Location: ./config.php?section=edit_community');
 	}
+} elseif($_GET['section']=="edit_network_connection") {
+	$smarty->assign('network_connection_ipv4', Config::getConfigValueByName("network_connection_ipv4"));
+	$smarty->assign('network_connection_ipv6', Config::getConfigValueByName("network_connection_ipv6"));
+	$smarty->assign('network_connection_ipv6_interface', Config::getConfigValueByName("network_connection_ipv6_interface"));
+	
+	$smarty->assign('message', Message::getMessage());
+	$smarty->display("header.tpl.php");
+	$smarty->display("config_network_connection.tpl.php");
+	$smarty->display("footer.tpl.php");
+} elseif($_GET['section']=="insert_edit_network_connection") {
+	if(Permission::checkPermission(120)) {
+		if(empty($_POST['network_connection_ipv4']))
+			Config::writeConfigLine('network_connection_ipv4', 'false');
+		else
+			Config::writeConfigLine('network_connection_ipv4', $_POST['network_connection_ipv4']);
+			
+		if(empty($_POST['network_connection_ipv6']))
+			Config::writeConfigLine('network_connection_ipv6', 'false');
+		else
+			Config::writeConfigLine('network_connection_ipv6', $_POST['network_connection_ipv6']);
+			
+		Config::writeConfigLine('network_connection_ipv6_interface', $_POST['network_connection_ipv6_interface']);
+		
+		$message[] = array('Die Daten wurden gespeichert.', 1);
+		Message::setMessage($message);
+
+		header('Location: ./config.php?section=edit_network_connection');
+	} else {
+		$message[] = array('Nur Root kann die Daten ändern.', 2);
+		Message::setMessage($message);
+
+		header('Location: ./config.php?section=edit_network_connection');
+	}
 } elseif($_GET['section']=="edit_email") {
 	$smarty->assign('mail_sender_adress', Config::getConfigValueByName('mail_sender_adress'));
 	$smarty->assign('mail_sender_name', Config::getConfigValueByName('mail_sender_name'));
