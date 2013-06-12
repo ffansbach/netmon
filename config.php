@@ -84,6 +84,7 @@ if ($_GET['section']=="edit") {
 		header('Location: ./config.php?section=edit_netmon');
 	}
 } elseif($_GET['section']=="edit_community") {
+	$smarty->assign('google_maps_api_key', Config::getConfigValueByName("google_maps_api_key"));
 	$smarty->assign('community_name', Config::getConfigValueByName("community_name"));
 	$smarty->assign('community_slogan', Config::getConfigValueByName("community_slogan"));
 	$smarty->assign('community_location_longitude', Config::getConfigValueByName("community_location_longitude"));

@@ -81,8 +81,7 @@ class RouterEditor {
 	public function resetRouterAutoAssignHash($router_id) {
 		try {
 			$stmt = DB::getInstance()->prepare("UPDATE routers SET
-									router_auto_assign_hash = '',
-									trying_to_assign_notified = 0
+									router_auto_assign_hash = ''
 							    WHERE id=?");
 			$stmt->execute(array($router_id));
 			$result = $stmt->rowCount();

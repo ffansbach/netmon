@@ -50,7 +50,7 @@ class Router {
 	
 	public function getRouterByAutoAssignLoginString($auto_assign_login_string) {
 		try {
-			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.trying_to_assign_notified, routers.trying_to_assign_last_notification_time,
+			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
 								    users.nickname, chipsets.name as chipset_name
 							    FROM routers
 							    LEFT JOIN users ON (users.id=routers.user_id)

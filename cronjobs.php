@@ -47,7 +47,7 @@ echo "Crawle Router...\n";
 for ($i=0; $i<=Router::countRouters(); $i+=10) {
         //start an independet crawl process for each 10 routers to crawl routers simultaniously
         $return = array();
-        $cmd = ROOT_DIR."/integrated_xml_ipv6_crawler.php -f".$i." -t10  &> /dev/null & echo $!";
+        $cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -f".$i." -t10  &> /dev/null & echo $!";
         echo "Running: $cmd\n";
         exec($cmd, $return);
         echo "The initialized crawl process has the pid $return[0]\n";

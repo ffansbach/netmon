@@ -150,6 +150,7 @@ if ($GLOBALS['installed']) {
 		Config::writeConfigLine('hours_to_keep_mysql_crawl_data', 5);
 		Config::writeConfigLine('hours_to_keep_history_table', 72);
 		Config::writeConfigLine('crawl_cycle_length_in_minutes', 10);
+		Config::writeConfigLine('event_notification_router_offline_crawl_cycles', 6);
 
 		//create an initial crawl cycle
 		$crawl_cycle_id = Crawling::newCrawlCycle(10);

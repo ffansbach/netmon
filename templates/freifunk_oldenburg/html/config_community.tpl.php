@@ -2,7 +2,7 @@
 <form action="./config.php?section=insert_edit_community" method="POST">
 	<h2>Lokales</h2>
 	<p><b>Name der Community:</b><br><input name="community_name" type="text" size="30" value="{$community_name}"></p>
-	<p><b>Slogan der Community:</b><br><input name="community_slogan" type="text" size="30" value="{$community_slogan}"></p>
+	<p><b>Slogan der Community:</b><br><input name="community_slogan" type="text" size="60" value="{$community_slogan}"></p>
 	<p><b>Ort der Community:</b><br>
 		<div id="section_location">
 			<div style="width: 100%; overflow: hidden;" class="section_location">
@@ -29,7 +29,7 @@
 	<h2>Netzwerkpolicy</h2>
 	<p>Ist die Netzwerkpolicy eingeschaltet, dann wird neuen Benutzern bei der Registration ein Link auf eine Netzwerkpolicy gezeigt. Damit ein Benutzer sich erfolgreich registrieren kann, muss er diese bestätigen.</p>
 	<p><b>Netzwerkpolicy einschalten:</b> <input name="enable_network_policy" type="checkbox" value="true" {if $enable_network_policy=='true'}checked{/if}>
-	<p><b>Link zur Netzwerkpolicy:</b><br><input name="network_policy_url" type="text" size="30" value="{$network_policy_url}"></p>
+	<p><b>Link zur Netzwerkpolicy:</b><br><input name="network_policy_url" type="text" size="70" value="{$network_policy_url}"></p>
 	<br>
 
 	<p><input type="submit" value="Absenden"></p>

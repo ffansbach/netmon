@@ -113,6 +113,7 @@
 			if($this->getNotify() == true) {
 				//check which event to test
 				if($this->getAction() == 'router_offline') {
+					$crawl_cycles = ConfigLine::configByName('event_notification_router_offline_crawl_cycles');
 					$router = new Router((int)$this->getObject());
 					
 					$online = false;
@@ -121,15 +122,15 @@
 						if ($statusdata->getStatus() == 'online') {
 							$online = true;
 							break;
-						} elseif($key>=6) {
+						} elseif($key>=$crawl_cycles) {
 							break;
 						}
 					}
 					
 					if(!$online AND $this->getNotified() == 0) {
-						//if router is marked as offline in each of the 6 last crawl cycles, then
+						//if router is marked as offline in each of the $crawl_cycles last crawl cycles, then
 						//send a notification
-						$this->notifyRouterOffline($router, $statusdata_history[6]->getCreateDate());
+						$this->notifyRouterOffline($router, $statusdata_history[$crawl_cycles]->getCreateDate());
 						//store into database that the router has been notified
 						$this->setNotified(1);
 						$this->setNotificationDate(time());
