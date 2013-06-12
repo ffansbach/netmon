@@ -41,27 +41,13 @@ echo "Bereinige Tabelle der neuen Router\n";
 DB::getInstance()->exec("DELETE FROM routers_not_assigned WHERE TO_DAYS(update_date) < TO_DAYS(NOW())-2");
 
 /**
-* Remove old generated images
-**/
-echo "Bereinige Image generator\n";
-$files = scandir($GLOBALS['netmon_root_path'].'scripts/imagemaker/tmp/');
-foreach($files as $file) {
-	if ($file!=".." AND $file!=".") {
-		$exploded_name = explode("_", $file);
-		if(!empty($exploded_name[2]) AND is_numeric($exploded_name[2]) AND $exploded_name[2]<(time()-1800)) {
-			exec("rm -Rf $GLOBALS[netmon_root_path]/scripts/imgbuild/dest/$file");
-		}
-	}
-}
-
-/**
 * Crawl
 **/
 echo "Crawle Router...\n";
 for ($i=0; $i<=Router::countRouters(); $i+=10) {
         //start an independet crawl process for each 10 routers to crawl routers simultaniously
         $return = array();
-        $cmd = "php /var/kunden/webs/freifunk/netmon/integrated_xml_ipv6_crawler.php -f".$i." -t10  &> /dev/null & echo $!";
+        $cmd = ROOT_DIR."/integrated_xml_ipv6_crawler.php -f".$i." -t10  &> /dev/null & echo $!";
         echo "Running: $cmd\n";
         exec($cmd, $return);
         echo "The initialized crawl process has the pid $return[0]\n";
