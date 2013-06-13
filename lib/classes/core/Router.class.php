@@ -5,7 +5,7 @@
 	require_once(ROOT_DIR.'/lib/classes/core/RouterStatusList.class.php');
 	
 	class Router extends Object {
- 		public $router_id;
+ 		private $router_id;
 		private $user_id;
 		private $hostname;
 		private $description;
