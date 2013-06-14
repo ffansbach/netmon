@@ -40,11 +40,11 @@
 	$GLOBALS['community_slogan'] = "Die freie WLAN-Community aus deiner Stadt • Freie Netze für alle!";
 		
 	//check if netmons root path and the config path is writable to created temp dirs and config file
-	$check_writable[] = '';
-	$check_writable[] = 'config/';
+	$check_writable[] = '/';
+	$check_writable[] = '/config/';
 	foreach($check_writable as $path) {
-		if (!is_writable($GLOBALS['monitor_root'].$path)) {
-			echo $GLOBALS['monitor_root'].$path."<br>";
+		if (!is_writable(ROOT_DIR.$path)) {
+			echo ROOT_DIR.$path."<br>";
 			$not_writable[] = $path;
 		}
 	}
@@ -55,25 +55,25 @@
 	unset($check_writable);
 	
 	//copy exemple config files and create needed directories on fresh installation
-	if(!file_exists($GLOBALS['monitor_root'].'config/config.local.inc.php')) copy($GLOBALS['monitor_root'].'config/config.local.inc.php.example', $GLOBALS['monitor_root'].'config/config.local.inc.php');	
+	if(!file_exists(ROOT_DIR.'/config/config.local.inc.php')) copy(ROOT_DIR.'/config/config.local.inc.php.example', ROOT_DIR.'/config/config.local.inc.php');	
 	
 	//create temp directories
-	$create_dirs[] = 'templates_c/';
-	$create_dirs[] = 'tmp/';
-	$create_dirs[] = 'rrdtool/';
-	$create_dirs[] = 'rrdtool/databases/';
+	$create_dirs[] = '/templates_c/';
+	$create_dirs[] = '/tmp/';
+	$create_dirs[] = '/rrdtool/';
+	$create_dirs[] = '/rrdtool/databases/';
 	foreach($create_dirs as $dir) {
-		if(!file_exists($GLOBALS['monitor_root'].$dir))
-			@mkdir($GLOBALS['monitor_root'].$dir);
+		if(!file_exists(ROOT_DIR.$dir))
+			@mkdir(ROOT_DIR.$dir);
 	}
 
 	//check if directories and files are writable
 	$check_writable = $create_dirs;
-	$check_writable[] = '';
-	$check_writable[] = 'config/config.local.inc.php';
+	$check_writable[] = '/';
+	$check_writable[] = '/config/config.local.inc.php';
 	foreach($check_writable as $path) {
-		if (!is_writable($GLOBALS['monitor_root'].$path)) {
-			echo $GLOBALS['monitor_root'].$path."<br>";
+		if (!is_writable(ROOT_DIR.$path)) {
+			echo ROOT_DIR.$path."<br>";
 			$not_writable[] = $path;
 		}
 	}

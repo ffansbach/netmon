@@ -1,11 +1,11 @@
 <?php
 
-require_once($GLOBALS['monitor_root'].'lib/classes/core/crawling.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/clients.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/interfaces.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/batmanadvanced.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/user.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/extern/xmpphp/XMPP.php');
+require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/clients.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/interfaces.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/batmanadvanced.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/user.class.php');
+require_once(ROOT_DIR.'/lib/classes/extern/xmpphp/XMPP.php');
 
 /**
  * This class is used as a container for static methods that deal operations

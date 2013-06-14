@@ -1,9 +1,9 @@
 <?php
 
-require_once($GLOBALS['monitor_root'].'lib/classes/core/event.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/router.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/rrdtool.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/clients.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/event.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/rrdtool.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/clients.class.php');
 
 class Crawling {
 	public function organizeCrawlCycles()  {

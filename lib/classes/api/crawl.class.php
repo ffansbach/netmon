@@ -1,8 +1,8 @@
 <?php
 
-require_once($GLOBALS['monitor_root'].'lib/classes/core/router.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/crawling.class.php');
-require_once($GLOBALS['monitor_root'].'lib/classes/core/chipsets.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/chipsets.class.php');
 
 class Crawl {
 	public function getRoutersForCrawl() {
@@ -45,7 +45,7 @@ class Crawl {
 			/**Insert Router Interfaces*/
 			foreach($data['interface_data'] as $sendet_interface) {				
 				//Update RRD Graph DB
-				$rrd_path_traffic_rx = "$GLOBALS[monitor_root]/rrdtool/databases/router_$data[router_id]_interface_$sendet_interface[name]_traffic_rx.rrd";
+				$rrd_path_traffic_rx = ROOT_DIR."/rrdtool/databases/router_$data[router_id]_interface_$sendet_interface[name]_traffic_rx.rrd";
 				if(!file_exists($rrd_path_traffic_rx)) {
 					//Create new RRD-Database
 					exec("rrdtool create $rrd_path_traffic_rx --step 600 --start ".time()." DS:traffic_rx:GAUGE:700:U:U DS:traffic_tx:GAUGE:900:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
@@ -78,6 +78,10 @@ class Crawl {
 				//Set default indizies to prevent from warnings
 				if(!isset($sendet_interface['wlan_mode'])) $sendet_interface['wlan_mode']="";
 				if(!isset($sendet_interface['wlan_frequency'])) $sendet_interface['wlan_frequency']="";
+								if(!isset($sendet_interface['wlan_frequency']))
+					$sendet_interface['wlan_frequency']="";
+				else
+					$sendet_interface['wlan_frequency']=preg_replace("/([A-Za-z])/","",$sendet_interface['wlan_frequency']); //strip letters from value
 				if(!isset($sendet_interface['wlan_essid'])) $sendet_interface['wlan_essid']="";
 				if(!isset($sendet_interface['wlan_bssid'])) $sendet_interface['wlan_bssid']="";
 				if(!isset($sendet_interface['wlan_tx_power'])) $sendet_interface['wlan_tx_power']="";
