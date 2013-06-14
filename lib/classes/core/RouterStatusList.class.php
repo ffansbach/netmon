@@ -5,11 +5,19 @@
 	class RouterStatusList extends ObjectList {
 		private $router_status_list = array();
 		
-		public function __construct($router_id=false, $offset=0, $limit=100) {
+		public function __construct($router_id=false, $offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
-			$this->setOffset((int)$offset);
-			$this->setLimit((int)$limit);
-			
+			if($offset!==false)
+				$this->setOffset((int)$offset);
+			if($limit!==false)
+				$this->setLimit((int)$limit);
+			if($sort_by!==false)
+				$this->setSortBy($sort_by);
+			if($order!==false)
+				$this->SetOrder($order);
+			else 
+				$this->SetOrder("desc");
+				
 			if($router_id != false) {
 				// initialize $total_count with the total number of objects in the list (over all pages)
 				try {
@@ -29,11 +37,17 @@
 					$stmt = DB::getInstance()->prepare("SELECT crawl_routers.id as status_id
 														FROM crawl_routers
 														WHERE crawl_routers.router_id = :router_id
-														ORDER BY crawl_routers.id DESC
+														ORDER BY
+															case :sort_by
+																when 'crawl_date' then crawl_routers.crawl_date
+																else crawl_routers.id
+															end
+														".$this->getOrder()."
 														LIMIT :offset, :limit");
 					$stmt->bindParam(':router_id', $router_id, PDO::PARAM_INT);
 					$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
 					$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
+					$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
 					$stmt->execute();
 					
 					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -58,10 +72,16 @@
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT crawl_routers.id as status_id
 														FROM crawl_routers
-														ORDER BY crawl_routers.id DESC
+														ORDER BY
+															case :sort_by
+																when 'crawl_date' then crawl_routers.crawl_date
+																else crawl_routers.id
+															end
+														".$this->getOrder()."
 														LIMIT :offset, :limit");
 					$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
 					$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
+					$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
 					$stmt->execute();
 					
 					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);

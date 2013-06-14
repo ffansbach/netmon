@@ -1,15 +1,19 @@
 <?php
-	require_once("../../config/config.local.inc.php");
-	require_once("../../lib/classes/core/db.class.php");
-	require_once("../../lib/classes/core/Iplist.class.php");
-	require_once("../../lib/classes/core/Ip.class.php");
-	require_once("../../lib/classes/core/Networkinterfacelist.class.php");
-	require_once("../../lib/classes/core/Networkinterface.class.php");
-	require_once("../../lib/classes/core/Routerlist.class.php");
-	require_once("../../lib/classes/core/Router.class.php");
-	require_once("../../lib/classes/core/Eventlist.class.php");
-	require_once("../../lib/classes/core/Event.class.php");
-	require_once("../../lib/classes/extern/rest/rest.inc.php");
+	//prevent from include conflicts, see runtime.php in root folder
+	$GLOBALS['cronjob'] = true;
+	
+	require_once("../../runtime.php");
+	require_once(ROOT_DIR.'/config/config.local.inc.php');
+	require_once(ROOT_DIR.'/lib/classes/core/db.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Iplist.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Ip.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Networkinterfacelist.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Networkinterface.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Routerlist.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Router.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Eventlist.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Event.class.php');
+	require_once(ROOT_DIR.'/lib/classes/extern/rest/rest.inc.php');
 	
 	class API extends Rest {
 		private $domxml = null;
@@ -25,6 +29,15 @@
 			parent::__construct();				// Init parent contructor
 			$this->domxml = new DOMDocument('1.0', 'utf-8');
 			$this->domxmlresponse = $this->domxml->createElement("netmon_response");
+			
+			if(!isset($this->_request['offset']))
+				$this->_request['offset'] = false;
+			if(!isset($this->_request['limit']))
+				$this->_request['limit'] = false;
+			if(!isset($this->_request['sort_by']))
+				$this->_request['sort_by'] = false;
+			if(!isset($this->_request['order']))
+				$this->_request['order'] = false;
 		}
 		
 		/*
@@ -47,12 +60,16 @@
 		}
 		
 		private function iplist() {
-			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
-				$iplist = new Iplist($this->_request['id']);
+			if($this->get_request_method() == "GET" && isset($this->_request['interface_id'])) {
+				$iplist = new Iplist($this->_request['interface_id'],
+									 $this->_request['offset'], $this->_request['limit'],
+									 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $iplist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} elseif($this->get_request_method() == "GET") {
-				$iplist = new Iplist();
+				$iplist = new Iplist(false,
+									 $this->_request['offset'], $this->_request['limit'],
+									 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $iplist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} else {
@@ -80,11 +97,15 @@
 		
 		private function networkinterfacelist() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
-				$networkinterfacelist = new Networkinterfacelist($this->_request['id']);
+				$networkinterfacelist = new Networkinterfacelist($this->_request['id'],
+																 $this->_request['offset'], $this->_request['limit'],
+																 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $networkinterfacelist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} elseif($this->get_request_method() == "GET") {
-				$networkinterfacelist = new Networkinterfacelist();
+				$networkinterfacelist = new Networkinterfacelist(false,
+																 $this->_request['offset'], $this->_request['limit'],
+																 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $networkinterfacelist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} else {
@@ -112,11 +133,13 @@
 		
 		private function routerlist() {
 			if($this->get_request_method() == "GET" && isset($this->_request['user_id'])) {
-				$routerlist = new Routerlist($this->_request['user_id']);
+				$routerlist = new Routerlist($this->_request['user_id'], $this->_request['offset'], $this->_request['limit'],
+											 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $routerlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} elseif($this->get_request_method() == "GET") {
-				$routerlist = new Routerlist();
+				$routerlist = new Routerlist(false, $this->_request['offset'], $this->_request['limit'],
+											 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $routerlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} else {
@@ -144,19 +167,27 @@
 		
 		private function eventlist() {
 			if($this->get_request_method() == "GET" && isset($this->_request['router_id']) && isset($this->_request['action'])) {
-				$eventlist = new Eventlist('router', $this->_request['router_id'], $this->_request['action']);
+				$eventlist = new Eventlist('router', $this->_request['router_id'], $this->_request['action'],
+										   $this->_request['offset'], $this->_request['limit'],
+										   $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} elseif($this->get_request_method() == "GET" && isset($this->_request['router_id'])) {
-				$eventlist = new Eventlist('router', $this->_request['router_id']);
+				$eventlist = new Eventlist('router', $this->_request['router_id'], false,
+										   $this->_request['offset'], $this->_request['limit'],
+										   $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} elseif($this->get_request_method() == "GET" && isset($this->_request['action'])) {
-				$eventlist = new Eventlist(false, false, $this->_request['action']);
+				$eventlist = new Eventlist(false, false, $this->_request['action'],
+										   $this->_request['offset'], $this->_request['limit'],
+										   $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} elseif($this->get_request_method() == "GET") {
-				$eventlist = new Eventlist();
+				$eventlist = new Eventlist(false, false, false,
+										   $this->_request['offset'], $this->_request['limit'],
+										   $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} else {
