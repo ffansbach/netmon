@@ -67,7 +67,7 @@ class Message {
 			
 			$token = unserialize($config_line['value']);
 			$client = $token->getHttpClient($config);
-			$client->setUri('http://api.twitter.com/1/statuses/update.json');
+			$client->setUri('https://api.twitter.com/1.1/statuses/update.json');
 			$client->setMethod(Zend_Http_Client::POST);
 			$client->setParameterPost('status', $statusMessage);
 			$response = $client->request();
