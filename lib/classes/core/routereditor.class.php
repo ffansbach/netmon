@@ -6,6 +6,7 @@ require_once('lib/classes/core/serviceeditor.class.php');
 require_once('lib/classes/core/crawling.class.php');
 require_once('lib/classes/core/event.class.php');
 require_once('lib/classes/core/routersnotassigned.class.php');
+require_once('lib/classes/core/config.class.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
@@ -70,7 +71,7 @@ class RouterEditor {
 			
 			//Send Message to twitter
 			if($_POST['twitter_notification']=='1') {
-				Message::postTwitterMessage("Neuer #Freifunk Knoten in #Oldenburg! Wo? Schau nach: http://netmon.freifunk-ol.de/router_status.php?router_id=$router_id");
+				Message::postTwitterMessage("Neuer #Freifunk Knoten in #Oldenburg! Wo? Schau nach: ".Config::getConfigValueByName('url_to_netmon')."/router_status.php?router_id=$router_id");
 			}
 
 			Message::setMessage($message);
