@@ -233,7 +233,7 @@ $(document).ready(function() {
 	<p>Keine Services vorhanden.</p>
 {/if}
 
-
+<!--TODO
 <h2>Domains von {$user.nickname}</h2>
 {if !empty($dns_hosts)}
 	<table class="display" id="domainlist" style="width: 100%;">
@@ -258,4 +258,4 @@ $(document).ready(function() {
 	</table>
 {else}
 	<p>Keine Domains vorhanden.</p>
-{/if}
+{/if}-->

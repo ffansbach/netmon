@@ -22,7 +22,7 @@ $smarty->assign('routerlist', Router::getRouterListByUserId($_GET['user_id']));
 $smarty->assign('servicelist', Service::getServiceList(Permission::isLoggedIn($_SESSION['user_id']) ? 'all' : 'public', $_GET['user_id']));
 
 //get infotmation about the dns system
-$smarty->assign('dns_tld', $GLOBALS['dns_tld']);
+//$smarty->assign('dns_tld', $GLOBALS['dns_tld']); TODO
 $smarty->assign('dns_hosts', DNS::getHostsByUser($_GET['user_id']));
 
 //load the temlate

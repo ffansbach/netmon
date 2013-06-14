@@ -155,6 +155,7 @@ class Menus extends Permission {
 			$subsubmenu[] = array('name'=>'Jabber', 'href'=>'config.php?section=edit_jabber');
 			$subsubmenu[] = array('name'=>'Twitter', 'href'=>'config.php?section=edit_twitter');
 			$subsubmenu[] = array('name'=>'Hardware', 'href'=>'config.php?section=edit_hardware');
+			$subsubmenu[] = array('name'=>'TLDs', 'href'=>'config.php?section=edit_tlds');
 			$submenu[] = $subsubmenu;
 			$menu[] = $submenu;
 		}

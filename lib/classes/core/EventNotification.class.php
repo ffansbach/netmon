@@ -69,7 +69,7 @@
 					$stmt->execute(array($this->getUserId(), $this->getCreateDate(), $this->getAction(), $this->getObject(),
 										 $this->getNotify(), $this->getNotified(), $this->getNotificationDate(),
 										 $this->getEventNotificationId()));
-					$result = $stmt->rowCount();
+					return $stmt->rowCount();
 				} catch(PDOException $e) {
 					echo $e->getMessage();
 					echo $e->getTraceAsString();

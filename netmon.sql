@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 12, 2013 at 06:08 PM
+-- Generation Time: Jun 14, 2013 at 10:52 PM
 -- Server version: 5.5.31-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.16-1~dotdeb.1
 
@@ -581,6 +581,20 @@ CREATE TABLE IF NOT EXISTS `subnets` (
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tlds`
+--
+
+CREATE TABLE IF NOT EXISTS `tlds` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `tld` varchar(20) NOT NULL,
+  `create_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

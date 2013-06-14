@@ -4,6 +4,8 @@ require_once('runtime.php');
 require_once('lib/classes/core/install.class.php');
 require_once('lib/classes/core/config.class.php');
 require_once('lib/classes/core/chipsets.class.php');
+require_once('lib/classes/core/Tld.class.php');
+require_once('lib/classes/core/TldList.class.php');
 require_once('lib/classes/extern/Zend/Oauth/Consumer.php');
 
 
@@ -315,6 +317,35 @@ if ($_GET['section']=="edit") {
 		Message::setMessage($message);
 		header('Location: ./config.php?section=edit_hardware_name&chipset_id='.$_GET['chipset_id']);
 	}
+} elseif($_GET['section']=="edit_tlds") {
+	$tld_list = new TldList();
+	$smarty->assign('tld_list', $tld_list->getTldList());
+	
+	$smarty->assign('message', Message::getMessage());
+	$smarty->display("header.tpl.php");
+	$smarty->display("config_edit_tlds.tpl.php");
+	$smarty->display("footer.tpl.php");
+} elseif($_GET['section']=="insert_edit_tlds") {
+	$tld = new Tld(false, $_SESSION['user_id'], $_POST['tld']);
+	$tld->store();
+	
+	$message[] = array('Neue Topleveldomain '.$_POST['tld'].' wurde eingetragen.', 1);
+	Message::setMessage($message);
+	
+	header('Location: ./config.php?section=edit_tlds');
+} elseif($_GET['section']=="insert_delete_tld") {
+	$tld = new Tld($_GET['tld_id']);
+	$tld_tld = $tld->getTld();
+	$tld->delete();
+
+	$message[] = array('Die Topleveldomain '.$tld_tld.' wurde gelöscht.', 1);
+	Message::setMessage($message);
+	
+	header('Location: ./config.php?section=edit_tlds');
 }
+
+
+
+
 
 ?>

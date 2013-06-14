@@ -357,35 +357,13 @@
 
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 50%;">
-	<h2>Routers</h2>
-	<div style="height: 300px;" id="chipset_chart"></div>
-<!--	    <div id="chipset_chart"></div>-->
-
-<!--	<h2>Batman adv. version</h2>
-		<p>
-		{foreach item=batman_advanced_version_count from=$batman_advanced_versions_count}
-			<b>{$batman_advanced_version_count.batman_advanced_version}:</b> <a href="./routerlist.php?where=crawl_routers.batman_advanced_version&operator=%3D&value={$batman_advanced_version_count.batman_advanced_version}">{$batman_advanced_version_count.count}</a> Router<br>
-		{/foreach}
-		</p>-->
+		<h2>Routers</h2>
+		<div style="height: 300px;" id="chipset_chart"></div>
 	</div>
 	<div style="float:left; width: 50%;">
-	<h2>Firmware</h2>
-	<div style="height: 300px;" id="firmwareversions_chart"></div>
-<!--		<h2>Kernel Version</h2>
-		<p>
-		{foreach item=kernel_version_count from=$kernel_versions_count}
-			<b>{$kernel_version_count.kernel_version}:</b> <a href="./routerlist.php?where=crawl_routers.kernel_version&operator=%3D&value={$kernel_version_count.kernel_version}">{$kernel_version_count.count}</a>  Router<br>
-		{/foreach}-->
-		</p>
+		<h2>Firmware</h2>
+		<div style="height: 300px;" id="firmwareversions_chart"></div>
 	</div>
-<!--	<div style="float:left; width: 33%;">
-		<h2>Nodewatcher Version</h2>
-		<p>
-		{foreach item=nodewatcher_version_count from=$nodewatcher_versions_count}
-			<b>{$nodewatcher_version_count.nodewatcher_version}:</b> <a href="./routerlist.php?where=crawl_routers.nodewatcher_version&operator=%3D&value={$nodewatcher_version_count.nodewatcher_version}">{$nodewatcher_version_count.count}</a> Router<br>
-		{/foreach}
-		</p>
-	</div>-->
 </div>
 <br>
 
@@ -393,64 +371,44 @@
 	<div style="float:left; width: 50%;">
 		<h2>B.A.T.M.A.N advanced</h2>
 		<div style="height: 300px;" id="batmanadv_div"></div>
-	
-<!--
-    <div id="batmanadv_div"></div>    
-
-<h2>Router nach Chipset</h2>
-		<p>
-		{foreach item=router_chipset from=$router_chipsets}
-			<b>{if !empty($router_chipset.hardware_name)}{$router_chipset.hardware_name}{else}{$router_chipset.chipset_name}{/if}</b> {if !empty($router_chipset.hardware_name)}({$router_chipset.chipset_name}){/if}: <a href="./routerlist.php?where=crawl_routers.chipset&operator=%3D&value={$router_chipset.chipset_name}">{$router_chipset.count}</a><br>
-		{/foreach}
-		</p>-->
 	</div>
 	<div style="float:left; width: 50%;">
 		<h2>Kernel</h2>
 		<div style="height: 300px;" id="kernelversions_chart"></div>
-
-<!--
-	    <div id="kernelversions_chart"></div>
-<h2>Router nach Firmware Version</h2>
-		<p>
-		{foreach item=firmware_version_count from=$firmware_versions_count}
-			<b>{$firmware_version_count.firmware_version}:</b> <a href="./routerlist.php?where=crawl_routers.firmware_version&operator=%3D&value={$firmware_version_count.firmware_version}">{$firmware_version_count.count}</a><br>
-		{/foreach}
-		</p>
-	</div>-->
+	</div>
 </div>
 <br>
 
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 47%;">
-	<h2>Router</h2>
-	<script type="text/javascript">
-		fname='./rrdtool/databases/netmon_history_router_status.rrd';
-		html_graph_id="routers_status_graph"
-		try {
-			FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
-		} catch (err) {
-			alert("Failed loading "+fname+"\n"+err);
-		}
-	</script>
-
-	<div id="routers_status_graph" style="width: 100%;"></div>
+		<h2>Router</h2>
+		<script type="text/javascript">
+			fname='./rrdtool/databases/netmon_history_router_status.rrd';
+			html_graph_id="routers_status_graph"
+			try {
+				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+			} catch (err) {
+				alert("Failed loading "+fname+"\n"+err);
+			}
+		</script>
+		
+		<div id="routers_status_graph" style="width: 100%;"></div>
 	</div>
 	<div style="float:left; width: 53%;">
-	<h2>Clients</h2>
-	<script type="text/javascript">
-		fname='./rrdtool/databases/netmon_history_client_count.rrd';
-		html_graph_id="client_count_graph"
-		try {
-			FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
-		} catch (err) {
-			alert("Failed loading "+fname+"\n"+err);
-		}
-	</script>
-	<div id="client_count_graph" style="width: 100%;"></div>
+		<h2>Clients</h2>
+		<script type="text/javascript">
+			fname='./rrdtool/databases/netmon_history_client_count.rrd';
+			html_graph_id="client_count_graph"
+			try {
+				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+			} catch (err) {
+				alert("Failed loading "+fname+"\n"+err);
+			}
+		</script>
+		<div id="client_count_graph" style="width: 100%;"></div>
 	</div>
 </div>
-	<br style="clear: both">
+<br style="clear: both">
 {else}
 	<p>Es wurde noch kein Crawlzyklus vollständig beendet, sodass keine Daten generiert werden können</p>
 {/if}
-<br style="clear: both;">
