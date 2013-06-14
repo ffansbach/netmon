@@ -28,6 +28,7 @@ if ($GLOBALS['installed']) {
 	$smarty->assign('curl_loaded', extension_loaded('curl'));	
 	$smarty->assign('gd_loaded', extension_loaded('gd'));
 	$smarty->assign('exec', function_exists('exec'));
+	$smarty->assign('iconv_loaded', function_exists('iconv'));
 	
 	exec('rrdtool', $rrdToolCheckOutput, $rrdToolCheckReturn);
 	$smarty->assign('rrdtool_installed', ($rrdToolCheckReturn == 127) ? false : true);
@@ -104,18 +105,18 @@ if ($GLOBALS['installed']) {
 		if(!empty($_POST['mail_smtp_login_auth'])) $config['auth'] = $_POST['mail_smtp_login_auth'];
 		$transport = new Zend_Mail_Transport_Smtp($_POST['mail_smtp_server'], $config);
 	}
-
+	
+	$mail = new Zend_Mail();
+	$mail->setFrom($_POST['mail_sender_adress'], $_POST['mail_sender_name']);
+	$mail->addTo($_POST['mail_sender_adress']);
+	$mail->setSubject("Testmail");
+	$mail->setBodyText("This is a testmail from Netmon");
+	
 	try {
-		$mail = new Zend_Mail();
-		$mail->setFrom($_POST['mail_sender_adress'], $_POST['mail_sender_name']);
-		$mail->addTo($_POST['mail_sender_adress']);
-		$mail->setSubject("Testmail");
-		$mail->setBodyText("This is a testmail from Netmon");
 		$mail->send($transport);
-	} catch(Zend_Mail_Protocol_Exception $e) {
+	} catch(Exception $e) {
 		$exception = $e->getMessage();
-	} catch(Zend_Exception $e) {
-		$exception = $e->getMessage();
+		print_r($exception);
 	}
 
 	if($exception) {
