@@ -1,5 +1,9 @@
 <?php
 	require_once('runtime.php');
+	//Temporal dirty fix for declaring Router class on autologin (TODO)
+	if(class_exists('Router'))
+		header('Location: ./event_notifications.php');
+		
 	require_once(ROOT_DIR.'/lib/classes/core/EventNotificationList.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/Routerlist.class.php');
 	
