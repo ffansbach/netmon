@@ -24,6 +24,7 @@ require_once("lib/classes/core/login.class.php");
 require_once("lib/classes/core/user.class.php");
 require_once('lib/classes/extern/Zend/Mail.php');
 require_once('lib/classes/extern/Zend/Mail/Transport/Smtp.php');
+require_once('lib/classes/extern/phpass/PasswordHash.php');
 
 /**
  * This class is used as a container for static methods that deal operations during
@@ -54,13 +55,15 @@ class Register {
 			$message[] = array("Du musst ein Passwort angeben.",2);
 		} elseif($password!=$passwordchk) {
 			$message[] = array("Deine beiden Passwörter stimmen nicht überein.",2);
+		} elseif(strlen($password) > 72) {
+			$message[] = array("Dein Passwort darf nicht länger als 72 Zeichen sein.",2);
 		} elseif(empty($email)) {
 			$message[] = array("Du musst eine Emailadresse angeben.",2);
 		} elseif(!User::isUniqueEmail($email)) {
 			$message[] = array("Es existiert bereits ein Benutzer mit der ausgewhälten Emailadresse <i>$email</i>.",2);
 		} elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			$message[] = array("Die ausgewählte Emailadresse ".$email." ist keine gültige Emailadresse.",2);
-		} elseif(!empty($openid) AND !isUniqueOpenID($openid)) {
+		} elseif(!empty($openid) AND !User::isUniqueOpenID($openid)) {
 			$message[] = array("Die ausgewählte OpenID <i>".$openid."</i> ist bereits mit einem Benutzer verknüpft.",2);
 		} elseif($GLOBALS['enable_network_policy']=="true" AND !$agb) {
 			$message[] = array("Du musst die Netzwerkpolicy akzeptieren.",2);
@@ -83,7 +86,15 @@ class Register {
 			}
 			
 			//hash password to store in db
-			$password = User::encryptPassword($password);
+			$phpass = new PasswordHash(8, false);
+			$password_hash = $phpass->HashPassword($password);
+			
+			if (strlen($password_hash) < 20) {
+				$message[] = array("Beim Hashen des Passworts trat ein Fehler auf.",2);
+				Message::setMessage($message);
+				return false;
+			}
+			
 			//create acivation hash
 			$activation = Helper::randomPassword(8);
 			$api_key = Helper::randomPassword(32);
@@ -93,7 +104,7 @@ class Register {
 			
 			try {
 				$stmt = DB::getInstance()->prepare("INSERT INTO users (nickname, password, openid, api_key, email, notification_method, permission, create_date, activated) VALUES (?, ?, ?, ?, ?, 'email', ?, NOW(), ?)");
-				$stmt->execute(array($nickname, $password, $openid, $api_key, $email, $permission, $activation));
+				$stmt->execute(array($nickname, $password_hash, $openid, $api_key, $email, $permission, $activation));
 				$user_id = DB::getInstance()->lastInsertId();
 			} catch(PDOException $e) {
 				$message[] = array("Beim erstellen des Datenbankeintrags ist ein Fehler aufgetreten.", 2);
@@ -156,21 +167,17 @@ class Register {
 	* @return boolean true if the user has been activated successfull
 	*/
 	public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum, $openid) {
-		$text = "Hallo $nickname,\n";
-		$text .= "Du hast dich am ".date("d.m.Y H:i:s", $datum)." Uhr bei $GLOBALS[community_name] registriert.\n\n";
-		$text .= "Deine Logindaten sind:\n";
+		$text = "Hallo $nickname,\n\n";
+		$text .= "Du hast dich am ".date("d.m.Y", $datum)." um ".date("H:i", $datum)." Uhr bei $GLOBALS[community_name] registriert.\n\n";
+
 		if($openid) {
-			$text .= "Open-ID: $openid\n\n";
+			$text .= "Deine Open-ID zum Login lautet: $openid\n";
 			$text .= "Die Open-ID wurde mit folgendem Benutzer verknuepft: $nickname\n\n";
-			$text .= "Aus technischen Gruenden wurde fuer diesen Benutzer auch ein Passwort generiert, dass auch den Login auf herkoemlichem Weg ermoeglicht.\n";
-			$test .= "Das Passwort lautet: $password\n\n";
-		} else {
-			$text .= "Nickname: $nickname\n";
-			$text .= "Passwort: $password\n\n";
 		}
+		
 		$text .= "Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalten.\n";
 		$text .= "$GLOBALS[url_to_netmon]/account_activate.php?activation_hash=$activation\n\n";
-		$text .= "Mit freundlichen Gruessen\n";
+		$text .= "Liebe Gruesse\n";
 		$text .= "$GLOBALS[community_name]";
 		
 		if ($GLOBALS['mail_sending_type']=='smtp') {

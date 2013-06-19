@@ -7,10 +7,6 @@ require_once('lib/classes/core/ip.class.php');
 require_once('lib/classes/core/user.class.php');
 
 class Main {
-	public function login($nickname, $password){
-		return(login::user_login($nickname, $password));
-	}
-
 	public function public_user_info($user_id) {
 		return(User::getPlublicUserInfoByID($user_id));
 	}
@@ -29,21 +25,6 @@ class Main {
 
 	public function getAllServiceIDsByServiceType($type) {
 		return(Helper::getAllServiceIDsByServiceType($type));
-	}
-	public function getImages() {
-		return(Imagemaker::getImages());
-	}
-
-	public function getImageByImageId($image_id) {
-		return(Imagemaker::getImageByImageId($image_id));
-	}
-
-	public function getImageConfigsByImageId($image_id) {
-		return(Imagemaker::getImageConfigsByImageId($image_id));
-	}
-
-	public function getImageConfigByConfigId($config_id) {
-		return(Imagemaker::getImageConfigByConfigId($config_id));
 	}
 
 	public function getAFreeIPv4IPByProjectId($project_id) {

@@ -6,7 +6,6 @@
 		private $session_id;
 		private $nickname;
 		private $password;
-		private $salt;
 		private $openid;
 		private $api_key;
 		private $firstname;
@@ -22,7 +21,7 @@
 		private $permission;
 		private $activated;
 		
-		public function __construct($user_id=false, $session_id=false, $nickname=false, $password=false, $salt=false,
+		public function __construct($user_id=false, $session_id=false, $nickname=false, $password=false,
 									$openid=false, $api_key=false, $firstname=false, $lastname=false, $street=false,
 									$zipcode=false, $phonenumber=false, $email=false, $jabber=false,
 									$notification_method=false, $website=false, $description=false,

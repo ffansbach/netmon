@@ -163,34 +163,47 @@
 	* Auto Login
 	*/
 	if ($GLOBALS['installed'] AND !$GLOBALS['cronjob']) {
-		if (!isset($_SESSION['user_id']) OR !Permission::isLoggedIn($_SESSION['user_id'])) {
-			//Login Class
-			require_once(ROOT_DIR.'/lib/classes/core/login.class.php');
-			if(!empty($_COOKIE["nickname"]) AND !empty($_COOKIE["password_hash"])) {
-				Login::user_login($_COOKIE["nickname"], $_COOKIE["password_hash"], false, true);
-			} elseif (!empty($_COOKIE["openid"])) {
-				require_once(ROOT_DIR.'/lib/classes/extern/class.openid.php');
-				if (empty($_SESSION['redirect_url'])) {
-					$_SESSION['redirect_url'] = 'http://'.$_SERVER["HTTP_HOST"].$_SERVER['REQUEST_URI'];
-				}
+		//if the user is not logged in and the remember me cookie is set
+		if (!isset($_SESSION['user_id']) AND !Permission::isLoggedIn($_SESSION['user_id']) AND !empty($_COOKIE["remember_me"])) {
+			require_once(ROOT_DIR.'/lib/classes/core/user.class.php');
+			require_once(ROOT_DIR.'/lib/classes/core/UserRememberMeList.class.php');
+			require_once(ROOT_DIR.'/lib/classes/extern/phpass/PasswordHash.php');
 			
-				// Get identity from user and redirect browser to OpenID Server
-				$openid = new SimpleOpenID;
-				$openid->SetIdentity($_COOKIE["openid"]);
-				$openid->SetTrustRoot('http://' . $_SERVER["HTTP_HOST"]);
-				$openid->SetRequiredFields(array('email','fullname'));
-				$openid->SetOptionalFields(array('dob','gender','postcode','country','language','timezone'));
-				if ($openid->GetOpenIDServer()){
-					$openid->SetApprovedURL('http://'.$_SERVER["HTTP_HOST"].dirname($_SERVER['PHP_SELF']).'/login.php?section=openid_login_send');  	// Send Response from OpenID server to this script
-					$openid->Redirect(); 	// This will redirect user to OpenID Server
-				} else {
-					$error = $openid->GetError();
-					$messages[] = array("Autologin mit der OpenID ".$_COOKIE["openid"]." fehlgeschlagen.", 2);
-					$messages[] = array("ERROR CODE: " . $error['code'], 2);
-					$messages[] = array("ERROR DESCRIPTION: " . $error['description'], 2);
-					setcookie("openid", "", time() - 60*60*24*14);
-					$messages[] = array("Deaktiviere Autologin.", 2);
-					Message::setMessage($messages);
+			//get user_id and password from remember_me cookie
+			$remember_me_cookie = explode(",", $_COOKIE["remember_me"]);
+			$user_id = $remember_me_cookie[0];
+			$password = $remember_me_cookie[1];
+			
+			//check if the user exists
+			$user_data = User::getUserById($user_id);
+			if(!empty($user_data)) {
+				//get the remember_mes of the user from the database
+				$user_remember_me_list = new UserRememberMeList($user_id, "create_date", "desc");
+				$user_remember_me_list = $user_remember_me_list->getUserRememberMeList();
+				
+				//check if any remember me matches the password stored in the cookie
+				$phpass = new PasswordHash(8, false);
+				foreach($user_remember_me_list as $user_remember_me) {
+					if($phpass->CheckPassword($password, $user_remember_me->getPassword())) {
+						//if a remember me matches, then login and set a new random password on the remember me
+						//store the session-id to the database
+						$stmt = DB::getInstance()->prepare("UPDATE users SET session_id = ? WHERE id = ?");
+						$stmt->execute(array(session_id(), $user_data['id']));
+						//store the 
+						$_SESSION['user_id'] = $user_data['id'];
+						
+						//generate long random password
+						$random_password = Helper::randomPassword(56);
+						//hash the random password like a normal password
+						$random_password_hash = $phpass->HashPassword($random_password);
+						
+						$user_remember_me->setPassword($random_password_hash);
+						setcookie("remember_me", $user_id.",".$random_password, time() + 60*60*24*14);
+						
+						$messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'].".", 1);
+						Message::setMessage($messages);
+						break;
+					}
 				}
 			}
 		}

@@ -24,6 +24,8 @@ require_once(ROOT_DIR.'/lib/classes/core/ipeditor.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/subneteditor.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/login.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/routereditor.class.php');
+require_once(ROOT_DIR.'/lib/classes/extern/phpass/PasswordHash.php');
 
 /**
  * This class is used as a container for static methods that deal operations
@@ -63,7 +65,8 @@ class User {
 	
 		$message = array();
 		//check weatcher the given data is valid
-		if($changepassword AND (User::getPasswordByUserID($user_id) != User::encryptPassword($oldpassword))) {
+		$phpass = new PasswordHash(8, false);
+		if($changepassword AND (!$phpass->CheckPassword($oldpassword, $user_data['password']))) {
 			$message[] = array("Dein altes Passwort ist nicht richtig.",2);
 		} elseif($changepassword AND empty($newpassword)) {
 			$message[] = array("Du musst ein neues Passwort angeben.",2);
@@ -88,11 +91,18 @@ class User {
 		}
 		
 		//if user wants to set a new password, encrypt new password
-		if ($changepassword)
-			$newpassword = User::encryptPassword($newpassword);
-		else
+		if ($changepassword) {
+			$newpassword = $phpass->HashPassword($newpassword);
+			
+			if (strlen($newpassword) < 20) {
+				$message[] = array("Beim Hashen des neuen Passworts trat ein Fehler auf.",2);
+				Message::setMessage($message);
+				return false;
+			}
+		} else {
 			$newpassword = $user_data['password'];
-	
+		}
+		
 		if (!$permission) {
 				$newpermission = $user_data['permission'];
 		} else {
@@ -113,15 +123,6 @@ class User {
 		$message[] = array("Die Daten von $user_data[nickname] wurden geändert", 1);
 		message::setMessage($message);
 		return true;
-	}
-	
-	/**
-	* Hashes a given string
-	* @author  Clemens John <clemens-john@gmx.de>
-	* @return the hashed string
-	*/
-	public function encryptPassword($password) {
-		return md5($password);
 	}
 	
 	/**
@@ -245,7 +246,7 @@ class User {
 			$rows['roles'] = User::getRolesByUserID($user_id);
 		return $rows;
 	}
-
+	
 	/**
 	* Fetches a user by a given email from the database.
 	* @author  Clemens John <clemens-john@gmx.de>
@@ -272,6 +273,10 @@ class User {
 	* @return array() Array containing the user data
 	*/
 	public function getUserByOpenID($openid) {
+		//remove http:// etc. from openid
+		$openid = parse_url($openid);
+		$openid = $openid['host'];
+	
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM  users WHERE openid=?");
 			$stmt->execute(array($openid));
@@ -285,21 +290,15 @@ class User {
 	}
 	
 	/**
-	* Fetches a user by a given nickname and the appropriate password.
+	* Fetches a user by a given Nickname from the database.
 	* @author  Clemens John <clemens-john@gmx.de>
-	* @param string $nickname nickname of a user
-	* @param string $password plain text password of the user
-	* @param boolean $hashed true if the given password is already hashed with Permission::encryptPassword();
-	*		 false if it is plain text
+	* @param string $nickname Nickname of a user
 	* @return array() Array containing the user data
 	*/
-	public function getUserByNicknameAndPassword($nickname, $password, $hashed=false) {
-		//hash the password if it is not already hashed
-		if(!$hashed)
-			$password = User::encryptPassword($password);
+	public function getUserByNickname($nickname) {
 		try {
-			$stmt = DB::getInstance()->prepare("SELECT * FROM  users WHERE nickname=? AND password=?");
-			$stmt->execute(array($nickname, $password));
+			$stmt = DB::getInstance()->prepare("SELECT * FROM  users WHERE nickname=?");
+			$stmt->execute(array($nickname));
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
 		  echo $e->getMessage();

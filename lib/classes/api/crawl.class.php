@@ -10,7 +10,6 @@ class Crawl {
 	}
 
 	public function insertCrawlData($data) {
-//	$session = login::user_login($_POST['nickname'], $_POST['password']);
 	$router_data = Router::getRouterInfo($data['router_id']);
 /*
 	//If is owning user or if root
