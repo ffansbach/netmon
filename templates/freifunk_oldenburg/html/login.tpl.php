@@ -8,7 +8,7 @@
 	<p>Passwort:<br><input name="password" type="password" size="30"></p>
 	<p><input type="checkbox" name="remember" value="true" checked> Login merken</p>
 	
-	<p><a href="./send_new_password.php">Passort vergessen?</a> <a href="./resend_activation_mail.php">Aktivierungsmail erneut zusenden?</a></p>
+	<p><a href="./send_new_password.php">Passwort vergessen?</a><br><a href="./resend_activation_mail.php">Aktivierungsmail erneut zusenden?</a></p>
 	<p><input type="submit" value="Login"></p>
 </form>
 </div>
