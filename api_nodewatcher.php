@@ -1,6 +1,6 @@
 <?php
 
-require_once(ROOT_DIR.'/runtime.php');
+require_once('runtime.php');
 require_once(ROOT_DIR.'/lib/classes/core/login.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/routersnotassigned.class.php');
@@ -10,28 +10,16 @@ require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/chipsets.class.php');
 require_once(ROOT_DIR.'/lib/classes/extern/phpass/PasswordHash.php');
 
-if($_GET['section']=="update") {
-	if(empty($_GET['nodewatcher_version']) OR $_GET['nodewatcher_version']<20) {
-		header("Content-Type: text/plain");
-		header("Content-Disposition: attachment; filename=nodewatcher.sh");
-		
-	}
-}
-
-if($_GET['section']=="version") {
-	if(empty($_GET['nodewatcher_version']) OR $_GET['nodewatcher_version']<20) {
-		$version=25;
-		echo "success;$version";
-	}
-}
-
 if($_GET['section']=="get_standart_data") {
 	if ($_GET['authentificationmethod']=='hash') {
 		$router_data = Router::getRouterByAutoAssignHash($_GET['router_auto_update_hash']);
-	} elseif ($_GET['authentificationmethod']=='login') {
-		$router_data = Router::getRouterInfo($router_id);
 	}
-	echo "success;".$router_data['router_id'].";".$router_data['router_auto_assign_hash'].";".$router_data['hostname'];
+	
+	if(!empty($router_data)) {
+		echo "success;".$router_data['router_id'].";".$router_data['router_auto_assign_hash'].";".$router_data['hostname'];
+	} else {
+		echo "error;router_not_found";
+	}
 }
 
 if($_GET['section']=="test_login_strings") {
