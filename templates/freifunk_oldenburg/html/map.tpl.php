@@ -1,7 +1,6 @@
 <h1>Karte der Router</h1>
 <div style="margin-right: 10px;">
-	<script src='https://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
-	<script src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script> 
+	<script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key={$google_maps_api_key}&sensor=false'></script>
 	<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
 
 	<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>

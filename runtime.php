@@ -164,7 +164,7 @@
 	*/
 	if ($GLOBALS['installed'] AND !$GLOBALS['cronjob']) {
 		//if the user is not logged in and the remember me cookie is set
-		if (!isset($_SESSION['user_id']) AND !Permission::isLoggedIn($_SESSION['user_id']) AND !empty($_COOKIE["remember_me"])) {
+		if (!isset($_SESSION['user_id']) AND !empty($_COOKIE["remember_me"])) {
 			require_once(ROOT_DIR.'/lib/classes/core/user.class.php');
 			require_once(ROOT_DIR.'/lib/classes/core/UserRememberMeList.class.php');
 			require_once(ROOT_DIR.'/lib/classes/extern/phpass/PasswordHash.php');

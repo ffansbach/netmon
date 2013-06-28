@@ -1,8 +1,7 @@
-		<script src='https://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
-		<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
-		<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
-		<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
-<!--		<script type="text/javascript" src="http://osm.cdauth.de/map/prototypes.js"></script>-->
+<script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key={$google_maps_api_key}&sensor=false'></script>
+<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+<script type="text/javascript" src="./templates/js/OpenStreetMap.js"></script>
+<script type="text/javascript" src="./templates/js/OsmFreifunkMap.js"></script>
 
 <h1>Service vom Typ <i>{$service_data.typ}</i> auf der IP <a href="./ip.php?id={$service_data.ip_id}">{$net_prefix}.{$service_data.ip}</a></h1>
 

@@ -119,7 +119,7 @@ $(document).ready(function() {
 </div>
 
 <div style="width: 100%; overflow: hidden; margin-bottom: 20px;">
-	<div style="float:left; width: 45%; padding-right: 15px;">
+	<div style="float:left; width: 50%;">
 		<h2>Grunddaten</h2>
 		<b>Benutzer:</b> <a href="./user.php?user_id={$router_data.user_id}">{$router_data.nickname}</a><br>
 		<b>Angelegt am:</b> {$router_data.create_date|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
@@ -236,17 +236,14 @@ $(document).ready(function() {
 		<h3><u>Clients</u></h3>
 		<p><b>Verbundene Clients:</b> {$client_count}</p>
 	</div>
-	<div style="float:left; width: 53%;">
+	<div style="float:left; width: 50%;">
 		<h2>Standort ({if !empty($router_last_crawl.latitude)}crawl{else}Netmon{/if})</h2>
 		{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
-			<script src='https://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
-			<script src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
-			
+			<script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key={$google_maps_api_key}&sensor=false'></script>
 			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
-			
 			<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
-			<div id="map" style="height:220px; width:400px; border:solid 1px black;font-size:9pt;">
+			<div id="map" style="height:300px; width:400px; border:solid 1px black;font-size:9pt;">
 				<script type="text/javascript">
 					{if !empty($router_last_crawl.latitude)}
 						var lat = {$router_last_crawl.latitude};

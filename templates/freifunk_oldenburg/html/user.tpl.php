@@ -18,7 +18,7 @@ $(document).ready(function() {
 			{ "sType": "numeric" },
 			{ "sType": "numeric" }
 		],
-		"aaSorting": [[ 0, "asc" ]]
+		"aaSorting": [[ 6, "desc" ]]
 	} );
 } );
 
@@ -224,7 +224,7 @@ $(document).ready(function() {
 						{/if}
 					</td>
 					<td><a href="./user.php?user_id={$service.user_id}">{$service.nickname}</a></td>
-					<td><a href="{$service.combined_url_to_service}">{$service.combined_url_to_service}</a></td>
+					<td>{if isset($service.combined_url_to_service)}<a href="{$service.combined_url_to_service}">{$service.combined_url_to_service}</a>{/if}</td>
 				</tr>
 			{/foreach}
 		</tbody>
