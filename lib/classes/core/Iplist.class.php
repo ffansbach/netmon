@@ -20,8 +20,8 @@
 				// initialize $total_count with the total number of objects in the list (over all pages)
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-														FROM ips, interface_ips
-														WHERE interface_ips.interface_id=? AND interface_ips.ip_id=ips.id");
+														FROM ips
+														WHERE ips.interface_id=?");
 					$stmt->execute(array($interface_id));
 					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
@@ -32,8 +32,8 @@
 			
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id
-														FROM ips, interface_ips
-														WHERE interface_ips.interface_id=:interface_id AND interface_ips.ip_id=ips.id
+														FROM ips
+														WHERE ips.interface_id=:interface_id
 														ORDER BY
 															case :sort_by
 																when 'ip' then ips.ip

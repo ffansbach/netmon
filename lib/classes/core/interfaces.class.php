@@ -233,8 +233,8 @@ class Interfaces {
 	public function getInterfaceByIpId($ip_id) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT  interfaces.id as interface_id, interfaces.router_id, interfaces.project_id, interfaces.create_date, interfaces.name, interfaces.mac_addr, interfaces.vpn_client_vert, interfaces.vpn_client_key
-							    FROM interfaces, interface_ips
-							    WHERE interface_ips.ip_id=? AND interface_ips.interface_id=interfaces.id");
+							    FROM interfaces, ips
+							    WHERE ips.ip_id=? AND ips.interface_id=interfaces.id");
 			$stmt->execute(array($ip_id));
 			return $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {

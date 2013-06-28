@@ -20,9 +20,9 @@
 				//fetch ip data from database
 				$result = array();
 				try {
-					$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id, ips.ip, ips.ipv, ips.create_date, interface_ips.interface_id
-														FROM ips, interface_ips
-														WHERE ips.id = $ip_id AND interface_ips.ip_id=ips.id");
+					$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id, ips.interface_id, ips.ip, ips.ipv, ips.create_date
+														FROM ips
+														WHERE ips.id = ?");
 					$stmt->execute(array($ip_id));
 					$result = $stmt->fetch(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {

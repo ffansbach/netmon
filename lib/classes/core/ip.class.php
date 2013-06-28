@@ -37,19 +37,10 @@ class Ip {
 	public function addIPv4Address($router_id, $project_id, $interface_id, $ipv4_addr) {
 		//Add new IPv4-Address
 		try {
-			$stmt = DB::getInstance()->prepare("INSERT INTO ips (router_id, project_id, ip, ipv, create_date)
+			$stmt = DB::getInstance()->prepare("INSERT INTO ips (interface_id, router_id, project_id, ip, ipv, create_date)
 												VALUES (?, ?, ?, 4, NOW())");
-			$stmt->execute(array($router_id, $project_id, $ipv4_addr));
+			$stmt->execute(array($interface_id, $router_id, $project_id, $ipv4_addr));
 			$ip_id = DB::getInstance()->lastInsertId();
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-		
-		try {
-			$stmt = DB::getInstance()->prepare("INSERT INTO interface_ips (interface_id, ip_id)
-												VALUES (?, ?)");
-			$stmt->execute(array($interface_id, $ip_id));
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 			echo $e->getTraceAsString();
@@ -64,19 +55,10 @@ class Ip {
 		$ip_exist = Ip::getIpByIp($ipv6_addr);
 		if(empty($ip_exist)) {
 			try {
-				$stmt = DB::getInstance()->prepare("INSERT INTO ips (router_id, project_id, ip, ipv, create_date)
+				$stmt = DB::getInstance()->prepare("INSERT INTO ips (interface_id, router_id, project_id, ip, ipv, create_date)
 													VALUES (?, ?, ?, 6, NOW())");
-				$stmt->execute(array($router_id, $project_id, $ipv6_addr));
+				$stmt->execute(array($interface_id, $router_id, $project_id, $ipv6_addr));
 				$ip_id = DB::getInstance()->lastInsertId();
-			} catch(PDOException $e) {
-				echo $e->getMessage();
-				echo $e->getTraceAsString();
-			}
-			
-			try {
-				$stmt = DB::getInstance()->prepare("INSERT INTO interface_ips (interface_id, ip_id)
-													VALUES (?, ?)");
-				$stmt->execute(array($interface_id, $ip_id));
 			} catch(PDOException $e) {
 				echo $e->getMessage();
 				echo $e->getTraceAsString();
@@ -104,13 +86,6 @@ class Ip {
 			echo $e->getTraceAsString();
 		}
 		
-		try {
-			$stmt = DB::getInstance()->prepare("DELETE FROM interface_ips WHERE ip_id=?");
-			$stmt->execute(array($ip_id));
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
 		$message[] = array("Die IP $ip[ip] wurde gelöscht.",1);
 		Message::setMessage($message);
 	}
@@ -152,7 +127,7 @@ class Ip {
 	
 	public function getIpAdressesByInterfaceId($interface_id) {
 		try {
-			$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id, ips.ip, ips.ipv FROM ips, interface_ips WHERE interface_ips.interface_id=? AND interface_ips.ip_id=ips.id");
+			$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id, ips.ip, ips.ipv FROM ips WHERE ips.interface_id=?");
 			$stmt->execute(array($interface_id));
 			return $stmt->fetchAll(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {

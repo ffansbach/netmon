@@ -470,8 +470,8 @@ class Router {
 								    routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string,
 								    routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
 								    routers.chipset_id
-							    FROM routers, interfaces, interface_ips
-							    WHERE interface_ips.ip_id=? AND interface_ips.interface_id=interfaces.id AND routers.id=interfaces.router_id");
+							    FROM routers, interfaces, ips
+							    WHERE ips.ip_id=? AND ips.interface_id=interfaces.id AND routers.id=interfaces.router_id");
 			$stmt->execute(array($ip_id));
 			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
 		} catch(PDOException $e) {
