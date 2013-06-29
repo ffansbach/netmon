@@ -59,7 +59,7 @@ $(document).ready(function() {
 					<td><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></td>
 					<td value="{math equation='round(x,1)' x=$router.router_reliability.online_percent}">{math equation="round(x,1)" x=$router.router_reliability.online_percent}%</td>
 					<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60}</td>
-					<td>{$router.client_count}</td>
+					<td>{$router.actual_crawl_data.client_count}</td>
 					<td>{$router.traffic}</td>
 				</tr>
 			{/foreach}

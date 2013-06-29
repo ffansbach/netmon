@@ -234,7 +234,7 @@ $(document).ready(function() {
 			{/if}
 		</p>
 		<h3><u>Clients</u></h3>
-		<p><b>Verbundene Clients:</b> {$client_count}</p>
+		<p><b>Verbundene Clients:</b> {$router_last_crawl.client_count}</p>
 	</div>
 	<div style="float:left; width: 50%;">
 		<h2>Standort ({if !empty($router_last_crawl.latitude)}crawl{else}Netmon{/if})</h2>

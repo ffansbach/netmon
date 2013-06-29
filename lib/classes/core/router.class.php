@@ -1,7 +1,6 @@
 <?php
 
 require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/clients.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/interfaces.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/batmanadvanced.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/user.class.php');
@@ -211,7 +210,6 @@ class Router {
 
 			$row['actual_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 			$row['router_reliability'] = Router::getRouterReliability($row['router_id'], 500);
-			$row['client_count'] = Clients::getClientsCountByRouterAndCrawlCycle($row['router_id'], $last_endet_crawl_cycle['id']);
 			$row['originators_count'] = count(BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']));
 			$row['interfaces'] = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $row['router_id']);
 			$row['traffic'] = 0;
@@ -270,7 +268,6 @@ class Router {
 			
 			$row['actual_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 			$row['router_reliability'] = Router::getRouterReliability($row['router_id'], 500);
-			$row['client_count'] = Clients::getClientsCountByRouterAndCrawlCycle($row['router_id'], $last_endet_crawl_cycle['id']);
 			$row['originators_count'] = count(BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']));
 			$row['interfaces'] = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $row['router_id']);
 			$row['traffic'] = 0;
@@ -526,5 +523,24 @@ class Router {
 		$rows['add_big_exists'] = file_exists("./data/adds/".$router_id."_add_big.jpg");
 
 		return $rows;
+	}
+	
+	/**
+	* Fetches the number of clients that where connected to all routers summed up.
+	* @author  Clemens John <clemens-john@gmx.de>
+	* @param int $crawl_cycle_id id of the crawl cycle you want to get the client number of
+	* @return int number of connected clients
+	*/
+	public function countRoutersByCrawlCycleId($crawl_cycle_id) {
+		$client_count = 0;
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT SUM(client_count) as client_count FROM crawl_routers WHERE crawl_cycle_id=?");
+			$stmt->execute(array($crawl_cycle_id));
+			$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+
+		return $result['client_count'];
 	}
 }

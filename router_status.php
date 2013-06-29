@@ -8,7 +8,6 @@ require_once('./lib/classes/core/batmanadvanced.class.php');
 require_once('./lib/classes/core/olsr.class.php');
 require_once('./lib/classes/core/crawling.class.php');
 require_once('./lib/classes/core/event.class.php');
-require_once('./lib/classes/core/clients.class.php');
 require_once('./lib/classes/core/service.class.php');
 
 
@@ -147,8 +146,6 @@ foreach($interface_crawl_data as $key=>$interface) {
 $smarty->assign('interface_crawl_data', $interface_crawl_data);
 
 /** Get Clients */
-$client_count = Clients::getClientsCountByRouterAndCrawlCycle($_GET['router_id'], $last_ended_crawl_cycle['id']);
-$smarty->assign('client_count', $client_count);
 $smarty->assign('clients_rrd_file_exists', file_exists("./rrdtool/databases/router_$_GET[router_id]_clients.rrd"));
 
 /**Memory */

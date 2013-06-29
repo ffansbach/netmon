@@ -95,7 +95,7 @@
 			if($routerstatus!=false)
 				$this->statusdata = $routerstatus;
 			else
-				$this->statusdata = new RouterStatus(false, $this->router_id);
+				$this->statusdata = new RouterStatus(false, false, $this->router_id);
 		}
 		
 		public function setStatusdataHistory($statusdata_history=false) {

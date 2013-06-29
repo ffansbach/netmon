@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 28, 2013 at 08:06 PM
+-- Generation Time: Jun 29, 2013 at 03:50 PM
 -- Server version: 5.5.31-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.16-1~dotdeb.1
 
@@ -95,23 +95,6 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_clients_count`
---
-
-CREATE TABLE IF NOT EXISTS `crawl_clients_count` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `router_id` int(11) NOT NULL,
-  `crawl_cycle_id` int(11) NOT NULL,
-  `crawl_date` datetime NOT NULL,
-  `client_count` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `router_id` (`router_id`),
-  KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `crawl_cycle`
 --
 
@@ -131,6 +114,7 @@ CREATE TABLE IF NOT EXISTS `crawl_cycle` (
 CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `crawl_id` int(11) NOT NULL,
+  `interface_id` int(11) NOT NULL,
   `router_id` int(11) NOT NULL,
   `crawl_cycle_id` int(11) NOT NULL,
   `crawl_date` datetime NOT NULL,
@@ -239,6 +223,7 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `firmware_revision` varchar(250) NOT NULL,
   `openwrt_core_revision` int(11) NOT NULL,
   `openwrt_feeds_packages_revision` int(11) NOT NULL,
+  `client_count` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id` (`id`),
   KEY `crawl_routers_id` (`id`),
@@ -333,6 +318,7 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
   `mac_addr` varchar(150) NOT NULL,
   `vpn_client_cert` text NOT NULL,
   `vpn_client_key` text NOT NULL,
+  `protected` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `router_id` (`router_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
@@ -350,6 +336,7 @@ CREATE TABLE IF NOT EXISTS `ips` (
   `project_id` int(11) NOT NULL,
   `ip` varchar(100) NOT NULL,
   `ipv` int(11) NOT NULL,
+  `protected` tinyint(1) NOT NULL,
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),

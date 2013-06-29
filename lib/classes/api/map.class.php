@@ -32,7 +32,6 @@ require_once('./lib/classes/core/interfaces.class.php');
 require_once('./lib/classes/core/batmanadvanced.class.php');
 require_once('./lib/classes/core/olsr.class.php');
 require_once('./lib/classes/core/crawling.class.php');
-require_once('./lib/classes/core/clients.class.php');
 
   require_once('./lib/classes/core/olsr.class.php');
 
@@ -362,7 +361,6 @@ class ApiMap {
 						$traffic = round($traffic/1024,2);
 						
 						$batman_adv_originators = BatmanAdvanced::getCrawlBatmanAdvNexthopsByCrawlCycleId($last_endet_crawl_cycle['id'], $crawl_router['router_id']);
-						$client_count = Clients::getClientsCountByRouterAndCrawlCycle($crawl_router['router_id'], $last_endet_crawl_cycle['id']);
 						//Make coordinates and location information
 						if(!empty($crawl_router['longitude']) AND !empty($crawl_router['latitude'])) {
 							$longitude = $crawl_router['longitude'];
@@ -387,7 +385,7 @@ class ApiMap {
 								$xw->startElement('description');
 										$box_inhalt = "<b>Status:</b> $crawl_router[status]<br>";
 										$box_inhalt .= "<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>";
-										$box_inhalt .= "<b>Clients:</b> ".$client_count."<br>";
+										$box_inhalt .= "<b>Clients:</b> ".$crawl_router['client_count']."<br>";
 										$box_inhalt .= "<b>Benutzer:</b> <a href='./user.php?user_id=$router_data[user_id]'>$router_data[nickname]</a><br>";
 										if(!empty($location)) {
 											   $box_inhalt .= "<b>Standortbeschreibung:</b> $location<br>";
@@ -727,7 +725,6 @@ else
 					$crawl_routers = Router::getCrawlRoutersByCrawlCycleId($last_endet_crawl_cycle['id']);
 					foreach($crawl_routers as $crawl_router) {
 						$router_data = Router::getRouterInfo($crawl_router['router_id']);
-						$client_count = Clients::getClientsCountByRouterAndCrawlCycle($crawl_router['router_id'], $last_endet_crawl_cycle['id']);
 
 						$crawl_interfaces = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $crawl_router['router_id']);
 						$row['traffic'] = 0;
@@ -761,19 +758,19 @@ else
 										$xw->writeRaw("<![CDATA[$box_inhalt]]>");
 								$xw->endElement();
 								$xw->startElement('styleUrl');
-if($client_count==0)
+if($crawl_router['client_count']==0)
 	$xw->writeRaw('#sh_client-pushpin-0');
-elseif($client_count==1)
+elseif($crawl_router['client_count']==1)
 	$xw->writeRaw('#sh_client-pushpin-1');
-elseif($client_count==2)
+elseif($crawl_router['client_count']==2)
 	$xw->writeRaw('#sh_client-pushpin-2');
-elseif($client_count==3)
+elseif($crawl_router['client_count']==3)
 	$xw->writeRaw('#sh_client-pushpin-3');
-elseif($client_count==4)
+elseif($crawl_router['client_count']==4)
 	$xw->writeRaw('#sh_client-pushpin-4');
-elseif($client_count==5)
+elseif($crawl_router['client_count']==5)
 	$xw->writeRaw('#sh_client-pushpin-5');
-elseif($client_count>=6)
+elseif($crawl_router['client_count']>=6)
 	$xw->writeRaw('#sh_client-pushpin-6');
 								$xw->endElement();
 								$xw->startElement('Point');

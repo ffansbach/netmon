@@ -3,7 +3,6 @@
 require_once(ROOT_DIR.'/lib/classes/core/event.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/rrdtool.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/clients.class.php');
 
 class Crawling {
 	public function organizeCrawlCycles()  {
@@ -40,7 +39,7 @@ class Crawling {
 			$total = $unknown+$offline+$online;
 			RrdTool::updateNetmonHistoryRouterStatus($online, $offline, $unknown, $total);
 
-			$client_count = Clients::countClientsCrawlCycle($actual_crawl_cycle['id']);
+			$client_count = Router::countRoutersByCrawlCycleId($actual_crawl_cycle['id']);
 			RrdTool::updateNetmonClientCount($client_count);
 		}
 	}
@@ -181,14 +180,6 @@ class Crawling {
 			echo $e->getTraceAsString();
 		}
 		
-		try {
-			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_clients_count WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except");
-			$stmt->execute(array($seconds));
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-		
 		//Normal delete
 		try {
 			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_services WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-?");
@@ -224,7 +215,6 @@ class Crawling {
 			
 			$crawl_data['description'] = (isset($crawl_data['description']) ? trim(rawurldecode($crawl_data['description'])) : "");
 			$crawl_data['location'] = (isset($crawl_data['location']) ? trim(rawurldecode($crawl_data['location'])) : "");
-			$crawl_data['ping'] = (isset($crawl_data['ping']) ? trim($crawl_data['ping']) : "");
 			$crawl_data['latitude'] = (isset($crawl_data['latitude']) ? trim($crawl_data['latitude']) : "");
 			$crawl_data['longitude'] = (isset($crawl_data['longitude']) ? trim($crawl_data['longitude']) : "");
 			$crawl_data['luciname'] = (isset($crawl_data['luciname']) ? trim($crawl_data['luciname']) : "");
@@ -257,9 +247,9 @@ class Crawling {
 
 			//insert data into the database
 			try {
-				$stmt = DB::getInstance()->prepare("INSERT INTO crawl_routers (router_id, crawl_cycle_id, crawl_date, status, ping, hostname, description, location, latitude, longitude, luciname, luciversion, distname, distversion, chipset, cpu, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, uptime, idletime, local_time, community_essid, community_nickname, community_email, community_prefix, batman_advanced_version, kernel_version, nodewatcher_version, firmware_version, firmware_revision, openwrt_core_revision, 	openwrt_feeds_packages_revision)
-								    VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-				$stmt->execute(array($router_id, $actual_crawl_cycle['id'], $crawl_data['status'], $crawl_data['ping'], $crawl_data['hostname'], $crawl_data['description'], $crawl_data['location'],
+				$stmt = DB::getInstance()->prepare("INSERT INTO crawl_routers (router_id, crawl_cycle_id, crawl_date, status, hostname, description, location, latitude, longitude, luciname, luciversion, distname, distversion, chipset, cpu, memory_total, memory_caching, memory_buffering, memory_free, loadavg, processes, uptime, idletime, local_time, community_essid, community_nickname, community_email, community_prefix, batman_advanced_version, kernel_version, nodewatcher_version, firmware_version, firmware_revision, openwrt_core_revision, 	openwrt_feeds_packages_revision)
+								    VALUES (?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				$stmt->execute(array($router_id, $actual_crawl_cycle['id'], $crawl_data['status'], $crawl_data['hostname'], $crawl_data['description'], $crawl_data['location'],
 						     $crawl_data['latitude'], $crawl_data['longitude'], $crawl_data['luciname'], $crawl_data['luciversion'], $crawl_data['distname'], $crawl_data['distversion'], $crawl_data['chipset'],
 						     $crawl_data['cpu'], $crawl_data['memory_total'], $crawl_data['memory_caching'], $crawl_data['memory_buffering'], $crawl_data['memory_free'], $crawl_data['loadavg'],
 						     $crawl_data['processes'], $crawl_data['uptime'], $crawl_data['idletime'], $crawl_data['local_time'], $crawl_data['community_essid'], $crawl_data['community_nickname'], $crawl_data['community_email'], $crawl_data['community_prefix'], $crawl_data['batman_advanced_version'],
