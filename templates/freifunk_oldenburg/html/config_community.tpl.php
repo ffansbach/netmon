@@ -3,6 +3,7 @@
 	<h2>Lokales</h2>
 	<p><b>Name der Community:</b><br><input name="community_name" type="text" size="30" value="{$community_name}"></p>
 	<p><b>Slogan der Community:</b><br><input name="community_slogan" type="text" size="60" value="{$community_slogan}"></p>
+	<p><b>ESSID der Community:</b><br><input name="community_essid" type="text" size="60" value="{$community_essid}"></p>
 	<p><b>Ort der Community:</b><br>
 		<div id="section_location">
 			<div style="width: 100%; overflow: hidden;" class="section_location">

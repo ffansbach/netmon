@@ -13,6 +13,7 @@ require_once('./lib/classes/core/service.class.php');
 
 if (!is_numeric($_GET['router_id'])) die('invalid router id');
 
+if(!isset($_GET['embed'])) {
 /** Get crawl cycles **/
 if(!isset($_GET['crawl_cycle_id'])) {
 	$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
@@ -173,5 +174,17 @@ $smarty->assign('google_maps_api_key', Config::getConfigValueByName('google_maps
 $smarty->display("header.tpl.php");
 $smarty->display("router_status.tpl.php");
 $smarty->display("footer.tpl.php");
-
+} else {
+	$smarty->assign('community_essid', Config::getConfigValueByName('community_essid'));
+	
+	$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+	$router_last_crawl = Router::getCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
+	$smarty->assign('router_status', $router_last_crawl);
+	
+	
+	$router_data = Router::getRouterInfo($_GET['router_id']);
+	$smarty->assign('router_data', $router_data);
+	
+	$smarty->display("router_status_embed.tpl.php");
+}
 ?>

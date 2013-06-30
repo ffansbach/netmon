@@ -94,7 +94,7 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('community_location_zoom', Config::getConfigValueByName("community_location_zoom"));
 	$smarty->assign('enable_network_policy', Config::getConfigValueByName("enable_network_policy"));
 	$smarty->assign('network_policy_url', Config::getConfigValueByName("network_policy_url"));
-
+	$smarty->assign('community_essid', Config::getConfigValueByName("community_essid"));
 	
 	$smarty->assign('message', Message::getMessage());
 	$smarty->display("header.tpl.php");
@@ -107,7 +107,8 @@ if ($_GET['section']=="edit") {
 		Config::writeConfigLine('community_location_longitude', $_POST['community_location_longitude']);
 		Config::writeConfigLine('community_location_latitude', $_POST['community_location_latitude']);
 		Config::writeConfigLine('community_location_zoom', $_POST['community_location_zoom']);
-
+		Config::writeConfigLine('community_essid', $_POST['community_essid']);
+		
 		if(empty($_POST['enable_network_policy']))
 			$_POST['enable_network_policy'] = 'false';
 		Config::writeConfigLine('enable_network_policy', $_POST['enable_network_policy']);
