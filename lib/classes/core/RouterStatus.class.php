@@ -1,5 +1,6 @@
 <?php
 	require_once(ROOT_DIR.'/lib/classes/core/ObjectStatus.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Eventlist.class.php');
 	
 	class RouterStatus extends ObjectStatus {
 		private $router_id = 0;
@@ -71,7 +72,6 @@
 				$this->setBatmanAdvancedVersion($batman_advanced_version);
 			} else if($router_id!=false) {
 				$result = array();
-				// initialize with data from last endet crawl cycle
 				$this->setCrawlCycleId((int)$crawl_cycle_id);
 				$this->setRouterId($router_id);
 				try {
@@ -213,7 +213,7 @@
 		
 		public function setHostname($hostname) {
 			if($hostname!=false)
-				$this->hostname = $hostname;
+				$this->hostname = trim($hostname);
 		}
 		
 		public function setClientCount($client_count) {
@@ -223,12 +223,12 @@
 		
 		public function setChipset($chipset) {
 			if($chipset!=false)
-				$this->chipset = $chipset;
+				$this->chipset = trim($chipset);
 		}
 		
 		public function setCpu($cpu) {
 			if($cpu!=false)
-				$this->cpu = $cpu;
+				$this->cpu = trim($cpu);
 		}
 		
 		public function setMemoryTotal($memory_total) {
@@ -253,82 +253,82 @@
 		
 		public function setLoadavg($loadavg) {
 			if($loadavg!=false)
-				$this->loadavg = $loadavg;
+				$this->loadavg = trim($loadavg);
 		}
 		
 		public function setProcesses($processes) {
 			if($processes!=false)
-				$this->processes = $processes;
+				$this->processes = trim($processes);
 		}
 		
 		public function setUptime($uptime) {
 			if($uptime!=false)
-				$this->uptime = $uptime;
+				$this->uptime = trim($uptime);
 		}
 		
 		public function setIdletime($idletime) {
 			if($idletime!=false)
-				$this->idletime = $idletime;
+				$this->idletime = trim($idletime);
 		}
 		
 		public function setLocaltime($localtime) {
 			if($localtime!=false)
-				$this->localtime = $localtime;
+				$this->localtime = trim($localtime);
 		}
 		
 		public function setDistname($distname) {
 			if(is_string($distname))
-				$this->distname = $distname;
+				$this->distname = trim($distname);
 		}
 		
 		public function setDistversion($distversion) {
 			if($distversion!=false)
-				$this->distversion = $distversion;
+				$this->distversion = trim($distversion);
 		}
 		
 		public function setOpenwrtCoreRevision($openwrt_core_revision) {
 			if($openwrt_core_revision!=false)
-				$this->openwrt_core_revision = $openwrt_core_revision;
+				$this->openwrt_core_revision = trim($openwrt_core_revision);
 		}
 		
 		public function setOpenwrtFeedsPackagesRevision($openwrt_feeds_packages_revision) {
 			if($openwrt_feeds_packages_revision!=false)
-				$this->openwrt_feeds_packages_revision = $openwrt_feeds_packages_revision;
+				$this->openwrt_feeds_packages_revision = trim($openwrt_feeds_packages_revision);
 		}
 		
 		public function setFirmwareVersion($firmware_version) {
 			if($firmware_version!=false)
-				$this->firmware_version = $firmware_version;
+				$this->firmware_version = trim($firmware_version);
 		}
 		
 		public function setFirmwareRevision($firmware_revision) {
 			if($firmware_revision!=false)
-				$this->firmware_revision = $firmware_revision;
+				$this->firmware_revision = trim($firmware_revision);
 		}
 		
 		public function setKernelVersion($kernel_version) {
 			if($kernel_version!=false)
-				$this->kernel_version = $kernel_version;
+				$this->kernel_version = trim($kernel_version);
 		}
 		
 		public function setConfiguratorVersion($configurator_version) {
 			if($configurator_version!=false)
-				$this->configurator_version = $configurator_version;
+				$this->configurator_version = trim($configurator_version);
 		}
 		
 		public function setNodewatcherVersion($nodewatcher_version) {
 			if($nodewatcher_version!=false)
-				$this->nodewatcher_version = $nodewatcher_version;
+				$this->nodewatcher_version = trim($nodewatcher_version);
 		}
 		
 		public function setFastdVersion($fastd_version) {
 			if($fastd_version!=false)
-				$this->fastd_version = $fastd_version;
+				$this->fastd_version = trim($fastd_version);
 		}
 		
 		public function setBatmanAdvancedVersion($batman_advanced_version) {
 			if($batman_advanced_version!=false)
-				$this->batman_advanced_version = $batman_advanced_version;
+				$this->batman_advanced_version = trim($batman_advanced_version);
 		}
 		
 		public function getRouterId() {
@@ -433,6 +433,45 @@
 		
 		public function getBatmanAdvancedVersion() {
 			return $this->batman_advanced_version;
+		}
+		
+		public function compare($router_status) {
+			if($router_status INSTANCEOF RouterStatus) {
+				$eventlist = new Eventlist();
+				//TODO:	do not use $this for router_status because hostname will be empty if router is offline
+				//		Use real router object instead!
+				if ($this->getStatus()!=$router_status->getStatus() AND $this->getUptime()>$router_status->getUptime()) {
+					$eventlist->add(new Event(false, "router", $this->getRouterId(), "status", array('from'=>$router_status->getStatus(), 'to'=>$this->getStatus(), 'router_status'=>$this)));
+				} elseif($this->getUptime()<$router_status->getUptime()) {
+					$eventlist->add(new Event(false, "router", $this->getRouterId(), "reboot", array('router_status'=>$this)));
+				}
+				
+				if ($this->getHostname()!=$router_status->getHostname()) {
+					$eventlist->add(new Event(false, "router", $this->getRouterId(), "hostname", array('from'=>$router_status->getHostname(), 'to'=>$this->getHostname(), 'router_status'=>$this)));
+				}
+				if ($this->getChipset()!=$router_status->getChipset()) {
+					$eventlist->add(new Event(false, "router", $this->getRouterId(), "chipset", array('from'=>$router_status->getChipset(), 'to'=>$this->getChipset(), 'router_status'=>$this)));
+				}
+				if ($this->getNodewatcherVersion()!=$router_status->getNodewatcherVersion()) {
+					$eventlist->add(new Event(false, "router", $this->getRouterId(), "nodewatcher_version", array('from'=>$router_status->getNodewatcherVersion(), 'to'=>$this->getNodewatcherVersion(), 'router_status'=>$this)));
+				}
+				if ($this->getFirmwareVersion()!=$router_status->getFirmwareVersion()) {
+					$eventlist->add(new Event(false, "router", $this->getRouterId(), "firmware_version", array('from'=>$router_status->getFirmwareVersion(), 'to'=>$this->getFirmwareVersion(), 'router_status'=>$this)));
+				}
+				if ($this->getBatmanAdvancedVersion()!=$router_status->getBatmanAdvancedVersion()) {
+					$eventlist->add(new Event(false, "router", $this->getRouterId(), "batman_advanced_version", array('from'=>$router_status->getBatmanAdvancedVersion(), 'to'=>$this->getBatmanAdvancedVersion(), 'router_status'=>$this)));
+				}
+				if ($this->getDistversion()!=$router_status->getDistversion()) {
+					$eventlist->add(new Event(false, "router", $this->getRouterId(), "distversion", array('from'=>$router_status->getDistversion(), 'to'=>$this->getDistversion(), 'router_status'=>$this)));
+				}
+				if ($this->getDistname()!=$router_status->getDistname()) {
+					$eventlist->add(new Event(false, "router", $this->getRouterId(), "distname", array('from'=>$router_status->getDistname(), 'to'=>$this->getDistname(), 'router_status'=>$this)));
+				}
+				
+				return $eventlist;
+			} else {
+				return false;
+			}
 		}
 		
 		public function getDomXMLElement($domdocument) {

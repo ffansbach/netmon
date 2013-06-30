@@ -28,8 +28,8 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once 'lib/classes/core/service.class.php';
-require_once 'lib/classes/core/event.class.php';
+require_once(ROOT_DIR.'/lib/classes/core/service.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/Eventlist.class.php');
 
 class ServiceEditor {
 	public function addService($router_id, $title, $description, $ip_addresses, $port, $url_prefix, $visible, $notify, $notification_wait, $use_netmons_url=false, $url='') {
@@ -120,7 +120,13 @@ class ServiceEditor {
 			echo $e->getTraceAsString();
 		}
 		
-		Event::deleteEventsByObjectAndObjectId('service', $service_id);
+		//delete events
+		$total_count = new Eventlist();
+		$total_count->init('service', (int)$service_id, false, 0, 0);
+		$total_count = $total_count->getTotalCount();
+		$eventlist = new Eventlist();
+		$eventlist->init('service', (int)$service_id, false, 0, $total_count);
+		$eventlist->delete();
 		
 		$message[] = array("Der Service $service_data[title] wurde entfernt.",1);
 		Message::setMessage($message);

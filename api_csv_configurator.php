@@ -9,7 +9,7 @@ require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/ip.class.php');
 require_once('lib/classes/core/crawling.class.php');
 require_once('lib/classes/core/chipsets.class.php');
-require_once('lib/classes/core/event.class.php');
+require_once('lib/classes/core/Event.class.php');
 require_once('lib/classes/extern/FwToolHash.class.php');
 
 if($_GET['section']=="test_login_strings") {
@@ -49,9 +49,8 @@ if($_GET['section']=="router_auto_assign") {
 			$not_assigned_id = DB::getInstance()->lastInsertId();
 			
 			//Make history
-			$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-			$history_data = serialize(array('router_auto_assign_login_string'=>$_GET['router_auto_assign_login_string'], 'action'=>'new'));
-			Event::addEvent('not_assigned_router', $not_assigned_id, $history_data);
+			$event = new Event(false, 'not_assigned_router', (int)$not_assigned_id, 'new', array('router_auto_assign_login_string'=>$_GET['router_auto_assign_login_string']));
+			$event->store();
 			
 			echo "error;new_not_assigned;;$_GET[router_auto_assign_login_string]";
 		} else {

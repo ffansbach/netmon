@@ -29,8 +29,6 @@
 			} elseif(is_int($crawl_cycle_id)) {
 				$this->crawl_cycle_id = $crawl_cycle_id;
 			}
-			
-			echo $this->crawl_cycle_id;
 		}
 		
 		protected function getStatusId() {

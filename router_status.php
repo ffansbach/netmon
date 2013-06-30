@@ -7,7 +7,7 @@ require_once('./lib/classes/core/interfaces.class.php');
 require_once('./lib/classes/core/batmanadvanced.class.php');
 require_once('./lib/classes/core/olsr.class.php');
 require_once('./lib/classes/core/crawling.class.php');
-require_once('./lib/classes/core/event.class.php');
+require_once('./lib/classes/core/Eventlist.class.php');
 require_once('./lib/classes/core/service.class.php');
 
 
@@ -51,9 +51,10 @@ $smarty->assign('message', Message::getMessage());
 $router_reliability = Router::getRouterReliability($_GET['router_id'], 500);
 $smarty->assign('router_reliability', $router_reliability);
 
-/** Get Router History **/
-$router_history = Event::getEventsByRouterId($_GET['router_id'], 6, false);
-$smarty->assign('router_history', $router_history);
+/** Get Router Events **/
+$eventlist = new Eventlist();
+$eventlist->init('router', $_GET['router_id'], false, 0, 6, 'create_date', 'desc');
+$smarty->assign('eventlist', $eventlist->getEventlist());
 
 /** Get and assign Router Informations **/
 //Router Status

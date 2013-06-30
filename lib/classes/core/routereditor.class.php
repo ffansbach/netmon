@@ -4,9 +4,10 @@ require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/service.class.php');
 require_once('lib/classes/core/serviceeditor.class.php');
 require_once('lib/classes/core/crawling.class.php');
-require_once('lib/classes/core/event.class.php');
+require_once('lib/classes/core/Event.class.php');
 require_once('lib/classes/core/routersnotassigned.class.php');
 require_once('lib/classes/core/config.class.php');
+require_once('lib/classes/core/RouterStatus.class.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
@@ -57,17 +58,19 @@ class RouterEditor {
 				echo $e->getTraceAsString();
 			}
 			
-			$crawl_data['status'] = "unknown";
 			$crawl_cycle_id = Crawling::getLastEndedCrawlCycle();
-			Crawling::insertRouterCrawl($router_id, $crawl_data, $crawl_cycle_id);
+			$router_status = New RouterStatus(false, (int)$crawl_cycle_id['id'], (int)$router_id, "unknown");
+			$router_status->store();
 			
 			if($_POST['allow_router_auto_assign']=='1' AND !empty($_POST['router_auto_assign_login_string'])) {
 				RoutersNotAssigned::deleteByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
 			}
 			$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
 			
-			//Make history
-			Event::addEvent('router', $router_id, serialize(array('router_id'=>$router_id, 'action'=>'new')));
+			//Add event for new router
+			//TODO: add Router Object to data array
+			$event = new Event(false, 'router', (int)$router_id, 'new', array());
+			$event->store();
 			
 			//Send Message to twitter
 			if($_POST['twitter_notification']=='1') {

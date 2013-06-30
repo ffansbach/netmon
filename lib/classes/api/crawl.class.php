@@ -3,7 +3,6 @@
 require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/chipsets.class.php');
-
 require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
 
 class Crawl {
@@ -22,18 +21,22 @@ class Crawl {
 		$router_has_been_crawled = Crawling::checkIfRouterHasBeenCrawled($data['router_id'], $last_crawl_cycle['id']);
 		
 		if(!$router_has_been_crawled) {
-			/**Insert Router System Data*/
-			//Crawling::insertRouterCrawl($data['router_id'], $data['system_data']);
+			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 			
+			/**Insert Router System Data*/
 			$router_status = New RouterStatus(false, false, (int)$data['router_id'],
 											  $data['system_data']['status'], false, $data['system_data']['hostname'], (int)$data['client_count'], $data['system_data']['chipset'],
 											  $data['system_data']['cpu'], (int)$data['system_data']['memory_total'], (int)$data['system_data']['memory_caching'], (int)$data['system_data']['memory_buffering'],
 											  (int)$data['system_data']['memory_free'], $data['system_data']['loadavg'], $data['system_data']['processes'], $data['system_data']['uptime'],
-											  $data['system_data']['idletime'], $data['system_data']['distname'], $data['system_data']['distversion'], $data['system_data']['openwrt_core_revision'], 
+											  $data['system_data']['idletime'], $data['system_data']['local_time'], $data['system_data']['distname'], $data['system_data']['distversion'], $data['system_data']['openwrt_core_revision'], 
 											  $data['system_data']['openwrt_feeds_packages_revision'], $data['system_data']['firmware_version'],
 											  $data['system_data']['firmware_revision'], $data['system_data']['kernel_version'], $data['system_data']['configurator_version'], 
 											  $data['system_data']['nodewatcher_version'], $data['system_data']['fastd_version'], $data['system_data']['batman_advanced_version']);
-			echo $router_status->store();
+			$router_status->store();
+			
+			//make router history
+			$eventlist = $router_status->compare(new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$data['router_id']));
+			$eventlist->store();
 			
 			//Update router memory rrd hostory
 			RrdTool::updateRouterMemoryHistory($data['router_id'], $data['system_data']['memory_free'], $data['system_data']['memory_caching'], $data['system_data']['memory_buffering']);
@@ -63,8 +66,7 @@ class Crawl {
 					//Create new RRD-Database
 					exec("rrdtool create $rrd_path_traffic_rx --step 600 --start ".time()." DS:traffic_rx:GAUGE:700:U:U DS:traffic_tx:GAUGE:900:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
 				}
-			
-				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+				
 				$interface_last_endet_crawl = Interfaces::getInterfaceCrawlByCrawlCycleAndRouterIdAndInterfaceName($last_endet_crawl_cycle['id'], $data['router_id'], $sendet_interface['name']);
 			
 				$interface_crawl_data['traffic_info']['traffic_rx_per_second_byte'] = ($sendet_interface['traffic_rx']-$interface_last_endet_crawl['traffic_rx'])/$GLOBALS['crawl_cycle']/60;

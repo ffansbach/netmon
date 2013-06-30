@@ -2,21 +2,22 @@
 
 /** Include Classes **/
 require_once('runtime.php');
-require_once('lib/classes/core/event.class.php');
+require_once('lib/classes/core/Eventlist.class.php');
 
 /** Get and assign global messages **/
 $smarty->assign('message', Message::getMessage());
 
 /** History **/
-if(empty($_POST['history_hours'])) {
-	$history_hours = 5;
+if(empty($_POST['event_count'])) {
+	$event_count = 30;
 } else {
-	$history_hours = $_POST['history_hours'];
+	$event_count = $_POST['event_count'];
 }
 
-$history = Event::getEvents(false, $history_hours);
-$smarty->assign('history_hours', $history_hours);
-$smarty->assign('history', $history);
+$smarty->assign('event_count', $event_count);
+$eventlist = new Eventlist();
+$eventlist->init(false, false, false, 0, $event_count, 'create_date', 'desc');
+$smarty->assign('eventlist', $eventlist->getEventlist());
 
 /** Display templates **/
 $smarty->display("header.tpl.php");

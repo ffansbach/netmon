@@ -1,5 +1,5 @@
 <?php
-	require_once('../../lib/classes/core/Object.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
 	
 	class Event extends Object {
 		private $event_id = 0;
@@ -54,6 +54,21 @@
 			}
 			
 			return false;
+		}
+		
+		public function delete() {
+			if($this->getEventId() != 0) {
+				try {
+ 					$stmt = DB::getInstance()->prepare("DELETE FROM events WHERE id=?");
+					$stmt->execute(array($this->getEventId()));
+					return $stmt->rowCount();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			} else {
+				return false;
+			}
 		}
 		
 		public function setEventId($event_id) {

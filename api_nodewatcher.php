@@ -9,6 +9,7 @@ require_once(ROOT_DIR.'/lib/classes/core/interfaces.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/chipsets.class.php');
 require_once(ROOT_DIR.'/lib/classes/extern/phpass/PasswordHash.php');
+require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
 
 if($_GET['section']=="get_standart_data") {
 	if ($_GET['authentificationmethod']=='hash') {
@@ -131,8 +132,22 @@ if($_GET['section']=="insert_crawl_data") {
 		$router_has_been_crawled = Crawling::checkIfRouterHasBeenCrawled($_POST['router_id'], $last_crawl_cycle['id']);
 
 		if(!$router_has_been_crawled) {
+			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
+			
 			/**Insert Router System Data*/
-			Crawling::insertRouterCrawl($_POST['router_id'], $_POST);
+			$router_status = New RouterStatus(false, false, (int)$_POST['router_id'],
+											  $_POST['status'], false, $_POST['hostname'], (int)$_POST['client_count'], $_POST['chipset'],
+											  $_POST['cpu'], (int)$_POST['memory_total'], (int)$_POST['memory_caching'], (int)$_POST['memory_buffering'],
+											  (int)$_POST['memory_free'], $_POST['loadavg'], $_POST['processes'], $_POST['uptime'],
+											  $_POST['idletime'], $_POST['local_time'], $_POST['distname'], $_POST['distversion'], $_POST['openwrt_core_revision'], 
+											  $_POST['openwrt_feeds_packages_revision'], $_POST['firmware_version'],
+											  $_POST['firmware_revision'], $_POST['kernel_version'], $_POST['configurator_version'], 
+											  $_POST['nodewatcher_version'], $_POST['fastd_version'], $_POST['batman_advanced_version']);
+			$router_status->store();
+			//make router history
+			$eventlist = $router_status->compare(new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$_POST['router_id']));
+			$eventlist->store();
+			
 			//Update router memory rrd hostory
 			RrdTool::updateRouterMemoryHistory($_POST['router_id'], $_POST['memory_free'], $_POST['memory_caching'], $_POST['memory_buffering']);
 			//Check if Chipset is set right, if not create new chipset and assign to router
@@ -165,7 +180,6 @@ if($_GET['section']=="insert_crawl_data") {
 					exec("rrdtool create $rrd_path_traffic_rx --step 600 --start ".time()." DS:traffic_rx:GAUGE:700:U:U DS:traffic_tx:GAUGE:900:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
 				}
 			
-				$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 				$interface_last_endet_crawl = Interfaces::getInterfaceCrawlByCrawlCycleAndRouterIdAndInterfaceName($last_endet_crawl_cycle['id'], $_POST['router_id'], $sendet_interface['name']);
 			
 				$interface_crawl_data['traffic_info']['traffic_rx_per_second_byte'] = ($sendet_interface['traffic_rx']-$interface_last_endet_crawl['traffic_rx'])/$GLOBALS['crawl_cycle']/60;
