@@ -11,7 +11,7 @@
 				<b><a href="event.php?event_id={$event->getEventId()}">{$event->getCreateDate()|date_format:"%e.%m.%Y %H:%M"}</a>:</b> 
 				{if $event->getObject() == 'router'}
 					{assign var="data" value=$event->getData()}
-					<a href="./router_status.php?router_id={$event->getObjectId()}">{$data.router_status->getHostname()}</a> 
+					<a href="./router_status.php?router_id={$event->getObjectId()}">{$data.hostname}</a> 
 					{if $event->getAction() == 'status' AND $data.to == 'online'}
 						geht <span style="color: #007B0F;">online</span>
 					{/if}

@@ -441,31 +441,31 @@
 				//TODO:	do not use $this for router_status because hostname will be empty if router is offline
 				//		Use real router object instead!
 				if ($this->getStatus() AND $router_status->getStatus() AND $this->getStatus()!=$router_status->getStatus()) {
-					$eventlist->add(new Event(false, "router", $this->getRouterId(), "status", array('from'=>$router_status->getStatus(), 'to'=>$this->getStatus(), 'router_status'=>$this)));
+					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "status", array('from'=>$router_status->getStatus(), 'to'=>$this->getStatus(), 'hostname'=>$this->getHostname())));
 				}
 				if($this->getUptime() AND $router_status->getUptime() AND $this->getUptime()<$router_status->getUptime()) {
-					$eventlist->add(new Event(false, "router", $this->getRouterId(), "reboot", array('router_status'=>$this)));
+					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "reboot", array('router_status'=>$this)));
 				}
 				if ($this->getHostname() AND $router_status->getHostname() AND $this->getHostname()!=$router_status->getHostname()) {
-					$eventlist->add(new Event(false, "router", $this->getRouterId(), "hostname", array('from'=>$router_status->getHostname(), 'to'=>$this->getHostname(), 'router_status'=>$this)));
+					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "hostname", array('from'=>$router_status->getHostname(), 'to'=>$this->getHostname(), 'hostname'=>$this->getHostname())));
 				}
 				if ($this->getChipset() AND $router_status->getChipset() AND $this->getChipset()!=$router_status->getChipset()) {
-					$eventlist->add(new Event(false, "router", $this->getRouterId(), "chipset", array('from'=>$router_status->getChipset(), 'to'=>$this->getChipset(), 'router_status'=>$this)));
+					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "chipset", array('from'=>$router_status->getChipset(), 'to'=>$this->getChipset(), 'hostname'=>$this->getHostname())));
 				}
 				if ($this->getNodewatcherVersion() AND $router_status->getNodewatcherVersion() AND $this->getNodewatcherVersion()!=$router_status->getNodewatcherVersion()) {
-					$eventlist->add(new Event(false, "router", $this->getRouterId(), "nodewatcher_version", array('from'=>$router_status->getNodewatcherVersion(), 'to'=>$this->getNodewatcherVersion(), 'router_status'=>$this)));
+					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "nodewatcher_version", array('from'=>$router_status->getNodewatcherVersion(), 'to'=>$this->getNodewatcherVersion(), 'hostname'=>$this->getHostname())));
 				}
 				if ($this->getFirmwareVersion() AND $router_status->getFirmwareVersion() AND $this->getFirmwareVersion()!=$router_status->getFirmwareVersion()) {
-					$eventlist->add(new Event(false, "router", $this->getRouterId(), "firmware_version", array('from'=>$router_status->getFirmwareVersion(), 'to'=>$this->getFirmwareVersion(), 'router_status'=>$this)));
+					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "firmware_version", array('from'=>$router_status->getFirmwareVersion(), 'to'=>$this->getFirmwareVersion(), 'hostname'=>$this->getHostname())));
 				}
 				if ($this->getBatmanAdvancedVersion() AND $router_status->getBatmanAdvancedVersion() AND $this->getBatmanAdvancedVersion()!=$router_status->getBatmanAdvancedVersion()) {
-					$eventlist->add(new Event(false, "router", $this->getRouterId(), "batman_advanced_version", array('from'=>$router_status->getBatmanAdvancedVersion(), 'to'=>$this->getBatmanAdvancedVersion(), 'router_status'=>$this)));
+					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "batman_advanced_version", array('from'=>$router_status->getBatmanAdvancedVersion(), 'to'=>$this->getBatmanAdvancedVersion(), 'hostname'=>$this->getHostname())));
 				}
 				if ($this->getDistversion() AND $router_status->getDistversion() AND $this->getDistversion()!=$router_status->getDistversion()) {
-					$eventlist->add(new Event(false, "router", $this->getRouterId(), "distversion", array('from'=>$router_status->getDistversion(), 'to'=>$this->getDistversion(), 'router_status'=>$this)));
+					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "distversion", array('from'=>$router_status->getDistversion(), 'to'=>$this->getDistversion(), 'hostname'=>$this->getHostname())));
 				}
 				if ($this->getDistname() AND $router_status->getDistname() AND $this->getDistname()!=$router_status->getDistname()) {
-					$eventlist->add(new Event(false, "router", $this->getRouterId(), "distname", array('from'=>$router_status->getDistname(), 'to'=>$this->getDistname(), 'router_status'=>$this)));
+					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "distname", array('from'=>$router_status->getDistname(), 'to'=>$this->getDistname(), 'hostname'=>$this->getHostname())));
 				}
 				
 				return $eventlist;

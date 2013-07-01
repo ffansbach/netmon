@@ -1,8 +1,8 @@
 <?php
 /** Include Classes **/
 require_once('runtime.php');
-require_once(ROOT_DIR.'lib/classes/core/ip.class.php');
-require_once(ROOT_DIR.'lib/classes/core/config.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/ip.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/config.class.php');
 
 $ip = Ip::getIpById($_GET['ip_id']);
 
@@ -16,9 +16,6 @@ if ($ip['ipv']=='6') {
 $return = array();
 echo $command;
 exec($command, $return);
-foreach($return as $string) {
-	$return_string .= $string;
-}
 echo "<pre>";
 	print_r($return);
 echo "</pre>";

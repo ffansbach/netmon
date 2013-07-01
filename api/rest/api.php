@@ -167,27 +167,31 @@
 		
 		private function eventlist() {
 			if($this->get_request_method() == "GET" && isset($this->_request['router_id']) && isset($this->_request['action'])) {
-				$eventlist = new Eventlist('router', $this->_request['router_id'], $this->_request['action'],
-										   $this->_request['offset'], $this->_request['limit'],
-										   $this->_request['sort_by'], $this->_request['order']);
+				$eventlist = new Eventlist();
+				$eventlist->init('router', $this->_request['router_id'], $this->_request['action'],
+								 $this->_request['offset'], $this->_request['limit'],
+								 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} elseif($this->get_request_method() == "GET" && isset($this->_request['router_id'])) {
-				$eventlist = new Eventlist('router', $this->_request['router_id'], false,
-										   $this->_request['offset'], $this->_request['limit'],
-										   $this->_request['sort_by'], $this->_request['order']);
+				$eventlist = new Eventlist();
+				$eventlist->init('router', $this->_request['router_id'], false,
+								 $this->_request['offset'], $this->_request['limit'],
+								 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} elseif($this->get_request_method() == "GET" && isset($this->_request['action'])) {
-				$eventlist = new Eventlist(false, false, $this->_request['action'],
-										   $this->_request['offset'], $this->_request['limit'],
-										   $this->_request['sort_by'], $this->_request['order']);
+				$eventlist = new Eventlist();
+				$eventlist->init(false, false, $this->_request['action'],
+								 $this->_request['offset'], $this->_request['limit'],
+								 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} elseif($this->get_request_method() == "GET") {
-				$eventlist = new Eventlist(false, false, false,
-										   $this->_request['offset'], $this->_request['limit'],
-										   $this->_request['sort_by'], $this->_request['order']);
+				$eventlist = new Eventlist();
+				$eventlist->init(false, false, false,
+								 $this->_request['offset'], $this->_request['limit'],
+								 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} else {
@@ -200,13 +204,13 @@
 		private function event() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
 				$event = new Event((int)$this->_request['id']);
-				if($event->getEventId() == 0) {
+				if($event->fetch()) {
+					$domxmldata = $event->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				} else {
 					$this->error_code = 1;
 					$this->error_message = "Event not found";
 					$this->response($this->finishxml(), 404);
-				} else {
-					$domxmldata = $event->getDomXMLElement($this->domxml);
-					$this->response($this->finishxml($domxmldata), 200);
 				}
 			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
 				header('Location: http://netmon.freifunk-ol.de/api/rest/events/');

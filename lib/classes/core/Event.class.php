@@ -9,27 +9,41 @@
 		private $action="";
 		private $data = null;
 		
-		public function __construct($event_id=false, $object=false, $object_id=false, $action=false, $data=false) {
-			if($object != false AND $object_id != false AND $data != false) {
-				$this->setCrawlCycleId();
-				$this->setObject($object);
-				$this->setObjectId((int)$object_id);
-				$this->setAction($action);
-				$this->setData($data);
-			} else if ($event_id !== false AND is_int($event_id)) {
-				//fetch event data from database
-				$result = array();
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT *
-														FROM events
-														WHERE id = ?");
-					$stmt->execute(array($event_id));
-					$result = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-
+		public function __construct($event_id=false, $crawl_cycle_id=false, $object=false, $object_id=false, $action=false, $data=false) {
+			$this->setEventId($event_id);
+			$this->setCrawlCycleId($crawl_cycle_id);
+			$this->setObject($object);
+			$this->setObjectId((int)$object_id);
+			$this->setAction($action);
+			$this->setData($data);
+		}
+		
+		public function fetch() {
+			$result = array();
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT *
+													FROM events
+													WHERE
+														(id = :event_id OR :event_id=0) AND
+														(crawl_cycle_id = :crawl_cycle_id OR :crawl_cycle_id=0) AND
+														(object = :object OR :object='') AND
+														(object_id = :object_id OR :object_id=0) AND
+														(action = :action OR :action='') AND
+														(create_date = FROM_UNIXTIME(:create_date) OR :create_date=0)");
+				$stmt->bindParam(':event_id', $this->getEventId(), PDO::PARAM_INT);
+				$stmt->bindParam(':crawl_cycle_id', $this->getCrawlCycleId(), PDO::PARAM_INT);
+				$stmt->bindParam(':object', $this->getObject(), PDO::PARAM_STR);
+				$stmt->bindParam(':object_id', $this->getObjectId(), PDO::PARAM_INT);
+				$stmt->bindParam(':action', $this->getAction(), PDO::PARAM_STR);
+				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
+				$stmt->execute();
+				$result = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+			
+			if(!empty($result)) {
 				$this->setEventId((int)$result['id']);
 				$this->setCrawlCycleId((int)$result['crawl_cycle_id']);
 				$this->setObject($result['object']);
@@ -37,7 +51,10 @@
 				$this->setAction($result['action']);
 				$this->setCreateDate($result['create_date']);
 				$this->setData($result['data']);
+				return true;
 			}
+			
+			return false;
 		}
 		
 		public function store() {
@@ -128,6 +145,14 @@
 		public function getData() {
 			return unserialize($this->data);
 		}
+		
+/*		public function getObjectData() {
+			if($this->getObject()=='router') {
+				$router = new Router($this->getObjectId());
+				$router->fetch();
+				return $router;
+			}
+		}*/
 		
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('event');

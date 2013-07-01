@@ -205,7 +205,9 @@
 			}
 			
 			foreach($result as $event) {
-				$this->eventlist[] = new Event((int)$event['event_id']);
+				$event = new Event((int)$event['event_id']);
+				$event->fetch();
+				$this->eventlist[] = $event;
 			}
 		}
 		

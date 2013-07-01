@@ -1,7 +1,7 @@
 <?php
 	class Object {
-		protected $create_date;
-		protected $update_date;
+		protected $create_date = 0;
+		protected $update_date = 0;
 		
 		public function setCreateDate($create_date=false) {
 			if($create_date == false)
