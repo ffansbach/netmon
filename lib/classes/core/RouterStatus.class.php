@@ -45,7 +45,7 @@
 				$this->setCrawlCycleId($crawl_cycle_id);
 				$this->setRouterId($router_id);
 				$this->setStatus($status);
-				$this->setCreateDate($crawl_date);
+				$this->setCreateDate($create_date);
 				$this->setHostname($hostname);
 				$this->setClientCount($client_count);
 				$this->setChipset($chipset);
@@ -440,7 +440,7 @@
 				$eventlist = new Eventlist();
 				//TODO:	do not use $this for router_status because hostname will be empty if router is offline
 				//		Use real router object instead!
-				if ($this->getStatus() AND $router_status->getStatus() AND $this->getStatus()!=$router_status->getStatus() AND $this->getUptime()>$router_status->getUptime()) {
+				if ($this->getStatus() AND $router_status->getStatus() AND $this->getStatus()!=$router_status->getStatus()) {
 					$eventlist->add(new Event(false, "router", $this->getRouterId(), "status", array('from'=>$router_status->getStatus(), 'to'=>$this->getStatus(), 'router_status'=>$this)));
 				}
 				if($this->getUptime() AND $router_status->getUptime() AND $this->getUptime()<$router_status->getUptime()) {

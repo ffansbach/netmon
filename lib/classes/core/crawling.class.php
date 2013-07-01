@@ -1,49 +1,6 @@
 <?php
 
-require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/rrdtool.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
-
 class Crawling {
-	public function organizeCrawlCycles()  {
-		//Get actual crawl cycle
-		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-		//Get last ended crawl cycle
-		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-
-		//if no crawl cycle has been created until now or
-		//if its time to create a new crawl cycle
-		if(empty($actual_crawl_cycle) OR strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
-			//Initialise new crawl cycle
-			Crawling::newCrawlCycle();
-		}
-		
-		if(!empty($actual_crawl_cycle) AND strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
-			//Close old Crawl cycle
-			Crawling::closeCrawlCycle($actual_crawl_cycle['id']);
-
-			//Set all routers in old crawl cycle that have not been crawled yet to status offline
-			$routers = Router::getRouters();
-			foreach ($routers as $router) {
-				$crawl = Router::getCrawlRouterByCrawlCycleId($actual_crawl_cycle['id'], $router['id']);
-				if(empty($crawl)) {
-					$router_status = New RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$router['id'], "offline");
-					$router_status->store();
-				}
-			}
-
-			//Make statistic graphs
-			$online = Router::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'online');
-			$offline = Router::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'offline');
-			$unknown = Router::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'unknown');
-			$total = $unknown+$offline+$online;
-			RrdTool::updateNetmonHistoryRouterStatus($online, $offline, $unknown, $total);
-
-			$client_count = Router::countRoutersByCrawlCycleId($actual_crawl_cycle['id']);
-			RrdTool::updateNetmonClientCount($client_count);
-		}
-	}
-
 	public function newCrawlCycle($minuteOffset=0) {
 		try {
 			$stmt = DB::getInstance()->prepare("INSERT INTO crawl_cycle (crawl_date) VALUES (NOW()-INTERVAL ? MINUTE)");

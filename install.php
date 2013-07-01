@@ -1,11 +1,11 @@
 <?php
 
 require_once('runtime.php');
-require_once('lib/classes/core/config.class.php');
-require_once('lib/classes/core/install.class.php');
-require_once('lib/classes/core/crawling.class.php');
-require_once 'lib/classes/extern/Zend/Mail.php';
-require_once 'lib/classes/extern/Zend/Mail/Transport/Smtp.php';
+require_once(ROOT_DIR.'/lib/classes/core/config.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/install.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
+require_once(ROOT_DIR.'/lib/classes/extern/Zend/Mail.php');
+require_once(ROOT_DIR.'/lib/classes/extern/Zend/Mail/Transport/Smtp.php');
 
 if ($GLOBALS['installed']) {
 	$message[] = array("Die Intallation wurde gesperrt.", 2);
@@ -157,7 +157,7 @@ if ($GLOBALS['installed']) {
 		
 		//create an initial crawl cycle
 		$crawl_cycle_id = Crawling::newCrawlCycle(10);
-		Crawling::organizeCrawlCycles();
+		require_once(ROOT_DIR.'/cronjobs.php');
 		header('Location: ./install.php?section=finish');
 	}
 } elseif ($_GET['section']=="finish") {
