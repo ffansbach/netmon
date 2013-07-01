@@ -51,7 +51,9 @@
 				}
 			}
 			foreach($result as $user_remember_me) {
-				$this->user_remember_me_list[] = new UserRememberMe((int)$user_remember_me['user_remember_me_id']);
+				$user_remember_me = new UserRememberMe((int)$user_remember_me['user_remember_me_id']);
+				$user_remember_me->fetch();
+				$this->user_remember_me_list[] = $user_remember_me;
 			}
 		}
 		

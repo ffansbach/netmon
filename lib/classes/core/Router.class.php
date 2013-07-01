@@ -5,14 +5,14 @@
 	require_once(ROOT_DIR.'/lib/classes/core/RouterStatusList.class.php');
 	
 	class Router extends Object {
- 		private $router_id;
-		private $user_id;
-		private $hostname;
-		private $description;
-		private $location;
-		private $latitude;
-		private $longitude;
-		private $chipset = null;
+ 		private $router_id = 0;
+		private $user_id = 0;
+		private $hostname = "";
+		private $description = "";
+		private $location = "";
+		private $latitude = "";
+		private $longitude = "";
+		private $chipset = "";
 		private $statusdata = array();
 		private $statusdata_history = array();
 		private $networkinterfacelist = null;
@@ -92,10 +92,13 @@
 		}
 		
 		public function setStatusdata($routerstatus=false) {
-			if($routerstatus!=false)
+			if($routerstatus!=false) {
 				$this->statusdata = $routerstatus;
-			else
-				$this->statusdata = new RouterStatus(false, false, $this->router_id);
+			} else {
+				$router_status = new RouterStatus(false, false, $this->router_id);
+				$router_status->fetch();
+				$this->statusdata = $router_status;
+			}
 		}
 		
 		public function setStatusdataHistory($statusdata_history=false) {

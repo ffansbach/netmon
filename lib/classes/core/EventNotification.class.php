@@ -12,46 +12,72 @@
 		private $action="";
 		private $object="";
 		private $object_data=null;
-		private $notify=false;
-		private $notified=false;
+		private $notify=0;
+		private $notified=0;
 		private $notification_date=0;
 	
-		public function __construct($event_notification_id=false, $user_id=false, $action=false, $object=false, $notify=false, $notified=false, $create_date=false, $notification_date=false) {
-			if($event_notification_id==false AND $user_id!=false AND $action!=false) {
-				$this->setUserId((int)$user_id);
-				$this->setCreateDate();
-				$this->setAction($action);
-				$this->setObject($object);
-				$this->setNotify($notify);
-				$this->setNotified($notified);
-				$this->setNotificationDate($notification_date);
-			} else if ($event_notification_id !== false AND is_int($event_notification_id)) {
-				//fetch event data from database
-				$result = array();
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT *
-														FROM event_notifications
-														WHERE id = ?");
-					$stmt->execute(array($event_notification_id));
-					$result = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				
+		public function __construct($event_notification_id=false, $user_id=false, $action=false, $object=false,
+									$notify=false, $notified=false, $notification_date=false,
+									$create_date=false, $update_date=false) {
+			$this->setEventNotificationId($event_notification_id);
+			$this->setUserId($user_id);
+			$this->setAction($action);
+			$this->setObject($object);
+			$this->setNotify($notify);
+			$this->setNotified($notified);
+			$this->setNotificationDate($notification_date);
+			$this->setCreateDate($create_date);
+			$this->setUpdateDate($update_date);
+		}
+		
+		public function fetch() {
+			$result = array();
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT *
+													FROM event_notifications
+													WHERE
+														(id = :event_notification_id OR :event_notification_id=0) AND
+														(user_id = :user_id OR :user_id=0) AND
+														(action = :action OR :action='') AND
+														(object = :object OR :object='') AND
+														(notify = :notify OR :notify=0) AND
+														(notified = :notified OR :notified=0) AND
+														(notification_date = :notification_date OR :notification_date=0) AND
+														(create_date = FROM_UNIXTIME(:create_date) OR :create_date=0) AND
+														(update_date = FROM_UNIXTIME(:update_date) OR :update_date=0)");
+				$stmt->bindParam(':event_notification_id', $this->getEventNotificationId(), PDO::PARAM_INT);
+				$stmt->bindParam(':user_id', $this->getUserId(), PDO::PARAM_INT);
+				$stmt->bindParam(':action', $this->getAction(), PDO::PARAM_STR);
+				$stmt->bindParam(':object', $this->getObject(), PDO::PARAM_STR);
+				$stmt->bindParam(':notify', $this->getNotify(), PDO::PARAM_INT);
+				$stmt->bindParam(':notified', $this->getNotified(), PDO::PARAM_INT);
+				$stmt->bindParam(':notification_date', $this->getNotificationDate(), PDO::PARAM_INT);
+				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
+				$stmt->bindParam(':update_date', $this->getUpdateDate(), PDO::PARAM_INT);
+				$stmt->execute();
+				$result = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+			
+			if(!empty($result)) {
 				$this->setEventNotificationId((int)$result['id']);
 				$this->setUserId((int)$result['user_id']);
-				$this->setCreateDate($result['create_date']);
 				$this->setAction($result['action']);
 				$this->setObject($result['object']);
-				$this->setNotify((bool)$result['notify']);
-				$this->setNotified((bool)$result['notified']);
+				$this->setNotify((int)$result['notify']);
+				$this->setNotified((int)$result['notified']);
 				$this->setNotificationDate($result['notification_date']);
-				
+				$this->setCreateDate($result['create_date']);
+				$this->setUpdateDate($result['update_date']);
 				if($this->getAction() == 'router_offline') {
 					$this->setObjectData(new Router($this->getObject()));
 				}
+				return true;
 			}
+			
+			return false;
 		}
 		
 		public function store() {
@@ -59,14 +85,14 @@
 				try {
 					$stmt = DB::getInstance()->prepare("UPDATE event_notifications SET
 																user_id = ?,
-																create_date = FROM_UNIXTIME(?),
+																update_date = NOW(),
 																action = ?,
 																object = ?,
 																notify = ?,
 																notified = ?,
 																notification_date = FROM_UNIXTIME(?)
 														WHERE id=?");
-					$stmt->execute(array($this->getUserId(), $this->getCreateDate(), $this->getAction(), $this->getObject(),
+					$stmt->execute(array($this->getUserId(), $this->getAction(), $this->getObject(),
 										 $this->getNotify(), $this->getNotified(), $this->getNotificationDate(),
 										 $this->getEventNotificationId()));
 					return $stmt->rowCount();
@@ -74,25 +100,16 @@
 					echo $e->getMessage();
 					echo $e->getTraceAsString();
 				}
-			} elseif($this->getUserId() != 0 AND $this->getAction()!="" AND $this->getCreateDate() != 0) {
+			} elseif($this->getUserId() != 0 AND $this->getAction()!="") {
 				try {
-					$stmt = DB::getInstance()->prepare("INSERT INTO event_notifications (user_id, create_date, action, object, notify, notified, notification_date)
-														VALUES (?, FROM_UNIXTIME(?), ?, ?, ?, ?, ?)");
-					$stmt->execute(array($this->getUserId(), $this->getCreateDate(), $this->getAction(), $this->getObject(), $this->getNotify(), $this->getNotified(), $this->getNotificationDate()));
+					$stmt = DB::getInstance()->prepare("INSERT INTO event_notifications (user_id, create_date, update_date, action, object, notify, notified, notification_date)
+														VALUES (?, NOW(), NOW(), ?, ?, ?, ?, ?)");
+					$stmt->execute(array($this->getUserId(), $this->getAction(), $this->getObject(), $this->getNotify(), $this->getNotified(), $this->getNotificationDate()));
 					return DB::getInstance()->lastInsertId();
 				} catch(PDOException $e) {
 					echo $e->getMessage();
 					echo $e->getTraceAsString();
 				}
-			} else {
-				if($this->getAction() != 0) {
-					echo "hallo";
-				}
-				
-				echo $this->getUserId();
-				echo "problem";
-				echo  $this->getCreateDate();
-				echo $this->getAction();
 			}
 			
 			return false;

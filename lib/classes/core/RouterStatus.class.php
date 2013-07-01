@@ -29,7 +29,6 @@
 		private $nodewatcher_version = "";
 		private $fastd_version = "";
 		private $batman_advanced_version = "";
-		 
 		public $available_statusses = array("online", "offline", "unknown");
 		
 		public function __construct($status_id=false, $crawl_cycle_id=false, $router_id=false,
@@ -40,124 +39,142 @@
 									$openwrt_feeds_packages_revision = false, $firmware_version = false,
 									$firmware_revision = false, $kernel_version = false, $configurator_version = false, 
 									$nodewatcher_version = false, $fastd_version = false, $batman_advanced_version=false) {
-			if($router_id!=false AND $status!=false) {
-				$this->setStatusId($status_id);
-				$this->setCrawlCycleId($crawl_cycle_id);
-				$this->setRouterId($router_id);
-				$this->setStatus($status);
-				$this->setCreateDate($create_date);
-				$this->setHostname($hostname);
-				$this->setClientCount($client_count);
-				$this->setChipset($chipset);
-				$this->setCpu($cpu);
-				$this->setMemoryTotal($memory_total);
-				$this->setMemoryBuffering($memory_buffering);
-				$this->setMemoryCaching($memory_caching);
-				$this->setMemoryFree($memory_free);
-				$this->setLoadavg($loadavg);
-				$this->setProcesses($processes);
-				$this->setUptime($uptime);
-				$this->setIdletime($idletime);
-				$this->setLocaltime($localtime);
-				$this->setDistname($distname);
-				$this->setDistversion($distversion);
-				$this->setOpenwrtCoreRevision($openwrt_core_revision);
-				$this->setOpenwrtFeedsPackagesRevision($openwrt_feeds_packages_revision);
-				$this->setFirmwareVersion($firmware_version);
-				$this->setFirmwareRevision($firmware_revision);
-				$this->setKernelVersion($kernel_version);
-				$this->setConfiguratorVersion($configurator_version);
-				$this->setNodewatcherVersion($nodewatcher_version);
-				$this->setFastdVersion($fastd_version);
-				$this->setBatmanAdvancedVersion($batman_advanced_version);
-			} else if($router_id!=false) {
-				$result = array();
-				$this->setCrawlCycleId((int)$crawl_cycle_id);
-				$this->setRouterId($router_id);
-				try {
-						$stmt = DB::getInstance()->prepare("SELECT *
-															FROM crawl_routers
-															WHERE crawl_cycle_id = ? AND router_id = ?");
-					$stmt->execute(array($this->getCrawlCycleId(), $this->getRouterId()));
-					$result = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				
-				$this->setStatusId((int)$result['id']);
-				$this->setCrawlCycleId((int)$result['crawl_cycle_id']);
-				$this->setRouterId((int)$result['router_id']);
-				$this->setStatus($result['status']);
-				$this->setCreateDate($result['crawl_date']);
-				$this->setHostname($result['hostname']);
-				$this->setClientCount((int)$result['client_count']);
-				$this->setChipset($result['chipset']);
-				$this->setCpu($result['cpu']);
-				$this->setMemoryTotal($result['memory_total']);
-				$this->setMemoryBuffering($result['memory_buffering']);
-				$this->setMemoryCaching($result['memory_caching']);
-				$this->setMemoryFree($result['memory_free']);
-				$this->setLoadavg($result['loadavg']);
-				$this->setProcesses($result['processes']);
-				$this->setUptime($result['uptime']);
-				$this->setIdletime($result['idletime']);
-				$this->setLocaltime($result['local_time']);
-				$this->setDistname($result['distname']);
-				$this->setDistversion($result['distversion']);
-				$this->setOpenwrtCoreRevision($result['openwrt_core_revision']);
-				$this->setOpenwrtFeedsPackagesRevision($result['openwrt_feeds_packages_revision']);
-				$this->setFirmwareVersion($result['firmware_version']);
-				$this->setFirmwareRevision($result['firmware_revision']);
-				$this->setKernelVersion($result['kernel_version']);
-				$this->setConfiguratorVersion($result['configurator_version']);
-				$this->setNodewatcherVersion($result['nodewatcher_version']);
-				$this->setFastdVersion($result['fastd_version']);
-				$this->setBatmanAdvancedVersion($result['batman_advanced_version']);
-			} elseif($status_id!=false) {
-				$result = array();
-				// initialize with data from a given status
-				try {
-						$stmt = DB::getInstance()->prepare("SELECT *
-															FROM crawl_routers
-															WHERE id = ?");
-					$stmt->execute(array($status_id));
-					$result = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				
-				$this->setStatusId((int)$result['id']);
-				$this->setCrawlCycleId((int)$result['crawl_cycle_id']);
-				$this->setRouterId((int)$result['router_id']);
-				$this->setStatus($result['status']);
-				$this->setCreateDate($result['crawl_date']);
-				$this->setHostname($result['hostname']);
-				$this->setClientCount((int)$result['client_count']);
-				$this->setChipset($result['chipset']);
-				$this->setCpu($result['cpu']);
-				$this->setMemoryTotal($result['memory_total']);
-				$this->setMemoryBuffering($result['memory_buffering']);
-				$this->setMemoryCaching($result['memory_caching']);
-				$this->setMemoryFree($result['memory_free']);
-				$this->setLoadavg($result['loadavg']);
-				$this->setProcesses($result['processes']);
-				$this->setUptime($result['uptime']);
-				$this->setIdletime($result['idletime']);
-				$this->setLocaltime($result['local_time']);
-				$this->setDistname($result['distname']);
-				$this->setDistversion($result['distversion']);
-				$this->setOpenwrtCoreRevision($result['openwrt_core_revision']);
-				$this->setOpenwrtFeedsPackagesRevision($result['openwrt_feeds_packages_revision']);
-				$this->setFirmwareVersion($result['firmware_version']);
-				$this->setFirmwareRevision($result['firmware_revision']);
-				$this->setKernelVersion($result['kernel_version']);
-				$this->setConfiguratorVersion($result['configurator_version']);
-				$this->setNodewatcherVersion($result['nodewatcher_version']);
-				$this->setFastdVersion($result['fastd_version']);
-				$this->setBatmanAdvancedVersion($result['batman_advanced_version']);
+			$this->setStatusId($status_id);
+			$this->setCrawlCycleId($crawl_cycle_id);
+			$this->setRouterId($router_id);
+			$this->setStatus($status);
+			$this->setCreateDate($create_date);
+			$this->setHostname($hostname);
+			$this->setClientCount($client_count);
+			$this->setChipset($chipset);
+			$this->setCpu($cpu);
+			$this->setMemoryTotal($memory_total);
+			$this->setMemoryBuffering($memory_buffering);
+			$this->setMemoryCaching($memory_caching);
+			$this->setMemoryFree($memory_free);
+			$this->setLoadavg($loadavg);
+			$this->setProcesses($processes);
+			$this->setUptime($uptime);
+			$this->setIdletime($idletime);
+			$this->setLocaltime($localtime);
+			$this->setDistname($distname);
+			$this->setDistversion($distversion);
+			$this->setOpenwrtCoreRevision($openwrt_core_revision);
+			$this->setOpenwrtFeedsPackagesRevision($openwrt_feeds_packages_revision);
+			$this->setFirmwareVersion($firmware_version);
+			$this->setFirmwareRevision($firmware_revision);
+			$this->setKernelVersion($kernel_version);
+			$this->setConfiguratorVersion($configurator_version);
+			$this->setNodewatcherVersion($nodewatcher_version);
+			$this->setFastdVersion($fastd_version);
+			$this->setBatmanAdvancedVersion($batman_advanced_version);
+		}
+		
+		public function fetch() {
+			$result = array();
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT *
+													FROM crawl_routers
+													WHERE
+														(id = :status_id OR :status_id=0) AND
+														(crawl_cycle_id = :crawl_cycle_id OR :crawl_cycle_id=0) AND
+														(router_id = :router_id OR :router_id=0) AND
+														(status = :status OR :status='') AND
+														(crawl_date = FROM_UNIXTIME(:create_date) OR :create_date=0) AND
+														(hostname = :hostname OR :hostname='') AND
+														(client_count = :client_count OR :client_count=0) AND
+														(chipset = :chipset OR :chipset='') AND
+														(cpu = :cpu OR :cpu='') AND
+														(memory_total = :memory_total OR :memory_total=0) AND
+														(memory_buffering = :memory_buffering OR :memory_buffering=0) AND
+														(memory_caching = :memory_caching OR :memory_caching=0) AND
+														(memory_free = :memory_free OR :memory_free=0) AND
+														(loadavg = :loadavg OR :loadavg='') AND
+														(processes = :processes OR :processes='') AND
+														(uptime = :uptime OR :uptime='') AND
+														(idletime = :idletime OR :idletime='') AND
+														(local_time = :local_time OR :local_time='') AND
+														(distname = :distname OR :distname='') AND
+														(distversion = :distversion OR :distversion='') AND
+														(openwrt_core_revision = :openwrt_core_revision OR :openwrt_core_revision='') AND
+														(openwrt_feeds_packages_revision = :openwrt_feeds_packages_revision OR :openwrt_feeds_packages_revision='') AND
+														(firmware_version = :firmware_version OR :firmware_version='') AND
+														(firmware_revision = :firmware_revision OR :firmware_revision='') AND
+														(kernel_version = :kernel_version OR :kernel_version='') AND
+														(configurator_version = :configurator_version OR :configurator_version='') AND
+														(nodewatcher_version = :nodewatcher_version OR :nodewatcher_version='') AND
+														(fastd_version = :fastd_version OR :fastd_version='') AND
+														(batman_advanced_version = :batman_advanced_version OR :batman_advanced_version='')");
+				$stmt->bindParam(':status_id', $this->getStatusId(), PDO::PARAM_INT);
+				$stmt->bindParam(':crawl_cycle_id', $this->getCrawlCycleId(), PDO::PARAM_INT);
+				$stmt->bindParam(':router_id', $this->getRouterId(), PDO::PARAM_INT);
+				$stmt->bindParam(':status', $this->getStatus(), PDO::PARAM_STR);
+				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
+				$stmt->bindParam(':hostname', $this->getHostname(), PDO::PARAM_STR);
+				$stmt->bindParam(':client_count', $this->getClientCount(), PDO::PARAM_INT);
+				$stmt->bindParam(':chipset', $this->getChipset(), PDO::PARAM_STR);
+				$stmt->bindParam(':cpu', $this->getCpu(), PDO::PARAM_STR);
+				$stmt->bindParam(':memory_total', $this->getMemoryTotal(), PDO::PARAM_INT);
+				$stmt->bindParam(':memory_buffering', $this->getMemoryBuffering(), PDO::PARAM_INT);
+				$stmt->bindParam(':memory_caching', $this->getMemoryCaching(), PDO::PARAM_INT);
+				$stmt->bindParam(':memory_free', $this->getMemoryFree(), PDO::PARAM_INT);
+				$stmt->bindParam(':loadavg', $this->getLoadavg(), PDO::PARAM_STR);
+				$stmt->bindParam(':processes', $this->getProcesses(), PDO::PARAM_STR);
+				$stmt->bindParam(':uptime', $this->getUptime(), PDO::PARAM_STR);
+				$stmt->bindParam(':idletime', $this->getIdletime(), PDO::PARAM_STR);
+				$stmt->bindParam(':local_time', $this->getLocaltime(), PDO::PARAM_STR);
+				$stmt->bindParam(':distname', $this->getDistname(), PDO::PARAM_STR);
+				$stmt->bindParam(':distversion', $this->getDistversion(), PDO::PARAM_STR);
+				$stmt->bindParam(':openwrt_core_revision', $this->getOpenwrtCoreRevision(), PDO::PARAM_STR);
+				$stmt->bindParam(':openwrt_feeds_packages_revision', $this->getOpenwrtFeedsPackagesRevision(), PDO::PARAM_STR);
+				$stmt->bindParam(':firmware_version', $this->getFirmwareVersion(), PDO::PARAM_STR);
+				$stmt->bindParam(':firmware_revision', $this->getFirmwareRevision(), PDO::PARAM_STR);
+				$stmt->bindParam(':kernel_version', $this->getFastdVersion(), PDO::PARAM_STR);
+				$stmt->bindParam(':configurator_version', $this->getConfiguratorVersion(), PDO::PARAM_STR);
+				$stmt->bindParam(':nodewatcher_version', $this->getNodewatcherVersion(), PDO::PARAM_STR);
+				$stmt->bindParam(':fastd_version', $this->getFastdVersion(), PDO::PARAM_STR);
+				$stmt->bindParam(':batman_advanced_version', $this->getBatmanAdvancedVersion(), PDO::PARAM_STR);
+				$stmt->execute();
+				$result = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
+			
+			if(!empty($result)) {
+				$this->setStatusId((int)$result['id']);
+				$this->setCrawlCycleId((int)$result['crawl_cycle_id']);
+				$this->setRouterId((int)$result['router_id']);
+				$this->setStatus($result['status']);
+				$this->setCreateDate($result['crawl_date']);
+				$this->setHostname($result['hostname']);
+				$this->setClientCount((int)$result['client_count']);
+				$this->setChipset($result['chipset']);
+				$this->setCpu($result['cpu']);
+				$this->setMemoryTotal($result['memory_total']);
+				$this->setMemoryBuffering($result['memory_buffering']);
+				$this->setMemoryCaching($result['memory_caching']);
+				$this->setMemoryFree($result['memory_free']);
+				$this->setLoadavg($result['loadavg']);
+				$this->setProcesses($result['processes']);
+				$this->setUptime($result['uptime']);
+				$this->setIdletime($result['idletime']);
+				$this->setLocaltime($result['local_time']);
+				$this->setDistname($result['distname']);
+				$this->setDistversion($result['distversion']);
+				$this->setOpenwrtCoreRevision($result['openwrt_core_revision']);
+				$this->setOpenwrtFeedsPackagesRevision($result['openwrt_feeds_packages_revision']);
+				$this->setFirmwareVersion($result['firmware_version']);
+				$this->setFirmwareRevision($result['firmware_revision']);
+				$this->setKernelVersion($result['kernel_version']);
+				$this->setConfiguratorVersion($result['configurator_version']);
+				$this->setNodewatcherVersion($result['nodewatcher_version']);
+				$this->setFastdVersion($result['fastd_version']);
+				$this->setBatmanAdvancedVersion($result['batman_advanced_version']);
+				return true;
+			}
+			
+			return false;
 		}
 		
 		public function store() {
@@ -174,7 +191,7 @@
 																				   nodewatcher_version, firmware_version,
 																				   firmware_revision, openwrt_core_revision,
 																				   openwrt_feeds_packages_revision, client_count)
-														VALUES (?, ?, FROM_UNIXTIME(?), ?,
+														VALUES (?, ?, NOW(), ?,
 																?, ?, ?, ?,
 																?, ?, ?, ?,
 																?, ?, ?, ?, ?,
@@ -183,7 +200,7 @@
 																?, ?,
 																?, ?,
 																?, ?)");
-					$stmt->execute(array($this->getRouterId(), $this->getCrawlCycleId(), $this->getCreateDate(), $this->getStatus(),
+					$stmt->execute(array($this->getRouterId(), $this->getCrawlCycleId(), $this->getStatus(),
 										 $this->getHostname(), $this->getDistname(), $this->getDistversion(), $this->getChipset(),
 										 $this->getCpu(), $this->getMemoryTotal(), $this->getMemoryCaching(), $this->getMemoryBuffering(),
 										 $this->getMemoryFree(), $this->getLoadavg(), $this->getProcesses(), $this->getUptime(), $this->getIdletime(),

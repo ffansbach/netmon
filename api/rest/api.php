@@ -82,13 +82,13 @@
 		private function ip() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
 				$ip = new Ip((int)$this->_request['id']);
-				if($ip->getIpId() == 0) {
+				if($ip->fetch()) {
+					$domxmldata = $ip->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				} else {
 					$this->error_code = 1;
 					$this->error_message = "IP not found";
 					$this->response($this->finishxml(), 404);
-				} else {
-					$domxmldata = $ip->getDomXMLElement($this->domxml);
-					$this->response($this->finishxml($domxmldata), 200);
 				}
 			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
 				header('Location: http://netmon.freifunk-ol.de/api/rest/iplist/');
@@ -118,13 +118,14 @@
 		private function networkinterface() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
 				$networkinterface = new Networkinterface((int)$this->_request['id']);
-				if($networkinterface->getInterfaceId() == 0) {
+				if($networkinterface->fetch()) {
+					$domxmldata = $networkinterface->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				} else {
+					var_dump($networkinterface);
 					$this->error_code = 1;
 					$this->error_message = "Networkinterface not found";
 					$this->response($this->finishxml(), 404);
-				} else {
-					$domxmldata = $networkinterface->getDomXMLElement($this->domxml);
-					$this->response($this->finishxml($domxmldata), 200);
 				}
 			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
 				header('Location: http://netmon.freifunk-ol.de/api/rest/networkinterfaclist/');

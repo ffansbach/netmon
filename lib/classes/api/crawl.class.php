@@ -3,6 +3,7 @@
 require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/chipsets.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/rrdtool.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
 
 class Crawl {
@@ -35,7 +36,9 @@ class Crawl {
 			$router_status->store();
 			
 			//make router history
-			$eventlist = $router_status->compare(new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$data['router_id']));
+			$router_status_tmp = new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$data['router_id']);
+			$router_status_tmp->fetch();
+			$eventlist = $router_status->compare($router_status_tmp);
 			$eventlist->store();
 			
 			//Update router memory rrd hostory

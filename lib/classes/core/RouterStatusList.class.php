@@ -93,7 +93,9 @@
 			
 			
 			foreach($result as $router_status) {
-				$this->router_status_list[] = new RouterStatus((int)$router_status['status_id']);
+				$router_status = new RouterStatus((int)$router_status['status_id']);
+				$router_status->fetch();
+				$this->router_status_list[] = $router_status;
 			}
 		}
 		

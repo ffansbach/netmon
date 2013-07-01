@@ -85,7 +85,9 @@
 			}
 			
 			foreach($result as $tld) {
-				$this->tld_list[] = new Tld((int)$tld['tld_id']);
+				$tld = new Tld((int)$tld['tld_id']);
+				$tld->fetch();
+				$this->tld_list[] = $tld;
 			}
 		}
 		

@@ -86,7 +86,9 @@
 			}
 			
 			foreach($result as $event_notification) {
-				$this->event_notification_list[] = new EventNotification((int)$event_notification['event_notification_id']);
+				$event_notification = new EventNotification((int)$event_notification['event_notification_id']);
+				$event_notification->fetch();
+				$this->event_notification_list[] = $event_notification;
 			}
 		}
 		

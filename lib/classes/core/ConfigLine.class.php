@@ -4,38 +4,49 @@
 	class ConfigLine extends Object {
 		private $config_id = 0;
 		private $name = "";
-		private $value = null;
+		private $value = "";
 		
-		public function __construct($config_id=false, $name=false, $value=false) {
+		public function __construct($config_id=false, $name=false, $value=false, $create_date=false, $update_date=false) {
+			$this->setConfigId($config_id);
+			$this->setName($name);
+			$this->setValue($value);
+			$this->setCreateDate($create_date);
+			$this->setUpdateDate($update_date);
+		}
+		
+		public function fetch() {
 			$result = array();
-			if($config_id!=false) {
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT *
-														FROM config
-														WHERE id = ?");
-					$stmt->execute(array($config_id));
-					$result = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-			} elseif($config_id==false AND $name !=false AND $value==false) {
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT *
-														FROM config
-														WHERE name = ?");
-					$stmt->execute(array($name));
-					$result = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT *
+													FROM config
+													WHERE
+														(id = :config_id OR :config_id=0) AND
+														(name = :name OR :name='') AND
+														(value = :value OR :value='') AND
+														(create_date = FROM_UNIXTIME(:create_date) OR :create_date=0) AND
+														(update_date = FROM_UNIXTIME(:update_date) OR :update_date=0)");
+				$stmt->bindParam(':config_id', $this->getConfigId(), PDO::PARAM_INT);
+				$stmt->bindParam(':name', $this->getName(), PDO::PARAM_STR);
+				$stmt->bindParam(':value', $this->getValue(), PDO::PARAM_STR);
+				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
+				$stmt->bindParam(':update_date', $this->getUpdateDate(), PDO::PARAM_INT);
+				$stmt->execute();
+				$result = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 			
-			$this->setConfigId((int)$result['id']);
-			$this->setName($result['name']);
-			$this->setValue($result['value']);
-			$this->setCreateDate($result['create_date']);
+			if(!empty($result)) {
+				$this->setConfigId((int)$result['id']);
+				$this->setName($result['name']);
+				$this->setValue($result['value']);
+				$this->setCreateDate($result['create_date']);
+				$this->setUpdateDate($result['update_date']);
+				return true;
+			}
+			
+			return false;
 		}
 		
 		public function setConfigId($config_id) {
@@ -65,16 +76,11 @@
 		}
 		
 		public static function configByName($name) {
-			try {
-				$stmt = DB::getInstance()->prepare("SELECT *
-													FROM config
-													WHERE name = ?");
-				$stmt->execute(array($name));
-				$result = $stmt->fetch(PDO::FETCH_ASSOC);
-				return $result['value'];
-			} catch(PDOException $e) {
-				echo $e->getMessage();
-				echo $e->getTraceAsString();
+			$config_line = new ConfigLine(false, $name);
+			if($config_line->fetch()) {
+				return $config_line->getValue();
+			} else {
+				return false;
 			}
 		}
 	}

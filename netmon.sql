@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 29, 2013 at 03:50 PM
+-- Generation Time: Jul 02, 2013 at 12:34 AM
 -- Server version: 5.5.31-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.16-1~dotdeb.1
 
@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS `config` (
   `name` varchar(50) NOT NULL,
   `value` text NOT NULL,
   `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
@@ -280,6 +281,7 @@ CREATE TABLE IF NOT EXISTS `events` (
   `object_id` int(11) NOT NULL,
   `action` varchar(200) NOT NULL,
   `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   `data` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
@@ -295,6 +297,7 @@ CREATE TABLE IF NOT EXISTS `event_notifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   `action` varchar(200) NOT NULL,
   `object` varchar(30) NOT NULL,
   `notify` tinyint(1) NOT NULL,
@@ -314,6 +317,7 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
   `router_id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   `name` varchar(100) NOT NULL,
   `mac_addr` varchar(150) NOT NULL,
   `vpn_client_cert` text NOT NULL,
@@ -338,6 +342,7 @@ CREATE TABLE IF NOT EXISTS `ips` (
   `ipv` int(11) NOT NULL,
   `protected` tinyint(1) NOT NULL,
   `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `router_id` (`router_id`),
@@ -566,6 +571,7 @@ CREATE TABLE IF NOT EXISTS `tlds` (
   `user_id` int(11) NOT NULL,
   `tld` varchar(20) NOT NULL,
   `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 

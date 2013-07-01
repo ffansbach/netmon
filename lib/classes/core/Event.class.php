@@ -9,13 +9,16 @@
 		private $action="";
 		private $data = null;
 		
-		public function __construct($event_id=false, $crawl_cycle_id=false, $object=false, $object_id=false, $action=false, $data=false) {
+		public function __construct($event_id=false, $crawl_cycle_id=false, $object=false, $object_id=false,
+									$action=false, $data=false, $create_date=false, $update_date=false) {
 			$this->setEventId($event_id);
 			$this->setCrawlCycleId($crawl_cycle_id);
 			$this->setObject($object);
 			$this->setObjectId((int)$object_id);
 			$this->setAction($action);
 			$this->setData($data);
+			$this->setCreateDate($create_date);
+			$this->setUpdateDate($update_date);
 		}
 		
 		public function fetch() {
@@ -29,13 +32,15 @@
 														(object = :object OR :object='') AND
 														(object_id = :object_id OR :object_id=0) AND
 														(action = :action OR :action='') AND
-														(create_date = FROM_UNIXTIME(:create_date) OR :create_date=0)");
+														(create_date = FROM_UNIXTIME(:create_date) OR :create_date=0) AND
+														(update_date = FROM_UNIXTIME(:update_date) OR :update_date=0)");
 				$stmt->bindParam(':event_id', $this->getEventId(), PDO::PARAM_INT);
 				$stmt->bindParam(':crawl_cycle_id', $this->getCrawlCycleId(), PDO::PARAM_INT);
 				$stmt->bindParam(':object', $this->getObject(), PDO::PARAM_STR);
 				$stmt->bindParam(':object_id', $this->getObjectId(), PDO::PARAM_INT);
 				$stmt->bindParam(':action', $this->getAction(), PDO::PARAM_STR);
 				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
+				$stmt->bindParam(':update_date', $this->getUpdateDate(), PDO::PARAM_INT);
 				$stmt->execute();
 				$result = $stmt->fetch(PDO::FETCH_ASSOC);
 			} catch(PDOException $e) {
@@ -49,8 +54,9 @@
 				$this->setObject($result['object']);
 				$this->setObjectId((int)$result['object_id']);
 				$this->setAction($result['action']);
-				$this->setCreateDate($result['create_date']);
 				$this->setData($result['data']);
+				$this->setCreateDate($result['create_date']);
+				$this->setUpdateDate($result['update_date']);
 				return true;
 			}
 			
@@ -60,8 +66,8 @@
 		public function store() {
 			if($this->crawl_cycle_id != 0 AND $this->object != "" AND $this->object_id != 0 AND $this->action != "" AND $this->data != null) {
 				try {
-					$stmt = DB::getInstance()->prepare("INSERT INTO events (crawl_cycle_id, object, object_id, action, create_date, data)
-														VALUES (?, ?, ?, ?, NOW(), ?)");
+					$stmt = DB::getInstance()->prepare("INSERT INTO events (crawl_cycle_id, object, object_id, action, create_date, update_date, data)
+														VALUES (?, ?, ?, ?, NOW(), NOW(), ?)");
 					$stmt->execute(array($this->crawl_cycle_id, $this->object, $this->object_id, $this->action, $this->data));
 					return DB::getInstance()->lastInsertId();
 				} catch(PDOException $e) {

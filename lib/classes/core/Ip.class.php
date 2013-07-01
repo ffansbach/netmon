@@ -10,33 +10,53 @@
 		private $statusdata = array();
 		private $statusdata_history = array();
 		
-		public function __construct($ip_id=false, $interface_id=false, $ip=false, $ipv=false, $netmask=false, $create_date=false) {
-			if($interface_id != false AND $ip != false AND $ipv != false AND $netmask != false) {
-				$this->setInterfaceId((int)$inteface_id);
+		public function __construct($ip_id=false, $interface_id=false, $ip=false, $ipv=false, $netmask=false,
+									$create_date=false, $update_date=false) {
+				$this->setInterfaceId($interface_id);
 				$this->setIp($ip);
-				$this->setIpv((int)$ipv);
-				$this->setNetmask((int)$netmask);
-			} else if ($ip_id !== false AND is_int($ip_id)) {
-				//fetch ip data from database
-				$result = array();
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id, ips.interface_id, ips.ip, ips.ipv, ips.create_date
-														FROM ips
-														WHERE ips.id = ?");
-					$stmt->execute(array($ip_id));
-					$result = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-
-				$this->setIpId((int)$result['ip_id']);
+				$this->setIpv($ipv);
+				$this->setNetmask($netmask);
+				$this->setCreateDate($create_date);
+				$this->setUpdateDate($update_date);
+		}
+		
+		public function fetch() {
+			$result = array();
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT *
+													FROM ips
+													WHERE
+														(id = :ip_id OR :ip_id=0) AND
+														(interface_id = :interface_id OR :interface_id=0) AND
+														(ip = :ip OR :ip='') AND
+														(ipv = :ipv OR :ipv=0) AND
+														(create_date = FROM_UNIXTIME(:create_date) OR :create_date=0) AND
+														(update_date = FROM_UNIXTIME(:update_date) OR :update_date=0)");
+				$stmt->bindParam(':ip_id', $this->getIpId(), PDO::PARAM_INT);
+				$stmt->bindParam(':interface_id', $this->getInterfaceId(), PDO::PARAM_INT);
+				$stmt->bindParam(':ipv', $this->getIpv(), PDO::PARAM_INT);
+				$stmt->bindParam(':ip', $this->getIp(), PDO::PARAM_STR);
+				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
+				$stmt->bindParam(':update_date', $this->getUpdateDate(), PDO::PARAM_INT);
+				$stmt->execute();
+				$result = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+			
+			if(!empty($result)) {
+				$this->setIpId((int)$result['id']);
 				$this->setInterfaceId((int)$result['interface_id']);
 				$this->setIp($result['ip']);
 				$this->setIpv((int)$result['ipv']);
 				//TODO: $this->setNetmask((int)$result['netmask']);
 				$this->setCreateDate($result['create_date']);
+				$this->setUpdateDate($result['update_date']);
+				return true;
 			}
+			
+			return false;
 		}
 		
 		public function setIpId($ip_id) {

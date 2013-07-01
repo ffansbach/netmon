@@ -86,7 +86,9 @@
 			}
 			
 			foreach($result as $networkinterface) {
-				$this->networkinterfacelist[] = new Networkinterface((int)$networkinterface['networkinterface_id']);
+				$networkinterface = new Networkinterface((int)$networkinterface['networkinterface_id']);
+				$networkinterface->fetch();
+				$this->networkinterfacelist[] = $networkinterface;
 			}
 		}
 		

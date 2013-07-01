@@ -145,7 +145,10 @@ if($_GET['section']=="insert_crawl_data") {
 											  $_POST['nodewatcher_version'], $_POST['fastd_version'], $_POST['batman_advanced_version']);
 			$router_status->store();
 			//make router history
-			$eventlist = $router_status->compare(new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$_POST['router_id']));
+			$router_status_old = new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$_POST['router_id']);
+			$router_status_old->fetch();
+			
+			$eventlist = $router_status->compare($router_status_old);
 			$eventlist->store();
 			
 			//Update router memory rrd hostory

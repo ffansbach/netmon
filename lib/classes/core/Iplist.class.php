@@ -86,7 +86,9 @@
 			}
 			
 			foreach($result as $ip) {
-				$this->iplist[] = new Ip((int)$ip['ip_id']);
+				$ip = new Ip((int)$ip['ip_id']);
+				$ip->fetch();
+				$this->iplist[] = $ip;
 			}
 		}
 		

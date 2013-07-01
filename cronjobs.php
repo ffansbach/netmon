@@ -42,7 +42,9 @@
 				$router_status->store();
 				
 				//make router history
-				$eventlist = $router_status->compare(new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$router['id']));
+				$router_status_tmp = new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$router['id']);
+				$router_status_tmp->fetch();
+				$eventlist = $router_status->compare($router_status_tmp);
 				$eventlist->store();
 			}
 		}
