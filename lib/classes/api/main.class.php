@@ -3,7 +3,7 @@
 require_once('lib/classes/core/interfaces.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/project.class.php');
-require_once('lib/classes/core/ip.class.php');
+//require_once('lib/classes/core/ip.class.php');
 require_once('lib/classes/core/user.class.php');
 
 class Main {
@@ -27,24 +27,17 @@ class Main {
 		return(Helper::getAllServiceIDsByServiceType($type));
 	}
 
-	public function getAFreeIPv4IPByProjectId($project_id) {
+/*	public function getAFreeIPv4IPByProjectId($project_id) {
 		return(Ip::getAFreeIPv4IPByProjectId($project_id));
 	}
 
 	public function getFreeIpRangeByProjectId($project_id, $range, $ip="") {
 		return(Ip::getFreeIpRangeByProjectId($project_id, $range, $ip));
-	}
+	}*/
 
 	public function getRoutersForCrawl() {
 		return(Router::getRoutersForCrawl());
 	}
-
-	public function getIPv4InterfacesByRouterId($router_id) {
-		return(Interfaces::getIPv4InterfacesByRouterId($router_id));
-	}
-	
-
-
 }
 
 ?>

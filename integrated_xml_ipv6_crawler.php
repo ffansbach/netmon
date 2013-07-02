@@ -48,17 +48,19 @@ class IntegratedXmlIPv6Crawler {
 		foreach($routers as $router) {
 			if(!empty($router['interfaces'])) {
 				foreach($router['interfaces'] as $interface) {
-					if(!empty($interface['ip_addresses'])) {
-						foreach($interface['ip_addresses'] as $key=>$ip_address) {
-							if($ip_address['ipv']==6) {
+					if($interface['ip_addresses']->getTotalCount()!=0 ){
+						foreach($interface['ip_addresses']->getIplist() as $key=>$ip_address) {
+							echo $ip_address->getIp();
+							if($ip_address->getIpv()==6) {
 								unset($return_string);
 								unset($xml_array);
 								unset($xml);
 								
 								//ping the router to preestablish a connection
-								$ipv6_address = explode("/", $ip_address['ip']);
+								$ipv6_address = explode("/", $ip_address->getIp());
 								$return = array();
 								$command = "ping6 -c 4 -I $network_connection_ipv6_interface $ipv6_address[0]";
+								echo $command."\n";
 								exec($command, $return);
 									
 								foreach($return as $key=>$line) {
@@ -76,13 +78,14 @@ class IntegratedXmlIPv6Crawler {
 									$exploded_ping_result = explode("=", $return[$ping_result_index+1]);
 									$exploded_ping_result = explode("/", trim($exploded_ping_result[1]));
 									
-									$ip_data[0]['ip_id'] = $ip_address['ip_id'];
+									$ip_data[0]['ip_id'] = $ip_address->getIp();
 									$ip_data[0]['ping_avg'] = $exploded_ping_result[1];
 								}
 
 								//fetch crawl data from router
 								$return = array();
 								$command = "curl -s --connect-timeout 4 -m8 -g http://[$ipv6_address[0]%25\$(cat /sys/class/net/$network_connection_ipv6_interface/ifindex)]/node.data";
+								echo $command."\n";
 								exec($command, $return);
 								$return_string = "";
 								foreach($return as $string) {

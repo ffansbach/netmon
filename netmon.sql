@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 02, 2013 at 12:34 AM
+-- Generation Time: Jul 02, 2013 at 01:15 PM
 -- Server version: 5.5.31-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.16-1~dotdeb.1
 
@@ -114,10 +114,9 @@ CREATE TABLE IF NOT EXISTS `crawl_cycle` (
 
 CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `crawl_id` int(11) NOT NULL,
-  `interface_id` int(11) NOT NULL,
   `router_id` int(11) NOT NULL,
   `crawl_cycle_id` int(11) NOT NULL,
+  `interface_id` int(11) NOT NULL,
   `crawl_date` datetime NOT NULL,
   `name` varchar(100) NOT NULL,
   `mac_addr` varchar(150) NOT NULL,
@@ -136,7 +135,6 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `mtu` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `crawl_interfaces_id` (`id`),
-  KEY `crawl_id` (`crawl_id`),
   KEY `router_id` (`router_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;

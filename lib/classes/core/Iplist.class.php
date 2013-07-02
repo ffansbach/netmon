@@ -92,6 +92,16 @@
 			}
 		}
 		
+		public function delete() {
+			foreach($this->getIplist() as $ip) {
+				$ip->delete();
+			}
+		}
+		
+		public function getIplist() {
+			return $this->iplist;
+		}
+		
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('iplist');
 			$domxmlelement->setAttribute("total_count", $this->getTotalCount());

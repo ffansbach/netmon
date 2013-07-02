@@ -5,6 +5,8 @@ require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/chipsets.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/rrdtool.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/Networkinterface.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/NetworkinterfaceStatus.class.php');
 
 class Crawl {
 	public function getRoutersForCrawl() {
@@ -62,7 +64,7 @@ class Crawl {
 			}
 
 			/**Insert Router Interfaces*/
-			foreach($data['interface_data'] as $sendet_interface) {				
+			foreach($data['interface_data'] as $sendet_interface) {
 				//Update RRD Graph DB
 				$rrd_path_traffic_rx = ROOT_DIR."/rrdtool/databases/router_$data[router_id]_interface_$sendet_interface[name]_traffic_rx.rrd";
 				if(!file_exists($rrd_path_traffic_rx)) {
@@ -92,33 +94,38 @@ class Crawl {
 				//Update RRDDatabase
 				$crawl_time = time();
 				exec("rrdtool update $rrd_path_traffic_rx $crawl_time:".$interface_crawl_data['traffic_info']['traffic_rx_per_second_kilobyte'].":".$interface_crawl_data['traffic_info']['traffic_tx_per_second_kilobyte']);
-
+				
 				//Set default indizies to prevent from warnings
-				if(!isset($sendet_interface['wlan_mode'])) $sendet_interface['wlan_mode']="";
 				if(!isset($sendet_interface['wlan_frequency'])) $sendet_interface['wlan_frequency']="";
 								if(!isset($sendet_interface['wlan_frequency']))
 					$sendet_interface['wlan_frequency']="";
 				else
 					$sendet_interface['wlan_frequency']=preg_replace("/([A-Za-z])/","",$sendet_interface['wlan_frequency']); //strip letters from value
-				if(!isset($sendet_interface['wlan_essid'])) $sendet_interface['wlan_essid']="";
-				if(!isset($sendet_interface['wlan_bssid'])) $sendet_interface['wlan_bssid']="";
-				if(!isset($sendet_interface['wlan_tx_power'])) $sendet_interface['wlan_tx_power']="";
-				if(!isset($sendet_interface['ping'])) $sendet_interface['ping']="";
-				if(!isset($sendet_interface['firmware_revision'])) $sendet_interface['firmware_revision']="";
-				if(!isset($sendet_interface['openwrt_core_revision'])) $sendet_interface['openwrt_core_revision']="";
-				if(!isset($sendet_interface['openwrt_feeds_packages_revision'])) $sendet_interface['openwrt_feeds_packages_revision']="";
-				if(!isset($sendet_interface['history_data'])) $sendet_interface['history_data']="";
-				if(!isset($sendet_interface['batman_adv_originators'])) $sendet_interface['batman_adv_originators']="";
-				if(!isset($sendet_interface['nexthop'])) $sendet_interface['nexthop']="";
-
-				//Make DB Insert
-				try {
-					DB::getInstance()->exec("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, crawl_date, name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_rx_avg, traffic_tx, traffic_tx_avg, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power, mtu)
-								 VALUES ('$data[router_id]', '$last_crawl_cycle[id]', NOW(), '$sendet_interface[name]', '$sendet_interface[mac_addr]', '$sendet_interface[ipv4_addr]', '$sendet_interface[ipv6_addr]', '$sendet_interface[ipv6_link_local_addr]', '$sendet_interface[traffic_rx]', '$traffic_rx_per_second_byte', '$sendet_interface[traffic_tx]', '$traffic_tx_per_second_byte', '$sendet_interface[wlan_mode]', '$sendet_interface[wlan_frequency]', '$sendet_interface[wlan_essid]', '$sendet_interface[wlan_bssid]', '$sendet_interface[wlan_tx_power]', '$sendet_interface[mtu]');");
+				
+				
+				/**
+				 * Interface
+				 */
+				//check if interface already exists
+				$networkinterface_test = new Networkinterface(false, (int)$data['router_id'], $sendet_interface['name']);
+				//if interface not exist, create new
+				if(!$networkinterface_test->fetch()) {
+					$networkinterface_new = new Networkinterface(false, (int)$data['router_id'], $sendet_interface['name']);
+					$networkinterface_id = $networkinterface_new->store();
+				} else {
+					$networkinterface_id = $networkinterface_test->getNetworkinterfaceId();
 				}
-				catch(PDOException $e) {
-					echo $e->getMessage();
-				}
+				
+				//save crawl data for interface
+				$networkinterface_status = new NetworkinterfaceStatus(false, false, (int)$networkinterface_id, (int)$data['router_id'],
+																	  $sendet_interface['name'], $sendet_interface['mac_addr'], (int)$sendet_interface['mtu'],
+																	  (int)$sendet_interface['traffic_rx'], (int)$traffic_rx_per_second_byte,
+																	  (int)$sendet_interface['traffic_tx'], (int)$traffic_tx_per_second_byte,
+																	  $sendet_interface['wlan_mode'], $sendet_interface['wlan_frequency'], $sendet_interface['wlan_essid'], $sendet_interface['wlan_bssid'],
+																	  (int)$sendet_interface['wlan_tx_power'], false);
+				$networkinterface_status->store();
+				
+				//TODO: Remove networkinterfaces that are not linked to any status, service, habe no ip addresses and are not marked as protected
 			}
 
 			/**Insert IP crawl data*/

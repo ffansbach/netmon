@@ -28,7 +28,8 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once(ROOT_DIR.'/lib/classes/core/ip.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/Ip.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/Iplist.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/subnetcalculator.class.php');
 
 class Interfaces {
@@ -48,24 +49,17 @@ class Interfaces {
 		$message[] = array("Dem Router wurde das Interface $interface_name hinzugefügt.", 1);
 		$interface_id = DB::getInstance()->lastInsertId();
 		
-		//Add new IPv4-Address
 		if(!empty($ipv4_addr)) {
-			try {
-				$stmt = DB::getInstance()->prepare("INSERT INTO ips (router_id, project_id, interface_id, ip, ipv, create_date)
-								    VALUES (?, ?, ?, ?, 4, NOW())");
-				$stmt->execute(array($router_id, $project_id, $interface_id, $ipv4_addr));
-				$interface_id = DB::getInstance()->lastInsertId();
-			} catch(PDOException $e) {
-				echo $e->getMessage();
-				echo $e->getTraceAsString();
+			$ip = new Ip(false, (int)$interface_id, $ipv4_addr, 4);
+			if(!$ip->store()) {
+				Interfaces::deleteInterface($interface_id);
+				$message[] = array("Das neu angelegte Interface ($interface_id) wurde wieder gelöscht!", 2);
 			}
-			$message[] = array("Dem Interface $interface_name wurde die IPv4 Adresse $ipv4_addr hinzugefügt.", 1);
-			$ipv4_id = DB::getInstance()->lastInsertId();
 		}
 
 		//Add new IP-Range
 		//TODO
-		if(!empty($ipv4_dhcp_range)) {
+/*		if(!empty($ipv4_dhcp_range)) {
 			$ip_range = Ip::getFreeIpRangeByProjectId($project_id, $ipv4_dhcp_range, $ipv4_addr);
 			if($ip_range['start']!='NULL') {
 				try {
@@ -82,12 +76,12 @@ class Interfaces {
 			}
 		} else {
 			//delete the work, done until now
-		}
+		}*/
 
 		//Add new IPv6-Address
 		if(!empty($ipv6_addr)) {
-			$add_result = Ip::addIPv6Address($router_id, $project_id, $interface_id, $ipv6_addr);
-			if(!$add_result) {
+			$ip = new Ip(false, (int)$interface_id, $ipv6_addr, 6);
+			if(!$ip->store()) {
 				Interfaces::deleteInterface($interface_id);
 				$message[] = array("Das neu angelegte Interface ($interface_id) wurde wieder gelöscht!", 2);
 			}
@@ -100,10 +94,8 @@ class Interfaces {
 		$interface_data = Interfaces::getInterfaceByInterfaceId($interface_id);
 
 		//Delete IP Adresses
-		$ips = Ip::getIpAdressesByInterfaceId($interface_id);
-		foreach($ips as $ip) {
-			Ip::deleteIPAddress($ip['ip_id']);
-		}
+		$iplist = new Iplist((int)$interface_id);
+		$iplist->delete();
 
 		//Delete Interface
 		try {
@@ -146,15 +138,15 @@ class Interfaces {
 		}
 		
 		foreach($rows as $key=>$row) {
-			$row['ip_addresses'] = Ip::getIpAdressesByInterfaceId($row['interface_id']);
+			$row['ip_addresses'] = new Iplist((int)$row['interface_id']);
 			
-			$row['ipv4_netmask_dot'] = SubnetCalculator::getNmask($row['ipv4_netmask']);
+/*			$row['ipv4_netmask_dot'] = SubnetCalculator::getNmask($row['ipv4_netmask']);
 			$row['ipv4_bcast'] = SubnetCalculator::getDqBcast($row['ipv4_host'], $row['ipv4_netmask']);
 			if($row['ipv4_dhcp_kind']=='range') {
 				$ipv4_range = Interfaces::getIPv4RangeByInterfaceId($row['interface_id']);
 				$row['ipv4_dhcp_range_start'] = $ipv4_range['ip_start'];
 				$row['ipv4_dhcp_range_end'] = $ipv4_range['ip_end'];
-			}
+			}*/
 			$interfaces[] = $row;
 		}
 		return $interfaces;

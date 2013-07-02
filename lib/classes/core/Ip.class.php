@@ -12,6 +12,7 @@
 		
 		public function __construct($ip_id=false, $interface_id=false, $ip=false, $ipv=false, $netmask=false,
 									$create_date=false, $update_date=false) {
+				$this->setIpId($ip_id);
 				$this->setInterfaceId($interface_id);
 				$this->setIp($ip);
 				$this->setIpv($ipv);
@@ -56,6 +57,53 @@
 				return true;
 			}
 			
+			return false;
+		}
+		
+		public function store() {
+			$ip = new Ip(false, false, $this->getIp());
+			$ip->fetch();
+			
+			if($this->getIpId() != 0 AND $ip->getIpId()==$this->getIpId()) {
+				try {
+					$stmt = DB::getInstance()->prepare("UPDATE ips SET
+																interface_id = ?,
+																ip = ?,
+																ipv = ?,
+																update_date = NOW()
+														WHERE id=?");
+					$stmt->execute(array($this->getInterfaceId(), $this->getIp(), $this->getIpv()));
+					return $stmt->rowCount();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			} elseif($this->getInterfaceId()!=0 AND $this->getIp()!="" AND $this->getIpv()!=0 AND $ip->getIpId()==0) {
+				try {
+					$stmt = DB::getInstance()->prepare("INSERT INTO tlds (interface_id, ip, ipv, create_date, update_date)
+														VALUES (?, ?, ?, NOW(), NOW())");
+					$stmt->execute(array($this->getInterfaceId(), $this->getIp(), $this->getIpv()));
+					return DB::getInstance()->lastInsertId();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			}
+			
+			return false;
+		}
+		
+		public function delete() {
+			if($this->getIpId() != 0) {
+				try {
+ 					$stmt = DB::getInstance()->prepare("DELETE FROM ips WHERE id=?");
+					$stmt->execute(array($this->getIpId()));
+					return $stmt->rowCount();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			}
 			return false;
 		}
 		
