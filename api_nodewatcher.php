@@ -128,14 +128,14 @@ if($_GET['section']=="insert_crawl_data") {
 	if((($_POST['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_POST['router_auto_update_hash']))) {
 		echo "success;".$router_data['hostname'].";";
 		
-		$last_crawl_cycle = Crawling::getActualCrawlCycle();
-		$router_has_been_crawled = Crawling::checkIfRouterHasBeenCrawled($_POST['router_id'], $last_crawl_cycle['id']);
+		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+		$router_has_been_crawled = Crawling::checkIfRouterHasBeenCrawled($_POST['router_id'], $actual_crawl_cycle['id']);
 
 		if(!$router_has_been_crawled) {
 			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 			
 			/**Insert Router System Data*/
-			$router_status = New RouterStatus(false, false, (int)$_POST['router_id'],
+			$router_status = New RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$_POST['router_id'],
 											  $_POST['status'], false, $_POST['hostname'], (int)$_POST['client_count'], $_POST['chipset'],
 											  $_POST['cpu'], (int)$_POST['memory_total'], (int)$_POST['memory_caching'], (int)$_POST['memory_buffering'],
 											  (int)$_POST['memory_free'], $_POST['loadavg'], $_POST['processes'], $_POST['uptime'],
@@ -170,7 +170,7 @@ if($_GET['section']=="insert_crawl_data") {
 				//Make DB Insert
 				try {
 					DB::getInstance()->exec("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, crawl_date, name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_tx, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power, mtu)
-								 VALUES ('$_POST[router_id]', '$last_crawl_cycle[id]', NOW(), '$sendet_interface[name]', '$sendet_interface[mac_addr]', '$sendet_interface[ipv4_addr]', '$sendet_interface[ipv6_addr]', '$sendet_interface[ipv6_link_local_addr]', '$sendet_interface[traffic_rx]', '$sendet_interface[traffic_tx]', '$sendet_interface[wlan_mode]', '$sendet_interface[wlan_frequency]', '$sendet_interface[wlan_essid]', '$sendet_interface[wlan_bssid]', '$sendet_interface[wlan_tx_power]', '$sendet_interface[mtu]');");
+								 VALUES ('$_POST[router_id]', '$actual_crawl_cycle[id]', NOW(), '$sendet_interface[name]', '$sendet_interface[mac_addr]', '$sendet_interface[ipv4_addr]', '$sendet_interface[ipv6_addr]', '$sendet_interface[ipv6_link_local_addr]', '$sendet_interface[traffic_rx]', '$sendet_interface[traffic_tx]', '$sendet_interface[wlan_mode]', '$sendet_interface[wlan_frequency]', '$sendet_interface[wlan_essid]', '$sendet_interface[wlan_bssid]', '$sendet_interface[wlan_tx_power]', '$sendet_interface[mtu]');");
 				}
 				catch(PDOException $e) {
 					echo $e->getMessage();
@@ -209,7 +209,7 @@ if($_GET['section']=="insert_crawl_data") {
 			foreach($_POST['bat_adv_int'] as $bat_adv_int) {
 				try {
 					DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_interfaces (router_id, crawl_cycle_id, name, status, crawl_date)
-								 VALUES ('$_POST[router_id]', '$last_crawl_cycle[id]', '$bat_adv_int[name]', '$bat_adv_int[status]', NOW());");
+								 VALUES ('$_POST[router_id]', '$actual_crawl_cycle[id]', '$bat_adv_int[name]', '$bat_adv_int[status]', NOW());");
 				}
 				catch(PDOException $e) {
 					echo $e->getMessage();
@@ -221,7 +221,7 @@ if($_GET['section']=="insert_crawl_data") {
 				foreach($_POST['bat_adv_orig'] as $bat_adv_orig) {
 					try {
 						DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, nexthop, outgoing_interface, last_seen, crawl_date)
-									 VALUES ('$_POST[router_id]', '$last_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[nexthop]', '$bat_adv_orig[outgoing_interface]', '$bat_adv_orig[last_seen]', NOW());");
+									 VALUES ('$_POST[router_id]', '$actual_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[nexthop]', '$bat_adv_orig[outgoing_interface]', '$bat_adv_orig[last_seen]', NOW());");
 					}
 					catch(PDOException $e) {
 						echo $e->getMessage();
@@ -246,7 +246,7 @@ if($_GET['section']=="insert_crawl_data") {
 			/**Client Data */
 			try {
 				DB::getInstance()->exec("INSERT INTO crawl_clients_count (router_id, crawl_cycle_id, crawl_date, client_count)
-							 VALUES ('$_POST[router_id]', '$last_crawl_cycle[id]', NOW(), '$_POST[client_count]')");
+							 VALUES ('$_POST[router_id]', '$actual_crawl_cycle[id]', NOW(), '$_POST[client_count]')");
 			}
 			catch(PDOException $e) {
 				echo $e->getMessage();

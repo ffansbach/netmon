@@ -20,14 +20,14 @@ class Crawl {
 	if((($_POST['authentificationmethod']=='login') AND (Permission::isThisUserOwner($router_data['user_id'], $session['user_id']) OR $session['permission']==120)) OR (($_POST['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_POST['router_auto_update_hash']))) {
 		echo "success;".$router_data['hostname'].";";
 */
-		$last_crawl_cycle = Crawling::getActualCrawlCycle();
-		$router_has_been_crawled = Crawling::checkIfRouterHasBeenCrawled($data['router_id'], $last_crawl_cycle['id']);
+		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+		$router_has_been_crawled = Crawling::checkIfRouterHasBeenCrawled($data['router_id'], $actual_crawl_cycle['id']);
 		
 		if(!$router_has_been_crawled) {
 			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 			
 			/**Insert Router System Data*/
-			$router_status = New RouterStatus(false, false, (int)$data['router_id'],
+			$router_status = New RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$data['router_id'],
 											  $data['system_data']['status'], false, $data['system_data']['hostname'], (int)$data['client_count'], $data['system_data']['chipset'],
 											  $data['system_data']['cpu'], (int)$data['system_data']['memory_total'], (int)$data['system_data']['memory_caching'], (int)$data['system_data']['memory_buffering'],
 											  (int)$data['system_data']['memory_free'], $data['system_data']['loadavg'], $data['system_data']['processes'], $data['system_data']['uptime'],
@@ -132,7 +132,7 @@ class Crawl {
 			foreach($data['ip_data'] as $ip_data) {
 				try {
 					DB::getInstance()->exec("INSERT INTO crawl_ips (ip_id, crawl_cycle_id, crawl_date, ping_avg)
-								 VALUES ('$ip_data[ip_id]', '$last_crawl_cycle[id]', NOW(), '$ip_data[ping_avg]');");
+								 VALUES ('$ip_data[ip_id]', '$actual_crawl_cycle[id]', NOW(), '$ip_data[ping_avg]');");
 				}
 				catch(PDOException $e) {
 					echo $e->getMessage();
@@ -143,7 +143,7 @@ class Crawl {
 			foreach($data['batman_adv_interfaces'] as $bat_adv_int) {
 				try {
 					DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_interfaces (router_id, crawl_cycle_id, name, status, crawl_date)
-								 VALUES ('$data[router_id]', '$last_crawl_cycle[id]', '$bat_adv_int[name]', '$bat_adv_int[status]', NOW());");
+								 VALUES ('$data[router_id]', '$actual_crawl_cycle[id]', '$bat_adv_int[name]', '$bat_adv_int[status]', NOW());");
 				}
 				catch(PDOException $e) {
 					echo $e->getMessage();
@@ -155,7 +155,7 @@ class Crawl {
 				foreach($data['batman_adv_originators'] as $bat_adv_orig) {
 					try {
 						DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, nexthop, outgoing_interface, last_seen, crawl_date)
-									 VALUES ('$data[router_id]', '$last_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[nexthop]', '$bat_adv_orig[outgoing_interface]', '$bat_adv_orig[last_seen]', NOW());");
+									 VALUES ('$data[router_id]', '$actual_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[nexthop]', '$bat_adv_orig[outgoing_interface]', '$bat_adv_orig[last_seen]', NOW());");
 					}
 					catch(PDOException $e) {
 						echo $e->getMessage();

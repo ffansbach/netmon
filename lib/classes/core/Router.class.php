@@ -46,7 +46,6 @@
 				$this->setNetworkinterfacelist();
 				$this->setStatusdata();
 				$this->setStatusdataHistory();
-				
 			}
 		}
 		

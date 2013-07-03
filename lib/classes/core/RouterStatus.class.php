@@ -1,6 +1,7 @@
 <?php
 	require_once(ROOT_DIR.'/lib/classes/core/ObjectStatus.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/Eventlist.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/OriginatorStatusList.class.php');
 	
 	class RouterStatus extends ObjectStatus {
 		private $router_id = 0;
@@ -29,6 +30,7 @@
 		private $nodewatcher_version = "";
 		private $fastd_version = "";
 		private $batman_advanced_version = "";
+		private $originator_status_list = null;
 		public $available_statusses = array("online", "offline", "unknown");
 		
 		public function __construct($status_id=false, $crawl_cycle_id=false, $router_id=false,
@@ -171,6 +173,7 @@
 				$this->setNodewatcherVersion($result['nodewatcher_version']);
 				$this->setFastdVersion($result['fastd_version']);
 				$this->setBatmanAdvancedVersion($result['batman_advanced_version']);
+				$this->setOriginatorStatusList();
 				return true;
 			}
 			
@@ -348,6 +351,10 @@
 				$this->batman_advanced_version = trim($batman_advanced_version);
 		}
 		
+		public function setOriginatorStatusList() {
+			$this->originator_status_list = new OriginatorStatusList($this->getRouterId(), $this->getCrawlCycleId());
+		}
+		
 		public function getRouterId() {
 			return $this->router_id;
 		}
@@ -452,6 +459,10 @@
 			return $this->batman_advanced_version;
 		}
 		
+		public function getOriginatorStatusList() {
+			return  $this->originator_status_list;
+		}
+		
 		public function compare($router_status) {
 			if($router_status INSTANCEOF RouterStatus) {
 				$eventlist = new Eventlist();
@@ -522,7 +533,8 @@
 			$domxmlelement->appendChild($domdocument->createElement("nodewatcher_version", $this->getNodewatcherVersion()));
 			$domxmlelement->appendChild($domdocument->createElement("fastd_version", $this->getFastdVersion()));
 			$domxmlelement->appendChild($domdocument->createElement("batman_advanced_version", $this->getBatmanAdvancedVersion()));
-
+			$domxmlelement->appendChild($this->getOriginatorStatusList()->getDomXMLElement($domdocument));
+			
 			return $domxmlelement;
 		}
 	

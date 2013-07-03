@@ -9,16 +9,17 @@
 
 		}
 		
-		protected function setStatusId($status_id) {
+		public function setStatusId($status_id) {
 			if(is_int($status_id))
 				$this->status_id = $status_id;
 		}
 		
-		protected function setCrawlCycleId($crawl_cycle_id=false) {
-			if($crawl_cycle_id==false) {
+		public function setCrawlCycleId($crawl_cycle_id=false) {
+			if($crawl_cycle_id===false) {
 				try {
-					$stmt = DB::getInstance()->prepare("SELECT max(id) as crawl_cycle_id
-														FROM crawl_cycle");
+					$stmt = DB::getInstance()->prepare("SELECT id as crawl_cycle_id
+														FROM crawl_cycle
+														ORDER BY id desc LIMIT 1,1");
 					$stmt->execute();
 					$result = $stmt->fetch(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
@@ -31,11 +32,11 @@
 			}
 		}
 		
-		protected function getStatusId() {
+		public function getStatusId() {
 			return $this->status_id;
 		}
 		
-		protected function getCrawlCycleId() {
+		public function getCrawlCycleId() {
 			return $this->crawl_cycle_id;
 		}
 	}

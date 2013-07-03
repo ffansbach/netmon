@@ -2,7 +2,7 @@
 require_once('runtime.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/service.class.php');
-require_once('lib/classes/core/dns.class.php');
+//require_once('lib/classes/core/dns.class.php');
 require_once('lib/classes/core/user.class.php');
 require_once('lib/classes/core/routersnotassigned.class.php');
 require_once('lib/classes/core/Eventlist.class.php');
@@ -41,7 +41,7 @@ $smarty->assign('servicelist', Service::getServiceList(Permission::isLoggedIn($_
 
 //get infotmation about the dns system
 //$smarty->assign('dns_tld', $GLOBALS['dns_tld']); TODO
-$smarty->assign('dns_hosts', DNS::getHostsByUser($_GET['user_id']));
+//$smarty->assign('dns_hosts', DNS::getHostsByUser($_GET['user_id']));
 
 //load the temlate
 $smarty->display("header.tpl.php");
