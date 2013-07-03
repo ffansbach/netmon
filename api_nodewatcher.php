@@ -10,6 +10,8 @@ require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/chipsets.class.php');
 require_once(ROOT_DIR.'/lib/classes/extern/phpass/PasswordHash.php');
 require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/Networkinterface.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/NetworkinterfaceStatus.class.php');
 
 if($_GET['section']=="get_standart_data") {
 	if ($_GET['authentificationmethod']=='hash') {
@@ -53,6 +55,7 @@ if($_GET['section']=="router_auto_assign") {
 			}
 			catch(PDOException $e) {
 				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 			
 			echo "error;new_not_assigned;;$_GET[router_auto_assign_login_string]";
@@ -64,6 +67,7 @@ if($_GET['section']=="router_auto_assign") {
 			}
 			catch(PDOException $e) {
 				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 			echo "error;updated_not_assigned;;$_GET[router_auto_assign_login_string]";
 		}
@@ -167,14 +171,28 @@ if($_GET['section']=="insert_crawl_data") {
 
 			/**Insert Router Interfaces*/
 			foreach($_POST['int'] as $sendet_interface) {
-				//Make DB Insert
-				try {
-					DB::getInstance()->exec("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, crawl_date, name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_tx, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power, mtu)
-								 VALUES ('$_POST[router_id]', '$actual_crawl_cycle[id]', NOW(), '$sendet_interface[name]', '$sendet_interface[mac_addr]', '$sendet_interface[ipv4_addr]', '$sendet_interface[ipv6_addr]', '$sendet_interface[ipv6_link_local_addr]', '$sendet_interface[traffic_rx]', '$sendet_interface[traffic_tx]', '$sendet_interface[wlan_mode]', '$sendet_interface[wlan_frequency]', '$sendet_interface[wlan_essid]', '$sendet_interface[wlan_bssid]', '$sendet_interface[wlan_tx_power]', '$sendet_interface[mtu]');");
+				/**
+				 * Interface
+				 */
+				//check if interface already exists
+				$networkinterface_test = new Networkinterface(false, (int)$_POST['router_id'], $sendet_interface['name']);
+				//if interface not exist, create new
+				if(!$networkinterface_test->fetch()) {
+					$networkinterface_new = new Networkinterface(false, (int)$_POST['router_id'], $sendet_interface['name']);
+					$networkinterface_id = $networkinterface_new->store();
+				} else {
+					$networkinterface_id = $networkinterface_test->getNetworkinterfaceId();
 				}
-				catch(PDOException $e) {
-					echo $e->getMessage();
-				}
+				
+				//save crawl data for interface
+				$networkinterface_status = new NetworkinterfaceStatus(false, false, (int)$networkinterface_id, (int)$_POST[router_id],
+																	  $sendet_interface['name'], $sendet_interface['mac_addr'], (int)$sendet_interface['mtu'],
+																	  (int)$sendet_interface['traffic_rx'], (int)$traffic_rx_per_second_byte,
+																	  (int)$sendet_interface['traffic_tx'], (int)$traffic_tx_per_second_byte,
+																	  $sendet_interface['wlan_mode'], $sendet_interface['wlan_frequency'], $sendet_interface['wlan_essid'], $sendet_interface['wlan_bssid'],
+																	  (int)$sendet_interface['wlan_tx_power'], false);
+				$networkinterface_status->store();
+				//TODO: Remove networkinterfaces that are not linked to any status, service, habe no ip addresses and are not marked as protected
 				
 				//Update RRD Graph DB
 				$rrd_path_traffic_rx = __DIR__."/rrdtool/databases/router_$_POST[router_id]_interface_$sendet_interface[name]_traffic_rx.rrd";
@@ -225,6 +243,7 @@ if($_GET['section']=="insert_crawl_data") {
 					}
 					catch(PDOException $e) {
 						echo $e->getMessage();
+						echo $e->getTraceAsString();
 					}
 					
 					RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($_POST['router_id'], $bat_adv_orig['originator'], $bat_adv_orig['link_quality'], time());
@@ -241,16 +260,6 @@ if($_GET['section']=="insert_crawl_data") {
 			
 			$average_link_quality=($average_link_quality/$originator_count);
 			RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($_POST['router_id'], "average", $average_link_quality, time());
-			
-
-			/**Client Data */
-			try {
-				DB::getInstance()->exec("INSERT INTO crawl_clients_count (router_id, crawl_cycle_id, crawl_date, client_count)
-							 VALUES ('$_POST[router_id]', '$actual_crawl_cycle[id]', NOW(), '$_POST[client_count]')");
-			}
-			catch(PDOException $e) {
-				echo $e->getMessage();
-			}
 			
 			RrdTool::updateRouterClientCountHistory($_POST['router_id'], $_POST['client_count']);
 		} else {
