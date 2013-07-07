@@ -5,8 +5,8 @@ require_once('lib/classes/core/login.class.php');
 require_once('lib/classes/core/router.class.php');
 require_once('lib/classes/core/routersnotassigned.class.php');
 require_once('lib/classes/core/rrdtool.class.php');
-require_once('lib/classes/core/interfaces.class.php');
-require_once('lib/classes/core/ip.class.php');
+require_once('lib/classes/core/Networkinterface.class.php');
+require_once('lib/classes/core/Ip.class.php');
 require_once('lib/classes/core/crawling.class.php');
 require_once('lib/classes/core/chipsets.class.php');
 require_once('lib/classes/core/Event.class.php');
@@ -49,7 +49,8 @@ if($_GET['section']=="router_auto_assign") {
 			$not_assigned_id = DB::getInstance()->lastInsertId();
 			
 			//Make history
-			$event = new Event(false, 'not_assigned_router', (int)$not_assigned_id, 'new', array('router_auto_assign_login_string'=>$_GET['router_auto_assign_login_string']));
+			$actual_crawl_cycle = Crawling::getActualCrawlCycle();
+			$event = new Event(false, (int)$actual_crawl_cycle['id'], 'not_assigned_router', (int)$not_assigned_id, 'new', array('router_auto_assign_login_string'=>$_GET['router_auto_assign_login_string']));
 			$event->store();
 			
 			echo "error;new_not_assigned;;$_GET[router_auto_assign_login_string]";
@@ -95,12 +96,29 @@ if($_GET['section']=="router_auto_assign") {
 }
 
 if($_GET['section']=="autoadd_ipv6_address") {
-	$ip = Ip::getIpByIp($_GET['ip']);
-	if(empty($ip)) {
-		echo "success,address_does_not_exists,$_GET[ip]";
-		Interfaces::addNewInterface($_GET['router_id'], 11, "configurator_ipv6", "", $_GET['ip']);
+	$networkinterface = new Networkinterface(false, (int)$_GET['router_id'], 'configurator_ipv6');
+	if(!$networkinterface->fetch()) {
+		$interface_id = $networkinterface->store();
+		if(!$interface_id) {
+			echo "error,new_interface_not_stored";
+			die();
+		}
 	} else {
-		echo "error,address_exists,$ip[router_id]";
+		$interface_id = $networkinterface->getNetworkinterfaceId();
+	}
+	
+	$ip = new Ip(false, false, $_GET['ip'], 6);
+	if(!$ip->fetch()) {
+		$ip->setInterfaceId((int)$interface_id);
+		if($ip->store()) {
+			echo "success,address_does_not_exists,".$ip->getIp();
+		} else {
+			echo "error,new_ip_not_stored";
+			die();
+		}
+	} else {
+		echo "error,address_exists,".$ip->getInterfaceId();
+		die();
 	}
 }
 
