@@ -36,7 +36,7 @@ class Main {
 	}*/
 
 	public function getRoutersForCrawl() {
-		return(Router::getRoutersForCrawl());
+		return(Router_old::getRoutersForCrawl());
 	}
 }
 

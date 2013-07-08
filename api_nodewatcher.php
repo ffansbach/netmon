@@ -15,7 +15,7 @@ require_once(ROOT_DIR.'/lib/classes/core/NetworkinterfaceStatus.class.php');
 
 if($_GET['section']=="get_standart_data") {
 	if ($_GET['authentificationmethod']=='hash') {
-		$router_data = Router::getRouterByAutoAssignHash($_GET['router_auto_update_hash']);
+		$router_data = Router_old::getRouterByAutoAssignHash($_GET['router_auto_update_hash']);
 	}
 	
 	if(!empty($router_data)) {
@@ -30,7 +30,7 @@ if($_GET['section']=="test_login_strings") {
 	$exist=false;
 	foreach($login_strings as $login_string) {
 		if(!empty($login_string)) {
-			$router_data = Router::getRouterByAutoAssignLoginString($login_string);
+			$router_data = Router_old::getRouterByAutoAssignLoginString($login_string);
 			if(!empty($router_data)) {
 				$exist=true;
 				echo "success;$login_string";
@@ -44,7 +44,7 @@ if($_GET['section']=="test_login_strings") {
 }
 
 if($_GET['section']=="router_auto_assign") {
-	$router_data = Router::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
+	$router_data = Router_old::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
 	if(empty($router_data)) {
 		$router = RoutersNotAssigned::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
 		if (empty($router)) {
@@ -126,7 +126,7 @@ if($_GET['section']=="get_hostnames_and_mac") {
 /** Nodewatcher Version >18 */
 
 if($_GET['section']=="insert_crawl_data") {
-	$router_data = Router::getRouterInfo($_POST['router_id']);
+	$router_data = Router_old::getRouterInfo($_POST['router_id']);
 	
 	//If is owning user or if root
 	if((($_POST['authentificationmethod']=='hash') AND ($router_data['allow_router_auto_assign']==1 AND !empty($router_data['router_auto_assign_hash']) AND $router_data['router_auto_assign_hash']==$_POST['router_auto_update_hash']))) {

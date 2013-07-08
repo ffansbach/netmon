@@ -18,7 +18,7 @@ if($_GET['section']=="test_login_strings") {
 		$exist=false;
 		foreach($login_strings as $login_string) {
 			if(!empty($login_string)) {
-				$router_data = Router::getRouterByAutoAssignLoginString($login_string);
+				$router_data = Router_old::getRouterByAutoAssignLoginString($login_string);
 				if(!empty($router_data)) {
 					$exist=true;
 					echo "success;$login_string";
@@ -34,7 +34,7 @@ if($_GET['section']=="test_login_strings") {
 }
 
 if($_GET['section']=="router_auto_assign") {
-	$router_data = Router::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
+	$router_data = Router_old::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
 	if(empty($router_data)) {
 		$router = RoutersNotAssigned::getRouterByAutoAssignLoginString($_GET['router_auto_assign_login_string']);
 		if (empty($router)) {
@@ -123,7 +123,7 @@ if($_GET['section']=="autoadd_ipv6_address") {
 }
 
 if($_GET['section']=="get_hostname") {
-	$router_data = Router::getRouterInfo($_GET['router_id']);
+	$router_data = Router_old::getRouterInfo($_GET['router_id']);
 	echo "success,".$router_data['hostname'].",";
 }
 

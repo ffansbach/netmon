@@ -60,7 +60,7 @@ class ServiceEditor {
 		$crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		Service::insertCrawl($service_id, "unknown", "", $crawl_cycle);
 
-		$router_data = Router::getRouterByIpId($router_id);		
+		$router_data = Router_old::getRouterByIpId($router_id);		
 		$message[] = array("Ein Service auf Port $port wurde dem Router $router_data[hostname] hinzugefügt.",1);
 		Message::setMessage($message);
 		

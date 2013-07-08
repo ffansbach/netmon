@@ -6,7 +6,7 @@
   require_once('lib/classes/core/config.class.php');
 
   $smarty->assign('message', Message::getMessage());
-  $router_data = Router::getRouterInfo($_GET['router_id']);
+  $router_data = Router_old::getRouterInfo($_GET['router_id']);
   $smarty->assign('router_data', $router_data);
   $interfaces = Interfaces::getInterfacesByRouterId($_GET['router_id']);
   
@@ -25,7 +25,7 @@
   $smarty->assign('network_connection_ipv4', Config::getConfigValueByName("network_connection_ipv4"));
   $smarty->assign('network_connection_ipv6', Config::getConfigValueByName("network_connection_ipv6"));
 
-  if((Router::areAddsAllowed($_GET['router_id']) AND isThisUserOwner($router_data['user_id'])) OR Permission::checkPermission(64)) {
+  if((Router_old::areAddsAllowed($_GET['router_id']) AND isThisUserOwner($router_data['user_id'])) OR Permission::checkPermission(64)) {
     $smarty->assign('show_add_link', true);
   } else {
     $smarty->assign('show_add_link', false);

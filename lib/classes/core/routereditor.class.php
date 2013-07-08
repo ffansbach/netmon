@@ -11,14 +11,14 @@ require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
-		$check_router_hostname_exist = Router::getRouterByHostname($_POST['hostname']);
+		$check_router_hostname_exist = Router_old::getRouterByHostname($_POST['hostname']);
 		if(!isset($_POST['allow_router_auto_assign'])) {
 			$_POST['allow_router_auto_assign'] = 0;
 			$_POST['router_auto_assign_login_string'] = '';
 		}
 		
 		if($_POST['allow_router_auto_assign'] == '1' AND !empty($_POST['router_auto_assign_login_string'])) {
-			$check_router_auto_assign_login_string = Router::getRouterByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
+			$check_router_auto_assign_login_string = Router_old::getRouterByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
 		}
 		
 		if(empty($_POST['hostname'])) {
@@ -105,9 +105,9 @@ class RouterEditor {
 	}
 
 	public function insertEditRouter() {
-		$check_router_hostname_exist = Router::getRouterByHostname($_POST['hostname']);
-		$check_router_auto_assign_login_string = Router::getRouterByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
-		$router_data = Router::getRouterInfo($_GET['router_id']);
+		$check_router_hostname_exist = Router_old::getRouterByHostname($_POST['hostname']);
+		$check_router_auto_assign_login_string = Router_old::getRouterByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
+		$router_data = Router_old::getRouterInfo($_GET['router_id']);
 
 		if(empty($_POST['hostname'])) {
 			$message[] = array("Bitte geben sie einen Hostname an.", 2);
@@ -190,7 +190,7 @@ class RouterEditor {
 	}
 
 	public function insertDeleteRouter($router_id) {
-		$router_data=Router::getRouterInfo($router_id);
+		$router_data=Router_old::getRouterInfo($router_id);
 		
 		//Delete all Interfaces of the router
 		$interfaces = Interfaces::getInterfacesByRouterId($router_id);

@@ -34,9 +34,9 @@
 		
 		echo "Mark all routers that could not be reached in last crawl cycle as offline\n";
 		//Set all routers in old crawl cycle that have not been crawled yet to status offline
-		$routers = Router::getRouters();
+		$routers = Router_old::getRouters();
 		foreach ($routers as $router) {
-			$crawl = Router::getCrawlRouterByCrawlCycleId($actual_crawl_cycle['id'], $router['id']);
+			$crawl = Router_old::getCrawlRouterByCrawlCycleId($actual_crawl_cycle['id'], $router['id']);
 			if(empty($crawl)) {
 				$router_status = New RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$router['id'], "offline");
 				$router_status->store();
@@ -51,13 +51,13 @@
 		
 		echo "Create graph statistics\n";
 		//Make statistic graphs
-		$online = Router::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'online');
-		$offline = Router::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'offline');
-		$unknown = Router::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'unknown');
+		$online = Router_old::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'online');
+		$offline = Router_old::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'offline');
+		$unknown = Router_old::countRoutersByCrawlCycleIdAndStatus($actual_crawl_cycle['id'], 'unknown');
 		$total = $unknown+$offline+$online;
 		RrdTool::updateNetmonHistoryRouterStatus($online, $offline, $unknown, $total);
 		
-		$client_count = Router::countRoutersByCrawlCycleId($actual_crawl_cycle['id']);
+		$client_count = Router_old::countRoutersByCrawlCycleId($actual_crawl_cycle['id']);
 		RrdTool::updateNetmonClientCount($client_count);
 	} else {
 		echo "There is an crawl cycle running actually. Doing nothing.\n";
@@ -105,7 +105,7 @@
 	
 	//Crawl routers
 	echo "Crawl routers\n";
-	$routers_count = Router::countRouters();
+	$routers_count = Router_old::countRouters();
 	for ($i=0; $i<=$routers_count; $i+=10) {
 		//start an independet crawl process for each 10 routers to crawl routers simultaniously
 		echo "Initializing crawl process to crawl routers ".$i." to ".($i+10)."\n";

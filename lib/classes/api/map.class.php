@@ -49,13 +49,13 @@ class ApiMap {
 		$xw->startElement('name');
 		$xw->writeRaw('create');
 		$xw->endElement();
-		$routers = Router::getRouters();
+		$routers = Router_old::getRouters();
 		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		foreach($routers as $router) {
 			$router_longitude = $router['longitude'];
 			$router_latitude = $router['latitude'];
 
-			$router_crawl = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+			$router_crawl = Router_old::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
 			if(!empty($router_crawl['longitude']) AND !empty($router_crawl['latitude'])) {
 				$router_longitude = $router_crawl['longitude'];
 				$router_latitude = $router_crawl['latitude'];
@@ -67,10 +67,10 @@ class ApiMap {
 
 				if(!empty($originators)) {
 					foreach($originators as $originator) {
-						$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['originator'], $last_endet_crawl_cycle['id']);
+						$neighbour_router = Router_old::getRouterByMacAndCrawlCycleId($originator['originator'], $last_endet_crawl_cycle['id']);
 						$neighbour_router_longitude = $neighbour_router['longitude'];
 						$neighbour_router_latitude = $neighbour_router['latitude'];
-						$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
+						$neighbour_router = Router_old::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
 						if(!empty($neighbour_router['longitude']) AND !empty($neighbour_router['latitude'])) {
 							$neighbour_router_longitude = $neighbour_router['longitude'];
 							$neighbour_router_latitude = $neighbour_router['latitude'];
@@ -119,7 +119,7 @@ class ApiMap {
 		$xw->startElement('name');
 		$xw->writeRaw('create');
 		$xw->endElement();
-		$routers = Router::getRouters();
+		$routers = Router_old::getRouters();
 		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		foreach($routers as $router) {
 			//set own position to the position saved fix in netmon
@@ -127,7 +127,7 @@ class ApiMap {
 			$router_latitude = $router['latitude'];
 
 			//if the router has an position in it's actual crawl data, then prefer this position
-			$router_crawl = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
+			$router_crawl = Router_old::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $router['id']);
 			if(!empty($router_crawl['longitude']) AND !empty($router_crawl['latitude'])) {
 				$router_longitude = $router_crawl['longitude'];
 				$router_latitude = $router_crawl['latitude'];
@@ -142,10 +142,10 @@ class ApiMap {
 
 				if(!empty($originators)) {
 					foreach($originators as $originator) {
-						$neighbour_router = Router::getRouterByMacAndCrawlCycleId($originator['nexthop'], $last_endet_crawl_cycle['id']);
+						$neighbour_router = Router_old::getRouterByMacAndCrawlCycleId($originator['nexthop'], $last_endet_crawl_cycle['id']);
 						$neighbour_router_longitude = $neighbour_router['longitude'];
 						$neighbour_router_latitude = $neighbour_router['latitude'];
-						$neighbour_router = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
+						$neighbour_router = Router_old::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $neighbour_router['router_id']);
 						if(!empty($neighbour_router['longitude']) AND !empty($neighbour_router['latitude'])) {
 							$neighbour_router_longitude = $neighbour_router['longitude'];
 							$neighbour_router_latitude = $neighbour_router['latitude'];
@@ -347,10 +347,10 @@ class ApiMap {
 					$xw->endElement();
 
 					$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-					$crawl_routers = Router::getCrawlRoutersByCrawlCycleId($last_endet_crawl_cycle['id']);
+					$crawl_routers = Router_old::getCrawlRoutersByCrawlCycleId($last_endet_crawl_cycle['id']);
 					foreach($crawl_routers as $crawl_router) {
-						$router_data = Router::getRouterInfo($crawl_router['router_id']);
-						$add_data = Router::getAddData($crawl_router['router_id']);
+						$router_data = Router_old::getRouterInfo($crawl_router['router_id']);
+						$add_data = Router_old::getAddData($crawl_router['router_id']);
 
 						$crawl_interfaces = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $crawl_router['router_id']);
 						$row['traffic'] = 0;
@@ -537,9 +537,9 @@ class ApiMap {
 					$xw->endElement();
 
 					$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-					$crawl_routers = Router::getCrawlRoutersByCrawlCycleId($last_endet_crawl_cycle['id']);
+					$crawl_routers = Router_old::getCrawlRoutersByCrawlCycleId($last_endet_crawl_cycle['id']);
 					foreach($crawl_routers as $crawl_router) {
-						$router_data = Router::getRouterInfo($crawl_router['router_id']);
+						$router_data = Router_old::getRouterInfo($crawl_router['router_id']);
 
 						$crawl_interfaces = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $crawl_router['router_id']);
 						$row['traffic'] = 0;
@@ -722,9 +722,9 @@ else
 					$xw->endElement();
 
 					$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-					$crawl_routers = Router::getCrawlRoutersByCrawlCycleId($last_endet_crawl_cycle['id']);
+					$crawl_routers = Router_old::getCrawlRoutersByCrawlCycleId($last_endet_crawl_cycle['id']);
 					foreach($crawl_routers as $crawl_router) {
-						$router_data = Router::getRouterInfo($crawl_router['router_id']);
+						$router_data = Router_old::getRouterInfo($crawl_router['router_id']);
 
 						$crawl_interfaces = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $crawl_router['router_id']);
 						$row['traffic'] = 0;

@@ -11,7 +11,7 @@
 	if(!isset($_GET['value']))
 	  $_GET['value'] = "";
 
-	$routerlist = Router::getRouterList($_GET['where'], $_GET['operator'], $_GET['value']);
+	$routerlist = Router_old::getRouterList($_GET['where'], $_GET['operator'], $_GET['value']);
 	$smarty->assign('routerlist', $routerlist);
 
 	$smarty->display("header.tpl.php");

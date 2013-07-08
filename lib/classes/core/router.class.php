@@ -12,7 +12,7 @@ require_once(ROOT_DIR.'/lib/classes/extern/xmpphp/XMPP.php');
  *
  * @package	Netmon
  */
-class Router {
+class Router_old {
 	public function getRouterInfo($router_id) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date, routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string, routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude, routers.chipset_id,
@@ -208,8 +208,8 @@ class Router {
 			} 
 			$row['short_chipset_name'] = $shorttext;
 
-			$row['actual_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
-			$row['router_reliability'] = Router::getRouterReliability($row['router_id'], 500);
+			$row['actual_crawl_data'] = Router_old::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
+			$row['router_reliability'] = Router_old::getRouterReliability($row['router_id'], 500);
 			$row['originators_count'] = count(BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']));
 			$row['interfaces'] = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $row['router_id']);
 			$row['traffic'] = 0;
@@ -266,8 +266,8 @@ class Router {
 			} 
 			$row['short_chipset_name'] = $shorttext;
 			
-			$row['actual_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
-			$row['router_reliability'] = Router::getRouterReliability($row['router_id'], 500);
+			$row['actual_crawl_data'] = Router_old::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
+			$row['router_reliability'] = Router_old::getRouterReliability($row['router_id'], 500);
 			$row['originators_count'] = count(BatmanAdvanced::getCrawlBatmanAdvOriginatorsByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']));
 			$row['interfaces'] = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $row['router_id']);
 			$row['traffic'] = 0;
@@ -380,7 +380,7 @@ class Router {
 	public function getRouterReliability($router_id, $crawl_cycles) {
 		$status = array();
 		$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-		$crawl_history = Router::getCrawlRouterHistoryExceptActualCrawlCycle($router_id, $actual_crawl_cycle['id'], $crawl_cycles);
+		$crawl_history = Router_old::getCrawlRouterHistoryExceptActualCrawlCycle($router_id, $actual_crawl_cycle['id'], $crawl_cycles);
 		if(!empty($crawl_history)) {
 			$count = count($crawl_history);
 			$status['online_absolut']=0;

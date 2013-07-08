@@ -7,7 +7,7 @@
 	require_once('lib/classes/core/router.class.php');
 	
 	if ($_GET['section'] == "add") {
-		$router_data = Router::getRouterInfo($_GET['router_id']);
+		$router_data = Router_old::getRouterInfo($_GET['router_id']);
 		//Moderator and owning user can add ip to interface
 		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
@@ -26,7 +26,7 @@
 	}
 
 	if ($_GET['section'] == "insert") {
-		$router_data = Router::getRouterInfo($_GET['router_id']);
+		$router_data = Router_old::getRouterInfo($_GET['router_id']);
 		//Moderator and owning user can add ip to interface
 		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
@@ -48,7 +48,7 @@
 	}
 
 	if ($_GET['section'] == "delete") {
-		$router_data = Router::getRouterByIpId($_GET['ip_id']);
+		$router_data = Router_old::getRouterByIpId($_GET['ip_id']);
 		//Moderator and owning user can add ip to interface
 		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());

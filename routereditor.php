@@ -44,7 +44,7 @@
 	}
 
 	if ($_GET['section'] == "edit") {
-		$router_data = Router::getRouterInfo($_GET['router_id']);
+		$router_data = Router_old::getRouterInfo($_GET['router_id']);
 		$smarty->assign('router_data', $router_data);
 		//Moderator and owning user can edit router
 		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
@@ -70,7 +70,7 @@
 
 	if ($_GET['section'] == "insert_edit") {
 		//Moderator and owning user can edit router
-		$router_data = Router::getRouterInfo($_GET['router_id']);
+		$router_data = Router_old::getRouterInfo($_GET['router_id']);
 		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$insert_result = RouterEditor::insertEditRouter();
 			if($insert_result) {
@@ -105,7 +105,7 @@
 	}
 
 	if ($_GET['section'] == "insert_reset_auto_assign_hash") {
-		$router_data = Router::getRouterInfo($_GET['router_id']);
+		$router_data = Router_old::getRouterInfo($_GET['router_id']);
 		//Admin and owning user can reset hash
 		if (Permission::checkIfUserIsOwnerOrPermitted(32, $router_data['user_id'])) {
 			$insert_result = RouterEditor::resetRouterAutoAssignHash($_GET['router_id']);
@@ -119,7 +119,7 @@
 	}
 
 	if ($_GET['section'] == "insert_delete") {
-		$router_data = Router::getRouterInfo($_GET['router_id']);
+		$router_data = Router_old::getRouterInfo($_GET['router_id']);
 		//Root and owning user can delete router
 		if (Permission::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
 			if($_POST['really_delete']==1) {

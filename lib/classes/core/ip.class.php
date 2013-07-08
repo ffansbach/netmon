@@ -68,7 +68,7 @@ class Ip {
 			Message::setMessage($message);
 			return true;
 		} else {
-			$router_data = Router::getRouterByInterfaceId($interface_id);
+			$router_data = Router_old::getRouterByInterfaceId($interface_id);
 			$message[] = array("Die IPv6 Adresse $ipv6_addr konnte nicht hinzugefügt werden, da sie bereits einem Interface auf dem Router $router_data[hostname] zugewiesen ist.", 2);
 			Message::setMessage($message);
 			return false;

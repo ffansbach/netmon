@@ -29,7 +29,7 @@ if(!empty($last_ended_crawl_cycle)) {
 		$router_chipsets[$key]['chipset_id'] = $chipset['id'];
 		$router_chipsets[$key]['chipset_name'] = $chipset['name'];
 		$router_chipsets[$key]['hardware_name'] = $chipset['hardware_name'];
-		$router_chipsets[$key]['count'] = Router::countRoutersByChipsetId($chipset['id']);;
+		$router_chipsets[$key]['count'] = Router_old::countRoutersByChipsetId($chipset['id']);;
 	}
 	
 	$smarty->assign('router_chipsets', $router_chipsets);
@@ -150,16 +150,16 @@ if(!empty($last_ended_crawl_cycle)) {
 	$smarty->assign('nodewatcher_versions_count', $nodewatcher_versions_count);
 	
 	 //Count router statuses
-	$online = Router::countRoutersByCrawlCycleIdAndStatus($last_ended_crawl_cycle['id'], 'online');
-	$offline = Router::countRoutersByCrawlCycleIdAndStatus($last_ended_crawl_cycle['id'], 'offline');
-	$unknown = Router::countRoutersByCrawlCycleIdAndStatus($last_ended_crawl_cycle['id'], 'unknown');
+	$online = Router_old::countRoutersByCrawlCycleIdAndStatus($last_ended_crawl_cycle['id'], 'online');
+	$offline = Router_old::countRoutersByCrawlCycleIdAndStatus($last_ended_crawl_cycle['id'], 'offline');
+	$unknown = Router_old::countRoutersByCrawlCycleIdAndStatus($last_ended_crawl_cycle['id'], 'unknown');
 	$total = $unknown+$offline+$online;
 	
 	$smarty->assign('router_status_online', $online);
 	$smarty->assign('router_status_offline', $offline);
 	$smarty->assign('router_status_unknown', $unknown);
 	$smarty->assign('router_status_total', $total);
-	$smarty->assign('clients_connected', Router::countRoutersByCrawlCycleId($last_ended_crawl_cycle['id']));
+	$smarty->assign('clients_connected', Router_old::countRoutersByCrawlCycleId($last_ended_crawl_cycle['id']));
 }
 
 /** Display templates **/

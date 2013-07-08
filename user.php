@@ -36,7 +36,7 @@ $evenlist->sort('create_date', 'desc');
 $smarty->assign('eventlist', $evenlist->getEventlist());
 
 $smarty->assign('routersnotassigned_list', RoutersNotAssigned::getRouters());
-$smarty->assign('routerlist', Router::getRouterListByUserId($_GET['user_id']));
+$smarty->assign('routerlist', Router_old::getRouterListByUserId($_GET['user_id']));
 $smarty->assign('servicelist', Service::getServiceList(Permission::isLoggedIn($_SESSION['user_id']) ? 'all' : 'public', $_GET['user_id']));
 
 //get infotmation about the dns system

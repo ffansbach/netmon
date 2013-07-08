@@ -48,9 +48,9 @@ class Search {
 		foreach($rows as $key=>$row) {
 			$search_result_crawled_interfaces[$key] = $row;
 			$search_result_crawled_interfaces[$key]['object_type'] = 'crawled_interface';
-			$search_result_crawled_interfaces[$key]['router_data'] = Router::getRouterInfo($row['router_id']);
+			$search_result_crawled_interfaces[$key]['router_data'] = Router_old::getRouterInfo($row['router_id']);
 			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-			$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
+			$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router_old::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 		}
 		
 		return $search_result_crawled_interfaces;
@@ -72,9 +72,9 @@ class Search {
 		foreach($rows as $key=>$row) {
 			$search_result_crawled_interfaces[$key] = $row;
 			$search_result_crawled_interfaces[$key]['object_type'] = 'crawled_interface';
-			$search_result_crawled_interfaces[$key]['router_data'] = Router::getRouterInfo($row['router_id']);
+			$search_result_crawled_interfaces[$key]['router_data'] = Router_old::getRouterInfo($row['router_id']);
 			$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-			$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
+			$search_result_crawled_interfaces[$key]['router_crawl_data'] = Router_old::getCrawlRouterByCrawlCycleId($last_endet_crawl_cycle['id'], $row['router_id']);
 		}
 
 		return $search_result_crawled_interfaces;

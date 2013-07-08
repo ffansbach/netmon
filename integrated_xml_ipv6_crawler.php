@@ -43,7 +43,7 @@ class IntegratedXmlIPv6Crawler {
 	public function crawl($from, $to) {
 		$network_connection_ipv6_interface = Config::getConfigValueByName("network_connection_ipv6_interface");
 	
-		$routers = Router::getRoutersForCrawl($from, $to);
+		$routers = Router_old::getRoutersForCrawl($from, $to);
 		
 		foreach($routers as $router) {
 			if(!empty($router['interfaces'])) {

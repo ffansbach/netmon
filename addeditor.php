@@ -29,7 +29,7 @@
 
 	if(isset($_GET['section']) AND $_GET['section']=='allow_adds') {
 		if($_POST['adds_allowed']==1) {
-			$add_data = Router::getAddData($_GET['router_id']);
+			$add_data = Router_old::getAddData($_GET['router_id']);
 			if(!empty($add_data)) {
 				$result = DB::getInstance()->exec("UPDATE router_adds SET
 										adds_allowed = '1'
@@ -41,7 +41,7 @@
 			$message[] = array("Werbung wurde erlaubt.", 1);
 			Message::setMessage($message);
 		} else {
-			$add_data = Router::getAddData($_GET['router_id']);
+			$add_data = Router_old::getAddData($_GET['router_id']);
 			if(!empty($add_data)) {
 				$result = DB::getInstance()->exec("UPDATE router_adds SET
 										adds_allowed = '0'
@@ -56,7 +56,7 @@
 
 	$smarty->assign('message', Message::getMessage());
 
-	$smarty->assign('add_data', Router::getAddData($_GET['router_id']));
+	$smarty->assign('add_data', Router_old::getAddData($_GET['router_id']));
 
 	$smarty->assign('add_small_exists', file_exists("./data/adds/".$_GET['router_id']."_add_small.jpg"));
 	$smarty->assign('add_big_exists', file_exists("./data/adds/".$_GET['router_id']."_add_big.jpg"));

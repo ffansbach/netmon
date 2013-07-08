@@ -24,10 +24,10 @@ if(!isset($_GET['crawl_cycle_id'])) {
 $actual_crawl_cycle = Crawling::getActualCrawlCycle();
 
 //Before next navigation
-$online_crawl_before = Router::getSmallerOnlineCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
+$online_crawl_before = Router_old::getSmallerOnlineCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 $smarty->assign('online_crawl_before', $online_crawl_before);
 
-$online_crawl_next = Router::getBiggerOnlineCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
+$online_crawl_next = Router_old::getBiggerOnlineCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 if ($online_crawl_next['crawl_cycle_id']!=$actual_crawl_cycle['id']) {
 	$smarty->assign('online_crawl_next', $online_crawl_next);
 }
@@ -49,7 +49,7 @@ $history_end = strtotime($last_ended_crawl_cycle['crawl_date']);
 /** Get and assign global messages **/
 $smarty->assign('message', Message::getMessage());
 
-$router_reliability = Router::getRouterReliability($_GET['router_id'], 500);
+$router_reliability = Router_old::getRouterReliability($_GET['router_id'], 500);
 $smarty->assign('router_reliability', $router_reliability);
 
 /** Get Router Events **/
@@ -59,7 +59,7 @@ $smarty->assign('eventlist', $eventlist->getEventlist());
 
 /** Get and assign Router Informations **/
 //Router Status
-$router_data = Router::getRouterInfo($_GET['router_id']);
+$router_data = Router_old::getRouterInfo($_GET['router_id']);
 $smarty->assign('router_data', $router_data);
 $smarty->assign('crawl_cycle', $GLOBALS['crawl_cycle']);
 
@@ -71,10 +71,10 @@ $router_olsr_interfaces = Olsr::getOlsrInterfacesByRouterId($_GET['router_id']);
 $smarty->assign('router_olsr_interfaces', $router_olsr_interfaces);
 
 /** Get status status information and history of router **/
-$router_last_crawl = Router::getCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
+$router_last_crawl = Router_old::getCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 $smarty->assign('router_last_crawl', $router_last_crawl);
 
-$router_crawl_history = Router::getCrawlRouterHistoryExceptActualCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id'], (60*24)/10);
+$router_crawl_history = Router_old::getCrawlRouterHistoryExceptActualCrawlCycle($_GET['router_id'], $actual_crawl_cycle['id'], (60*24)/10);
 $smarty->assign('router_crawl_history', $router_crawl_history);
 
 /** Get and assign actual B.A.T.M.A.N advanced status **/
@@ -178,11 +178,11 @@ $smarty->display("footer.tpl.php");
 	$smarty->assign('community_essid', Config::getConfigValueByName('community_essid'));
 	
 	$last_ended_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-	$router_last_crawl = Router::getCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
+	$router_last_crawl = Router_old::getCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 	$smarty->assign('router_status', $router_last_crawl);
 	
 	
-	$router_data = Router::getRouterInfo($_GET['router_id']);
+	$router_data = Router_old::getRouterInfo($_GET['router_id']);
 	$smarty->assign('router_data', $router_data);
 	
 	$smarty->display("router_status_embed.tpl.php");

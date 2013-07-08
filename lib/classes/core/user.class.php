@@ -200,7 +200,7 @@ class User {
 		$user_data = User::getUserByID($user_id);
 	
 		//Delete routers (and with the routers you delete interfaces, ips and services of the user)
-		foreach(Router::getRouterListByUserId($user_id) as $router) {
+		foreach(Router_old::getRouterListByUserId($user_id) as $router) {
 			RouterEditor::insertDeleteRouter($router['router_id']);
 		}
 		
