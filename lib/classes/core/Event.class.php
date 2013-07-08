@@ -14,7 +14,7 @@
 			$this->setEventId($event_id);
 			$this->setCrawlCycleId($crawl_cycle_id);
 			$this->setObject($object);
-			$this->setObjectId((int)$object_id);
+			$this->setObjectId($object_id);
 			$this->setAction($action);
 			$this->setData($data);
 			$this->setCreateDate($create_date);
@@ -100,10 +100,21 @@
 		}
 		
 		public function setCrawlCycleId($crawl_cycle_id=false) {
-			if($crawl_cycle_id == false)
-				$this->crawl_cycle_id = 1; //TODO: set current crawl_cycle_id
-			else if(is_int($crawl_cycle_id))
+			if($crawl_cycle_id===false) {
+				try {
+					$stmt = DB::getInstance()->prepare("SELECT id as crawl_cycle_id
+														FROM crawl_cycle
+														ORDER BY id desc LIMIT 1,1");
+					$stmt->execute();
+					$result = $stmt->fetch(PDO::FETCH_ASSOC);
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+				$this->crawl_cycle_id = $result['crawl_cycle_id'];
+			} elseif(is_int($crawl_cycle_id)) {
 				$this->crawl_cycle_id = $crawl_cycle_id;
+			}
 		}
 		
 		public function setObject($object) {

@@ -56,7 +56,8 @@
 			<h2 style="font-size: 9.5pt;">Links</h2>
 			<p style="font-size: 8pt;">
 				<a href="./router_status.php?router_id={$router_data.router_id}" target="_blank">Vollständigen Status ansehen</a><br>
-				<a href="./map.php" target="_blank">Alle Freifunkrouter ansehen</a>
+				<a href="./map.php" target="_blank">Alle Freifunkrouter ansehen</a><br>
+				<a href="http://blog.freifunk-ol.de/2013/06/30/freifunkrouter-in-sidebar-der-eigenen-website-einbinden/" target="_blank">Eigenen Router in Website einbetten</a>
 			</p>
 			</div>
 		</div>

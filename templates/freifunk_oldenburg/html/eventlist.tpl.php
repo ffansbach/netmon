@@ -51,8 +51,7 @@
 				{/if}
 				{if $event->getObject() == 'not_assigned_router'}
 					{assign var="data" value=$event->getData()}
-					
-					{$data.router_auto_assign_login_string}
+					{$data.router_auto_assign_login_string} 
 					{if $event->getAction() == 'new'}
 						 erscheint in der <a href="./routers_trying_to_assign.php">Liste der neuen, nicht zugewiesenen Router</a>
 					{/if}
