@@ -15,7 +15,7 @@ $smarty->assign('permitted', Permission::checkIfUserIsOwnerOrPermitted(64, $_GET
 $smarty->assign('is_logged_in', Permission::isLoggedIn($_SESSION['user_id']));
 
 //get main page data
-$smarty->assign('user', User::getUserByID($_GET['user_id']));
+$smarty->assign('user', User_old::getUserByID($_GET['user_id']));
 
 try {
 	$stmt = DB::getInstance()->prepare("SELECT  * FROM routers WHERE user_id=?");

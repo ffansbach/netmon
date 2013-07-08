@@ -175,7 +175,7 @@
 			$password = $remember_me_cookie[1];
 			
 			//check if the user exists
-			$user_data = User::getUserById($user_id);
+			$user_data = User_old::getUserById($user_id);
 			if(!empty($user_data)) {
 				//get the remember_mes of the user from the database
 				$user_remember_me_list = new UserRememberMeList($user_id, "create_date", "desc");

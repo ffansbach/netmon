@@ -14,7 +14,7 @@ if (empty($_POST['email'])) {
 	$smarty->display("send_new_password.tpl.php");
 	$smarty->display("footer.tpl.php");
 } else {
-	$user_data = User::getUserByEmail($_POST['email']);
+	$user_data = User_old::getUserByEmail($_POST['email']);
 	if ($user_data) {
 		$new_password = Helper::randomPassword(10);
 		

@@ -6,7 +6,7 @@
 	
 	if(empty($_GET['section'])) {
 		if (Permission::checkPermission(4)) {
-			$smarty->assign('userlist', User::getUserList());
+			$smarty->assign('userlist', User_old::getUserList());
 		
 			$smarty->display("header.tpl.php");
 			$smarty->display("userlist.tpl.php");
@@ -20,7 +20,7 @@
 		if (Permission::checkPermission(4)) {
 			header("Content-Type: text/plain");
 			header("Content-Disposition: attachment; filename=netmon_userlist.vcf");
-			echo User::exportUserListAsvCard30();
+			echo User_old::exportUserListAsvCard30();
 		} else {
 			$message[] = array("Nur eingeloggte Benutzer dürfen die Beutzerliste exportieren!", 2);
 			Message::setMessage($message);

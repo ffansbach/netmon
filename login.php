@@ -17,7 +17,7 @@ if ($_GET['section']=="login") {
 } elseif ($_GET['section']=="login_send") {
 	//check if login is successfull and if not, go back to loginpage with errormessage
 	if(isset($_POST['nickname']) AND isset($_POST['password'])) {
-		$user_data = User::getUserByNickname($_POST['nickname']);
+		$user_data = User_old::getUserByNickname($_POST['nickname']);
 		$phpass = new PasswordHash(8, false);
 		if(empty($user_data) OR !$phpass->CheckPassword($_POST['password'], $user_data['password'])) {
 			$messages[] = array("Passwort oder Benutzername stimmen nicht.", 2);
@@ -36,7 +36,7 @@ if ($_GET['section']=="login") {
 				if ($_GET['openid_mode'] == "id_res") {
 					$consumer = new Zend_OpenId_Consumer();
 					if ($consumer->verify($_GET, $id)) {
-						$user_data = User::getUserByOpenID($id);
+						$user_data = User_old::getUserByOpenID($id);
 						if(empty($user_data)) {
 							$messages[] = array("Mit dieser Open-ID ist kein gültiger Benutzer verknüpft.", 2);
 							Message::setMessage($messages);

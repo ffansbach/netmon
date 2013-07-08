@@ -49,7 +49,7 @@ class Register {
 		//check weatcher the given data is valid
 		if(empty($nickname)) {
 			$message[] = array("Du musst einen Nickname angeben.",2);
-		} elseif(!User::isUniqueNickname($nickname)) {
+		} elseif(!User_old::isUniqueNickname($nickname)) {
 			$message[] = array("Der ausgewählte Nickname <i>$nickname</i> existiert bereits.",2);
 		} elseif(empty($password)) {
 			$message[] = array("Du musst ein Passwort angeben.",2);
@@ -59,11 +59,11 @@ class Register {
 			$message[] = array("Dein Passwort darf nicht länger als 72 Zeichen sein.",2);
 		} elseif(empty($email)) {
 			$message[] = array("Du musst eine Emailadresse angeben.",2);
-		} elseif(!User::isUniqueEmail($email)) {
+		} elseif(!User_old::isUniqueEmail($email)) {
 			$message[] = array("Es existiert bereits ein Benutzer mit der ausgewhälten Emailadresse <i>$email</i>.",2);
 		} elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			$message[] = array("Die ausgewählte Emailadresse ".$email." ist keine gültige Emailadresse.",2);
-		} elseif(!empty($openid) AND !User::isUniqueOpenID($openid)) {
+		} elseif(!empty($openid) AND !User_old::isUniqueOpenID($openid)) {
 			$message[] = array("Die ausgewählte OpenID <i>".$openid."</i> ist bereits mit einem Benutzer verknüpft.",2);
 		} elseif($GLOBALS['enable_network_policy']=="true" AND !$agb) {
 			$message[] = array("Du musst die Netzwerkpolicy akzeptieren.",2);
@@ -121,7 +121,7 @@ class Register {
 				$message[] = array("Die Email mit dem Link zum aktivieren des Nutzerkontos konnte nicht an ".$email." verschickt werden.", 2);
 				$message[] = array("Der neu angelegte User ".$nickname." wird wieder gelöscht.", 2);
 				Message::setMessage($message);
-				User::userDelete($user_id);
+				User_old::userDelete($user_id);
 				return false;
 			}
 		}
@@ -224,7 +224,7 @@ class Register {
 	* @return boolean true if the password was changed successfull
 	*/
 	public function setNewPassword($new_password_hash, $old_password_hash, $user_id) {
-		$user_data = User::getUserByID($user_id);
+		$user_data = User_old::getUserByID($user_id);
 		if($old_password_hash==$user_data['password']) {
 			$stmt = DB::getInstance()->prepare("UPDATE users SET password = ? WHERE id = ?");
 			$stmt->execute(array($new_password_hash, $user_id));

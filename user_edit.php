@@ -11,9 +11,9 @@ if ($_GET['section'] == "edit") {
 	if (!Permission::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
 		Permission::denyAccess();
 
-	$smarty->assign('user', User::getUserByID($_GET['user_id']));	
+	$smarty->assign('user', User_old::getUserByID($_GET['user_id']));	
 	$smarty->assign('is_root', Permission::checkPermission(64, $_SESSION['user_id']));
-	$smarty->assign('permissions', User::getRolesByUserID($_GET['user_id']));
+	$smarty->assign('permissions', User_old::getRolesByUserID($_GET['user_id']));
 	
 	$smarty->display("header.tpl.php");
 	$smarty->display("user_edit.tpl.php");
@@ -22,7 +22,7 @@ if ($_GET['section'] == "edit") {
 	if (!Permission::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
 		Permission::denyAccess();
 	
-	if (User::userInsertEdit($_GET['user_id'], $_POST['changepassword'], $_POST['permission'], $_POST['oldpassword'], $_POST['newpassword'],
+	if (User_old::userInsertEdit($_GET['user_id'], $_POST['changepassword'], $_POST['permission'], $_POST['oldpassword'], $_POST['newpassword'],
 				 $_POST['newpasswordchk'], $_POST['openid'], $_POST['vorname'], $_POST['nachname'], $_POST['strasse'],
 				 $_POST['plz'], $_POST['ort'], $_POST['telefon'], $_POST['email'], $_POST['jabber'],
 				 $_POST['icq'], $_POST['website'], $_POST['about'], $_POST['notification_method'])) {
@@ -35,7 +35,7 @@ if ($_GET['section'] == "edit") {
 		Permission::denyAccess();
 	
 	if ($_POST['delete'] == "true") {
-		User::userDelete($_GET['user_id']);
+		User_old::userDelete($_GET['user_id']);
 		header('Location: routerlist.php');
 	} else {
 		$message[] = array("Sie müssen das Häckchen bei <i>Ja</i> setzen um den Benutzer zu löschen.", 2);

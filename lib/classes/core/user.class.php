@@ -33,7 +33,7 @@ require_once(ROOT_DIR.'/lib/classes/extern/phpass/PasswordHash.php');
  *
  * @package	Netmon
  */
-class User {
+class User_old {
 	/**
 	* Insert the changes on a user into the database
 	* @author  Clemens John <clemens-john@gmx.de>
@@ -61,7 +61,7 @@ class User {
 	public function userInsertEdit($user_id, $changepassword, $permission, $oldpassword, $newpassword, $newpasswordchk,
 				       $openid, $vorname, $nachname, $strasse, $plz, $ort, $telefon, $email, $jabber,
 				       $icq, $website, $about, $notification_method) {
-		$user_data = User::getUserByID($user_id);
+		$user_data = User_old::getUserByID($user_id);
 	
 		$message = array();
 		//check weatcher the given data is valid
@@ -74,13 +74,13 @@ class User {
 			$message[] = array("Deine beiden neuen Passwörter stimmen nicht überein.",2);
 		} elseif(empty($email)) {
 			$message[] = array("Du musst eine Emailadresse angeben.",2);
-		} elseif(!User::isUniqueEmail($email, $user_id)) {
+		} elseif(!User_old::isUniqueEmail($email, $user_id)) {
 			$message[] = array("Es existiert bereits ein Benutzer mit der ausgewhälten Emailadresse <i>$email</i>.",2);
 		} elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			$message[] = array("Die ausgewählte Emailadresse ".$email." ist keine gültige Emailadresse.",2);
 		} elseif(!empty($jabber) AND !filter_var($jabber, FILTER_VALIDATE_EMAIL)) {
 			$message[] = array("Die ausgewählte Jabberadresse ".$jabber." ist keine gültige Jabberadresse.",2);
-		} elseif(!empty($openid) AND !User::isUniqueOpenID($openid, $user_id)) {
+		} elseif(!empty($openid) AND !User_old::isUniqueOpenID($openid, $user_id)) {
 			$message[] = array("Die ausgewählte OpenID <i>".$openid."</i> ist bereits mit einem Benutzer verknüpft.",2);
 		}
 		
@@ -197,7 +197,7 @@ class User {
 	* @param $user_id the id of the user to delete
 	*/
 	public function userDelete($user_id) {
-		$user_data = User::getUserByID($user_id);
+		$user_data = User_old::getUserByID($user_id);
 	
 		//Delete routers (and with the routers you delete interfaces, ips and services of the user)
 		foreach(Router_old::getRouterListByUserId($user_id) as $router) {
@@ -243,7 +243,7 @@ class User {
 			echo $e->getMessage();
 		}
 		if(!empty($rows))
-			$rows['roles'] = User::getRolesByUserID($user_id);
+			$rows['roles'] = User_old::getRolesByUserID($user_id);
 		return $rows;
 	}
 	
@@ -262,7 +262,7 @@ class User {
 			echo $e->getMessage();
 		};
 		if(!empty($rows))
-			$rows['roles'] = User::getRolesByUserID($rows['id']);
+			$rows['roles'] = User_old::getRolesByUserID($rows['id']);
 		return $rows;
 	}
 
@@ -285,7 +285,7 @@ class User {
 		  echo $e->getMessage();
 		};
 		if(!empty($rows))
-			$rows['roles'] = User::getRolesByUserID($rows['id']);
+			$rows['roles'] = User_old::getRolesByUserID($rows['id']);
 		return $rows;
 	}
 	
@@ -304,7 +304,7 @@ class User {
 		  echo $e->getMessage();
 		};
 		if(!empty($rows))
-			$rows['roles'] = User::getRolesByUserID($rows['id']);
+			$rows['roles'] = User_old::getRolesByUserID($rows['id']);
 		return $rows;
 	}
 	
@@ -366,13 +366,13 @@ class User {
 			}
 			
 			$userlist[$key]['routercount'] = $rows['routercount'];
-			$userlist[$key]['roles'] = User::getRolesByUserID($user['id']);
+			$userlist[$key]['roles'] = User_old::getRolesByUserID($user['id']);
 		}
 		return $userlist;
 	}
 
 	public function exportUserListAsvCard30() {
-		$userlist = User::getUserList();
+		$userlist = User_old::getUserList();
 		foreach($userlist as $user) {
 			$vcardlist .= "BEGIN:VCARD\n";
 			$vcardlist .= "NICKNAME:$user[nickname]\n";

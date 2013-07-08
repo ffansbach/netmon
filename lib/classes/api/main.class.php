@@ -8,7 +8,7 @@ require_once('lib/classes/core/user.class.php');
 
 class Main {
 	public function public_user_info($user_id) {
-		return(User::getPlublicUserInfoByID($user_id));
+		return(User_old::getPlublicUserInfoByID($user_id));
 	}
 
 	public function subnet_info($subnet_id) {

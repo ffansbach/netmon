@@ -12,7 +12,7 @@
 		$smarty->display("resend_activation_mail.tpl.php");
 		$smarty->display("footer.tpl.php");
 	} else {
-		$user = User::getUserByEmail($_POST['email']);
+		$user = User_old::getUserByEmail($_POST['email']);
 		if ($user) {
 			if ($user['activated']!="0") {
 				if(empty($user['openid'])) {

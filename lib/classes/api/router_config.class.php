@@ -17,7 +17,7 @@ class RouterConfig {
 	}
 
 	public function getPlublicUserInfoByID($ip){
-		return(User::getPlublicUserInfoByID($ip));
+		return(User_old::getPlublicUserInfoByID($ip));
 	}
 
 	public function getCommunityInfo() {
