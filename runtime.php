@@ -102,17 +102,7 @@
 	require_once(ROOT_DIR.'/lib/classes/extern/Zend/Loader/Autoloader.php');
 	Zend_Loader_Autoloader::getInstance();
 
-	if ($GLOBALS['installed']) {	
-		//JABBER
-		$GLOBALS['jabber_server'] = Config::getConfigValueByName('jabber_server');
-		$GLOBALS['jabber_username'] = Config::getConfigValueByName('jabber_username');
-		$GLOBALS['jabber_password'] = Config::getConfigValueByName('jabber_password');
-		
-		//TWITTER
-		$GLOBALS['twitter_consumer_key'] = Config::getConfigValueByName('twitter_consumer_key');
-		$GLOBALS['twitter_consumer_secret'] = Config::getConfigValueByName('twitter_consumer_secret');
-		$GLOBALS['twitter_username'] = Config::getConfigValueByName('twitter_username');
-		
+	if ($GLOBALS['installed']) {
 		//MAIL
 		$GLOBALS['mail_sending_type'] = Config::getConfigValueByName('mail_sending_type');
 		$GLOBALS['mail_sender_adress'] = Config::getConfigValueByName('mail_sender_adress');
@@ -126,8 +116,6 @@
 		//NETWORK
 		$GLOBALS['community_name'] = Config::getConfigValueByName('community_name');
 		$GLOBALS['community_slogan'] = Config::getConfigValueByName('community_slogan');
-		$GLOBALS['enable_network_policy'] = Config::getConfigValueByName('enable_network_policy');
-		$GLOBALS['network_policy_url'] = Config::getConfigValueByName('network_policy_url');
 		
 		//PROJEKT
 		$GLOBALS['hours_to_keep_mysql_crawl_data'] = Config::getConfigValueByName('hours_to_keep_mysql_crawl_data');
@@ -178,7 +166,6 @@
 				//get the remember_mes of the user from the database
 				$user_remember_me_list = new UserRememberMeList($user_id, "create_date", "desc");
 				$user_remember_me_list = $user_remember_me_list->getUserRememberMeList();
-				
 				//check if any remember me matches the password stored in the cookie
 				$phpass = new PasswordHash(8, false);
 				foreach($user_remember_me_list as $user_remember_me) {
@@ -196,6 +183,7 @@
 						$random_password_hash = $phpass->HashPassword($random_password);
 						
 						$user_remember_me->setPassword($random_password_hash);
+						$user_remember_me->store();
 						setcookie("remember_me", $user_id.",".$random_password, time() + 60*60*24*14);
 						
 						$messages[] = array("Herzlich willkommen zurück ".$user_data['nickname'].".", 1);

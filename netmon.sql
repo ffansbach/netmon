@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 02, 2013 at 01:15 PM
+-- Generation Time: Jul 11, 2013 at 01:44 AM
 -- Server version: 5.5.31-MariaDB-1~wheezy-log
--- PHP Version: 5.4.16-1~dotdeb.1
+-- PHP Version: 5.4.17-1~dotdeb.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -337,6 +337,7 @@ CREATE TABLE IF NOT EXISTS `ips` (
   `router_id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL,
   `ip` varchar(100) NOT NULL,
+  `netmask` int(3) NOT NULL,
   `ipv` int(11) NOT NULL,
   `protected` tinyint(1) NOT NULL,
   `create_date` datetime NOT NULL,
@@ -368,6 +369,23 @@ CREATE TABLE IF NOT EXISTS `ip_ranges` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `networks`
+--
+
+CREATE TABLE IF NOT EXISTS `networks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `ip` varchar(255) NOT NULL,
+  `netmask` int(11) NOT NULL,
+  `ipv` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `olsr_crawl_data`
 --
 
@@ -393,6 +411,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   `title` varchar(250) NOT NULL,
   `description` text NOT NULL,
   `is_wlan` tinyint(4) NOT NULL,

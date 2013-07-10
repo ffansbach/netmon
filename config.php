@@ -2,10 +2,10 @@
 
 require_once('runtime.php');
 require_once('lib/classes/core/install.class.php');
-require_once('lib/classes/core/config.class.php');
 require_once('lib/classes/core/chipsets.class.php');
 require_once('lib/classes/core/Tld.class.php');
 require_once('lib/classes/core/TldList.class.php');
+require_once('lib/classes/core/ConfigLine.class.php');
 require_once('lib/classes/extern/Zend/Oauth/Consumer.php');
 
 
@@ -16,7 +16,7 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('installed', $GLOBALS['installed']);
 
 	//WEBSERVER
-	$smarty->assign('url_to_netmon', $GLOBALS['url_to_netmon']);
+	$smarty->assign('url_to_netmon', ConfigLine::configByName('url_to_netmon']);
 	
 	//MYSQL
 	$smarty->assign('mysql_host', $GLOBALS['mysql_host']);
@@ -44,13 +44,13 @@ if ($_GET['section']=="edit") {
 		header('Location: ./config.php?section=edit');
 } elseif($_GET['section']=="edit_netmon") {
 	$smarty->assign('installed', $GLOBALS['installed']);
-	$smarty->assign('url_to_netmon', Config::getConfigValueByName("url_to_netmon"));
-	$smarty->assign('google_maps_api_key', Config::getConfigValueByName("google_maps_api_key"));
-	$smarty->assign('template_name', Config::getConfigValueByName("template"));
-	$smarty->assign('template', Config::getConfigValueByName("template"));
-	$smarty->assign('hours_to_keep_mysql_crawl_data', Config::getConfigValueByName("hours_to_keep_mysql_crawl_data"));
-	$smarty->assign('hours_to_keep_history_table', Config::getConfigValueByName("hours_to_keep_history_table"));
-	$smarty->assign('crawl_cycle_length_in_minutes', Config::getConfigValueByName("crawl_cycle_length_in_minutes"));
+	$smarty->assign('url_to_netmon', ConfigLine::configByName('url_to_netmon'));
+	$smarty->assign('google_maps_api_key', ConfigLine::configByName('google_maps_api_key'));
+	$smarty->assign('template_name', ConfigLine::configByName('template'));
+	$smarty->assign('template', ConfigLine::configByName('template'));
+	$smarty->assign('hours_to_keep_mysql_crawl_data', ConfigLine::configByName('hours_to_keep_mysql_crawl_data'));
+	$smarty->assign('hours_to_keep_history_table', ConfigLine::configByName('hours_to_keep_history_table'));
+	$smarty->assign('crawl_cycle_length_in_minutes', ConfigLine::configByName('crawl_cycle_length_in_minutes'));
 
 	$smarty->assign('message', Message::getMessage());
 	$smarty->display("header.tpl.php");
@@ -86,15 +86,15 @@ if ($_GET['section']=="edit") {
 		header('Location: ./config.php?section=edit_netmon');
 	}
 } elseif($_GET['section']=="edit_community") {
-	$smarty->assign('google_maps_api_key', Config::getConfigValueByName("google_maps_api_key"));
-	$smarty->assign('community_name', Config::getConfigValueByName("community_name"));
-	$smarty->assign('community_slogan', Config::getConfigValueByName("community_slogan"));
-	$smarty->assign('community_location_longitude', Config::getConfigValueByName("community_location_longitude"));
-	$smarty->assign('community_location_latitude', Config::getConfigValueByName("community_location_latitude"));
-	$smarty->assign('community_location_zoom', Config::getConfigValueByName("community_location_zoom"));
-	$smarty->assign('enable_network_policy', Config::getConfigValueByName("enable_network_policy"));
-	$smarty->assign('network_policy_url', Config::getConfigValueByName("network_policy_url"));
-	$smarty->assign('community_essid', Config::getConfigValueByName("community_essid"));
+	$smarty->assign('google_maps_api_key', ConfigLine::configByName('google_maps_api_key'));
+	$smarty->assign('community_name', ConfigLine::configByName('community_name'));
+	$smarty->assign('community_slogan', ConfigLine::configByName('community_slogan'));
+	$smarty->assign('community_location_longitude', ConfigLine::configByName('community_location_longitude'));
+	$smarty->assign('community_location_latitude', ConfigLine::configByName('community_location_latitude'));
+	$smarty->assign('community_location_zoom', ConfigLine::configByName('community_location_zoom'));
+	$smarty->assign('enable_network_policy', ConfigLine::configByName('enable_network_policy'));
+	$smarty->assign('network_policy_url', ConfigLine::configByName('network_policy_url'));
+	$smarty->assign('community_essid', ConfigLine::configByName('community_essid'));
 	
 	$smarty->assign('message', Message::getMessage());
 	$smarty->display("header.tpl.php");
@@ -125,9 +125,9 @@ if ($_GET['section']=="edit") {
 		header('Location: ./config.php?section=edit_community');
 	}
 } elseif($_GET['section']=="edit_network_connection") {
-	$smarty->assign('network_connection_ipv4', Config::getConfigValueByName("network_connection_ipv4"));
-	$smarty->assign('network_connection_ipv6', Config::getConfigValueByName("network_connection_ipv6"));
-	$smarty->assign('network_connection_ipv6_interface', Config::getConfigValueByName("network_connection_ipv6_interface"));
+	$smarty->assign('network_connection_ipv4', ConfigLine::configByName('network_connection_ipv4'));
+	$smarty->assign('network_connection_ipv6', ConfigLine::configByName('network_connection_ipv6'));
+	$smarty->assign('network_connection_ipv6_interface', ConfigLine::configByName('network_connection_ipv6_interface'));
 	
 	$smarty->assign('message', Message::getMessage());
 	$smarty->display("header.tpl.php");
@@ -242,8 +242,8 @@ if ($_GET['section']=="edit") {
 	$config = array(
 		'callbackUrl' => Config::getConfigValueByName('url_to_netmon').'/config.php?section=recieve_twitter_token',
 		'siteUrl' => 'https://api.twitter.com/oauth',
-		'consumerKey' => $GLOBALS['twitter_consumer_key'],
-		'consumerSecret' => $GLOBALS['twitter_consumer_secret']
+		'consumerKey' => ConfigLine::configByName('twitter_consumer_key'),
+		'consumerSecret' => ConfigLine::configByName('twitter_consumer_secret')
 	);
 	$consumer = new Zend_Oauth_Consumer($config);
 	if (!empty($_GET) && isset($_SESSION['TWITTER_REQUEST_TOKEN'])) {
@@ -278,8 +278,8 @@ if ($_GET['section']=="edit") {
 	$config = array(
 		'callbackUrl' => Config::getConfigValueByName('url_to_netmon').'/config.php?section=recieve_twitter_token',
 		'siteUrl' => 'https://api.twitter.com/oauth',
-		'consumerKey' => $GLOBALS['twitter_consumer_key'],
-		'consumerSecret' => $GLOBALS['twitter_consumer_secret']
+		'consumerKey' => ConfigLine::configByName('twitter_consumer_key'),
+		'consumerSecret' => ConfigLine::configByName('twitter_consumer_secret')
 	);
 	$consumer = new Zend_Oauth_Consumer($config);
 	

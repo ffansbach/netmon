@@ -28,7 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once(ROOT_DIR.'/lib/classes/core/config.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/ConfigLine.class.php');
 require_once(ROOT_DIR.'/lib/classes/extern/Zend/Service/Twitter.php');
 
 class Message {
@@ -56,13 +56,12 @@ class Message {
 
 	public function postTwitterMessage($statusMessage) {
 		//Send Message to twitter
-		$config_line = Config::getConfigLineByName('twitter_token');
-		if(!empty($GLOBALS['twitter_username']) AND !empty($config_line)) {
+		if(ConfigLine::configByName('twitter_username') AND ConfigLine::configByName('twitter_token')) {
 			$config = array(
 				'callbackUrl' => 'http://example.com/callback.php',
 				'siteUrl' => 'http://twitter.com/oauth',
-				'consumerKey' => $GLOBALS['twitter_consumer_key'],
-				'consumerSecret' => $GLOBALS['twitter_consumer_secret']
+				'consumerKey' => ConfigLine::configByName('twitter_consumer_key'),
+				'consumerSecret' => ConfigLine::configByName('twitter_consumer_secret')
 			);
 			
 			$token = unserialize($config_line['value']);
@@ -72,7 +71,7 @@ class Message {
 			$client->setParameterPost('status', $statusMessage);
 			$response = $client->request();
 			if($response->getStatus() == 200)
-				$message[] = array("Folgendes wurde auf dem Twitteraccount von <a href=\"http://twitter.com/$GLOBALS[twitter_username]\">$GLOBALS[twitter_username]</a> angekündigt: <i>\"$statusMessage\"</i>", 1);
+				$message[] = array("Folgendes wurde auf dem Twitteraccount von <a href=\"http://twitter.com/".ConfigLine::configByName('twitter_username')."\">".ConfigLine::configByName('twitter_username')."</a> angekündigt: <i>\"$statusMessage\"</i>", 1);
 			else
 				$message[] = array("Beim senden der Twitternachricht ist folgender Fehler aufgetreten: ".$response->getStatus(), 0);
 			Message::setMessage($message);

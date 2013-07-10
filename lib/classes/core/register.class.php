@@ -22,6 +22,7 @@
 
 require_once("lib/classes/core/login.class.php");
 require_once("lib/classes/core/user.class.php");
+require_once("lib/classes/core/ConfigLine.class.php");
 require_once('lib/classes/extern/Zend/Mail.php');
 require_once('lib/classes/extern/Zend/Mail/Transport/Smtp.php');
 require_once('lib/classes/extern/phpass/PasswordHash.php');
@@ -65,7 +66,7 @@ class Register {
 			$message[] = array("Die ausgewählte Emailadresse ".$email." ist keine gültige Emailadresse.",2);
 		} elseif(!empty($openid) AND !User_old::isUniqueOpenID($openid)) {
 			$message[] = array("Die ausgewählte OpenID <i>".$openid."</i> ist bereits mit einem Benutzer verknüpft.",2);
-		} elseif($GLOBALS['enable_network_policy']=="true" AND !$agb) {
+		} elseif(ConfigLine::configByName('enable_network_policy')=="true" AND !$agb) {
 			$message[] = array("Du musst die Netzwerkpolicy akzeptieren.",2);
 		}
 		
@@ -168,7 +169,7 @@ class Register {
 	*/
 	public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum, $openid) {
 		$text = "Hallo $nickname,\n\n";
-		$text .= "Du hast dich am ".date("d.m.Y", $datum)." um ".date("H:i", $datum)." Uhr bei $GLOBALS[community_name] registriert.\n\n";
+		$text .= "Du hast dich am ".date("d.m.Y", $datum)." um ".date("H:i", $datum)." Uhr bei ".ConfigLine::configByName('community_name')." registriert.\n\n";
 
 		if($openid) {
 			$text .= "Deine Open-ID zum Login lautet: $openid\n";
@@ -176,9 +177,9 @@ class Register {
 		}
 		
 		$text .= "Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalten.\n";
-		$text .= "$GLOBALS[url_to_netmon]/account_activate.php?activation_hash=$activation\n\n";
+		$text .= ConfigLine::configByName('url_to_netmon')."/account_activate.php?activation_hash=$activation\n\n";
 		$text .= "Liebe Gruesse\n";
-		$text .= "$GLOBALS[community_name]";
+		$text .= ConfigLine::configByName('community_name');
 		
 		if ($GLOBALS['mail_sending_type']=='smtp') {
 			$config = array('username' => $GLOBALS['mail_smtp_username'],
@@ -198,7 +199,7 @@ class Register {
 			$mail = new Zend_Mail();
 			$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
 			$mail->addTo($email);
-			$mail->setSubject("Anmeldung $GLOBALS[community_name]");
+			$mail->setSubject("Anmeldung ".ConfigLine::configByName('community_name'));
 			$mail->setBodyText($text);
 			$mail->send($transport);
 		} catch(Exception $e) {
@@ -265,9 +266,9 @@ class Register {
 		$text .= "Nickname: $nickname\n";
 		$text .= "Passwort: $newpassword\n\n";
 		$text .= "Bitte bestaetige die Aenderungen mit einem Klick auf diesen Link:\n";
-		$text .= "$GLOBALS[url_to_netmon]/set_new_password.php?user_id=$user_id&new_passwordhash=$new_password_hash&oldpassword_hash=$old_password_hash\n\n";
-		$text .= "Mit freundlichen Gruessen\n";
-		$text .= "$GLOBALS[community_name]";
+		$text .= ConfigLine::configByName('url_to_netmon')."/set_new_password.php?user_id=$user_id&new_passwordhash=$new_password_hash&oldpassword_hash=$old_password_hash\n\n";
+		$text .= "Liebe Gruesse\n";
+		$text .= ConfigLine::configByName('community_name');
 		
 		if ($GLOBALS['mail_sending_type']=='smtp') {
 			$config = array('username' => $GLOBALS['mail_smtp_username'],
@@ -283,7 +284,7 @@ class Register {
 		$mail = new Zend_Mail();
 		$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
 		$mail->addTo($email);
-		$mail->setSubject("Neues Passwort $GLOBALS[community_name]");
+		$mail->setSubject("Neues Passwort ".ConfigLine::configByName('community_name'));
 		$mail->setBodyText($text);
 		$mail->send($transport);
 

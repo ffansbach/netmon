@@ -36,7 +36,7 @@ class Crawl {
 			$router_status->store();
 			
 			//make router history
-			$router_status_tmp = new RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$data['router_id']);
+			$router_status_tmp = new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$data['router_id']);
 			$router_status_tmp->fetch();
 			$eventlist = $router_status->compare($router_status_tmp);
 			$eventlist->store();

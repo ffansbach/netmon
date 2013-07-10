@@ -1,9 +1,10 @@
 <?php
 require_once('runtime.php');
 require_once('lib/classes/core/register.class.php');
+require_once('lib/classes/core/ConfigLine.class.php');
   
-$smarty->assign('enable_network_policy', $GLOBALS['enable_network_policy']);
-$smarty->assign('network_policy_url', $GLOBALS['network_policy_url']);
+$smarty->assign('enable_network_policy', ConfigLine::configByName('enable_network_policy'));
+$smarty->assign('network_policy_url', ConfigLine::configByName('network_policy_url'));
 
 if (empty($_POST)) {
 	$smarty->assign('message', Message::getMessage());
