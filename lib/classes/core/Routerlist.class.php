@@ -90,7 +90,9 @@
 			
 			
 			foreach($result as $router) {
-				$this->routerlist[] = new Router((int)$router['router_id']);
+				$router = new Router((int)$router['router_id']);
+				$router->fetch();
+				$this->routerlist[] = $router;
 			}
 		}
 		

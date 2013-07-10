@@ -1,6 +1,6 @@
 <?php
-	require_once('lib/classes/core/EventNotification.class.php');
-	require_once('lib/classes/core/ObjectList.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/EventNotification.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/ObjectList.class.php');
 	
 	class EventNotificationList extends ObjectList {
 		private $event_notification_list = array();

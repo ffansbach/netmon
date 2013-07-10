@@ -14,6 +14,7 @@
 	require_once(ROOT_DIR.'/lib/classes/core/rrdtool.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/Eventlist.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/EventNotificationList.class.php');
 	
 	/**
 	 * Crawlcycle organisation
@@ -120,6 +121,13 @@
 	//Crawl service
 	//echo "Crawl services\n";
 	//require_once($GLOBALS['netmon_root_path'].'lib/classes/crawler/json_service_crawler.php');*/
+	
+	/**
+	 * Notifications
+	 */
+	echo "Sending notifications\n";
+	$event_notification_list = new EventNotificationList();
+	$event_notification_list->notify();
 	
 	echo "Done\n";
 ?>

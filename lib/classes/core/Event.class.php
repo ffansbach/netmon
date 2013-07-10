@@ -163,14 +163,6 @@
 			return unserialize($this->data);
 		}
 		
-/*		public function getObjectData() {
-			if($this->getObject()=='router') {
-				$router = new Router($this->getObjectId());
-				$router->fetch();
-				return $router;
-			}
-		}*/
-		
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('event');
 			$domxmlelement->appendChild($domdocument->createElement("event_id", $this->getEventId()));

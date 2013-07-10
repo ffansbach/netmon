@@ -28,8 +28,6 @@
 	*/
 	
 	define('ROOT_DIR', dirname(__FILE__));
-	if(!isset($GLOBALS['cronjob']))
-		$GLOBALS['cronjob'] = false;
 	
 	//Set default values
 	$GLOBALS['installed'] = false;
@@ -162,7 +160,7 @@
 	/**
 	* Auto Login
 	*/
-	if ($GLOBALS['installed'] AND !$GLOBALS['cronjob']) {
+	if ($GLOBALS['installed']) {
 		//if the user is not logged in and the remember me cookie is set
 		if (!isset($_SESSION['user_id']) AND !empty($_COOKIE["remember_me"])) {
 			require_once(ROOT_DIR.'/lib/classes/core/user.class.php');

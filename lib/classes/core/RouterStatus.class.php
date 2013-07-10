@@ -2,6 +2,8 @@
 	require_once(ROOT_DIR.'/lib/classes/core/ObjectStatus.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/Eventlist.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/OriginatorStatusList.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Router.class.php');
+	
 	
 	class RouterStatus extends ObjectStatus {
 		private $router_id = 0;
@@ -469,6 +471,7 @@
 				//TODO:	do not use $this for router_status because hostname will be empty if router is offline
 				//		Use real router object instead!
 				if ($this->getStatus() AND $router_status->getStatus() AND $this->getStatus()!=$router_status->getStatus()) {
+//					$router = new Router($this->getRouterId());
 					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "status", array('from'=>$router_status->getStatus(), 'to'=>$this->getStatus(), 'hostname'=>$this->getHostname())));
 				}
 				if($this->getUptime() AND $router_status->getUptime() AND $this->getUptime()<$router_status->getUptime()) {

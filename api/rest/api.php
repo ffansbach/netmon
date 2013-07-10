@@ -1,7 +1,4 @@
 <?php
-	//prevent from include conflicts, see runtime.php in root folder
-	$GLOBALS['cronjob'] = true;
-	
 	require_once("../../runtime.php");
 	require_once(ROOT_DIR.'/config/config.local.inc.php');
 	require_once(ROOT_DIR.'/lib/classes/core/db.class.php');
@@ -153,7 +150,7 @@
 		private function router() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
 				$router = new Router((int)$this->_request['id']);
-				if($router->getRouterId() == 0) {
+				if(!$router->fetch()) {
 					$this->error_code = 1;
 					$this->error_message = "Router not found";
 					$this->response($this->finishxml(), 404);

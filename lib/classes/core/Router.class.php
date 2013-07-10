@@ -12,41 +12,78 @@
 		private $location = "";
 		private $latitude = "";
 		private $longitude = "";
-		private $chipset = "";
+		private $chipset_id = 0;
 		private $statusdata = array();
 		private $statusdata_history = array();
 		private $networkinterfacelist = null;
 		private $servicelist = null;
 		
 		public function __construct($router_id=false, $user_id=false, $hostname=false, $description=false,
-									$location=false, $latitude=false, $longitude=false, $chipset_id=false) {
-			if($router_id==false) {
-				$result = array();
-			} else {
-				try {
-						$stmt = DB::getInstance()->prepare("SELECT *
-															FROM routers
-															WHERE id = ?");
-					$stmt->execute(array($router_id));
-					$result = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				
+									$location=false, $latitude=false, $longitude=false, $chipset_id=false,
+									$create_date=false, $update_date=false) {
+			$this->setRouterId($router_id);
+			$this->setUserId($user_id);
+			$this->setHostname($hostname);
+			$this->setDescription($description);
+			$this->setLocation($location);
+			$this->setLatitude($latitude);
+			$this->setLongitude($longitude);
+			$this->setChipsetId($chipset_id);
+			$this->setCreateDate($create_date);
+			$this->setUpdateDate($update_date);
+		}
+		
+		public function fetch() {
+			$result = array();
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT *
+													FROM routers
+													WHERE
+														(id = :router_id OR :router_id=0) AND
+														(user_id = :user_id OR :user_id=0) AND
+														(hostname = :hostname OR :hostname='') AND
+														(description = :description OR :description='') AND
+														(location = :location OR :location='') AND
+														(latitude = :latitude OR :latitude='') AND
+														(longitude = :longitude OR :longitude='') AND
+														(chipset_id = :chipset_id OR :chipset_id=0) AND
+														(create_date = :create_date OR :create_date=0) AND
+														(update_date = :update_date OR :update_date=0)");
+				$stmt->bindParam(':router_id', $this->getRouterId(), PDO::PARAM_INT);
+				$stmt->bindParam(':user_id', $this->getUserId(), PDO::PARAM_STR);
+				$stmt->bindParam(':hostname', $this->getHostname(), PDO::PARAM_STR);
+				$stmt->bindParam(':description', $this->getDescription(), PDO::PARAM_STR);
+				$stmt->bindParam(':location', $this->getLocation(), PDO::PARAM_STR);
+				$stmt->bindParam(':latitude', $this->getLatitude(), PDO::PARAM_STR);
+				$stmt->bindParam(':longitude', $this->getLongitude(), PDO::PARAM_STR);
+				$stmt->bindParam(':chipset_id', $this->getChipsetId(), PDO::PARAM_INT);
+				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
+				$stmt->bindParam(':update_date', $this->getUpdateDate(), PDO::PARAM_INT);
+				$stmt->execute();
+				$result = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+			
+			if(!empty($result)) {
 				$this->setRouterId((int)$result['id']);
 				$this->setUserId((int)$result['user_id']);
 				$this->setHostname($result['hostname']);
-				$this->setCreateDate($result['create_date']);
-				$this->setUpdateDate($result['update_date']);
 				$this->setDescription($result['description']);
 				$this->setLocation($result['location']);
 				$this->setLatitude($result['latitude']);
 				$this->setLongitude($result['longitude']);
+				$this->setChipsetId($result['chipset_id']);
+				$this->setCreateDate($result['create_date']);
+				$this->setUpdateDate($result['update_date']);
 				$this->setNetworkinterfacelist();
 				$this->setStatusdata();
 				$this->setStatusdataHistory();
+				return true;
 			}
+			
+			return false;
 		}
 		
 		public function setRouterId($router_id) {
@@ -60,7 +97,7 @@
 		}
 		
 		public function setHostname($hostname) {
-			if(!preg_match('/^([a-zA-Z0-9])+$/i', $hostname)) {
+			if(!is_string($hostname) AND !preg_match('/^([a-zA-Z0-9])+$/i', $hostname)) {
 				return false;
 			} else {
 				$this->hostname = $hostname;
@@ -68,19 +105,28 @@
 		}
 		
 		public function setDescription($description) {
-			$this->description = $description;
+			if($description!==false)
+				$this->description = $description;
 		}
 		
 		public function setLocation($location) {
-			$this->location = $location;
+			if($location!==false)
+				$this->location = $location;
 		}
 		
 		public function setLatitude($latitude) {
-			$this->latitude = $latitude;
+			if($latitude!==false)
+				$this->latitude = $latitude;
 		}
 		
 		public function setLongitude($longitude) {
-			$this->longitude = $longitude;
+			if($longitude!==false)
+				$this->longitude = $longitude;
+		}
+		
+		public function setChipsetId($chipset_id) {
+			if(is_int($chipset_id))
+				$this->chipset_id = $chipset_id;
 		}
 		
 		public function setNetworkinterfacelist($networkinterfacelist=false) {
@@ -134,6 +180,10 @@
 		
 		public function getLongitude() {
 			return  $this->longitude;
+		}
+		
+		public function getChipsetId() {
+			return $this->chipset_id;
 		}
 		
 		public function getNetworkinterfacelist() {

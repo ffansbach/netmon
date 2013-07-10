@@ -72,7 +72,9 @@
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
 				if($this->getAction() == 'router_offline') {
-					$this->setObjectData(new Router($this->getObject()));
+					$router = new Router((int)$this->getObject());
+					$router->fetch();
+					$this->setObjectData($router);
 				}
 				return true;
 			}
@@ -132,6 +134,7 @@
 				if($this->getAction() == 'router_offline') {
 					$crawl_cycles = ConfigLine::configByName('event_notification_router_offline_crawl_cycles');
 					$router = new Router((int)$this->getObject());
+					$router->fetch();
 					
 					$online = false;
 					$statusdata_history = $router->getStatusdataHistory()->getRouterStatusList();
@@ -224,7 +227,8 @@
 		}
 		
 		public function setObject($object) {
-			$this->object = $object;
+			if(is_string($object))
+				$this->object = $object;
 		}
 		
 		public function setObjectData($object_data) {
@@ -242,9 +246,7 @@
 		}
 		
 		public function setNotificationDate($notification_date) {
-			if($notification_date === false)
-				$this->notification_date = time();
-			else if(is_string($notification_date)) {
+			if(is_string($notification_date)) {
 				$date = new DateTime($notification_date);
 				$this->notification_date = $date->getTimestamp();
 			} else if(is_int($notification_date))
