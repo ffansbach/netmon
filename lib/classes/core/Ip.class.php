@@ -84,7 +84,7 @@
 			} elseif($this->getInterfaceId()!=0 AND $this->getIp()!="" AND $this->getIpv()!=0 AND $ip->getIpId()==0) {
 				try {
 					$stmt = DB::getInstance()->prepare("INSERT INTO ips (interface_id, ip, netmask, ipv, create_date, update_date)
-														VALUES (?, ?, ?, NOW(), NOW())");
+														VALUES (?, ?, ?, ?, NOW(), NOW())");
 					$stmt->execute(array($this->getInterfaceId(), $this->getIp(), $this->getNetmask(), $this->getIpv()));
 					return DB::getInstance()->lastInsertId();
 				} catch(PDOException $e) {

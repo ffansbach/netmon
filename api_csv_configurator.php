@@ -107,7 +107,7 @@ if($_GET['section']=="autoadd_ipv6_address") {
 		$interface_id = $networkinterface->getNetworkinterfaceId();
 	}
 	
-	$ip = new Ip(false, false, $_GET['ip'], 6);
+	$ip = new Ip(false, false, $_GET['ip'], (int)$_GET['netmask'], 6);
 	if(!$ip->fetch()) {
 		$ip->setInterfaceId((int)$interface_id);
 		if($ip->store()) {
