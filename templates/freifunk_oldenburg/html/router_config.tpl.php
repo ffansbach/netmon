@@ -70,9 +70,47 @@
 </div>
 
 <h2>Interfaces</h2>
-{if !empty($interfaces)}
-	{foreach $interfaces as $interface}
-		<h3>{$interface.name}</h3>
+{if !empty($networkinterfacelist)}
+	{foreach key=count item=interface from=$networkinterfacelist}
+		<h3>{$interface->getName()}</h3>
+		<div style="width: 100%; overflow: hidden;">
+			<div style="float:left; width: 50%;">
+			<ul>
+				<li>
+					<b>Angelegt am:</b> {$interface->getCreateDate()|date_format:"%e.%m.%Y %H:%M"}
+				</li>
+			</ul>
+			
+				{foreach $interface->getIpList()->getIpList() as $iplist}
+					<ul>
+						<li>
+							<b>IPv{$iplist->getIpv()} Adresse:</b> {$iplist->getIp()}<br>
+						</li>
+						<li>
+							<b>Netmask:</b> {$iplist->getNetmask()}
+						</li>
+					</ul>
+				{/foreach}
+			
+			</div>
+			<div style="float:left; width: 50%;">
+				<p>
+					<a href="./ipeditor.php?section=add&router_id={$interface->getRouterId()}&interface_id={$interface->getNetworkinterfaceId()}">IP hinzufügen</a><br>
+					<a href="./interfaceeditor.php?section=delete&interface_id={$interface->getNetworkinterfaceId()}">Interface entfernen</a>
+				</p>
+			</div>
+		</div>
+		<hr>
+	{/foreach}
+{else}
+	<p>Es sind keine Interfaces eingetragen</p>
+{/if}
+
+
+<!--	<pre>
+		{print_r($interface)}
+	</pre>-->
+<!--		<h3>{$interface->getName()}</h3>
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 50%;">
 			<ul>
@@ -168,12 +206,7 @@
 					<a href="./interfaceeditor.php?section=delete&interface_id={$interface.interface_id}">Interface entfernen</a>
 				</p>
 			</div>
-		</div>
-		<hr>
-	{/foreach}
-{else}
-	<p>Es sind keine Interfaces eingetragen</p>
-{/if}
+		</div>-->
 
 <h2>Dienste</h2>
 {if !empty($services)}

@@ -16,7 +16,7 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('installed', $GLOBALS['installed']);
 
 	//WEBSERVER
-	$smarty->assign('url_to_netmon', ConfigLine::configByName('url_to_netmon']);
+	$smarty->assign('url_to_netmon', ConfigLine::configByName('url_to_netmon'));
 	
 	//MYSQL
 	$smarty->assign('mysql_host', $GLOBALS['mysql_host']);

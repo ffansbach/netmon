@@ -6,7 +6,7 @@ class Config {
 	* @author  Clemens John <clemens-john@gmx.de>
 	* @return array() configuration line
 	*/
-	public function getConfigLineByName($name) {
+	static public function getConfigLineByName($name) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM config WHERE name=?");
 			$stmt->execute(array($name));
@@ -23,7 +23,7 @@ class Config {
 	* @author  Clemens John <clemens-john@gmx.de>
 	* @return string configuration value
 	*/
-	public function getConfigValueByName($name) {
+	static public function getConfigValueByName($name) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT value FROM config WHERE name=?");
 			$stmt->execute(array($name));
@@ -43,7 +43,7 @@ class Config {
 	* @param $value string value of the configuration
 	* @return int id of the line created or edited
 	*/
-	public function writeConfigLine($name, $value) {
+	static public function writeConfigLine($name, $value) {
 		//If config line does not exists, create otherwise update
 		$config_line = Config::getConfigLineByName($name);
 		if(empty($config_line)) {

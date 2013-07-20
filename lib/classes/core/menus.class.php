@@ -66,7 +66,10 @@ class Menus extends Permission {
 			$submenu = array();
 			$subsubmenu = array();
 			$submenu[] = array('name'=>'Karte', 'href'=>'map.php');
-			$submenu[] = array();
+			
+			$subsubmenu[] = array('name'=>'FFMAP-D3', 'href'=>'ffmap-d3/nodes.html');
+			$subsubmenu[] = array('name'=>'Tinc-Topologie', 'href'=>'http://dev.freifunk-ol.de/topo/batvpn.png');
+			$submenu[] = $subsubmenu;
 			$menu[] = $submenu;
 			
 			$submenu = array();
@@ -100,12 +103,6 @@ class Menus extends Permission {
 			$submenu[] = array();
 			$menu[] = $submenu;
 
-			$submenu = array();
-			$subsubmenu = array();
-			$submenu[] = array('name'=>'Topologie', 'href'=>'http://dev.freifunk-ol.de/topo/batvpn.png');
-			$submenu[] = array();
-			$menu[] = $submenu;
-			
 			if (Permission::checkPermission(4)) { //if user is logged in
 				$submenu = array();
 				$subsubmenu = array();

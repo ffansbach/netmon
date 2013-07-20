@@ -103,14 +103,18 @@
 					echo $e->getTraceAsString();
 				}
 			} elseif($this->getUserId() != 0 AND $this->getAction()!="") {
-				try {
-					$stmt = DB::getInstance()->prepare("INSERT INTO event_notifications (user_id, create_date, update_date, action, object, notify, notified, notification_date)
-														VALUES (?, NOW(), NOW(), ?, ?, ?, ?, ?)");
-					$stmt->execute(array($this->getUserId(), $this->getAction(), $this->getObject(), $this->getNotify(), $this->getNotified(), $this->getNotificationDate()));
-					return DB::getInstance()->lastInsertId();
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
+				//check if there already exists an event for the given action, object and user_id
+				$event_notification = new EventNotification(false, $this->getUserId(), $this->getAction(), $this->getObject());
+				if($event_notification->fetch) {
+					try {
+						$stmt = DB::getInstance()->prepare("INSERT INTO event_notifications (user_id, create_date, update_date, action, object, notify, notified, notification_date)
+															VALUES (?, NOW(), NOW(), ?, ?, ?, ?, ?)");
+						$stmt->execute(array($this->getUserId(), $this->getAction(), $this->getObject(), $this->getNotify(), $this->getNotified(), $this->getNotificationDate()));
+						return DB::getInstance()->lastInsertId();
+					} catch(PDOException $e) {
+						echo $e->getMessage();
+						echo $e->getTraceAsString();
+					}
 				}
 			}
 			

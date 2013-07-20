@@ -92,6 +92,10 @@
 			}
 		}
 		
+		public function getNetworkinterfacelist() {
+			return $this->networkinterfacelist;
+		}
+		
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('networkinterfacelist');
 			$domxmlelement->setAttribute("total_count", $this->getTotalCount());

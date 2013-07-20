@@ -1,16 +1,19 @@
 <?php
-  require_once('runtime.php');
-  require_once('lib/classes/core/interfaces.class.php');
-  require_once('lib/classes/core/router.class.php');
-  require_once('lib/classes/core/service.class.php');
-  require_once('lib/classes/core/config.class.php');
-
-  $smarty->assign('message', Message::getMessage());
-  $router_data = Router_old::getRouterInfo($_GET['router_id']);
-  $smarty->assign('router_data', $router_data);
-  $interfaces = Interfaces::getInterfacesByRouterId($_GET['router_id']);
-  
-  $smarty->assign('interfaces', $interfaces);
+	require_once('runtime.php');
+	require_once('lib/classes/core/interfaces.class.php');
+	require_once('lib/classes/core/router.class.php');
+	require_once('lib/classes/core/service.class.php');
+	require_once('lib/classes/core/config.class.php');
+	
+	require_once('lib/classes/core/Networkinterfacelist.class.php');
+	
+	$smarty->assign('message', Message::getMessage());
+	
+	$router_data = Router_old::getRouterInfo($_GET['router_id']);
+	$smarty->assign('router_data', $router_data);
+	
+	$networkinterfacelist = new Networkinterfacelist($_GET['router_id'], 0, 50);
+	$smarty->assign('networkinterfacelist', $networkinterfacelist->getNetworkinterfacelist());
 
   $is_logged_id = Permission::isLoggedIn($_SESSION['user_id']);
   if($is_logged_id) {

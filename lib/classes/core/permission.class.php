@@ -46,7 +46,7 @@ class Permission {
 	* @author  Clemens John <clemens-john@gmx.de>
 	* @return array() array containing the avaliable roles
 	*/
-	public function getAllRoles() {
+	static public function getAllRoles() {
 		return array(0,1,2,3,4,5,6);
 	}
 	
@@ -56,7 +56,7 @@ class Permission {
 	* @author  Clemens John <clemens-john@gmx.de>
 	* @return array() array containing the avaliable and editable roles
 	*/
-	public function getEditableRoles() {
+	static public function getEditableRoles() {
 		return array(3,4,5,6);
 	}
 	
@@ -64,7 +64,7 @@ class Permission {
 	* Deny acces to a special section. Sets a deny message and forwards the user to the login site.
 	* @author  Clemens John <clemens-john@gmx.de>
 	*/
-	public function denyAccess() {
+	static public function denyAccess() {
 		$message[] = array("Sie haben nicht das Recht auf diesen Bereich zuzugreifen.",2);
 		Message::setMessage($message);
 		$_SESSION['redirect_url'] = ".".$_SERVER['REQUEST_URI'];
@@ -78,7 +78,7 @@ class Permission {
 	* @param $user_id the id of the user that is requesting access. If not given, the id of the current logged in user is used.
 	* @return boolean true if the user is the owner of the object.
 	*/
-	public function isThisUserOwner($owning_user_id, $user_id=false) {
+	static public function isThisUserOwner($owning_user_id, $user_id=false) {
 		if(!$user_id)
 			$user_id = $_SESSION['user_id'];
 		
@@ -96,7 +96,7 @@ class Permission {
 	* @param $$owning_user_id user id of the user that own the object for wich the permission should be checked.
 	* @return boolean true if the user has the asced permission or is owner.
 	*/
-	public function checkIfUserIsOwnerOrPermitted($site_permission, $owning_user_id) {
+	static public function checkIfUserIsOwnerOrPermitted($site_permission, $owning_user_id) {
 		if(isset($owning_user_id) AND isset($_SESSION['user_id']) AND $owning_user_id==$_SESSION['user_id'])
 			return true;
 		elseif(isset($_SESSION['user_id']) AND isset($site_permission) AND Permission::checkPermission($site_permission, $_SESSION['user_id']))
@@ -113,7 +113,7 @@ class Permission {
 	* @param $user_id user id of the user for wich the permission should be checked.
 	* @return boolean true if the user has the asked permission.
 	*/
-	public function checkPermission($sitepermission, $user_id=false) {
+	static public function checkPermission($sitepermission, $user_id=false) {
 		$userpermission = Permission::getUserPermission($user_id);
 		
 		//Transform permissions into binary
@@ -144,7 +144,7 @@ class Permission {
 	*       	  the id of the currently logged in user is used.  Can only be the current user.
 	* @return int permission value of the user
 	*/
-	public function getUserPermission($user_id=false) {
+	static public function getUserPermission($user_id=false) {
 		if(!$user_id && isset($_SESSION['user_id']))
 			$user_id = $_SESSION['user_id'];
 		
@@ -178,7 +178,7 @@ class Permission {
 	* @param $user_id user id of the user for wich you want to check the login. Can only be the current user.
 	* @return boolean if the current user is logged in.
 	*/
-	public function isLoggedIn($user_id) {
+	static public function isLoggedIn($user_id) {
 		return Permission::checkPermission(4, $user_id);
 	}
 }

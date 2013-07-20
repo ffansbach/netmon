@@ -5,6 +5,24 @@
 	class Routerlist extends ObjectList {
 		private $routerlist = array();
 		
+		/**
+		 * Initialize the routerlist with routers
+		 * @param $user_id	possible values:
+		 *							int: >0, initialize the routerlist with the routers of the user
+		 *							boolean: false, initialize the routerlist with routers of all users
+		 * @param $offset	possible values:
+		 *							int: >=0, controll the position from where the first router in the list ist fetched from db
+		 *							boolean: false, initialize offset with 0
+		 * @param $limit	possible values:
+		 *							int: >=0, controll the maximum numbers of routers in the list
+		 *							int: -1, set limit to maximum
+		 * @param $sort_by	possible values:
+		 *							string: hostname, 
+		 *							boolean: false, sort default by router_id
+		 * @param $order	possible values:
+		 *							string: asc, desc
+		 *							boolean: false, order default asc
+		 */
 		public function __construct($user_id=false, $offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
 			if($offset!==false)
@@ -29,6 +47,9 @@
 					echo $e->getTraceAsString();
 				}
 				$this->setTotalCount((int)$total_count['total_count']);
+				//if limit -1 then get all routers
+				if($this->getLimit()==-1)
+					$this->setLimit($this->getTotalCount());
 				
 				// fetch ids from all objects of the list from the database
 				try {
@@ -64,7 +85,10 @@
 					echo $e->getTraceAsString();
 				}
 				$this->setTotalCount((int)$total_count['total_count']);
-				
+				//if limit -1 then get all routers
+				if($this->getLimit()==-1)
+					$this->setLimit($this->getTotalCount());
+					
 				// fetch ids from all objects of the list from the database
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT routers.id as router_id

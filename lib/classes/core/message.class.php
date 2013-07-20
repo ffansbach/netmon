@@ -56,7 +56,8 @@ class Message {
 
 	public function postTwitterMessage($statusMessage) {
 		//Send Message to twitter
-		if(ConfigLine::configByName('twitter_username') AND ConfigLine::configByName('twitter_token')) {
+		$config_line = ConfigLine::configByName('twitter_token');
+		if(ConfigLine::configByName('twitter_username') AND $config_line) {
 			$config = array(
 				'callbackUrl' => 'http://example.com/callback.php',
 				'siteUrl' => 'http://twitter.com/oauth',
@@ -64,7 +65,7 @@ class Message {
 				'consumerSecret' => ConfigLine::configByName('twitter_consumer_secret')
 			);
 			
-			$token = unserialize($config_line['value']);
+			$token = unserialize($config_line);
 			$client = $token->getHttpClient($config);
 			$client->setUri('https://api.twitter.com/1.1/statuses/update.json');
 			$client->setMethod(Zend_Http_Client::POST);

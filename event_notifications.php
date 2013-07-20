@@ -9,7 +9,7 @@
 		EventNotification::delete($_GET['event_notification_id']);
 		header('Location: ./event_notifications.php');
 	} elseif (empty($_POST)) {
-		$routerlist = new Routerlist(false, false, false, "hostname", "asc");
+		$routerlist = new Routerlist(false, 0, -1, "hostname", "asc");
 		$smarty->assign('routerlist', $routerlist->getRouterlist());
 		
 		$event_notification_list = new EventNotificationList($_SESSION['user_id']);
@@ -19,7 +19,7 @@
 		$smarty->display("event_notifications.tpl.php");
 		$smarty->display("footer.tpl.php");
 	} else {
-		$event_notification = new EventNotification(false, $_SESSION['user_id'], $_POST['action'], $_POST['object'], true);
+		$event_notification = new EventNotification(false, (int)$_SESSION['user_id'], $_POST['action'], $_POST['object'], true);
 		$event_notification->store();
 		header('Location: ./event_notifications.php');
 	}
