@@ -28,11 +28,11 @@ class Main {
 	}
 
 /*	public function getAFreeIPv4IPByProjectId($project_id) {
-		return(Ip::getAFreeIPv4IPByProjectId($project_id));
+		return(Ip_old::getAFreeIPv4IPByProjectId($project_id));
 	}
 
 	public function getFreeIpRangeByProjectId($project_id, $range, $ip="") {
-		return(Ip::getFreeIpRangeByProjectId($project_id, $range, $ip));
+		return(Ip_old::getFreeIpRangeByProjectId($project_id, $range, $ip));
 	}*/
 
 	public function getRoutersForCrawl() {

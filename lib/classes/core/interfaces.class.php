@@ -60,7 +60,7 @@ class Interfaces {
 		//Add new IP-Range
 		//TODO
 /*		if(!empty($ipv4_dhcp_range)) {
-			$ip_range = Ip::getFreeIpRangeByProjectId($project_id, $ipv4_dhcp_range, $ipv4_addr);
+			$ip_range = Ip_old::getFreeIpRangeByProjectId($project_id, $ipv4_dhcp_range, $ipv4_addr);
 			if($ip_range['start']!='NULL') {
 				try {
 					$stmt = DB::getInstance()->prepare("INSERT INTO ip_ranges (project_id, interface_id, router_id, ip, ip_start, ip_end, create_date)

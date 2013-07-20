@@ -33,7 +33,7 @@ require_once(ROOT_DIR.'/lib/classes/core/project.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/ip.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/interfaces.class.php');
 
-class Ip {
+class Ip_old {
 	public function addIPv4Address($router_id, $project_id, $interface_id, $ipv4_addr) {
 		//Add new IPv4-Address
 		try {
@@ -52,7 +52,7 @@ class Ip {
 
 	public function addIPv6Address($router_id, $project_id, $interface_id, $ipv6_addr) {
 		$interface = Interfaces::getInterfaceByInterfaceId($interface_id);
-		$ip_exist = Ip::getIpByIp($ipv6_addr);
+		$ip_exist = Ip_old::getIpByIp($ipv6_addr);
 		if(empty($ip_exist)) {
 			try {
 				$stmt = DB::getInstance()->prepare("INSERT INTO ips (interface_id, router_id, project_id, ip, ipv, create_date)
@@ -76,7 +76,7 @@ class Ip {
 	}
 	
 	public function deleteIPAddress($ip_id) {
-		$ip = Ip::getIpById($ip_id);
+		$ip = Ip_old::getIpById($ip_id);
 		
 		try {
 			$stmt = DB::getInstance()->prepare("DELETE FROM ips WHERE id=?");
@@ -220,7 +220,7 @@ class Ip {
 	}
 
 	public function getIpsOfIpRangesByProjectId($project_id) {
-		$ip_ranges = Ip::getExistingIpRangesByProjectId($project_id);
+		$ip_ranges = Ip_old::getExistingIpRangesByProjectId($project_id);
 
 		$rangelist=array();
 		if(!empty($ip_ranges)) {
@@ -245,10 +245,10 @@ class Ip {
 
 	public function getAFreeIPv4IPByProjectId($project_id) {
 		//Get all existing IP´s
-		$existingips = Ip::getExistingIPv4IpsPlain();
+		$existingips = Ip_old::getExistingIPv4IpsPlain();
 
 		//Get all existing IP´s of IP-Ranges
-		$ips_of_ip_ranges = Ip::getIpsOfIpRangesByProjectId($project_id);
+		$ips_of_ip_ranges = Ip_old::getIpsOfIpRangesByProjectId($project_id);
 
 		$existingips = array_merge($existingips, $ips_of_ip_ranges);
 
@@ -294,10 +294,10 @@ class Ip {
 
 	public function getExistingIpsAndRangesByProjectId($project_id) {
 		//Get all existing IP´s
-		$existingips = Ip::getExistingIPv4IpsByProjectIdPlain($project_id);
+		$existingips = Ip_old::getExistingIPv4IpsByProjectIdPlain($project_id);
 
 		//Get all existing IP´s of IP-Ranges
-		$ips_of_ip_ranges = Ip::getIpsOfIpRangesByProjectId($project_id);
+		$ips_of_ip_ranges = Ip_old::getIpsOfIpRangesByProjectId($project_id);
 
 		$existingips = array_merge($existingips, $ips_of_ip_ranges);
 		
@@ -306,7 +306,7 @@ class Ip {
 
 	public function getFreeIpsInProject($project_id) {
 		//Get all IP´s which already exist in project (ips and ranges!)
-		$existingips = Ip::getExistingIpsAndRangesByProjectId($project_id);
+		$existingips = Ip_old::getExistingIpsAndRangesByProjectId($project_id);
 
 		//Delete existing IP´s from array
 		//Get project informations
@@ -339,7 +339,7 @@ class Ip {
 
 	public function getFreeIpRangeByProjectId($project_id, $range, $ip="") {
 		if ($range > 0) {
-			$free_ips = Ip::getFreeIpsInProject($project_id);
+			$free_ips = Ip_old::getFreeIpsInProject($project_id);
 /*			if(!empty($ip)) {
 				$ip_key = array_search($ip, $free_ips, TRUE);
 				unset($free_ips[$ip_key]);

@@ -50,7 +50,7 @@ if(!empty($search_string)) {
 }
 
 require_once('./lib/classes/core/ip.class.php');
-/*$ips=Ip::getFreeIpRangeByProjectId(10, 9, "10.18.10.60");
+/*$ips=Ip_old::getFreeIpRangeByProjectId(10, 9, "10.18.10.60");
 echo "<pre>";
 print_r($ips);
 echo "</pre>";*/

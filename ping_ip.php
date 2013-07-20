@@ -4,7 +4,7 @@ require_once('runtime.php');
 require_once(ROOT_DIR.'/lib/classes/core/ip.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/config.class.php');
 
-$ip = Ip::getIpById($_GET['ip_id']);
+$ip = Ip_old::getIpById($_GET['ip_id']);
 
 if ($ip['ipv']=='6') {
 	$ipv6_address = explode("/", $ip['ip']);

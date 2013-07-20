@@ -9,7 +9,7 @@
 		//Root and owning user can add service to router
 		if (Permission::checkIfUserIsOwnerOrPermitted(64, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
-			$smarty->assign('ips', Ip::getIpAddressesByRouterId($_GET['router_id']));
+			$smarty->assign('ips', Ip_old::getIpAddressesByRouterId($_GET['router_id']));
 
 			$smarty->assign('router_data', Router_old::getRouterInfo($_GET['router_id']));	
 			$smarty->display("header.tpl.php");

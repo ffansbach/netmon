@@ -32,11 +32,11 @@
 			$smarty->assign('message', Message::getMessage());
 
 			if(!empty($_POST['ipv4_addr'])) {
-				Ip::addIPv4Address($_GET['router_id'], $_POST['project_id'], $_POST['interface_id'], $_POST['ipv4_addr']);
+				Ip_old::addIPv4Address($_GET['router_id'], $_POST['project_id'], $_POST['interface_id'], $_POST['ipv4_addr']);
 			}
 
 			if(!empty($_POST['ipv6_addr'])) {
-				Ip::addIPv6Address($_GET['router_id'], $_POST['project_id'], $_POST['interface_id'], $_POST['ipv6_addr']);
+				Ip_old::addIPv6Address($_GET['router_id'], $_POST['project_id'], $_POST['interface_id'], $_POST['ipv6_addr']);
 			}
 
 			$message[] = array("Du hast nicht genügend Rechte um diesem Router/Interface eine IP hinzuzufügen!", 2);
@@ -53,7 +53,7 @@
 		if (Permission::checkIfUserIsOwnerOrPermitted(16, $router_data['user_id'])) {
 			$smarty->assign('message', Message::getMessage());
 
-			Ip::deleteIPAddress($_GET['ip_id']);
+			Ip_old::deleteIPAddress($_GET['ip_id']);
 			header("Location: ./router_config.php?router_id=$_GET[router_id]");
 		} else {
 			$message[] = array("Du hast nicht genügend Rechte um diese IP zu löschen!", 2);

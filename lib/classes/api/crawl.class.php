@@ -104,6 +104,9 @@ class Crawl {
 					exec("rrdtool create $rrd_path_traffic_rx --step 600 --start ".time()." DS:traffic_rx:GAUGE:700:U:U DS:traffic_tx:GAUGE:900:U:U RRA:AVERAGE:0:1:144 RRA:AVERAGE:0:6:168 RRA:AVERAGE:0:18:240");
 				}
 				exec("rrdtool update $rrd_path_traffic_rx ".time().":".round($traffic_rx_bps/1000, 2).":".round($traffic_tx_bps/1000, 2));
+				
+				
+				ipv6_link_local_addr
 			}
 
 			/**Insert IP crawl data*/
