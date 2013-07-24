@@ -91,6 +91,25 @@
 			return false;
 		}
 		
+		public function delete() {
+			if($this->getNetworkinterfaceId() != 0) {
+				//first delete all assigned ip addresses
+				$iplist = new Iplist($this->getNetworkinterfaceId(), 0, -1);
+				$iplist->delete();
+				
+				//then delete interface
+				try {
+ 					$stmt = DB::getInstance()->prepare("DELETE FROM interfaces WHERE id=?");
+					$stmt->execute(array($this->getNetworkinterfaceId()));
+					return $stmt->rowCount();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			}
+			return false;
+		}
+		
 		public function setNetworkinterfaceId($networkinterface_id) {
 			if(is_int($networkinterface_id))
 				$this->networkinterface_id = $networkinterface_id;

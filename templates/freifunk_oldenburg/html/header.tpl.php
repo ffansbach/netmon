@@ -43,6 +43,7 @@
 					<li><a href="http://wiki.freifunk-ol.de/index.php?title=Kontakt">Kontakt</a></li>
 					<li id="current"><a href="#">Netzwerk</a></li>
 					<li><a href="http://ticket.freifunk-ol.de/">Entwicklung</a></li>
+					<li><a href="http://wiki.freifunk-ol.de/w/Verein">Verein</a></li>
 				</ul>
 
 				<div class="searchbox">
@@ -52,7 +53,7 @@
                   </form>
                 </div>
 	</div>
-	<div id="nav_sub">
+	<div id="nav_sub" style="position: relative; z-index: 1;">
 		{if $installed}
 			{if isset($installation_menu)}
 				<ul>
@@ -74,6 +75,21 @@
 					{/foreach}
 				</ul>
 			{/if}
+			
+			{if isset($object_menu)}
+				<ul>
+					{foreach $object_menu as $menu}
+						<li><a  href="{$menu.0.href}">{$menu.0.name}</a>
+							<ul>
+							{foreach $menu.1 as $submenu}
+								<li><a href="{$submenu.href}">{$submenu.name}</a></li>
+							{/foreach}
+							</ul>
+						</li>
+					{/foreach}
+				</ul>
+			{/if}
+			
 			{if isset($admin_menu)}
 				<ul>
 					{foreach $admin_menu as $menu}

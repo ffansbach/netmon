@@ -41,10 +41,6 @@ $(document).ready(function() {
 	</script>
 {/literal}
 
-<script type="text/javascript">
-	document.body.id='tab1';
-</script>
-
 {literal}
     <script type="text/javascript">
       // This function updates the Web Page with the data from the RRD archive header
@@ -84,11 +80,6 @@ $(document).ready(function() {
       }
 </script>
 {/literal}
-
-<ul id="tabnav">
-	<li class="tab1"><a href="./router_status.php?router_id={$router_data.router_id}">Router Status</a></li>
-	<li class="tab2"><a href="./router_config.php?router_id={$router_data.router_id}">Router Konfiguration</a></li>
-</ul>
 
 <h1>Statusdaten des Routers {$router_data.hostname}</h1>
 

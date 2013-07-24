@@ -1,24 +1,20 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.3
+-- version 4.0.4.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 11, 2013 at 01:44 AM
--- Server version: 5.5.31-MariaDB-1~wheezy-log
+-- Generation Time: Jul 24, 2013 at 09:37 PM
+-- Server version: 5.5.32-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.17-1~dotdeb.1
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `freifunksql5`
 --
+CREATE DATABASE IF NOT EXISTS `freifunksql5` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `freifunksql5`;
 
 -- --------------------------------------------------------
 
@@ -318,8 +314,6 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
   `update_date` datetime NOT NULL,
   `name` varchar(100) NOT NULL,
   `mac_addr` varchar(150) NOT NULL,
-  `vpn_client_cert` text NOT NULL,
-  `vpn_client_key` text NOT NULL,
   `protected` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `router_id` (`router_id`)
@@ -500,7 +494,7 @@ CREATE TABLE IF NOT EXISTS `router_adds` (
   `router_id` int(11) NOT NULL,
   `adds_allowed` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -655,7 +649,3 @@ CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

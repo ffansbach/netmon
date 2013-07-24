@@ -1,7 +1,44 @@
+<script src="lib/classes/extern/jquery/jquery.min.js"></script>
+<script src="lib/classes/extern/DataTables/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+{literal}
+$(document).ready(function() {
+	$('#chipsetlist').dataTable( {
+		"bFilter": false,
+		"bInfo": false,
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "html" }
+		],
+		"aaSorting": [[ 0, "desc" ]]
+	} );
+} );
+
+$(document).ready(function() {
+	$('#chipsetlist_unnamed').dataTable( {
+		"bFilter": false,
+		"bInfo": false,
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "html" }
+		],
+		"aaSorting": [[ 0, "desc" ]]
+	} );
+} );
+{/literal}
+</script>
+
 <h1>Konfiguration der Hardwarenamen</h1>
+<p>Hier können den Chipbezeichnungen der Hersteller Routernamen für normalsterbliche zugewiesen werden.</p>
 <h2>Vorhandene Chipsets</h2>
 {if !empty($chipsets_with_name)}
-<table class="display" id="routerlist">
+<table class="display" id="chipsetlist">
 	<thead>
 		<tr>
 			<th>Chipset</th>
@@ -28,7 +65,7 @@
 
 <h2>Nicht Zugewiesene Chipsets</h2>
 {if !empty($chipsets_without_name)}
-<table class="display" id="routerlist">
+<table class="display" id="chipsetlist_unnamed">
 	<thead>
 		<tr>
 			<th>Chipset</th>

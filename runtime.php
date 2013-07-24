@@ -199,6 +199,7 @@
 	if ($GLOBALS['installed']) {
 		$smarty->assign('loginOutMenu', Menus::loginOutMenu());
 		$smarty->assign('normal_menu', Menus::normalMenu());
+		$smarty->assign('object_menu', Menus::objectMenu());
 		$smarty->assign('admin_menu', Menus::adminMenu());
 		$smarty->assign('root_menu', Menus::rootMenu());
 

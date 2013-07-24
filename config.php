@@ -5,6 +5,8 @@ require_once('lib/classes/core/install.class.php');
 require_once('lib/classes/core/chipsets.class.php');
 require_once('lib/classes/core/Tld.class.php');
 require_once('lib/classes/core/TldList.class.php');
+require_once('lib/classes/core/Network.class.php');
+require_once('lib/classes/core/Networklist.class.php');
 require_once('lib/classes/core/ConfigLine.class.php');
 require_once('lib/classes/extern/Zend/Oauth/Consumer.php');
 
@@ -343,10 +345,33 @@ if ($_GET['section']=="edit") {
 	Message::setMessage($message);
 	
 	header('Location: ./config.php?section=edit_tlds');
+} elseif($_GET['section']=="edit_networks") {
+	$networklist = new Networklist();
+	$smarty->assign('networklist', $networklist->getNetworklist());
+	
+	$smarty->assign('message', Message::getMessage());
+	$smarty->display("header.tpl.php");
+	$smarty->display("config_networks.tpl.php");
+	$smarty->display("footer.tpl.php");
+} elseif($_GET['section']=="insert_edit_networks") {
+	if(!empty($_POST['ipv4_address'])) {
+		$network = new Network(false, (int)$_SESSION['user_id'], $_POST['ipv4_address'], (int)$_POST['netmask'], 4);
+		$network->store();
+	}
+	
+	$message[] = array('Das neue Netzwerk '.$_POST['ipv4_address'].'/'.$_POST['netmask'].' wurde eingetragen.', 1);
+	Message::setMessage($message);
+	
+	header('Location: ./config.php?section=edit_networks');
+} elseif($_GET['section']=="insert_delete_network") {
+	$network = new Network((int)$_GET['network_id']);
+	$network->fetch();
+	$network->delete();
+
+	$message[] = array('Das Netzwerk '.$network->getIp().'/'.$network->getNetmask().' wurde gelöscht.', 1);
+	Message::setMessage($message);
+	
+	header('Location: ./config.php?section=edit_networks');
 }
-
-
-
-
 
 ?>

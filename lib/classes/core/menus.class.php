@@ -126,7 +126,31 @@ class Menus extends Permission {
 //		$menu = Menus::checkIfSelected($menu);
 		return $menu;
 	}
-
+	
+	function objectMenu() {
+		$menu = array();
+		$submenu = array();
+		$subsubmenu = array();
+		if (Permission::checkPermission(4)) {
+			if(strpos($_SERVER['PHP_SELF'], "router_status.php")!==false OR strpos($_SERVER['PHP_SELF'], "router_config.php")!==false) {
+				$submenu[] = array('name'=>'Routeroptionen', 'href'=>'#');
+				
+				if(strpos($_SERVER['PHP_SELF'], "router_config.php")!==false) {
+					$subsubmenu[] = array('name'=>'Status ansehen', 'href'=>'router_status.php?router_id='.$_GET['router_id']);
+					$subsubmenu[] = array('name'=>'Konfig. bearbeiten', 'href'=>'routereditor.php?section=edit&router_id='.$_GET['router_id']);
+					$subsubmenu[] = array('name'=>'Interf. hinzufügen', 'href'=>'interface.php?section=add&router_id='.$_GET['router_id']);
+					$subsubmenu[] = array('name'=>'Dienst hinzufügen', 'href'=>'serviceeditor.php?section=add&router_id='.$_GET['router_id']);
+					$subsubmenu[] = array('name'=>'Werbung', 'href'=>'addeditor.php?router_id='.$_GET['router_id']);
+				} else {
+					$subsubmenu[] = array('name'=>'Konfig. ansehen', 'href'=>'router_config.php?router_id='.$_GET['router_id']);
+				}
+				$submenu[] = $subsubmenu;
+				$menu[] = $submenu;
+			}
+		}
+		return $menu;
+	}
+	
 	function adminMenu() {
 		$menu = array();
 		if (Permission::checkPermission(32)) {
@@ -152,6 +176,7 @@ class Menus extends Permission {
 			$subsubmenu[] = array('name'=>'Jabber', 'href'=>'config.php?section=edit_jabber');
 			$subsubmenu[] = array('name'=>'Twitter', 'href'=>'config.php?section=edit_twitter');
 			$subsubmenu[] = array('name'=>'Hardware', 'href'=>'config.php?section=edit_hardware');
+			$subsubmenu[] = array('name'=>'Netzwerke', 'href'=>'config.php?section=edit_networks');
 			$subsubmenu[] = array('name'=>'TLDs', 'href'=>'config.php?section=edit_tlds');
 			$submenu[] = $subsubmenu;
 			$menu[] = $submenu;
