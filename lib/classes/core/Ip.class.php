@@ -63,37 +63,58 @@
 		}
 		
 		public function store() {
-			$ip = new Ip(false, false, $this->getIp());
-			$ip->fetch();
 			
-			if($this->getIpId() != 0 AND $ip->getIpId()==$this->getIpId()) {
-				try {
-					$stmt = DB::getInstance()->prepare("UPDATE ips SET
-																interface_id = ?,
-																ip = ?,
-																netmask = ?,
-																ipv = ?,
-																update_date = NOW()
-														WHERE id=?");
-					$stmt->execute(array($this->getInterfaceId(), $this->getIp(), $this->getNetmask(), $this->getIpv()));
-					return $stmt->rowCount();
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
+			//if address is ipv6 link local, then it is possible to store more than one of these adresses
+			//on different interfaces in different networks. So we need to check if the address already exists
+			//on the given interface and if not, add
+			if(strpos($this->getIp(), "fe80")!==false) {
+				echo "test1\n";
+				$ip = new Ip(false, $this->getInterfaceId(), $this->getIp());
+				if(!$ip->fetch()) {
+					echo "test2\n";
+					return $this->insert();
 				}
-			} elseif($this->getInterfaceId()!=0 AND $this->getIp()!="" AND $this->getIpv()!=0 AND $ip->getIpId()==0) {
-				try {
-					$stmt = DB::getInstance()->prepare("INSERT INTO ips (interface_id, ip, netmask, ipv, create_date, update_date)
-														VALUES (?, ?, ?, ?, NOW(), NOW())");
-					$stmt->execute(array($this->getInterfaceId(), $this->getIp(), $this->getNetmask(), $this->getIpv()));
-					return DB::getInstance()->lastInsertId();
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
+			} else {
+				$ip = new Ip(false, false, $this->getIp());
+				$result = $ip->fetch();
+			
+				if($this->getIpId() != 0 AND (($result AND $ip->getIpId()==$this->getIpId()) OR !$result)) {
+					return $this->update();
+				} elseif($this->getInterfaceId()!=0 AND $this->getIp()!="" AND $this->getIpv()!=0 AND $ip->getIpId()==0) {
+					return $this->insert();
 				}
 			}
 			
 			return false;
+		}
+		
+		private function update() {
+			try {
+				$stmt = DB::getInstance()->prepare("UPDATE ips SET
+															interface_id = ?,
+															ip = ?,
+															netmask = ?,
+															ipv = ?,
+															update_date = NOW()
+													WHERE id=?");
+				$stmt->execute(array($this->getInterfaceId(), $this->getIp(), $this->getNetmask(), $this->getIpv(), $this->getIpId()));
+				return $stmt->rowCount();
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+		}
+		
+		private function insert() {
+			try {
+				$stmt = DB::getInstance()->prepare("INSERT INTO ips (interface_id, ip, netmask, ipv, create_date, update_date)
+													VALUES (?, ?, ?, ?, NOW(), NOW())");
+				$stmt->execute(array($this->getInterfaceId(), $this->getIp(), $this->getNetmask(), $this->getIpv()));
+				return DB::getInstance()->lastInsertId();
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
 		}
 		
 		public function delete() {
@@ -122,9 +143,9 @@
 		
 		public function setIp($ip) {
 			if(is_string($ip)) {
-				$ip = explode("/", $ip);
-				$this->ip = $ip[0];
-				
+/*				$ip = explode("/", $ip);
+				$this->ip = $ip[0];*/
+				$this->ip = $ip;
 			}
 		}
 		

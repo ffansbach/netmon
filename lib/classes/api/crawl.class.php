@@ -7,6 +7,7 @@ require_once(ROOT_DIR.'/lib/classes/core/rrdtool.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/Networkinterface.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/NetworkinterfaceStatus.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/Ip.class.php');
 
 class Crawl {
 	public function getRoutersForCrawl() {
@@ -105,8 +106,15 @@ class Crawl {
 				}
 				exec("rrdtool update $rrd_path_traffic_rx ".time().":".round($traffic_rx_bps/1000, 2).":".round($traffic_tx_bps/1000, 2));
 				
+				//add unknown ipv6 link local addresses to netmon
+				//prepare data
+				$ipv6_link_local_addr = explode("/", $sendet_interface['ipv6_link_local_addr']);
+				$ipv6_link_local_netmask = (isset($ipv6_link_local_addr[1])) ? (int)$ipv6_link_local_addr[1] : 64;
+				$ipv6_link_local_addr = $ipv6_link_local_addr[0];
 				
-				ipv6_link_local_addr
+				//try to add ip address
+				$ip = new Ip(false, (int)$networkinterface_id, $ipv6_link_local_addr, $ipv6_link_local_netmask, 6);
+				$ip->store();
 			}
 
 			/**Insert IP crawl data*/
