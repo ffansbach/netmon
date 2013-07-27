@@ -18,7 +18,7 @@ if ($GLOBALS['installed']) {
 	$smarty->assign('netmon_version', $GLOBALS['netmon_version']);
 	$smarty->assign('netmon_codename', $GLOBALS['netmon_codename']);
 
-	if (strnatcmp(phpversion(),'5.2') >= 0) $smarty->assign('php_version', true);
+	if (strnatcmp(phpversion(),'5.3') >= 0) $smarty->assign('php_version', true);
 	else $smarty->assign('php_version', false);
 
 	$smarty->assign('openssl_loaded', extension_loaded('openssl'));
@@ -27,6 +27,7 @@ if ($GLOBALS['installed']) {
 	$smarty->assign('json_loaded', extension_loaded('json'));
 	$smarty->assign('curl_loaded', extension_loaded('curl'));	
 	$smarty->assign('gd_loaded', extension_loaded('gd'));
+	$smarty->assign('gmp_loaded', extension_loaded('gmp'));
 	$smarty->assign('exec', function_exists('exec'));
 	$smarty->assign('iconv_loaded', function_exists('iconv'));
 	

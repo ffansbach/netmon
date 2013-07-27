@@ -4,7 +4,7 @@
 <h2>Informationen im Web</h2>
 <ul>
 	<li><a href="http://oldenburg.freifunk.net/">Freifunk Oldenburg</a></li>
-	<li><a href="http://wiki.freifunk-ol.de/index.php?title=Netmon">Netmon Wiki</a></li>
+	<li><a href="http://wiki.freifunk-ol.de/w/Netmon">Netmon Wiki</a></li>
 	<li><a href="http://ticket.freifunk-ol.de/projects/netmon">Netmon Entwicklerportal</a></li>
 </ul>
 
@@ -13,23 +13,24 @@
 <div style="width: 100%; display:inline-block">
     <div style="float:left; width: 33%;">
 		<h3>PHP-Extensions</h3>
-		PDO: {if $pdo_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		PDO MySQL: {if $pdo_mysql_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		OpenSSL: {if $openssl_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		Json: {if $json_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		Curl: {if $curl_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		GD: {if $gd_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		Iconv: {if $iconv_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://php.net/manual/de/book.pdo.php">PDO</a>: {if $pdo_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://php.net/manual/de/ref.pdo-mysql.php">PDO MySQL</a>: {if $pdo_mysql_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://php.net/manual/de/book.openssl.php">OpenSSL</a>: {if $openssl_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://php.net/manual/de/book.gmp.php">GMP</a>: {if $gmp_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://php.net/manual/de/book.json.php">Json</a>: {if $json_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://php.net/manual/de/book.curl.php">Curl</a>: {if $curl_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://php.net/manual/de/book.image.php">GD</a>: {if $gd_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://php.net/manual/de/book.iconv.php">Iconv</a>: {if $iconv_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 	</div>
 	<div style="float:left; width: 33%;">
-		<h3>PHP-Version</h3>php_version
-		PHP Version 5.2+: {if $php_version}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}
+		<h3>PHP-Version</h3>
+		PHP >=5.3: {if $php_version}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}
 		<h3>PHP-Funktionen</h3> 
-		exec(): {if $exec}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
-		mail(): {if $mail}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://php.net/manual/de/function.exec.php">exec()</a>: {if $exec}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://php.net/manual/de/function.mail.php">mail()</a>: {if $mail}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" alt="nicht aktiviert">{/if}<br>
 
 		<h3>Externe Programme</h3> 
-		RrdTool: {if $rrdtool_installed}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
+		<a href="http://oss.oetiker.ch/rrdtool/">RrdTool</a>: {if $rrdtool_installed}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 	</div>
 	<div style="float:left; width: 33%;">
 		<h3>Ergebnis</h3>
@@ -43,7 +44,8 @@
 		{/if}
 	</div>
 </div>
-
+<br>
+<br>
 <form action="./install.php?section=db" method="POST">
   <p><input type="submit" value="Weiter"></p>
 </form>

@@ -18,7 +18,7 @@
 	// along with this program; if not, write to the Free Software
 	// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	// +---------------------------------------------------------------------------+/
-
+	
 	/**
 	* This file is the runtime configuration of the project
 	*
@@ -29,9 +29,9 @@
 	
 	define('ROOT_DIR', dirname(__FILE__));
 	
-	//Set default values
+	//Set default values (only used if no values can be found in database)
 	$GLOBALS['installed'] = false;
-	$GLOBALS['template'] = "bt";
+	$GLOBALS['template'] = "freifunk_oldenburg";
 	$GLOBALS['monitor_root'] = __DIR__."/";
 	set_include_path(get_include_path() .PATH_SEPARATOR. __DIR__."/lib/classes/extern/");
 	$GLOBALS['community_name'] = "Freifunk Deinestadt";
