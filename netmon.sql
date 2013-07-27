@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 27, 2013 at 03:34 AM
+-- Generation Time: Jul 27, 2013 at 09:20 PM
 -- Server version: 5.5.32-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.17-1~dotdeb.1
 
@@ -621,6 +621,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `notification_method` varchar(20) NOT NULL,
   `permission` varchar(20) DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
+  `update_date` datetime NOT NULL,
   `activated` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;

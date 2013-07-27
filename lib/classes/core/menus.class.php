@@ -154,10 +154,8 @@ class Menus extends Permission {
 	function adminMenu() {
 		$menu = array();
 		if (Permission::checkPermission(32)) {
-//			$menu[] = array('name'=>'Neues Projekt', 'href'=>'subneteditor.php?section=new');
-			$menu[] = array('name'=>'Neues Projekt', 'href'=>'projecteditor.php?section=new');
-//			$menu[] = array('name'=>'CCD regenerieren', 'href'=>'vpn.php?section=regenerate_ccd_subnet');
-			$menu[] = array('name'=>'Projektliste', 'href'=>'projectlist.php');
+/*			$menu[] = array('name'=>'Neues Projekt', 'href'=>'projecteditor.php?section=new');
+			$menu[] = array('name'=>'Projektliste', 'href'=>'projectlist.php');*/
 		}
 		$menu = Menus::checkIfSelected($menu);
 		return $menu;

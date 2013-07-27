@@ -10,6 +10,9 @@
 	require_once(ROOT_DIR.'/lib/classes/core/Router.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/Eventlist.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/Event.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/ConfigLineList.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/ConfigLine.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/User.class.php');
 	require_once(ROOT_DIR.'/lib/classes/extern/rest/rest.inc.php');
 	
 	class API extends Rest {
@@ -248,6 +251,55 @@
 				return $stmt->rowCount();
 			} else {
 				return false;
+			}
+		}
+		
+		private function configlist() {
+			$_REQUEST['api_key'] = (isset($_REQUEST['api_key'])) ? $_REQUEST['api_key'] : 'a';
+			$user = new User(false, false, false, false, false, $_REQUEST['api_key']);
+			$user->fetch();
+			if($user->getPermission()==120) {
+				if($this->get_request_method() == "GET") {
+					$config_line_list = new ConfigLineList($this->_request['offset'], $this->_request['limit'],
+															$this->_request['sort_by'], $this->_request['order']);
+					$domxmldata = $config_line_list->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				} else {
+					$this->error_code = 2;
+					$this->error_message = "The Configlist could not be created, your request seems to be malformed.";
+					$this->response($this->finishxml(), 400);
+				}
+			} else {
+				$this->error_code = 3;
+				$this->authentication = 0;
+				$this->error_message = "Not permittet";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
+		private function config() {
+			$_REQUEST['api_key'] = (isset($_REQUEST['api_key'])) ? $_REQUEST['api_key'] : 'a';
+			$user = new User(false, false, false, false, false, $_REQUEST['api_key']);
+			$user->fetch();
+			if($user->getPermission()==120) {
+				if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+					$config_line = new ConfigLine((int)$this->_request['id']);
+					if($config_line->fetch()) {
+						$domxmldata = $config_line->getDomXMLElement($this->domxml);
+						$this->response($this->finishxml($domxmldata), 200);
+					} else {
+						$this->error_code = 1;
+						$this->error_message = "Config not found";
+						$this->response($this->finishxml(), 404);
+					}
+				} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
+					header('Location: http://netmon.freifunk-ol.de/api/rest/configlist/');
+				}
+			} else {
+				$this->error_code = 3;
+				$this->authentication = 0;
+				$this->error_message = "Not permittet";
+				$this->response($this->finishxml(), 400);
 			}
 		}
 		

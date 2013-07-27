@@ -75,6 +75,16 @@
 			return $this->value;
 		}
 		
+		public function getDomXMLElement($domdocument) {
+			$domxmlelement = $domdocument->createElement('config');
+			$domxmlelement->appendChild($domdocument->createElement("config_id", $this->getConfigId()));
+			$domxmlelement->appendChild($domdocument->createElement("name", $this->getName()));
+			$domxmlelement->appendChild($domdocument->createElement("value", $this->getValue()));
+			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
+			$domxmlelement->appendChild($domdocument->createElement("update_date", $this->getUpdateDate()));
+			return $domxmlelement;
+		}
+		
 		public static function configByName($name) {
 			$config_line = new ConfigLine(false, $name);
 			if($config_line->fetch()) {
