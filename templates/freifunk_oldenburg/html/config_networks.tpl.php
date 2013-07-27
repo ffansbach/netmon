@@ -20,7 +20,6 @@ $(document).ready(function() {
 </script>
 
 <h1>Netzwerke</h1>
-
 <p>Hier können Netzwerke eingetragen werden aus denen Benutzer dann IP Adressen für eigene Hardware reservieren können.</p>
 
 <h2>Eingetragene Netzwerke</h2>
@@ -49,7 +48,13 @@ $(document).ready(function() {
 
 <h2>Neues Netzwerk eintragen</h2>
 <form action="./config.php?section=insert_edit_networks" method="POST">
-	<p><b>Netzwerk:</b><br><input name="ipv4_address" type="text" size="15" value="">/<input name="netmask" type="text" size="2" value=""></p>
+	<p><b>IP-Version: </b> 
+	<select name="ipv">
+		<option value="4">4</option>
+		<option value="6">6</option>
+	</select>
+		
+	<p><b>Netzwerk:</b><br><input name="ip" type="text" size="15" value="">/<input name="netmask" type="text" size="2" value=""></p>
 	
 	<p><input type="submit" value="Eintragen"></p>
 </form>

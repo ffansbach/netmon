@@ -51,7 +51,7 @@ class IntegratedXmlIPv6Crawler {
 					if($interface['ip_addresses']->getTotalCount()!=0 ){
 						foreach($interface['ip_addresses']->getIplist() as $key=>$ip_address) {
 							echo $ip_address->getIp();
-							if($ip_address->getIpv()==6) {
+							if($ip_address->getNetwork()->getIpv()==6) {
 								unset($return_string);
 								unset($xml_array);
 								unset($xml);

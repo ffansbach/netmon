@@ -3,12 +3,18 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 24, 2013 at 09:37 PM
+-- Generation Time: Jul 27, 2013 at 03:34 AM
 -- Server version: 5.5.32-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.17-1~dotdeb.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `freifunksql5`
@@ -328,6 +334,7 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
 CREATE TABLE IF NOT EXISTS `ips` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `interface_id` int(11) NOT NULL,
+  `network_id` int(11) NOT NULL,
   `router_id` int(11) NOT NULL,
   `project_id` int(11) NOT NULL,
   `ip` varchar(100) NOT NULL,
@@ -649,3 +656,7 @@ CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

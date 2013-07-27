@@ -69,7 +69,7 @@
 					{foreach $interface->getIpList()->getIpList() as $ip}
 						<ul>
 							<li>
-								<b>IPv{$ip->getIpv()} Adresse:</b> {$ip->getIp()}/{$ip->getNetmask()}<br>
+								<b>IPv{$ip->getNetwork()->getIpv()} Adresse:</b> {$ip->getIpCompressed()}/{$ip->getNetwork()->getNetmask()} (<a href="./ip.php?section=delete&ip_id={$ip->getIpId()}&router_id={$router_data.router_id}">IP entfernen</a>)<br>
 							</li>
 							<ul>
 								<li>
@@ -84,7 +84,7 @@
 			</div>
 			<div style="float:left; width: 50%;">
 				<p>
-					<a href="./ipeditor.php?section=add&router_id={$interface->getRouterId()}&interface_id={$interface->getNetworkinterfaceId()}">IP hinzufügen</a><br>
+					<a href="./ip.php?section=add&router_id={$interface->getRouterId()}&interface_id={$interface->getNetworkinterfaceId()}">IP hinzufügen</a><br>
 					<a href="./interface.php?section=delete&interface_id={$interface->getNetworkinterfaceId()}">Interface entfernen</a>
 				</p>
 			</div>

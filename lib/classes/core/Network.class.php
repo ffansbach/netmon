@@ -1,5 +1,6 @@
 <?php
 	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Ip.class.php');
 	
 	class Network extends Object {
 		private $network_id = 0;
@@ -12,9 +13,9 @@
 									$create_date=false, $update_date=false) {
 				$this->setNetworkId($network_id);
 				$this->setUserId($user_id);
+				$this->setIpv($ipv);
 				$this->setIp($ip);
 				$this->setNetmask($netmask);
-				$this->setIpv($ipv);
 				$this->setCreateDate($create_date);
 				$this->setUpdateDate($update_date);
 		}
@@ -49,9 +50,9 @@
 			if(!empty($result)) {
 				$this->setNetworkId((int)$result['id']);
 				$this->setUserId((int)$result['user_id']);
+				$this->setIpv((int)$result['ipv']);
 				$this->setIp($result['ip']);
 				$this->setNetmask((int)$result['netmask']);
-				$this->setIpv((int)$result['ipv']);
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
 				return true;
@@ -78,7 +79,7 @@
 					echo $e->getMessage();
 					echo $e->getTraceAsString();
 				}
-			} elseif($this->getUserId()!=0 AND $this->getIp()!="" AND $this->getIpv()!=0) {
+			} elseif($this->getUserId()!=0 AND $this->getIp()!="" AND $this->getNetmask()!=0 AND $this->getIpv()!=0) {
 				try {
 					$stmt = DB::getInstance()->prepare("INSERT INTO networks (user_id, ip, netmask, ipv, create_date, update_date)
 														VALUES (?, ?, ?, ?, NOW(), NOW())");
@@ -118,10 +119,10 @@
 		}
 		
 		public function setIp($ip) {
-			if(is_string($ip)) {
-				$ip = explode("/", $ip);
-				$this->ip = $ip[0];
-				
+			if(is_string($ip) AND Ip::isValidIp($ip, $this->getIpv())) {
+				$this->ip = $ip;
+				if($this->getIpv()==6)
+					$this->ip = (string)Ip::ipv6Expand($this->ip);
 			}
 		}
 		
@@ -131,7 +132,7 @@
 		}
 		
 		public function setNetmask($netmask) {
-			if(is_int($netmask))
+			if(is_int($netmask) AND Network::isValidNetmask($netmask, $this->getIpv()))
 				$this->netmask = $netmask;
 		}
 		
@@ -164,6 +165,16 @@
 			$domxmlelement->appendChild($domdocument->createElement("netmask", $this->getNetmask()));
 			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
 			return $domxmlelement;
+		}
+		
+		public static function isValidNetmask($netmask, $ipv) {
+			if($ipv==4) {
+				return ($netmask>0 AND $netmask<33);
+			} elseif($ipv==6) {
+				return ($netmask>0 AND $netmask<129);
+			}
+			
+			return false;
 		}
 	}
 ?>

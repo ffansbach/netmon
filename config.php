@@ -354,13 +354,14 @@ if ($_GET['section']=="edit") {
 	$smarty->display("config_networks.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif($_GET['section']=="insert_edit_networks") {
-	if(!empty($_POST['ipv4_address'])) {
-		$network = new Network(false, (int)$_SESSION['user_id'], $_POST['ipv4_address'], (int)$_POST['netmask'], 4);
-		$network->store();
+	$network = new Network(false, (int)$_SESSION['user_id'], $_POST['ip'], (int)$_POST['netmask'], (int)$_POST['ipv']);
+	if($network->store()) {
+		$message[] = array('Das Netzwerk '.$_POST['ip'].'/'.$_POST['netmask'].' wurde angelegt.', 1);
+		Message::setMessage($message);
+	} else {
+		$message[] = array('Das Netzwerk '.$_POST['ip'].'/'.$_POST['netmask'].' konnte nicht angelegt werden.', 2);
+		Message::setMessage($message);
 	}
-	
-	$message[] = array('Das neue Netzwerk '.$_POST['ipv4_address'].'/'.$_POST['netmask'].' wurde eingetragen.', 1);
-	Message::setMessage($message);
 	
 	header('Location: ./config.php?section=edit_networks');
 } elseif($_GET['section']=="insert_delete_network") {

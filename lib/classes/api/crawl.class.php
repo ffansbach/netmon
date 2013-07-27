@@ -110,11 +110,16 @@ class Crawl {
 				//prepare data
 				$ipv6_link_local_addr = explode("/", $sendet_interface['ipv6_link_local_addr']);
 				$ipv6_link_local_netmask = (isset($ipv6_link_local_addr[1])) ? (int)$ipv6_link_local_addr[1] : 64;
-				$ipv6_link_local_addr = $ipv6_link_local_addr[0];
+				$ipv6_link_local_addr = Ip::ipv6Expand($ipv6_link_local_addr[0]);
 				
-				//try to add ip address
-				$ip = new Ip(false, (int)$networkinterface_id, $ipv6_link_local_addr, $ipv6_link_local_netmask, 6);
-				$ip->store();
+				//first try to determine network of given address
+				$ipv6_link_local_network = Ip::ipv6NetworkFromAddr($ipv6_link_local_addr, (int)$ipv6_link_local_netmask);
+				$network = new Network(false, false, $ipv6_link_local_network, (int)$ipv6_link_local_netmask, 6);
+				if($network->fetch()) {
+					//if network found, then try to add ip address
+					$ip = new Ip(false, (int)$networkinterface_id, $network->getNetworkId(), $ipv6_link_local_addr);
+					$ip->store();
+				}
 			}
 
 			/**Insert IP crawl data*/

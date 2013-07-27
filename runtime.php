@@ -31,7 +31,7 @@
 	
 	//Set default values
 	$GLOBALS['installed'] = false;
-	$GLOBALS['template'] = "freifunk_oldenburg";
+	$GLOBALS['template'] = "bt";
 	$GLOBALS['monitor_root'] = __DIR__."/";
 	set_include_path(get_include_path() .PATH_SEPARATOR. __DIR__."/lib/classes/extern/");
 	$GLOBALS['community_name'] = "Freifunk Deinestadt";
