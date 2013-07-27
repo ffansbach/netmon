@@ -40,6 +40,8 @@
 														ORDER BY
 															case :sort_by
 																when 'ip' then ips.ip
+																when 'create_date' then ips.create_date
+																when 'ip_id' then ips.id
 																else ips.id
 															end
 														".$this->getOrder()."
@@ -101,6 +103,19 @@
 		public function delete() {
 			foreach($this->getIplist() as $ip) {
 				$ip->delete();
+			}
+		}
+		
+		public function deleteDuplicates() {
+			for($i=0; $i<count($this->iplist); $i++) {
+				$ip2hold = $this->iplist[$i];
+				for($ii=0; $ii<count($this->iplist); $ii++) {
+					$ip2test = $this->iplist[$ii];
+					if($ip2hold->getIpId()!=$ip2test->getIpId() AND $ip2hold->getIp()==$ip2test->getIp()) {
+						$ip2test->delete();
+						array_splice($this->iplist, $ii, 1);
+					}
+				}
 			}
 		}
 		

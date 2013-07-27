@@ -15,4 +15,20 @@
 	//ALTER TABLE `crawl_routers` ADD `client_count` INT NOT NULL 
 	//DROP TABLE crawl_clients_count
 	
+	/*
+	Script to remove duplicated ip adresses from interfaces
+	This happens when you switch from shortened ipv6 to extracted ipv6 format in db
+	require_once('runtime.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Iplist.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Networkinterfacelist.class.php');
+	
+	$networkinterfacelist = new Networkinterfacelist(false, 0, -1);
+	$networkinterfacelist = $networkinterfacelist->getNetworkinterfacelist();
+	
+	foreach($networkinterfacelist as $networkinterface) {
+		echo $networkinterface->getName()."<br>";
+		$iplist = new Iplist($networkinterface->getNetworkinterfaceId(), 0, -1, "create_date", "desc");
+		$iplist->deleteDuplicates();
+	}*/
+	
 ?>

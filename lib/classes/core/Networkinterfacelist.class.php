@@ -29,6 +29,9 @@
 					echo $e->getTraceAsString();
 				}
 				$this->setTotalCount((int)$total_count['total_count']);
+				//if limit -1 then get all interfaces
+				if($this->getLimit()==-1)
+					$this->setLimit($this->getTotalCount());
 				
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT interfaces.id as networkinterface_id
@@ -63,6 +66,9 @@
 					echo $e->getTraceAsString();
 				}
 				$this->setTotalCount((int)$total_count['total_count']);
+				//if limit -1 then get all interfaces
+				if($this->getLimit()==-1)
+					$this->setLimit($this->getTotalCount());
 			
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT interfaces.id as networkinterface_id
