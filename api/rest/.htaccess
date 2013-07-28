@@ -10,6 +10,7 @@
 	
 	RewriteRule ^configlist/?$ api.php?rquest=configlist [QSA,L]
 	RewriteRule ^config/([0-9]+)/?$ api.php?rquest=config&id=$1 [QSA,L]
+	RewriteRule ^config/([0-9A-Za-z_-]+)/?$ api.php?rquest=config&name=$1 [QSA,L]
 	
 	RewriteRule ^networkinterface/([0-9]+)/iplist/?$ api.php?rquest=iplist&interface_id=$1 [QSA,L]
 	RewriteRule ^networkinterface/([0-9]+)/?$ api.php?rquest=networkinterface&id=$1 [QSA,L]

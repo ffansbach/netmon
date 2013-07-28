@@ -270,10 +270,10 @@
 					$this->response($this->finishxml(), 400);
 				}
 			} else {
-				$this->error_code = 3;
+				$this->error_code = 2;
 				$this->authentication = 0;
-				$this->error_message = "Not permittet";
-				$this->response($this->finishxml(), 400);
+				$this->error_message = "The api_key is not valid.";
+				$this->response($this->finishxml(), 401);
 			}
 		}
 		
@@ -292,14 +292,24 @@
 						$this->error_message = "Config not found";
 						$this->response($this->finishxml(), 404);
 					}
+				} elseif($this->get_request_method() == "GET" && isset($this->_request['name'])) {
+					$config_line = new ConfigLine(false, $this->_request['name']);
+					if($config_line->fetch()) {
+						$domxmldata = $config_line->getDomXMLElement($this->domxml);
+						$this->response($this->finishxml($domxmldata), 200);
+					} else {
+						$this->error_code = 1;
+						$this->error_message = "Config not found";
+						$this->response($this->finishxml(), 404);
+					}
 				} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
 					header('Location: http://netmon.freifunk-ol.de/api/rest/configlist/');
 				}
 			} else {
-				$this->error_code = 3;
+				$this->error_code = 2;
 				$this->authentication = 0;
-				$this->error_message = "Not permittet";
-				$this->response($this->finishxml(), 400);
+				$this->error_message = "The api_key is not valid.";
+				$this->response($this->finishxml(), 401);
 			}
 		}
 		
