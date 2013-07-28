@@ -49,13 +49,3 @@
 <form action="./install.php?section=db" method="POST">
   <p><input type="submit" value="Weiter"></p>
 </form>
-
-<!--<form action="./install.php.php?section=db" method="POST">
-	<h2>Datenbank</h2>
-	<p>Server:<br><input name="server" type="text" size="30" value="localhost"></p>
-	<p>Benutzername:<br><input name="nickname" type="text" size="30"></p>
-	<p>Passwort:<br><input name="password" type="password" size="30"></p>
-	<p>Datenbank:<br><input name="database" type="text" size="30"></p>
-
-  <p><input type="submit" value="Absenden"></p>
-</form>-->
