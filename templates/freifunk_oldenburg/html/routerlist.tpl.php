@@ -98,7 +98,7 @@ $(document).ready(function() {
 						{/if}
 					</td>
 					<td>{if !empty($router.hardware_name)}{$router.hardware_name}{else}{$router.short_chipset_name}{if $router.short_chipset_name!=$router.chipset_name}...{/if}{/if}</td>
-					<td>{$router.create_date|date_format:"%d.%m.%Y"}</td>
+					<td>{$router.router_create_date|date_format:"%d.%m.%Y"}</td>
 					<td><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></td>
 					<td value="{math equation='round(x,1)' x=$router.router_reliability.online_percent}">{math equation="round(x,1)" x=$router.router_reliability.online_percent}%</td>
 					<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60}</td>

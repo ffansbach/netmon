@@ -171,7 +171,7 @@ class Router_old {
 		$routers = array();
 		$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
 		try {
-			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.*,
+			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.create_date as router_create_date, routers.*,
 					chipsets.id as chipset_id, chipsets.name as chipset_name, chipsets.*,
 					users.id as user_id, users.*,
 					crawl_routers.status, crawl_routers.nodewatcher_version
