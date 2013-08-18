@@ -329,7 +329,9 @@ if ($_GET['section']=="edit") {
 	$smarty->display("config_edit_dns_zones.tpl.php");
 	$smarty->display("footer.tpl.php");
 } elseif($_GET['section']=="insert_edit_dns_zones") {
-	$dns_zone = new DnsZone(false, $_SESSION['user_id'], $_POST['name']);
+	$dns_zone = new DnsZone(false, (int)$_SESSION['user_id'], $_POST['name'], $_POST['pri_dns'], $_POST['sec_dns'],
+							(int)$_POST['serial'], (int)$_POST['refresh'], (int)$_POST['retry'],
+							(int)$_POST['expire'], (int)$_POST['ttl']);
 	$dns_zone->store();
 	
 	$message[] = array('Neue DNS-Zone '.$_POST['name'].' wurde eingetragen.', 1);

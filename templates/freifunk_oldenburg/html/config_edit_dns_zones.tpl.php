@@ -50,12 +50,12 @@ Services eintragen können.</p>
 			{foreach item=dns_zone from=$dns_zone_list}
 				<tr>
 					<td>{$dns_zone->getName()}</td>
-					<td>1</td>
-					<td>2</td>
-					<td>3</td>
-					<td>4</td>
-					<td>5</td>
-					<td>6</td>
+					<td>{$dns_zone->getPriDns()}</td>
+					<td>{$dns_zone->getSecDns()}</td>
+					<td>{$dns_zone->getRefresh()}</td>
+					<td>{$dns_zone->getRetry()}</td>
+					<td>{$dns_zone->getExpire()}</td>
+					<td>{$dns_zone->getTtl()}</td>
 					<td>{$dns_zone->getCreateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr</td>
 					<td><a href="./config.php?section=insert_delete_dns_zone&dns_zone_id={$dns_zone->getDnsZoneId()}">Löschen</a></td>
 				</tr>
