@@ -3,8 +3,8 @@
 require_once('runtime.php');
 require_once('lib/classes/core/install.class.php');
 require_once('lib/classes/core/chipsets.class.php');
-require_once('lib/classes/core/Tld.class.php');
-require_once('lib/classes/core/TldList.class.php');
+require_once('lib/classes/core/DnsZone.class.php');
+require_once('lib/classes/core/DnsZoneList.class.php');
 require_once('lib/classes/core/Network.class.php');
 require_once('lib/classes/core/Networklist.class.php');
 require_once('lib/classes/core/ConfigLine.class.php');
@@ -320,31 +320,32 @@ if ($_GET['section']=="edit") {
 		Message::setMessage($message);
 		header('Location: ./config.php?section=edit_hardware_name&chipset_id='.$_GET['chipset_id']);
 	}
-} elseif($_GET['section']=="edit_tlds") {
-	$tld_list = new TldList();
-	$smarty->assign('tld_list', $tld_list->getTldList());
+} elseif($_GET['section']=="edit_dns_zones") {
+	$dns_zone_list = new DnsZoneList();
+	$smarty->assign('dns_zone_list', $dns_zone_list->getDnsZoneList());
 	
 	$smarty->assign('message', Message::getMessage());
 	$smarty->display("header.tpl.php");
-	$smarty->display("config_edit_tlds.tpl.php");
+	$smarty->display("config_edit_dns_zones.tpl.php");
 	$smarty->display("footer.tpl.php");
-} elseif($_GET['section']=="insert_edit_tlds") {
-	$tld = new Tld(false, $_SESSION['user_id'], $_POST['tld']);
-	$tld->store();
+} elseif($_GET['section']=="insert_edit_dns_zones") {
+	$dns_zone = new DnsZone(false, $_SESSION['user_id'], $_POST['name']);
+	$dns_zone->store();
 	
-	$message[] = array('Neue Topleveldomain '.$_POST['tld'].' wurde eingetragen.', 1);
+	$message[] = array('Neue DNS-Zone '.$_POST['name'].' wurde eingetragen.', 1);
 	Message::setMessage($message);
 	
-	header('Location: ./config.php?section=edit_tlds');
-} elseif($_GET['section']=="insert_delete_tld") {
-	$tld = new Tld($_GET['tld_id']);
-	$tld_tld = $tld->getTld();
-	$tld->delete();
+	header('Location: ./config.php?section=edit_dns_zones');
+} elseif($_GET['section']=="insert_delete_dns_zone") {
+	$dns_zone = new DnsZone($_GET['dns_zone_id']);
+	$dns_zone->fetch();
+	$dns_zone_name = $dns_zone->getName();
+	$dns_zone->delete();
 
-	$message[] = array('Die Topleveldomain '.$tld_tld.' wurde gelöscht.', 1);
+	$message[] = array('Die DNS-Zone '.$dns_zone_name.' wurde gelöscht.', 1);
 	Message::setMessage($message);
 	
-	header('Location: ./config.php?section=edit_tlds');
+	header('Location: ./config.php?section=edit_dns_zones');
 } elseif($_GET['section']=="edit_networks") {
 	$networklist = new Networklist();
 	$smarty->assign('networklist', $networklist->getNetworklist());

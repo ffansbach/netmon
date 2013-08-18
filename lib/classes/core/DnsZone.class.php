@@ -1,15 +1,15 @@
 <?php
 	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
 	
-	class Tld extends Object {
-		private $tld_id = 0;
+	class DnsZone extends Object {
+		private $dns_zone_id = 0;
 		private $user_id = 0;
-		private $tld = "";
+		private $name = "";
 		
-		public function __construct($tld_id=false, $user_id=false, $tld=false, $create_date=false, $update_date=false) {
-			$this->setTldId((int)$tld_id);
+		public function __construct($dns_zone_id=false, $user_id=false, $name=false, $create_date=false, $update_date=false) {
+			$this->setDnsZoneId((int)$dns_zone_id);
 			$this->setUserId((int)$user_id);
-			$this->setTld($tld);
+			$this->setName($name);
 			$this->setCreateDate($create_date);
 			$this->setUpdateDate($update_date);
 		}
@@ -18,16 +18,16 @@
 			$result = array();
 			try {
 				$stmt = DB::getInstance()->prepare("SELECT *
-													FROM tlds
+													FROM dns_zones
 													WHERE
-														(id = :tld_id OR :tld_id=0) AND
+														(id = :dns_zone_id OR :dns_zone_id=0) AND
 														(user_id = :user_id OR :user_id=0) AND
-														(tld = :tld OR :tld='') AND
+														(name = :name OR :name='') AND
 														(create_date = FROM_UNIXTIME(:create_date) OR :create_date=0) AND
 														(update_date = FROM_UNIXTIME(:update_date) OR :update_date=0)");
-				$stmt->bindParam(':tld_id', $this->getTldId(), PDO::PARAM_INT);
+				$stmt->bindParam(':dns_zone_id', $this->getDnsZoneId(), PDO::PARAM_INT);
 				$stmt->bindParam(':user_id', $this->getUserId(), PDO::PARAM_INT);
-				$stmt->bindParam(':tld', $this->getTld(), PDO::PARAM_STR);
+				$stmt->bindParam(':name', $this->getName(), PDO::PARAM_STR);
 				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
 				$stmt->bindParam(':update_date', $this->getUpdateDate(), PDO::PARAM_INT);
 				$stmt->execute();
@@ -38,9 +38,9 @@
 			}
 			
 			if(!empty($result)) {
-				$this->setTldId((int)$result['id']);
+				$this->setDnsZoneId((int)$result['id']);
 				$this->setUserId((int)(int)$result['user_id']);
-				$this->setTld($result['tld']);
+				$this->setName($result['name']);
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
 				return true;
@@ -50,24 +50,24 @@
 		}
 		
 		public function store() {
-			if($this->getTldId() != 0) {
+			if($this->getDnsZoneId() != 0) {
 				try {
-					$stmt = DB::getInstance()->prepare("UPDATE tlds SET
+					$stmt = DB::getInstance()->prepare("UPDATE dns_zones SET
 																user_id = ?,
-																tld = ?,
+																name = ?,
 																update_date = NOW()
 														WHERE id=?");
-					$stmt->execute(array($this->getUserId(), $this->getTld(), $this->getTldId()));
+					$stmt->execute(array($this->getUserId(), $this->getName(), $this->getDnsZoneId()));
 					return $stmt->rowCount();
 				} catch(PDOException $e) {
 					echo $e->getMessage();
 					echo $e->getTraceAsString();
 				}
-			} elseif($this->getUserId() != 0 AND $this->getTld()!="") {
+			} elseif($this->getUserId() != 0 AND $this->getName()!="") {
 				try {
-					$stmt = DB::getInstance()->prepare("INSERT INTO tlds (user_id, tld, create_date, update_date)
+					$stmt = DB::getInstance()->prepare("INSERT INTO dns_zones (user_id, name, create_date, update_date)
 														VALUES (?, ?, NOW(), NOW())");
-					$stmt->execute(array($this->getUserId(), $this->getTld()));
+					$stmt->execute(array($this->getUserId(), $this->getName()));
 					return DB::getInstance()->lastInsertId();
 				} catch(PDOException $e) {
 					echo $e->getMessage();
@@ -80,17 +80,17 @@
 		
 		public function delete() {
 			try {
-				$stmt = DB::getInstance()->prepare("DELETE FROM tlds WHERE id=?");
-				$stmt->execute(array($this->getTldId()));
+				$stmt = DB::getInstance()->prepare("DELETE FROM dns_zones WHERE id=?");
+				$stmt->execute(array($this->getDnsZoneId()));
 			} catch(PDOException $e) {
 				echo $e->getMessage();
 				echo $e->getTraceAsString();
 			}
 		}
 		
-		public function setTldId($tld_id) {
-			if(is_int($tld_id))
-				$this->tld_id = $tld_id;
+		public function setDnsZoneId($dns_zone_id) {
+			if(is_int($dns_zone_id))
+				$this->dns_zone_id = $dns_zone_id;
 		}
 		
 		public function setUserId($user_id) {
@@ -98,24 +98,24 @@
 				$this->user_id = $user_id;
 		}
 		
-		public function setTld($tld) {
-			if(!preg_match('/^([a-z])+$/i', $tld)) {
+		public function setName($name) {
+			if(!preg_match('/^([a-z])+$/i', $name)) {
 				return false;
 			} else {
-				$this->tld = $tld;
+				$this->name = $name;
 			}
 		}
 		
-		public function getTldId() {
-			return $this->tld_id;
+		public function getDnsZoneId() {
+			return $this->dns_zone_id;
 		}
 		
 		public function getUserId() {
 			return $this->user_id;
 		}
 		
-		public function getTld() {
-			return $this->tld;
+		public function getName() {
+			return $this->name;
 		}
 	}
 ?>

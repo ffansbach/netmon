@@ -63,7 +63,7 @@
 			//if address is ipv6 link local, then it is possible to store more than one of these adresses
 			//on different interfaces in different networks. So we need to check if the address already exists
 			//on the given interface and if not, add
-			if($this->getIp()!="" AND $this->ipIsInNetwork()) {
+			if($this->getInterfaceId()!=0 AND $this->getIp()!="" AND $this->ipIsInNetwork()) {
 				if(strpos($this->getIp(), "fe80")!==false) {
 					$ip = new Ip(false, $this->getInterfaceId(), $this->getNetworkId(), $this->getIp());
 					if(!$ip->fetch()) {

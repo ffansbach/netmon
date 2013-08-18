@@ -2,8 +2,8 @@
 	require_once('lib/classes/core/EventNotification.class.php');
 	require_once('lib/classes/core/ObjectList.class.php');
 	
-	class TldList extends ObjectList {
-		private $tld_list = array();
+	class DnsZoneList extends ObjectList {
+		private $dns_zone_list = array();
 		
 		public function __construct($user_id=false, $offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
@@ -19,8 +19,8 @@
 				// initialize $total_count with the total number of objects in the list (over all pages)
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-														FROM tlds
-														WHERE tlds.user_id=?");
+														FROM dns_zones
+														WHERE dns_zones.user_id=?");
 					$stmt->execute(array($user_id));
 					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
@@ -30,13 +30,13 @@
 				$this->setTotalCount((int)$total_count['total_count']);
 				
 				try {
-					$stmt = DB::getInstance()->prepare("SELECT id as tld_id
-														FROM tlds
-														WHERE tlds.user_id = :user_id
+					$stmt = DB::getInstance()->prepare("SELECT id as dns_zone_id
+														FROM dns_zones
+														WHERE dns_zones.user_id = :user_id
 														ORDER BY
 															case :sort_by
-																when 'create_date' then tlds.create_date
-																else tlds.id
+																when 'create_date' then dns_zones.create_date
+																else dns_zones.id
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");
@@ -54,7 +54,7 @@
 				// initialize $total_count with the total number of objects in the list (over all pages)
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-														FROM tlds");
+														FROM dns_zones");
 					$stmt->execute(array($user_id));
 					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
 				} catch(PDOException $e) {
@@ -64,12 +64,12 @@
 				$this->setTotalCount((int)$total_count['total_count']);
 				
 				try {
-					$stmt = DB::getInstance()->prepare("SELECT id as tld_id
-														FROM tlds
+					$stmt = DB::getInstance()->prepare("SELECT id as dns_zone_id
+														FROM dns_zones
 														ORDER BY
 															case :sort_by
-																when 'create_date' then tlds.create_date
-																else tlds.id
+																when 'create_date' then dns_zones.create_date
+																else dns_zones.id
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");
@@ -84,15 +84,15 @@
 				}
 			}
 			
-			foreach($result as $tld) {
-				$tld = new Tld((int)$tld['tld_id']);
-				$tld->fetch();
-				$this->tld_list[] = $tld;
+			foreach($result as $dns_zone) {
+				$dns_zone = new DnsZone((int)$dns_zone['dns_zone_id']);
+				$dns_zone->fetch();
+				$this->dns_zone_list[] = $dns_zone;
 			}
 		}
 		
-		public function getTldList() {
-			return $this->tld_list;
+		public function getDnsZoneList() {
+			return $this->dns_zone_list;
 		}
 	}
 ?>

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 27, 2013 at 09:20 PM
+-- Generation Time: Aug 18, 2013 at 02:07 AM
 -- Server version: 5.5.32-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.17-1~dotdeb.1
 
@@ -266,6 +266,44 @@ CREATE TABLE IF NOT EXISTS `dns_hosts` (
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `host` (`host`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dns_records`
+--
+
+CREATE TABLE IF NOT EXISTS `dns_records` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `zone_id` int(11) NOT NULL,
+  `host` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `pri` int(11) NOT NULL,
+  `destination` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `dns_zones`
+--
+
+CREATE TABLE IF NOT EXISTS `dns_zones` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `pri_dns` varchar(255) NOT NULL,
+  `sec_dns` varchar(255) NOT NULL,
+  `serial` int(11) NOT NULL,
+  `refresh` int(11) NOT NULL,
+  `retry` int(11) NOT NULL,
+  `expire` int(11) NOT NULL,
+  `ttl` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -577,21 +615,6 @@ CREATE TABLE IF NOT EXISTS `subnets` (
   `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `tlds`
---
-
-CREATE TABLE IF NOT EXISTS `tlds` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `tld` varchar(20) NOT NULL,
-  `create_date` datetime NOT NULL,
-  `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

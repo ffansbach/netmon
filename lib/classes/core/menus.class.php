@@ -174,8 +174,8 @@ class Menus extends Permission {
 			$subsubmenu[] = array('name'=>'Jabber', 'href'=>'config.php?section=edit_jabber');
 			$subsubmenu[] = array('name'=>'Twitter', 'href'=>'config.php?section=edit_twitter');
 			$subsubmenu[] = array('name'=>'Hardware', 'href'=>'config.php?section=edit_hardware');
-			$subsubmenu[] = array('name'=>'Netzwerke', 'href'=>'config.php?section=edit_networks');
-			$subsubmenu[] = array('name'=>'TLDs', 'href'=>'config.php?section=edit_tlds');
+			$subsubmenu[] = array('name'=>'IP-Netzwerke', 'href'=>'config.php?section=edit_networks');
+			$subsubmenu[] = array('name'=>'DNS-Zonen', 'href'=>'config.php?section=edit_dns_zones');
 			$submenu[] = $subsubmenu;
 			$menu[] = $submenu;
 		}

@@ -69,7 +69,12 @@
 					{foreach $interface->getIpList()->getIpList() as $ip}
 						<ul>
 							<li>
-								<b>IPv{$ip->getNetwork()->getIpv()} Adresse:</b> {$ip->getIpCompressed()}/{$ip->getNetwork()->getNetmask()} (<a href="./ip.php?section=delete&ip_id={$ip->getIpId()}&router_id={$router_data.router_id}">IP entfernen</a>)<br>
+								<b>IPv{$ip->getNetwork()->getIpv()} Adresse:</b> {$ip->getIpCompressed()}/{$ip->getNetwork()->getNetmask()} (<a href="./ip.php?section=delete&ip_id={$ip->getIpId()}&router_id={$router_data.router_id}">IP entfernen</a>)
+								
+								(<a href="./ping_ip.php?ip_id={$ip->getIpId()}">Ping</a>, <a href="./show_crawl_data.php?ip_id={$ip->getIpId()}">Crawl Daten</a>)
+								
+								
+								<br>
 							</li>
 							<ul>
 								<li>
