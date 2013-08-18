@@ -196,6 +196,7 @@
 			$domxmlelement->appendChild($domdocument->createElement("network_id", $this->getNetworkId()));
 			$domxmlelement->appendChild($domdocument->createElement("ip", $this->getIp()));
 			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
+			$domxmlelement->appendChild($this->getNetwork()->getDomXMLElement($domdocument));
 			return $domxmlelement;
 		}
 		

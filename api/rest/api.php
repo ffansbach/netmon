@@ -13,6 +13,10 @@
 	require_once(ROOT_DIR.'/lib/classes/core/ConfigLineList.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/ConfigLine.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/User.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/DnsZone.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/DnsZoneList.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/DnsRessourceRecord.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/DnsRessourceRecordList.class.php');
 	require_once(ROOT_DIR.'/lib/classes/extern/rest/rest.inc.php');
 	
 	class API extends Rest {
@@ -310,6 +314,70 @@
 				$this->authentication = 0;
 				$this->error_message = "The api_key is not valid.";
 				$this->response($this->finishxml(), 401);
+			}
+		}
+		
+		private function dns_zone() {
+			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+				$dns_zone = new DnsZone((int)$this->_request['id']);
+				if($dns_zone->fetch()) {
+					$domxmldata = $dns_zone->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				} else {
+					$this->error_code = 1;
+					$this->error_message = "DNS Zone not found";
+					$this->response($this->finishxml(), 404);
+				}
+			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
+				header('Location: http://netmon.freifunk-ol.de/api/rest/dns_zone_list/');
+			}
+		}
+		
+		private function dns_zone_list() {
+			if($this->get_request_method() == "GET" && isset($this->_request['dns_zone_id'])) {
+
+			} elseif($this->get_request_method() == "GET") {
+				$dns_zone_list = new DnsZoneList(false,
+												 $this->_request['offset'], $this->_request['limit'],
+												 $this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $dns_zone_list->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The iplist could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
+		private function dns_ressource_record() {
+			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+				$dns_ressource_record = new DnsRessourceRecord((int)$this->_request['id']);
+				if($dns_ressource_record->fetch()) {
+					$domxmldata = $dns_ressource_record->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				} else {
+					$this->error_code = 1;
+					$this->error_message = "DNS Ressource Record not found";
+					$this->response($this->finishxml(), 404);
+				}
+			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
+				header('Location: http://netmon.freifunk-ol.de/api/rest/dns_ressource_record_list/');
+			}
+		}
+		
+		private function dns_ressource_record_list() {
+			if($this->get_request_method() == "GET" && isset($this->_request['dns_zone_id'])) {
+
+			} elseif($this->get_request_method() == "GET") {
+				$dns_ressource_record_list = new DnsRessourceRecordList(false, false, 
+																		$this->_request['offset'], $this->_request['limit'],
+																		$this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $dns_ressource_record_list->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The iplist could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
 			}
 		}
 		

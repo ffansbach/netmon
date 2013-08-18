@@ -320,34 +320,6 @@ if ($_GET['section']=="edit") {
 		Message::setMessage($message);
 		header('Location: ./config.php?section=edit_hardware_name&chipset_id='.$_GET['chipset_id']);
 	}
-} elseif($_GET['section']=="edit_dns_zones") {
-	$dns_zone_list = new DnsZoneList();
-	$smarty->assign('dns_zone_list', $dns_zone_list->getDnsZoneList());
-	
-	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config_edit_dns_zones.tpl.php");
-	$smarty->display("footer.tpl.php");
-} elseif($_GET['section']=="insert_edit_dns_zones") {
-	$dns_zone = new DnsZone(false, (int)$_SESSION['user_id'], $_POST['name'], $_POST['pri_dns'], $_POST['sec_dns'],
-							(int)$_POST['serial'], (int)$_POST['refresh'], (int)$_POST['retry'],
-							(int)$_POST['expire'], (int)$_POST['ttl']);
-	$dns_zone->store();
-	
-	$message[] = array('Neue DNS-Zone '.$_POST['name'].' wurde eingetragen.', 1);
-	Message::setMessage($message);
-	
-	header('Location: ./config.php?section=edit_dns_zones');
-} elseif($_GET['section']=="insert_delete_dns_zone") {
-	$dns_zone = new DnsZone($_GET['dns_zone_id']);
-	$dns_zone->fetch();
-	$dns_zone_name = $dns_zone->getName();
-	$dns_zone->delete();
-
-	$message[] = array('Die DNS-Zone '.$dns_zone_name.' wurde gelöscht.', 1);
-	Message::setMessage($message);
-	
-	header('Location: ./config.php?section=edit_dns_zones');
 } elseif($_GET['section']=="edit_networks") {
 	$networklist = new Networklist();
 	$smarty->assign('networklist', $networklist->getNetworklist());

@@ -1,5 +1,6 @@
 <?php
 	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/User.class.php');
 	
 	class DnsZone extends Object {
 		private $dns_zone_id = 0;
@@ -13,11 +14,14 @@
 		private $expire = 0;
 		private $ttl = 0;
 		
+		private $dns_ressource_record_list = null;
+		private $user = null;
+		
 		public function __construct($dns_zone_id=false, $user_id=false, $name=false, $pri_dns=false,
 									$sec_dns=false, $serial=false, $refresh=false, $retry=false,
 									$expire=false, $ttl=false, $create_date=false, $update_date=false) {
-			$this->setDnsZoneId((int)$dns_zone_id);
-			$this->setUserId((int)$user_id);
+			$this->setDnsZoneId($dns_zone_id);
+			$this->setUserId($user_id);
 			$this->setName($name);
 			$this->setPriDns($pri_dns);
 			$this->setSecDns($sec_dns);
@@ -80,6 +84,8 @@
 				$this->setTtl((int)$result['ttl']);
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
+				
+				$this->setUser($this->getUserId());
 				return true;
 			}
 			
@@ -146,7 +152,7 @@
 		}
 		
 		public function setName($name) {
-			if(!preg_match('/^([a-z])+$/i', $name)) {
+			if(!preg_match('/^([a-z0-9-])+$/i', $name)) {
 				return false;
 			} else {
 				$this->name = $name;
@@ -202,6 +208,20 @@
 				return false;
 		}
 		
+		public function setUser($user) {
+			if($user instanceof User) {
+				$this->user = $user;
+				return true;
+			} elseif(is_int($user)) {
+				$user = new User($user);
+				if($user->fetch()) {
+					$this->user = $user;
+					return true;
+				}
+			}
+			return false;
+		}
+		
 		public function getDnsZoneId() {
 			return $this->dns_zone_id;
 		}
@@ -240,6 +260,27 @@
 		
 		public function getTtl() {
 			return $this->ttl;
+		}
+		
+		public function getUser() {
+			return $this->user;
+		}
+		
+		public function getDomXMLElement($domdocument) {
+			$domxmlelement = $domdocument->createElement('dns_zone');
+			$domxmlelement->appendChild($domdocument->createElement("dns_zone_id", $this->getDnsZoneId()));
+			$domxmlelement->appendChild($domdocument->createElement("user_id", $this->getUserId()));
+			$domxmlelement->appendChild($domdocument->createElement("name", $this->getName()));
+			$domxmlelement->appendChild($domdocument->createElement("pri_dns", $this->getPriDns()));
+			$domxmlelement->appendChild($domdocument->createElement("sec_dns", $this->getSecDns()));
+			$domxmlelement->appendChild($domdocument->createElement("serial", $this->getSerial()));
+			$domxmlelement->appendChild($domdocument->createElement("refresh", $this->getRefresh()));
+			$domxmlelement->appendChild($domdocument->createElement("retry", $this->getRetry()));
+			$domxmlelement->appendChild($domdocument->createElement("expire", $this->getExpire()));
+			$domxmlelement->appendChild($domdocument->createElement("ttl", $this->getTtl()));
+			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
+			$domxmlelement->appendChild($domdocument->createElement("update_date", $this->getUpdateDate()));
+			return $domxmlelement;
 		}
 	}
 ?>

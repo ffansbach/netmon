@@ -1,6 +1,6 @@
 <?php
-	require_once('lib/classes/core/EventNotification.class.php');
-	require_once('lib/classes/core/ObjectList.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/ObjectList.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/DnsZone.class.php');
 	
 	class DnsZoneList extends ObjectList {
 		private $dns_zone_list = array();
@@ -93,6 +93,18 @@
 		
 		public function getDnsZoneList() {
 			return $this->dns_zone_list;
+		}
+		
+		public function getDomXMLElement($domdocument) {
+			$domxmlelement = $domdocument->createElement('dns_zone_list');
+			$domxmlelement->setAttribute("total_count", $this->getTotalCount());
+			$domxmlelement->setAttribute("offset", $this->getOffset());
+			$domxmlelement->setAttribute("limit", $this->getLimit());
+			foreach($this->dns_zone_list as $dns_zone) {
+				$domxmlelement->appendChild($dns_zone->getDomXMLElement($domdocument));
+			}
+			
+			return $domxmlelement;
 		}
 	}
 ?>

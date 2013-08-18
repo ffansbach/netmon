@@ -15,6 +15,7 @@ $(document).ready(function() {
 			{ "sType": "string" },
 			{ "sType": "string" },
 			{ "sType": "string" },
+			{ "sType": "html" },
 			{ "sType": "string" },
 			{ "sType": "string" },
 			{ "sType": "html" }
@@ -42,22 +43,24 @@ Services eintragen können.</p>
 				<th>Retry</th>
 				<th>Expire</th>
 				<th>TTL</th>
-				<th>Angelegt am</th>
+				<th>Benutzer</th>
+				<th>Angelegt</th>
 				<th>Aktionen</h2>
 			</tr>
 		</thead>
 		<tbody>
 			{foreach item=dns_zone from=$dns_zone_list}
 				<tr>
-					<td>{$dns_zone->getName()}</td>
+					<td><a href="./dns_zone.php?dns_zone_id={$dns_zone->getDnsZoneId()}">{$dns_zone->getName()}</a></td>
 					<td>{$dns_zone->getPriDns()}</td>
 					<td>{$dns_zone->getSecDns()}</td>
 					<td>{$dns_zone->getRefresh()}</td>
 					<td>{$dns_zone->getRetry()}</td>
 					<td>{$dns_zone->getExpire()}</td>
 					<td>{$dns_zone->getTtl()}</td>
-					<td>{$dns_zone->getCreateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr</td>
-					<td><a href="./config.php?section=insert_delete_dns_zone&dns_zone_id={$dns_zone->getDnsZoneId()}">Löschen</a></td>
+					<td><a href="./user.php?user_id={$dns_zone->getUser()->getUserId()}">{$dns_zone->getUser()->getNickname()}</a></td>
+					<td>{$dns_zone->getCreateDate()|date_format:"%d.%m.%Y"}</td>
+					<td><a href="./dns_zone.php?section=delete&dns_zone_id={$dns_zone->getDnsZoneId()}">Löschen</a></td>
 				</tr>
 			{/foreach}
 		</tbody>
@@ -67,7 +70,7 @@ Services eintragen können.</p>
 {/if}
 
 <h2>Neue DNS-Zone eintragen</h2>
-<form action="./config.php?section=insert_edit_dns_zones" method="POST">
+<form action="./dns_zone.php?section=insert_add" method="POST">
 	<p><b>Name:</b><br><input name="name" type="text" size="10" value=""></p>
 	<p><b>Primary DNS:</b><br><input name="pri_dns" type="text" size="10" value=""></p>
 	<p><b>Secondary DNS:</b><br><input name="sec_dns" type="text" size="10" value=""></p>

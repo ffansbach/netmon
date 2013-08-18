@@ -100,6 +100,14 @@
 			}
 		}
 		
+		public function add($item) {
+			if($item instanceof Iplist) {
+				$this->setIplist(array_merge($this->getIplist(), $item->getIplist()));
+			} elseif($item instanceof Ip) {
+				$this->iplist[] = $item;
+			}
+		}
+		
 		public function delete() {
 			foreach($this->getIplist() as $ip) {
 				$ip->delete();
@@ -117,6 +125,14 @@
 					}
 				}
 			}
+		}
+		
+		public function setIplist($iplist) {
+			if(is_array($iplist)) {
+				$this->iplist = $iplist;
+				return true;
+			}
+			return false;
 		}
 		
 		public function getIplist() {

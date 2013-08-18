@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 18, 2013 at 02:07 AM
+-- Generation Time: Aug 19, 2013 at 12:53 AM
 -- Server version: 5.5.32-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.17-1~dotdeb.1
 
@@ -271,18 +271,21 @@ CREATE TABLE IF NOT EXISTS `dns_hosts` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `dns_records`
+-- Table structure for table `dns_ressource_records`
 --
 
-CREATE TABLE IF NOT EXISTS `dns_records` (
+CREATE TABLE IF NOT EXISTS `dns_ressource_records` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `zone_id` int(11) NOT NULL,
+  `dns_zone_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `host` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL,
   `pri` int(11) NOT NULL,
-  `destination` varchar(255) NOT NULL,
+  `destination_id` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

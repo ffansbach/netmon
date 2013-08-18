@@ -4,9 +4,15 @@
 	RewriteRule ^eventlist/([0-9A-Za-z_-]+)/?$ api.php?rquest=eventlist&action=$1 [L]
 	RewriteRule ^eventlist/?$ api.php?rquest=eventlist [QSA,L]
 	RewriteRule ^event/([0-9]+)/?$ api.php?rquest=event&id=$1 [QSA,L]
-
+	
 	RewriteRule ^iplist/?$ api.php?rquest=iplist [QSA,L]
 	RewriteRule ^ip/([0-9]+)/?$ api.php?rquest=ip&id=$1 [QSA,L]
+	
+	RewriteRule ^dns_zone_list/?$ api.php?rquest=dns_zone_list [QSA,L]
+	RewriteRule ^dns_zone/([0-9]+)/?$ api.php?rquest=dns_zone&id=$1 [QSA,L]
+	
+	RewriteRule ^dns_ressource_record_list/?$ api.php?rquest=dns_ressource_record_list [QSA,L]
+	RewriteRule ^dns_ressource_record/([0-9]+)/?$ api.php?rquest=dns_ressource_record&id=$1 [QSA,L]
 	
 	RewriteRule ^configlist/?$ api.php?rquest=configlist [QSA,L]
 	RewriteRule ^config/([0-9]+)/?$ api.php?rquest=config&id=$1 [QSA,L]
