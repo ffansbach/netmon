@@ -275,7 +275,6 @@ $(document).ready(function() {
 					<td>{$dns_host.host}.{$dns_tld}</td>
 					<td>{if $dns_host.ipv4_id!=0}{$dns_host.ipv4_ip}{else}Keine IPv4 Adresse{/if}</td>
 					<td>{if $dns_host.ipv6_id!=0}{$dns_host.ipv6_ip}{else}Keine IPv6 Adresse{/if}</td>
-					<td><a href="./dnseditor.php?section=edit_host&host_id={$dns_host.id}">Editieren</a></td>
 				</tr>
 			{/foreach}
 		</tbody>

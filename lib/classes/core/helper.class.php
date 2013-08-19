@@ -43,23 +43,6 @@ class Helper {
 		return $ip;
 	}
 
-	public function getExistingIPv4IpsByProjectId($project_id) {
-		$ips = array();
-		try {
-			$sql = "SELECT * FROM interfaces
-				WHERE project_id='$project_id' AND ipv4_addr!=''
-				ORDER BY ipv4_addr ASC";
-			$result = DB::getInstance()->query($sql);
-			foreach($result as $row) {
-				$interfaces[] = $row['ipv4_addr'];
-			}
-		}
-		catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $interfaces;
-	}
-
 	public function getExistingIPv4Ips() {
 		$ips = array();
 		try {

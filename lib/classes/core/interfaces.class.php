@@ -57,27 +57,6 @@ class Interfaces {
 			}
 		}
 
-		//Add new IP-Range
-		//TODO
-/*		if(!empty($ipv4_dhcp_range)) {
-			$ip_range = Ip_old::getFreeIpRangeByProjectId($project_id, $ipv4_dhcp_range, $ipv4_addr);
-			if($ip_range['start']!='NULL') {
-				try {
-					$stmt = DB::getInstance()->prepare("INSERT INTO ip_ranges (project_id, interface_id, router_id, ip, ip_start, ip_end, create_date)
-									    VALUES (?, ?, ?, ?, ?, NOW())");
-					$stmt->execute(array($project_id, $interface_id, $router_id, $ip_range['start'], $ip_range['end']));
-					$interface_id = DB::getInstance()->lastInsertId();
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-					die();
-				}
-				$message[] = array("Dem Interface $interface_name wurde die IPv4 Range $ip_range[start]-$ip_range[end] hinzugefügt.", 1);
-			}
-		} else {
-			//delete the work, done until now
-		}*/
-
 		//Add new IPv6-Address
 		if(!empty($ipv6_addr)) {
 			$ip = new Ip(false, (int)$interface_id, $ipv6_addr, 6);

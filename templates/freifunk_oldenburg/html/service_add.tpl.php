@@ -1,5 +1,7 @@
 <h1>Dienst anlegen</h2>
-<p>Auf dieser Seite kannst du einen Dienst anlegen den du im Netzwerk betreibst um ihn so anderen Menschen bekannt zu machen.</p>
+<p>Auf dieser Seite kannst du einen Dienst, den du im Netzwerk betreibst, anlegen und ihn so im Netzwerk bekannt machen.
+Dies kann z.B. eine Website sein. Vorher musst du auf dem Interface eines Routers jedoch mindestens eine IP-Adresse erstellt,
+oder für eine existierende IP-Adresse einen DNS Ressource Record angelegt haben.</p>
 
 <h2>Allgemeines</h2>
 <form action="./service.php?section=insert_add&user_id={$smarty.get.user_id}" method="POST">

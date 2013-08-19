@@ -154,8 +154,7 @@ class Menus extends Permission {
 	function adminMenu() {
 		$menu = array();
 		if (Permission::checkPermission(32)) {
-/*			$menu[] = array('name'=>'Neues Projekt', 'href'=>'projecteditor.php?section=new');
-			$menu[] = array('name'=>'Projektliste', 'href'=>'projectlist.php');*/
+
 		}
 		$menu = Menus::checkIfSelected($menu);
 		return $menu;
