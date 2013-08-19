@@ -5,7 +5,6 @@ require_once('runtime.php');
 require_once('./lib/classes/core/router.class.php');
 require_once('./lib/classes/core/interfaces.class.php');
 require_once('./lib/classes/core/batmanadvanced.class.php');
-require_once('./lib/classes/core/olsr.class.php');
 require_once('./lib/classes/core/crawling.class.php');
 require_once('./lib/classes/core/Eventlist.class.php');
 
@@ -65,9 +64,6 @@ $smarty->assign('crawl_cycle', $GLOBALS['crawl_cycle']);
 //Batman advanced interfaces
 $router_batman_adv_interfaces = BatmanAdvanced::getBatmanAdvancedInterfacesByRouterId($_GET['router_id']);
 $smarty->assign('router_batman_adv_interfaces', $router_batman_adv_interfaces);
-//Olsr interfaces
-$router_olsr_interfaces = Olsr::getOlsrInterfacesByRouterId($_GET['router_id']);
-$smarty->assign('router_olsr_interfaces', $router_olsr_interfaces);
 
 /** Get status status information and history of router **/
 $router_last_crawl = Router_old::getCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
@@ -101,11 +97,6 @@ if(!empty($batman_adv_originators)) {
 		}
 	}
 }
-
-/** Get and assign actual Olsrd status **/
-/*$olsrd_crawl_data = Olsr::getCrawlOlsrDataByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
-$olsrd_crawl_data['olsrd_links'] = unserialize($olsrd_crawl_data['olsrd_links']);
-$smarty->assign('olsrd_crawl_data', $olsrd_crawl_data);*/
 
 /** Get and assign Crawled interfaces **/
 //Get actual crawled interfaces

@@ -30,10 +30,7 @@
 require_once('./lib/classes/core/router.class.php');
 require_once('./lib/classes/core/interfaces.class.php');
 require_once('./lib/classes/core/batmanadvanced.class.php');
-require_once('./lib/classes/core/olsr.class.php');
 require_once('./lib/classes/core/crawling.class.php');
-
-  require_once('./lib/classes/core/olsr.class.php');
 
 class ApiMap {
 	public function batman_advanced_conn() {
