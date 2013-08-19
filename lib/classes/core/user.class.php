@@ -21,7 +21,6 @@
 // +---------------------------------------------------------------------------+/
 
 require_once(ROOT_DIR.'/lib/classes/core/ipeditor.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/subneteditor.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/login.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/routereditor.class.php');
@@ -204,11 +203,8 @@ class User_old {
 			RouterEditor::insertDeleteRouter($router['router_id']);
 		}
 		
-		//Delete ip´s, serices and subnets
-		foreach(Project::getProjectsByUserId($user_id) as $project) {
-			//TODO: implemet ProjectEditor::deleteProject($project_id)
-			//ProjectEditor::deleteProject($project['id']);
-		}
+		//TODO: Delete ip´s, services etc
+
 		
 		//If the user is logged in then logout the user before deleting him to get rid of session information an coockies
 		if($user_id == $_SESSION['user_id'])
