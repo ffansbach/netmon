@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 19, 2013 at 12:53 AM
+-- Generation Time: Aug 19, 2013 at 09:54 PM
 -- Server version: 5.5.32-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.17-1~dotdeb.1
 
@@ -552,21 +552,30 @@ CREATE TABLE IF NOT EXISTS `router_adds` (
 
 CREATE TABLE IF NOT EXISTS `services` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `router_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `title` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `port` int(11) NOT NULL,
-  `url_prefix` varchar(20) NOT NULL,
   `visible` int(11) NOT NULL,
-  `notify` tinyint(1) NOT NULL,
-  `notification_wait` int(11) NOT NULL,
-  `notified` tinyint(1) NOT NULL,
-  `last_notification` datetime NOT NULL,
-  `use_netmons_url` tinyint(1) NOT NULL,
-  `url` varchar(250) NOT NULL,
   `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `service_dns_ressource_records`
+--
+
+CREATE TABLE IF NOT EXISTS `service_dns_ressource_records` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `service_id` int(11) NOT NULL,
+  `dns_ressource_record_id` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -578,6 +587,8 @@ CREATE TABLE IF NOT EXISTS `service_ips` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `service_id` int(11) NOT NULL,
   `ip_id` int(11) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 

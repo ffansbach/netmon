@@ -1,123 +1,54 @@
 <?php
-  require_once('runtime.php');
-  require_once('./lib/classes/core/service.class.php');
-
-  $Service = new service;
-
-  $smarty->assign('message', Message::getMessage());
-
-  $service_data = Helper::getServiceDataByServiceId($_GET['service_id']);
-  $service_data['create_date'] = Helper::makeSmoothIplistTime(strtotime($service_data['create_date']));
-
-  $smarty->assign('service_data', $service_data);
-  $current_crawl = Helper::getCurrentCrawlDataByServiceId($_GET['service_id']);
-	if(is_array($current_crawl['olsrd_neighbors'])) {
-		foreach ($current_crawl['olsrd_neighbors'] as $key=>$olsrd_neighbors) {
-			$tmp2 = 'IP address';
-			$id = Helper::linkIp2IpId($olsrd_neighbors[$tmp2]);
-			$current_crawl['olsrd_neighbors'][$key]['netmon_ip_id'] = $id['id'];
-
-			$exploded_prefix = explode(".", $GLOBALS['net_prefix']);
-			$exploded_neighbour = explode(".", $olsrd_neighbors[$tmp2]);
-			$current_crawl['olsrd_neighbors'][$key]['netmon_is_client'] = false;
-
-			if($exploded_prefix[0]==$exploded_neighbour[0] AND $exploded_prefix[1]==$exploded_neighbour[1]) {
-				$neighbour = Helper::checkIfIpIsRegisteredAndGetServices("$exploded_neighbour[2].$exploded_neighbour[3]");
-				foreach ($neighbour as $neight) {
-					if($neight['typ']=='client') {
-						$current_crawl['olsrd_neighbors'][$key]['netmon_is_client'] = true;
-						break;
-					}
-				}
-			}
+	require_once('runtime.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Service.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/DnsRessourceRecordList.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Routerlist.class.php');
+	
+	if(!isset($_GET['section']) AND isset($_GET['service_id'])) {
+		$smarty->assign('message', Message::getMessage());
+		
+		$service = new Service((int)$_GET['service_id']);
+		$service->fetch();
+		$smarty->assign('service', $service);
+		
+		$smarty->display("header.tpl.php");
+		$smarty->display("service.tpl.php");
+		$smarty->display("footer.tpl.php");
+	} elseif($_GET['section'] == 'add') {
+		//pass system messages to the template
+		$smarty->assign('message', Message::getMessage());
+		
+		$dns_ressource_record_list = new DnsRessourceRecordList(false, (int)$_SESSION['user_id']);
+		$smarty->assign('dns_ressource_record_list', $dns_ressource_record_list->getDnsRessourceRecordList());
+		
+		$routerlist = new Routerlist((int)$_SESSION['user_id']);
+		$smarty->assign('routerlist', $routerlist->getRouterlist());
+		
+		//compile the template and sorround the main content by footer and header template
+		$smarty->display("header.tpl.php");
+		$smarty->display("service_add.tpl.php");
+		$smarty->display("footer.tpl.php");
+	} elseif($_GET['section'] == 'insert_add') {
+		$service = new Service(false, (int)$_GET['user_id'], $_POST['title'], $_POST['description'], (int)$_POST['port'], 1,
+							   $_POST['iplist'], $_POST['dns_ressource_record_list']);
+		
+		if($service->store()) {
+			$message[] = array('Der Service '.$service->getTitle().' wurde gespeichert.', 1);
+		} else {
+			$message[] = array('Der Service konnte nicht gespeichert werden.', 2);
 		}
-	}
-  $smarty->assign('current_crawl', $current_crawl);
-
-
-
-
-  $smarty->assign('last_online_crawl', Helper::getLastOnlineCrawlDataByServiceId($_GET['service_id']));
-  $crawl_history = $Service->getCrawlHistory($_GET['service_id'], 35);
-  $smarty->assign('crawl_history', $crawl_history);
-  $smarty->assign('net_prefix', $GLOBALS['net_prefix']);
-  $smarty->assign('isOwner', Permission::isThisUserOwner($service_data['user_id']));
-
-foreach ($crawl_history as $hist) {
-	$time = date("H:i", strtotime($hist['crawl_time']));
-	$ping_array[$time] = $hist['ping'];
-	$load_array[$time] = $hist['loadavg'];
-	$memory_free_array[$time] = $hist['memory_free'];
-	if(!empty($hist['loadavg']))
-		$dont_show_indicator[] = $hist['loadavg'];
-}
-
-  $smarty->assign('dont_show_indicator', $dont_show_indicator);
-
-if(!empty($ping_array)) {
-	try {
-		$graph = new ezcGraphLineChart();
-		$graph->driver = new ezcGraphGdDriver(); 
-		$graph->options->font = './templates/fonts/verdana.ttf';
-		$graph->options->fillLines = 210;
-		$graph->title = 'Ping';
-		$graph->legend = false;
+		Message::setMessage($message);
 		
-		$graph->xAxis = new ezcGraphChartElementDateAxis();
-		
-		// Add data
-		$graph->data['Machine 1'] = new ezcGraphArrayDataSet( $ping_array );
-		$graph->data['Machine 1']->symbol = ezcGraph::BULLET;
-		$graph->render( 400, 150, './tmp/service_ping_history.png' ); 
+		header('Location: ./user.php?user_id='.$_GET['user_id']);
+	} elseif($_GET['section'] == 'delete') {
+		$service = new Service((int)$_GET['service_id']);
+		$service->fetch();
+		if($service->delete()) {
+			$message[] = array('Der Dienst '.$service->getTitle().' wurde gelöscht.', 1);
+		} else {
+			$message[] = array('Der Dienst '.$service->getTitle().' konnte nicht gelöscht werden.', 2);
+		}
+		Message::setMessage($message);
+		header('Location: ./user.php?user_id='.$service->getUserId());
 	}
-	catch(ezcGraphFontRenderingException $e) {
-		$smarty->assign('ping_exception', $e->getMessage());
-	}
-}
-
-if(!empty($load_array)) {
-	try {
-		$graph = new ezcGraphLineChart();
-		$graph->driver = new ezcGraphGdDriver(); 
-		$graph->options->font = './templates/fonts/verdana.ttf';
-		$graph->options->fillLines = 210;
-		$graph->title = 'Loadaverage';
-		$graph->legend = false;
-		$graph->xAxis = new ezcGraphChartElementDateAxis();
-		
-		// Add data
-		$graph->data['Machine 1'] = new ezcGraphArrayDataSet( $load_array );
-		$graph->data['Machine 1']->symbol = ezcGraph::BULLET;
-		$graph->render( 400, 150, './tmp/loadaverage_history.png' ); 
-	}
-	catch(ezcGraphFontRenderingException $e) {
-		$smarty->assign('loadaverage_exception', $e->getMessage());
-	}
-}
-
-if(!empty($memory_free_array)) {
-	try {
-		$graph = new ezcGraphLineChart();
-		$graph->driver = new ezcGraphGdDriver(); 
-		$graph->options->font = './templates/fonts/verdana.ttf';
-		$graph->options->fillLines = 210;
-		$graph->title = 'Free Memory';
-		$graph->legend = false;
-		
-		$graph->xAxis = new ezcGraphChartElementDateAxis();
-		
-		// Add data
-		$graph->data['Machine 1'] = new ezcGraphArrayDataSet( $memory_free_array );
-		$graph->data['Machine 1']->symbol = ezcGraph::BULLET;
-		$graph->render( 400, 150, './tmp/memory_free_history.png' );
-	}
-	catch(ezcGraphFontRenderingException $e) {
-		$smarty->assign('memory_free_exception', $e->getMessage());
-	} 
-}
-
-
-  $smarty->display("header.tpl.php");
-  $smarty->display("service.tpl.php");
-  $smarty->display("footer.tpl.php");
 ?>

@@ -29,10 +29,9 @@ $(document).ready(function() {
 		"bPaginate": false,
 		"aoColumns": [ 
 			{ "sType": "html" },
-			{ "sType": "html" },
 			{ "sType": "string" },
 			{ "sType": "string" },
-			{ "sType": "html" },
+			{ "sType": "string" },
 			{ "sType": "html" }
 		],
 		"aaSorting": [[ 0, "asc" ]]
@@ -232,34 +231,24 @@ $(document).ready(function() {
 		<thead>
 			<tr>
 				<th>Title</th>
-				<th>Router</th>
-				<th>Server</th>
-				<th>Dienst</th>
-				<th>Benutzer</th>
-				<th>Link</th>
+				<th>Ips</th>
+				<th>Ressource-Recors</th>
+				<th>Port</th>
+				<th>Aktionen</th>
 			</tr>
 		</thead>
 		<tbody>
 			{foreach $servicelist as $service}
 				<tr>
-					<td><a href="./router_status.php?router_id={$service.router_id}#service_{$service.service_id}">{$service.title}</a></td>
-					<td><a href="./router_status.php?router_id={$service.router_id}">{$service.hostname}</a></td>
+					<td><a href="./service.php?service_id={$service->getServiceId()}">{$service->getTitle()}</a></td>
 					<td>
-						{if $service.router_status=="online"}
-							<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
-						{elseif $service.router_status=="offline"}
-							<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">
-						{/if}
+						{foreach key=i item=ip from=$service->getIplist()->getIplist()}{if $i>0},<br>{/if}{$ip->getIp()}{/foreach}
 					</td>
 					<td>
-						{if $service.service_status=="online"}
-							<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
-						{elseif $service.service_status=="offline"}
-							<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">
-						{/if}
+						{foreach key=i item=dns_ressource_record from=$service->getDnsRessourceRecordList()->getDnsRessourceRecordList()}{if $i>0},<br>{/if}{$dns_ressource_record->getHost()}.{$dns_ressource_record->getDnsZone()->getName()}{/foreach}
 					</td>
-					<td><a href="./user.php?user_id={$service.user_id}">{$service.nickname}</a></td>
-					<td>{if isset($service.combined_url_to_service)}<a href="{$service.combined_url_to_service}">{$service.combined_url_to_service}</a>{/if}</td>
+					<td>{$service->getPort()}</td>
+					<td><a href="./service.php?section=delete&service_id={$service->getServiceId()}">Löschen</a></td>
 				</tr>
 			{/foreach}
 		</tbody>

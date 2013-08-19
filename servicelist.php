@@ -1,21 +1,10 @@
 <?php
 
 require_once('runtime.php');
-require_once('lib/classes/core/service.class.php');
+require_once(ROOT_DIR.'/lib/classes/core/Servicelist.class.php');
 
-$is_logged_id = Permission::isLoggedIn($_SESSION['user_id']);
-if($is_logged_id) {
-	$view='all';
-} else {
-	$view='public';
-}
-
-$servicelist = Service::getServiceList($view);
-$servicelist_all = Service::getServiceList('all');
-$smarty->assign('servicelist', $servicelist);
-
-$hidden_service_count = count($servicelist_all)-count($servicelist);
-$smarty->assign('hidden_service_count', $hidden_service_count);
+$servicelist = new Servicelist();
+$smarty->assign('servicelist', $servicelist->getServicelist());
 
 $smarty->display("header.tpl.php");
 $smarty->display("servicelist.tpl.php");

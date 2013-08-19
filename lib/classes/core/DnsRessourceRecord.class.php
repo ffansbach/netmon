@@ -2,6 +2,7 @@
 	require_once(ROOT_DIR.'/lib/classes/core/Object.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/Ip.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/User.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/DnsZone.class.php');
 	
 	class DnsRessourceRecord extends Object {
 		private $dns_ressource_record_id = 0;
@@ -74,6 +75,7 @@
 				
 				$this->setDestination($this->getDestinationId());
 				$this->setUser($this->getUserId());
+				$this->setDnsZone($this->getDnsZoneId());
 				return true;
 			}
 			
@@ -216,6 +218,20 @@
 			return false;
 		}
 		
+		public function setDnsZone($dns_zone) {
+			if($dns_zone instanceof DnsZone) {
+				$this->dns_zone = $dns_zone;
+				return true;
+			} elseif(is_int($dns_zone)) {
+				$dns_zone = new DnsZone($dns_zone);
+				if($dns_zone->fetch()) {
+					$this->dns_zone = $dns_zone;
+					return true;
+				}
+			}
+			return false;
+		}
+		
 		// Getter methods
 		public function getDnsRessourceRecordId() {
 			return $this->dns_ressource_record_id;
@@ -251,6 +267,10 @@
 		
 		public function getUser() {
 			return $this->user;
+		}
+		
+		public function getDnsZone() {
+			return $this->dns_zone;
 		}
 		
 		public function getDomXMLElement($domdocument) {

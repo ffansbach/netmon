@@ -2,9 +2,7 @@
 	require_once('runtime.php');
 	require_once('lib/classes/core/interfaces.class.php');
 	require_once('lib/classes/core/router.class.php');
-	require_once('lib/classes/core/service.class.php');
 	require_once('lib/classes/core/config.class.php');
-	
 	require_once('lib/classes/core/Networkinterfacelist.class.php');
 	
 	$smarty->assign('message', Message::getMessage());
@@ -14,15 +12,6 @@
 	
 	$networkinterfacelist = new Networkinterfacelist($_GET['router_id'], 0, 50);
 	$smarty->assign('networkinterfacelist', $networkinterfacelist->getNetworkinterfacelist());
-
-  $is_logged_id = Permission::isLoggedIn($_SESSION['user_id']);
-  if($is_logged_id) {
-  	$view='all';
-  } else {
-  	$view='public';
-  }
-  $services = Service::getServiceList($view="", false, $_GET['router_id']);
-  $smarty->assign('services', $services);
 
   $smarty->assign('google_maps_api_key', Config::getConfigValueByName("google_maps_api_key"));
   $smarty->assign('network_connection_ipv4', Config::getConfigValueByName("network_connection_ipv4"));

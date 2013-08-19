@@ -1,11 +1,12 @@
 <?php
 	require_once(ROOT_DIR.'/lib/classes/core/ObjectList.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsRessourceRecord.class.php');
+	require_once(ROOT_DIR.'/lib/classes/core/Service.class.php');
 	
-	class DnsRessourceRecordList extends ObjectList {
-		private $dns_ressource_record_list = array();
+	class Servicelist extends ObjectList {
+		private $servicelist = array();
 		
-		public function __construct($dns_zone_id=false, $user_id=false,
+		//TODO: add functionality so that user can select service by $ip_id and $dns_ressource_record_id
+		public function __construct($user_id=false, $ip_id=false, $dns_ressource_record_id=false,
 									$offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
 			if($offset!==false)
@@ -20,11 +21,9 @@
 			// initialize $total_count with the total number of objects in the list (over all pages)
 			try {
 				$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-													FROM dns_ressource_records
+													FROM services
 													WHERE
-														(dns_zone_id = :dns_zone_id OR :dns_zone_id=0) AND
 														(user_id = :user_id OR :user_id=0)");
-				$stmt->bindParam(':dns_zone_id', $dns_zone_id, PDO::PARAM_INT);
 				$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 				$stmt->execute();
 				$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -38,19 +37,17 @@
 				$this->setLimit($this->getTotalCount());
 			
 			try {
-				$stmt = DB::getInstance()->prepare("SELECT id as dns_ressource_record_id
-													FROM dns_ressource_records
+				$stmt = DB::getInstance()->prepare("SELECT id as service_id
+													FROM services
 													WHERE
-														(dns_zone_id = :dns_zone_id OR :dns_zone_id=0) AND
 														(user_id = :user_id OR :user_id=0)
 													ORDER BY
 														case :sort_by
-															when 'create_date' then dns_ressource_records.create_date
-															else dns_ressource_records.id
+															when 'create_date' then services.create_date
+															else services.id
 														end
 													".$this->getOrder()."
 													LIMIT :offset, :limit");
-				$stmt->bindParam(':dns_zone_id', $dns_zone_id, PDO::PARAM_INT);
 				$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 				$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
 				$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
@@ -62,13 +59,14 @@
 				echo $e->getTraceAsString();
 			}
 			
-			foreach($result as $dns_ressource_record) {
-				$dns_ressource_record = new DnsRessourceRecord((int)$dns_ressource_record['dns_ressource_record_id']);
-				$dns_ressource_record->fetch();
-				$this->dns_ressource_record_list[] = $dns_ressource_record;
+			foreach($result as $service) {
+				$service = new Service((int)$service['service_id']);
+				$service->fetch();
+				$this->servicelist[] = $service;
 			}
 		}
 		
+		/*
 		public function add($item) {
 			if($item instanceof DnsRessourceRecordList) {
 				$this->setDnsRessourceRecordList(array_merge($this->getDnsRessourceRecordList(), $item->getDnsRessourceRecordList()));
@@ -78,31 +76,27 @@
 				return true;
 			}
 			return false;
-		}
+		}*/
 		
-		public function setDnsRessourceRecordList($dns_ressource_record_list) {
-			if($dns_ressource_record_list instanceof DnsRessourceRecordList) {
-				$this->dns_ressource_record_list = $dns_ressource_record_list;
+		public function setServicelist($servicelist) {
+			if($servicelist instanceof Servicelist) {
+				$this->servicelist = $servicelist;
 				return true;
 			}
 			return false;
 		}
 		
-		public function getDnsRessourceRecordList() {
-			return $this->dns_ressource_record_list;
-		}
-		
-		public function getNumberOfElements() {
-			return count($this->dns_ressource_record_list);
+		public function getServiceList() {
+			return $this->servicelist;
 		}
 		
 		public function getDomXMLElement($domdocument) {
-			$domxmlelement = $domdocument->createElement('dns_ressource_record_list');
+			$domxmlelement = $domdocument->createElement('servicelist');
 			$domxmlelement->setAttribute("total_count", $this->getTotalCount());
 			$domxmlelement->setAttribute("offset", $this->getOffset());
 			$domxmlelement->setAttribute("limit", $this->getLimit());
-			foreach($this->dns_ressource_record_list as $dns_ressource_record) {
-				$domxmlelement->appendChild($dns_ressource_record->getDomXMLElement($domdocument));
+			foreach($this->servicelist as $service) {
+				$domxmlelement->appendChild($service->getDomXMLElement($domdocument));
 			}
 			
 			return $domxmlelement;

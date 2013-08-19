@@ -1,8 +1,6 @@
 <?php
 
 require_once(ROOT_DIR.'/lib/classes/core/interfaces.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/service.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/serviceeditor.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/Event.class.php');
 require_once(ROOT_DIR.'/lib/classes/core/routersnotassigned.class.php');
@@ -199,10 +197,11 @@ class RouterEditor {
 		}
 
 		//Delete all services of the router
-		$services = Service::getServicesByRouterId($router_id);
+		//TODO update this to new Service class
+/*		$services = Service::getServicesByRouterId($router_id);
 		foreach($services as $service) {
 			ServiceEditor::deleteService($service['id']);
-		}
+		}*/
 
 		//Delete all crawl data of the router
 		try {

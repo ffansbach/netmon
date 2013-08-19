@@ -1,11 +1,11 @@
 <?php
 require_once('runtime.php');
 require_once('lib/classes/core/router.class.php');
-require_once('lib/classes/core/service.class.php');
-//require_once('lib/classes/core/dns.class.php');
 require_once('lib/classes/core/user.class.php');
 require_once('lib/classes/core/routersnotassigned.class.php');
 require_once('lib/classes/core/Eventlist.class.php');
+require_once('lib/classes/core/Service.class.php');
+require_once('lib/classes/core/Servicelist.class.php');
 
 //get messages of the message system
 $smarty->assign('message', Message::getMessage());
@@ -37,11 +37,9 @@ $smarty->assign('eventlist', $evenlist->getEventlist());
 
 $smarty->assign('routersnotassigned_list', RoutersNotAssigned::getRouters());
 $smarty->assign('routerlist', Router_old::getRouterListByUserId($_GET['user_id']));
-$smarty->assign('servicelist', Service::getServiceList(Permission::isLoggedIn($_SESSION['user_id']) ? 'all' : 'public', $_GET['user_id']));
 
-//get infotmation about the dns system
-//$smarty->assign('dns_tld', $GLOBALS['dns_tld']); TODO
-//$smarty->assign('dns_hosts', DNS::getHostsByUser($_GET['user_id']));
+$servicelist = new Servicelist((int)$_GET['user_id']);
+$smarty->assign('servicelist', $servicelist->getServicelist());
 
 //load the temlate
 $smarty->display("header.tpl.php");

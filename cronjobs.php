@@ -8,7 +8,6 @@
 	 * Necessary includes
 	 **/
 	require_once('runtime.php');
-	//require_once(ROOT_DIR.'/lib/classes/core/service.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
 	require_once(ROOT_DIR.'/lib/classes/core/rrdtool.class.php');
@@ -117,10 +116,6 @@
 		exec($cmd, $return);
 		echo "The initialized crawl process has the pid $return[0]\n";
 	}
-	
-	//Crawl service
-	//echo "Crawl services\n";
-	//require_once($GLOBALS['netmon_root_path'].'lib/classes/crawler/json_service_crawler.php');*/
 	
 	/**
 	 * Notifications

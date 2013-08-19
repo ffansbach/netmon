@@ -84,10 +84,6 @@ class Menus extends Permission {
 			$submenu = array();
 			$subsubmenu = array();
 			$submenu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
-			if (Permission::checkPermission(12)) { //if user is logged in and has permission "user"
-				$subsubmenu[] = array('name'=>'Dienst anlegen', 'href'=>'serviceeditor.php?section=add');
-				$subsubmenu[] = array('name'=>'Domain anlegen', 'href'=>'dnseditor.php?section=add_host');
-			}
 			$submenu[] = $subsubmenu;
 			$menu[] = $submenu;
 			
@@ -107,12 +103,7 @@ class Menus extends Permission {
 				$submenu = array();
 				$subsubmenu = array();
 				$submenu[] = array('name'=>'Benutzer', 'href'=>'userlist.php');
-				$subsubmenu[] = array('name'=>'Benutzerseite', 'href'=>'user.php?user_id='.$_SESSION['user_id']);
-
-				if(Permission::checkIfUserIsOwnerOrPermitted(64, $_SESSION['user_id']))
-					$subsubmenu[] = array('name'=>'Einstellungen', 'href'=>'user_edit.php?section=edit&user_id='.$_SESSION['user_id']);
-				if(Permission::checkIfUserIsOwnerOrPermitted(64, $_SESSION['user_id']))
-					$subsubmenu[] = array('name'=>'Benachrichtigungen', 'href'=>'event_notifications.php?section=edit&user_id='.$_SESSION['user_id']);
+				$subsubmenu[] = array('name'=>'Mein Benutzer', 'href'=>'user.php?user_id='.$_SESSION['user_id']);
 				$submenu[] = $subsubmenu;
 				$menu[] = $submenu;
 			}
@@ -132,17 +123,26 @@ class Menus extends Permission {
 		$submenu = array();
 		$subsubmenu = array();
 		if (Permission::checkPermission(4)) {
-			if(strpos($_SERVER['PHP_SELF'], "router_status.php")!==false OR strpos($_SERVER['PHP_SELF'], "router_config.php")!==false) {
+			if(strpos($_SERVER['PHP_SELF'], "router_status.php")!==false OR
+			   strpos($_SERVER['PHP_SELF'], "router_config.php")!==false) {
 				$submenu[] = array('name'=>'Routeroptionen', 'href'=>'#');
 				
 				if(strpos($_SERVER['PHP_SELF'], "router_config.php")!==false) {
 					$subsubmenu[] = array('name'=>'Status ansehen', 'href'=>'router_status.php?router_id='.$_GET['router_id']);
 					$subsubmenu[] = array('name'=>'Konfig. bearbeiten', 'href'=>'routereditor.php?section=edit&router_id='.$_GET['router_id']);
 					$subsubmenu[] = array('name'=>'Interf. hinzufügen', 'href'=>'interface.php?section=add&router_id='.$_GET['router_id']);
-					$subsubmenu[] = array('name'=>'Dienst hinzufügen', 'href'=>'serviceeditor.php?section=add&router_id='.$_GET['router_id']);
 					$subsubmenu[] = array('name'=>'Werbung', 'href'=>'addeditor.php?router_id='.$_GET['router_id']);
 				} else {
 					$subsubmenu[] = array('name'=>'Konfig. ansehen', 'href'=>'router_config.php?router_id='.$_GET['router_id']);
+				}
+				$submenu[] = $subsubmenu;
+				$menu[] = $submenu;
+			} elseif(strpos($_SERVER['PHP_SELF'], "user.php")!==false) {
+				$submenu[] = array('name'=>'Benutzeroptionen', 'href'=>'#');
+				if(Permission::checkIfUserIsOwnerOrPermitted(64, $_SESSION['user_id'])) {
+					$subsubmenu[] = array('name'=>'Bearbeiten', 'href'=>'user_edit.php?section=edit&user_id='.$_SESSION['user_id']);
+					$subsubmenu[] = array('name'=>'Benachrichtigungen', 'href'=>'event_notifications.php?section=edit&user_id='.$_SESSION['user_id']);
+					$subsubmenu[] = array('name'=>'Dienst hinzufügen', 'href'=>'service.php?section=add&user_id='.$_SESSION['user_id']);
 				}
 				$submenu[] = $subsubmenu;
 				$menu[] = $submenu;

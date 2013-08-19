@@ -29,6 +29,7 @@
 		header('Location: ./dns_zone.php?dns_zone_id='.$_POST['dns_zone_id']);
 	} elseif($_GET['section'] == 'delete') {
 		$dns_ressource_record = new DnsRessourceRecord((int)$_GET['dns_ressource_record_id']);
+		$dns_ressource_record->fetch();
 		if($dns_ressource_record->delete()) {
 			$message[] = array('Der Ressource Record '.$dns_ressource_record->getHost().' wurde gelöscht.', 1);
 		} else {

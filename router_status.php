@@ -8,7 +8,6 @@ require_once('./lib/classes/core/batmanadvanced.class.php');
 require_once('./lib/classes/core/olsr.class.php');
 require_once('./lib/classes/core/crawling.class.php');
 require_once('./lib/classes/core/Eventlist.class.php');
-require_once('./lib/classes/core/service.class.php');
 
 
 if (!is_numeric($_GET['router_id'])) die('invalid router id');
@@ -153,20 +152,6 @@ $smarty->assign('clients_rrd_file_exists', file_exists("./rrdtool/databases/rout
 /**Memory */
 $smarty->assign('memory_rrd_file_exists', file_exists("./rrdtool/databases/router_$_GET[router_id]_memory.rrd"));
 $smarty->assign('processes_rrd_file_exists', file_exists("./rrdtool/databases/router_$_GET[router_id]_processes.rrd"));
-
-/** Get Services */
-$is_logged_id = Permission::isLoggedIn($_SESSION['user_id']);
-if($is_logged_id) {
-	$view='all';
-} else {
-	$view='public';
-}
-
-$servicelist = Service::getServiceList($view, false, $_GET['router_id']);
-$servicelist_all = Service::getServiceList('all', false, $_GET['router_id']);
-$smarty->assign('servicelist', $servicelist);
-$smarty->assign('hidden_service_count', count($servicelist_all)-count($servicelist));
-
 
 $smarty->assign('google_maps_api_key', Config::getConfigValueByName('google_maps_api_key'));
 
