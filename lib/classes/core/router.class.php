@@ -93,18 +93,6 @@ class Router_old {
 		return $rows;
 	}
 	
-	public function getCrawlRoutersByCrawlCycleIdAndStatus($crawl_cycle_id, $status) {
-		try {
-			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_routers WHERE crawl_cycle_id=? AND status=?");
-			$stmt->execute(array($crawl_cycle_id, $status));
-			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-		return $rows;
-	}
-	
 	public function getCrawlRoutersByCrawlCycleId($crawl_cycle_id) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM crawl_routers WHERE crawl_cycle_id=? ORDER BY status ASC");
@@ -460,41 +448,7 @@ class Router_old {
 		}
 		return $rows;
 	}
-
-	public function getRouterByIpId($ip_id) {
-		try {
-			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date,
-								    routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string,
-								    routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
-								    routers.chipset_id
-							    FROM routers, interfaces, ips
-							    WHERE ips.ip_id=? AND ips.interface_id=interfaces.id AND routers.id=interfaces.router_id");
-			$stmt->execute(array($ip_id));
-			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-		return $rows;
-	}
-
-	public function getRouterByInterfaceId($interface_id) {
-		try {
-			$stmt = DB::getInstance()->prepare("SELECT  routers.id as router_id, routers.user_id, routers.create_date, routers.update_date,
-								    routers.crawl_method, routers.hostname, routers.allow_router_auto_assign, routers.router_auto_assign_login_string,
-								    routers.router_auto_assign_hash, routers.description, routers.location, routers.latitude, routers.longitude,
-								    routers.chipset_id
-							    FROM routers, interfaces
-							    WHERE interfaces.id=? AND routers.id=interfaces.router_id");
-			$stmt->execute(array($interface_id));
-			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-		return $rows;
-	}
-
+	
 	public function areAddsAllowed($router_id) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM router_adds WHERE router_id=? LIMIT 1");
@@ -508,7 +462,7 @@ class Router_old {
 		if(count($rows) AND $rows['adds_allowd']=='1') return true;
 		else return false;
 	}
-
+	
 	public function getAddData($router_id) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT * FROM router_adds WHERE router_id=? LIMIT 1");

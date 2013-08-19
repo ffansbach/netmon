@@ -15,10 +15,10 @@ class BatmanAdvanced {
 		
 		foreach($rows as $key=>$row)
 			$rows[$key]['originator_file_path'] = str_replace(":","_",$row['originator']);
-
+			
 		return $rows;
 	}
-
+	
 	public function getCrawlBatmanAdvNexthopsByCrawlCycleId($crawl_cycle_id, $router_id) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT *
@@ -36,25 +36,7 @@ class BatmanAdvanced {
 			
 		return $rows;
 	}
-
-	public function getCrawlBatmanAdvancedHistoryExceptActualCrawlCycle($router_id, $actual_crawl_cycle_id, $limit) {
-		try {
-			$stmt = DB::getInstance()->prepare("SELECT  *
-							    FROM crawl_batman_advanced_originators
-							    WHERE router_id=:router_id AND crawl_cycle_id!=:actual_crawl_cycle_id
-							    ORDER BY id desc
-							    LIMIT :limit");
-			$stmt->bindValue(':router_id', (int)$router_id, PDO::PARAM_INT);
-			$stmt->bindValue(':actual_crawl_cycle_id', (int)$actual_crawl_cycle_id, PDO::PARAM_INT);
-			$stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-			$stmt->execute();
-			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-		}
-		return $rows;
-	}
-
+	
 	public function getBatmanAdvancedInterfacesByRouterId($router_id) {
 		try {
 			$stmt = DB::getInstance()->prepare("SELECT  interfaces.id as interface_id, interfaces.router_id, interfaces.project_id, interfaces.create_date, interfaces.name, interfaces.mac_addr,
