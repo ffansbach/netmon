@@ -15,9 +15,9 @@ if ($_GET['section'] == "edit") {
 	$smarty->assign('is_root', Permission::checkPermission(64, $_SESSION['user_id']));
 	$smarty->assign('permissions', User_old::getRolesByUserID($_GET['user_id']));
 	
-	$smarty->display("header.tpl.php");
-	$smarty->display("user_edit.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("user_edit.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif ($_GET['section'] == "insert_edit") {
 	if (!Permission::checkIfUserIsOwnerOrPermitted(64, $_GET['user_id']))
 		Permission::denyAccess();

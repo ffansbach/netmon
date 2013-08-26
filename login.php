@@ -11,9 +11,9 @@ if($_SESSION['last_page'] != $_SESSION['current_page'] AND empty($_SESSION['redi
 if ($_GET['section']=="login") {
 	$smarty->assign('message', Message::getMessage());
 	
-	$smarty->display("header.tpl.php");
-	$smarty->display("login.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("login.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif ($_GET['section']=="login_send") {
 	//check if login is successfull and if not, go back to loginpage with errormessage
 	if(isset($_POST['nickname']) AND isset($_POST['password'])) {

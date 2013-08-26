@@ -5,7 +5,7 @@
   $routerlist = RoutersNotAssigned::getRouters();
   $smarty->assign('routerlist', $routerlist);
 
-  $smarty->display("header.tpl.php");
-  $smarty->display("routers_trying_to_assign.tpl.php");
-  $smarty->display("footer.tpl.php");
+  $smarty->display("header.tpl.html");
+  $smarty->display("routers_trying_to_assign.tpl.html");
+  $smarty->display("footer.tpl.html");
 ?>

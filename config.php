@@ -27,9 +27,9 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('mysql_password', $GLOBALS['mysql_password']);
 	
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("config.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif ($_GET['section']=="insert_edit") {
 		$file = Install::getFileLineByLine($config_path);
 		$configs[0] = '$GLOBALS[\'mysql_host\'] = "'.$_POST['mysql_host'].'";';
@@ -55,9 +55,9 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('crawl_cycle_length_in_minutes', ConfigLine::configByName('crawl_cycle_length_in_minutes'));
 
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config_netmon.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("config_netmon.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif($_GET['section']=="insert_edit_netmon") {
 	if(Permission::checkPermission(120)) {
 		if(empty($_POST['installed']))
@@ -99,9 +99,9 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('community_essid', ConfigLine::configByName('community_essid'));
 	
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config_community.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("config_community.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif($_GET['section']=="insert_edit_community") {
 	if(Permission::checkPermission(120)) {
 		Config::writeConfigLine('community_name', $_POST['community_name']);
@@ -132,9 +132,9 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('network_connection_ipv6_interface', ConfigLine::configByName('network_connection_ipv6_interface'));
 	
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config_network_connection.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("config_network_connection.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif($_GET['section']=="insert_edit_network_connection") {
 	if(Permission::checkPermission(120)) {
 		if(empty($_POST['network_connection_ipv4']))
@@ -170,9 +170,9 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('mail_smtp_ssl', Config::getConfigValueByName('mail_smtp_ssl'));
 
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config_email.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("config_email.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif($_GET['section']=="insert_edit_email") {
 	if(Permission::checkPermission(120)) {
 		Config::writeConfigLine('mail_sender_adress', $_POST['mail_sender_adress']);
@@ -200,9 +200,9 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('jabber_password', Config::getConfigValueByName('jabber_password'));
 
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config_jabber.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("config_jabber.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif($_GET['section']=="insert_edit_jabber") {
 	if(Permission::checkPermission(120)) {
 		Config::writeConfigLine('jabber_server', $_POST['jabber_server']);
@@ -223,9 +223,9 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('twitter_token', Config::getConfigValueByName('twitter_token'));
 
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config_twitter.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("config_twitter.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif($_GET['section']=="delete_twitter_token") {
 	if(Permission::checkPermission(120)) {
 		Config::writeConfigLine('twitter_token', "");
@@ -298,16 +298,16 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('chipsets_without_name', Chipsets::getChipsetsWithoutName());
 	
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config_hardware.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("config_hardware.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif($_GET['section']=="edit_hardware_name") {
 	$smarty->assign('chipset_data', Chipsets::getChipsetById($_GET['chipset_id']));
 	
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config_edit_hardware_name.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("config_edit_hardware_name.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif($_GET['section']=="insert_edit_chipset_name") {
 	Chipsets::editChipset($_GET['chipset_id'], $_POST['hardware_name']);
 	header('Location: ./config.php?section=edit_hardware');
@@ -325,9 +325,9 @@ if ($_GET['section']=="edit") {
 	$smarty->assign('networklist', $networklist->getNetworklist());
 	
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("config_networks.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("config_networks.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif($_GET['section']=="insert_edit_networks") {
 	$network = new Network(false, (int)$_SESSION['user_id'], $_POST['ip'], (int)$_POST['netmask'], (int)$_POST['ipv']);
 	if($network->store()) {

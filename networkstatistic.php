@@ -163,8 +163,8 @@ if(!empty($last_ended_crawl_cycle)) {
 }
 
 /** Display templates **/
-$smarty->display("header.tpl.php");
-$smarty->display("networkstatistic.tpl.php");
-$smarty->display("footer.tpl.php");
+$smarty->display("header.tpl.html");
+$smarty->display("networkstatistic.tpl.html");
+$smarty->display("footer.tpl.html");
 
 ?>

@@ -13,9 +13,9 @@
 		$smarty->assign('dns_ressource_record_list', $dns_ressource_record_list->getDnsRessourceRecordList());
 		
 		$smarty->assign('message', Message::getMessage());
-		$smarty->display("header.tpl.php");
-		$smarty->display("dns_zone.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("dns_zone.tpl.html");
+		$smarty->display("footer.tpl.html");
 		
 		//TODO Ressource record list of zone
 	} elseif($_GET['section'] == 'insert_add') {
@@ -45,8 +45,8 @@
 		$smarty->assign('dns_zone_list', $dns_zone_list->getDnsZoneList());
 
 		$smarty->assign('message', Message::getMessage());
-		$smarty->display("header.tpl.php");
-		$smarty->display("dns_zones.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("dns_zones.tpl.html");
+		$smarty->display("footer.tpl.html");
 	}
 ?>

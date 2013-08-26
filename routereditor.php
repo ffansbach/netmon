@@ -17,9 +17,9 @@
 			$smarty->assign('chipsets', Chipsets::getChipsets());
 			$smarty->assign('twitter_token', Config::getConfigValueByName('twitter_token'));
 
-			$smarty->display("header.tpl.php");
-			$smarty->display("router_new.tpl.php");
-			$smarty->display("footer.tpl.php");
+			$smarty->display("header.tpl.html");
+			$smarty->display("router_new.tpl.html");
+			$smarty->display("footer.tpl.html");
 		} else {
 			$message[] = array("Nur eingeloggte Benutzer dürfen einen Router anlegen!", 2);
 			Message::setMessage($message);
@@ -58,9 +58,9 @@
 			/** Get and assign Router Informations **/
 			$smarty->assign('chipsets', Chipsets::getChipsets());
 			
-			$smarty->display("header.tpl.php");
-			$smarty->display("router_edit.tpl.php");
-			$smarty->display("footer.tpl.php");
+			$smarty->display("header.tpl.html");
+			$smarty->display("router_edit.tpl.html");
+			$smarty->display("footer.tpl.html");
 		} else {
 			$message[] = array("Du hast nicht genügend Rechte um diesen Router zu editieren!", 2);
 			Message::setMessage($message);

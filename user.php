@@ -42,7 +42,7 @@ $servicelist = new Servicelist((int)$_GET['user_id']);
 $smarty->assign('servicelist', $servicelist->getServicelist());
 
 //load the temlate
-$smarty->display("header.tpl.php");
-$smarty->display("user.tpl.php");
-$smarty->display("footer.tpl.php");
+$smarty->display("header.tpl.html");
+$smarty->display("user.tpl.html");
+$smarty->display("footer.tpl.html");
 ?>

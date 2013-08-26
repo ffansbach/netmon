@@ -1,7 +1,7 @@
 <?php
 require_once('runtime.php');
 
-$smarty->display("header.tpl.php");
-$smarty->display("topology.tpl.php");
-$smarty->display("footer.tpl.php");
+$smarty->display("header.tpl.html");
+$smarty->display("topology.tpl.html");
+$smarty->display("footer.tpl.html");
 ?>

@@ -8,9 +8,9 @@ $smarty->assign('network_policy_url', ConfigLine::configByName('network_policy_u
 
 if (empty($_POST)) {
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("register.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("register.tpl.html");
+	$smarty->display("footer.tpl.html");
 } else {
 	//check weather the users wants to register with his openid
 	if (isset($_GET['openid'])) {

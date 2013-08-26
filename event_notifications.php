@@ -15,9 +15,9 @@
 		$event_notification_list = new EventNotificationList($_SESSION['user_id']);
 		$smarty->assign('event_notification_list', $event_notification_list->getEventNotificationList());
 		
-		$smarty->display("header.tpl.php");
-		$smarty->display("event_notifications.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("event_notifications.tpl.html");
+		$smarty->display("footer.tpl.html");
 	} else {
 		$event_notification = new EventNotification(false, (int)$_SESSION['user_id'], $_POST['action'], $_POST['object'], true);
 		$event_notification->store();

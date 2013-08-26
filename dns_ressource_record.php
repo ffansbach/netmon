@@ -14,9 +14,9 @@
 		$smarty->assign('dns_zone_list', $dns_zone_list->getDnsZoneList());
 		
 		//compile the template and sorround the main content by footer and header template
-		$smarty->display("header.tpl.php");
-		$smarty->display("dns_ressource_record_add.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("dns_ressource_record_add.tpl.html");
+		$smarty->display("footer.tpl.html");
 	} elseif($_GET['section'] == 'insert_add') {
 		$dns_ressource_record = new DnsRessourceRecord(false, (int)$_POST['dns_zone_id'], (int)$_SESSION['user_id'],
 													   $_POST['host'], $_POST['type'], $_POST['pri'], (int)$_POST['destination']);

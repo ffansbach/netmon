@@ -8,9 +8,9 @@
 		if (Permission::checkPermission(4)) {
 			$smarty->assign('userlist', User_old::getUserList());
 		
-			$smarty->display("header.tpl.php");
-			$smarty->display("userlist.tpl.php");
-			$smarty->display("footer.tpl.php");
+			$smarty->display("header.tpl.html");
+			$smarty->display("userlist.tpl.html");
+			$smarty->display("footer.tpl.html");
 		} else {
 			$message[] = array("Nur eingeloggte Benutzer dürfen die Benutzerliste einsehen!", 2);
 			Message::setMessage($message);

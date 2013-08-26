@@ -14,7 +14,7 @@
 	$routerlist = Router_old::getRouterList($_GET['where'], $_GET['operator'], $_GET['value']);
 	$smarty->assign('routerlist', $routerlist);
 
-	$smarty->display("header.tpl.php");
-	$smarty->display("routerlist.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("routerlist.tpl.html");
+	$smarty->display("footer.tpl.html");
 ?>

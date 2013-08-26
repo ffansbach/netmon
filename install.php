@@ -11,9 +11,9 @@ if ($GLOBALS['installed']) {
 	$message[] = array("Die Intallation wurde gesperrt.", 2);
 	Message::setMessage($message);
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("login.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("login.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif (!isset($_GET['section'])) {
 	$smarty->assign('netmon_version', $GLOBALS['netmon_version']);
 	$smarty->assign('netmon_codename', $GLOBALS['netmon_codename']);
@@ -42,13 +42,13 @@ if ($GLOBALS['installed']) {
 		$_SESSION['mail'] = "smtp";
 	}
 	
-	$smarty->display("header.tpl.php");
-	$smarty->display("install_info.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("install_info.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif ($_GET['section']=="db") {
-	$smarty->display("header.tpl.php");
-	$smarty->display("install_db_data.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("install_db_data.tpl.html");
+	$smarty->display("footer.tpl.html");
 } elseif ($_GET['section']=="check_connection") {
 	try {
 		new PDO("mysql:host=".$_POST['mysql_host'].";dbname=".$_POST['mysql_db'], $_POST['mysql_user'], $_POST['mysql_password']);
@@ -60,9 +60,9 @@ if ($GLOBALS['installed']) {
 		$message[] = array($exception, 2);
 		Message::setMessage($message);
 		$smarty->assign('message', Message::getMessage());
-		$smarty->display("header.tpl.php");
-		$smarty->display("install_db_data.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("install_db_data.tpl.html");
+		$smarty->display("footer.tpl.html");
 	} else {
 		$config_path = "./config/config.local.inc.php";
 		$file = Install::getFileLineByLine($config_path);
@@ -79,9 +79,9 @@ if ($GLOBALS['installed']) {
 	if(Install::checkIfDbIsEmpty()) {
 		header('Location: ./install.php?section=db_insert');
 	} else {
-		$smarty->display("header.tpl.php");
-		$smarty->display("install_db_insert_method.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("install_db_insert_method.tpl.html");
+		$smarty->display("footer.tpl.html");
 	}
 } elseif ($_GET['section']=="db_insert") {
 	Install::insertDB();
@@ -93,9 +93,9 @@ if ($GLOBALS['installed']) {
         $smarty->assign('enable_network_policy', false);
 	$smarty->assign('message', Message::getMessage());
 
-	$smarty->display("header.tpl.php");
-	$smarty->display("install_messages.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("install_messages.tpl.html");
+	$smarty->display("footer.tpl.html");
 
 } elseif ($_GET['section']=="messages_insert") {
 	//test mail

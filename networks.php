@@ -12,9 +12,9 @@
 		$networklist = new Networklist();
 		$smarty->assign('networklist', $networklist->getNetworklist());
 		
-		$smarty->display("header.tpl.php");
-		$smarty->display("networks.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("networks.tpl.html");
+		$smarty->display("footer.tpl.html");
 	} else {
 		$network = new Network(false, (int)$_SESSION['user_id'], $_POST['ip'], (int)$_POST['netmask'], (int)$_POST['ipv']);
 		$network->store();

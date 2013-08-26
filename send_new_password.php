@@ -10,9 +10,9 @@ $Register = new Register;
 
 if (empty($_POST['email'])) {
 	$smarty->assign('message', Message::getMessage());
-	$smarty->display("header.tpl.php");
-	$smarty->display("send_new_password.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("send_new_password.tpl.html");
+	$smarty->display("footer.tpl.html");
 } else {
 	$user_data = User_old::getUserByEmail($_POST['email']);
 	if ($user_data) {

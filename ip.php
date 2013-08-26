@@ -19,9 +19,9 @@
 		$router->fetch();
 		$smarty->assign('router', $router);
 		
-		$smarty->display("header.tpl.php");
-		$smarty->display("ip_add.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("ip_add.tpl.html");
+		$smarty->display("footer.tpl.html");
 	} elseif ($_GET['section']=='insert_add') {
 		$ip = new Ip(false, (int)$_GET['interface_id'], (int)$_POST['network_id'], $_POST['ip']);
 		if($ip->store()) {

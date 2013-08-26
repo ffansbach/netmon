@@ -11,9 +11,9 @@
 		$service->fetch();
 		$smarty->assign('service', $service);
 		
-		$smarty->display("header.tpl.php");
-		$smarty->display("service.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("service.tpl.html");
+		$smarty->display("footer.tpl.html");
 	} elseif($_GET['section'] == 'add') {
 		//pass system messages to the template
 		$smarty->assign('message', Message::getMessage());
@@ -25,9 +25,9 @@
 		$smarty->assign('routerlist', $routerlist->getRouterlist());
 		
 		//compile the template and sorround the main content by footer and header template
-		$smarty->display("header.tpl.php");
-		$smarty->display("service_add.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("service_add.tpl.html");
+		$smarty->display("footer.tpl.html");
 	} elseif($_GET['section'] == 'insert_add') {
 		$service = new Service(false, (int)$_GET['user_id'], $_POST['title'], $_POST['description'], (int)$_POST['port'], 1,
 							   $_POST['iplist'], $_POST['dns_ressource_record_list']);

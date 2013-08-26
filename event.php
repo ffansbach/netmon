@@ -11,7 +11,7 @@
 	$smarty->assign('event', $event);
 	
 	//load the template
-	$smarty->display("header.tpl.php");
-	$smarty->display("event.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("event.tpl.html");
+	$smarty->display("footer.tpl.html");
 ?>

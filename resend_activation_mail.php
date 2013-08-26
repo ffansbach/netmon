@@ -8,9 +8,9 @@
 	
 	if (empty($_POST['email'])) {
 		$smarty->assign('message', Message::getMessage());
-		$smarty->display("header.tpl.php");
-		$smarty->display("resend_activation_mail.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("resend_activation_mail.tpl.html");
+		$smarty->display("footer.tpl.html");
 	} else {
 		$user = User_old::getUserByEmail($_POST['email']);
 		if ($user) {

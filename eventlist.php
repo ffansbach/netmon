@@ -21,8 +21,8 @@ $eventlist->init(false, false, false, 0, $event_count, 'create_date', 'desc');
 $smarty->assign('eventlist', $eventlist->getEventlist());
 
 /** Display templates **/
-$smarty->display("header.tpl.php");
-$smarty->display("eventlist.tpl.php");
-$smarty->display("footer.tpl.php");
+$smarty->display("header.tpl.html");
+$smarty->display("eventlist.tpl.html");
+$smarty->display("footer.tpl.html");
 
 ?>

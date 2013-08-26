@@ -23,7 +23,7 @@
     $smarty->assign('show_add_link', false);
   }
 
-  $smarty->display("header.tpl.php");
-  $smarty->display("router_config.tpl.php");
-  $smarty->display("footer.tpl.php");
+  $smarty->display("header.tpl.html");
+  $smarty->display("router_config.tpl.html");
+  $smarty->display("footer.tpl.html");
 ?>

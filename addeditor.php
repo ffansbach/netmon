@@ -60,8 +60,8 @@
 	$smarty->assign('add_small_exists', file_exists("./data/adds/".$_GET['router_id']."_add_small.jpg"));
 	$smarty->assign('add_big_exists', file_exists("./data/adds/".$_GET['router_id']."_add_big.jpg"));
 
-	$smarty->display("header.tpl.php");
-	$smarty->display("addeditor.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("addeditor.tpl.html");
+	$smarty->display("footer.tpl.html");
 
 ?>

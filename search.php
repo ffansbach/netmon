@@ -70,7 +70,7 @@
 
 	}
 	
-	$smarty->display("header.tpl.php");
-	$smarty->display("search.tpl.php");
-	$smarty->display("footer.tpl.php");
+	$smarty->display("header.tpl.html");
+	$smarty->display("search.tpl.html");
+	$smarty->display("footer.tpl.html");
 ?>

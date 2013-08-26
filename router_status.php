@@ -143,9 +143,9 @@ $smarty->assign('processes_rrd_file_exists', file_exists("./rrdtool/databases/ro
 $smarty->assign('google_maps_api_key', Config::getConfigValueByName('google_maps_api_key'));
 
 //Display Templates
-$smarty->display("header.tpl.php");
-$smarty->display("router_status.tpl.php");
-$smarty->display("footer.tpl.php");
+$smarty->display("header.tpl.html");
+$smarty->display("router_status.tpl.html");
+$smarty->display("footer.tpl.html");
 } else {
 	$smarty->assign('community_essid', Config::getConfigValueByName('community_essid'));
 	
@@ -157,6 +157,6 @@ $smarty->display("footer.tpl.php");
 	$router_data = Router_old::getRouterInfo($_GET['router_id']);
 	$smarty->assign('router_data', $router_data);
 	
-	$smarty->display("router_status_embed.tpl.php");
+	$smarty->display("router_status_embed.tpl.html");
 }
 ?>

@@ -8,9 +8,9 @@
 		$router->fetch();
 		$smarty->assign('router', $router);
 		
-		$smarty->display("header.tpl.php");
-		$smarty->display("interface_add.tpl.php");
-		$smarty->display("footer.tpl.php");
+		$smarty->display("header.tpl.html");
+		$smarty->display("interface_add.tpl.html");
+		$smarty->display("footer.tpl.html");
 	} elseif($_GET['section']=='insert_add') {
 		$networkinterface = new Networkinterface(false, (int)$_GET['router_id'], $_POST['name']);
 		if($networkinterface->fetch()==false) {

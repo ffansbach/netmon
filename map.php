@@ -6,7 +6,7 @@
   $smarty->assign('community_location_zoom', Config::getConfigValueByName('community_location_zoom'));
   $smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
   
-  $smarty->display("header.tpl.php");
-  $smarty->display("map.tpl.php");
-  $smarty->display("footer.tpl.php");
+  $smarty->display("header.tpl.html");
+  $smarty->display("map.tpl.html");
+  $smarty->display("footer.tpl.html");
 ?>
