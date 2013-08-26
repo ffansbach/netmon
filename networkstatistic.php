@@ -2,9 +2,9 @@
 
 /** Include Classes **/
 require_once('runtime.php');
-require_once('./lib/classes/core/router.class.php');
-require_once('./lib/classes/core/crawling.class.php');
-require_once('./lib/classes/core/chipsets.class.php');
+require_once('./lib/core/router.class.php');
+require_once('./lib/core/crawling.class.php');
+require_once('./lib/core/chipsets.class.php');
 
 /** Get and assign global messages **/
 $smarty->assign('message', Message::getMessage());

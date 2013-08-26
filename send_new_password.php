@@ -1,10 +1,10 @@
 <?php
 
 require_once('runtime.php');
-require_once(ROOT_DIR.'/lib/classes/core/helper.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/register.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/user.class.php');
-require_once(ROOT_DIR.'/lib/classes/extern/phpass/PasswordHash.php');
+require_once(ROOT_DIR.'/lib/core/helper.class.php');
+require_once(ROOT_DIR.'/lib/core/register.class.php');
+require_once(ROOT_DIR.'/lib/core/user.class.php');
+require_once(ROOT_DIR.'/lib/extern/phpass/PasswordHash.php');
   
 $Register = new Register;
 

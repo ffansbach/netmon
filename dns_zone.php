@@ -1,8 +1,8 @@
 <?php
 	require_once('runtime.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsZone.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsZoneList.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsRessourceRecordList.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsZone.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsZoneList.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecordList.class.php');
 
 	if(!isset($_GET['section']) AND isset($_GET['dns_zone_id'])) {
 		$dns_zone = new DnsZone((int)$_GET['dns_zone_id']);

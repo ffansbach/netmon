@@ -1,16 +1,16 @@
 <?php
 
 require_once('runtime.php');
-require_once('lib/classes/core/login.class.php');
-require_once('lib/classes/core/router.class.php');
-require_once('lib/classes/core/routersnotassigned.class.php');
-require_once('lib/classes/core/rrdtool.class.php');
-require_once('lib/classes/core/Networkinterface.class.php');
-require_once('lib/classes/core/Ip.class.php');
-require_once('lib/classes/core/crawling.class.php');
-require_once('lib/classes/core/chipsets.class.php');
-require_once('lib/classes/core/Event.class.php');
-require_once('lib/classes/extern/FwToolHash.class.php');
+require_once('lib/core/login.class.php');
+require_once('lib/core/router.class.php');
+require_once('lib/core/routersnotassigned.class.php');
+require_once('lib/core/rrdtool.class.php');
+require_once('lib/core/Networkinterface.class.php');
+require_once('lib/core/Ip.class.php');
+require_once('lib/core/crawling.class.php');
+require_once('lib/core/chipsets.class.php');
+require_once('lib/core/Event.class.php');
+require_once('lib/extern/FwToolHash.class.php');
 
 if($_GET['section']=="test_login_strings") {
 	if(!empty($_GET['login_strings'])) {

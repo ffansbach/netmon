@@ -1,9 +1,9 @@
 {literal}
 	<!--http://plugins.jquery.com/project/zendjsonrpc-->
 	
-	<script type="text/javascript" src="lib/classes/extern/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="lib/classes/extern/zend_framework_json-rpc/json2.js"></script>
-	<script type="text/javascript" src="lib/classes/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></script>
+	<script type="text/javascript" src="lib/extern/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/extern/zend_framework_json-rpc/json2.js"></script>
+	<script type="text/javascript" src="lib/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></script>
 	<script type="text/javascript">
 	function nl2br_12(str) {
 		if(typeof(str)=="string") return str.replace(/(\r\n)|(\n\r)|\r|\n/g,"<BR>");

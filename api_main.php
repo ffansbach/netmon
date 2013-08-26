@@ -1,7 +1,7 @@
 <?php
 	require_once('runtime.php');
-	require_once('lib/classes/api/main.class.php');
-	require_once 'lib/classes/extern/Zend/Json/Server.php';
+	require_once('lib/api/main.class.php');
+	require_once 'lib/extern/Zend/Json/Server.php';
 
 	$server = new Zend_Json_Server();
 	$server->setClass('Main');

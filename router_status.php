@@ -2,11 +2,11 @@
 
 /** Include Classes **/
 require_once('runtime.php');
-require_once('./lib/classes/core/router.class.php');
-require_once('./lib/classes/core/interfaces.class.php');
-require_once('./lib/classes/core/batmanadvanced.class.php');
-require_once('./lib/classes/core/crawling.class.php');
-require_once('./lib/classes/core/Eventlist.class.php');
+require_once('./lib/core/router.class.php');
+require_once('./lib/core/interfaces.class.php');
+require_once('./lib/core/batmanadvanced.class.php');
+require_once('./lib/core/crawling.class.php');
+require_once('./lib/core/Eventlist.class.php');
 
 
 if (!is_numeric($_GET['router_id'])) die('invalid router id');

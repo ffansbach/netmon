@@ -1,23 +1,23 @@
 <?php
 	require_once("../../runtime.php");
 	require_once(ROOT_DIR.'/config/config.local.inc.php');
-	require_once(ROOT_DIR.'/lib/classes/core/db.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Iplist.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Ip.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Networkinterfacelist.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Networkinterface.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Routerlist.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Router.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Eventlist.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Event.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/ConfigLineList.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/ConfigLine.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/User.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsZone.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsZoneList.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsRessourceRecord.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsRessourceRecordList.class.php');
-	require_once(ROOT_DIR.'/lib/classes/extern/rest/rest.inc.php');
+	require_once(ROOT_DIR.'/lib/core/db.class.php');
+	require_once(ROOT_DIR.'/lib/core/Iplist.class.php');
+	require_once(ROOT_DIR.'/lib/core/Ip.class.php');
+	require_once(ROOT_DIR.'/lib/core/Networkinterfacelist.class.php');
+	require_once(ROOT_DIR.'/lib/core/Networkinterface.class.php');
+	require_once(ROOT_DIR.'/lib/core/Routerlist.class.php');
+	require_once(ROOT_DIR.'/lib/core/Router.class.php');
+	require_once(ROOT_DIR.'/lib/core/Eventlist.class.php');
+	require_once(ROOT_DIR.'/lib/core/Event.class.php');
+	require_once(ROOT_DIR.'/lib/core/ConfigLineList.class.php');
+	require_once(ROOT_DIR.'/lib/core/ConfigLine.class.php');
+	require_once(ROOT_DIR.'/lib/core/User.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsZone.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsZoneList.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecord.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecordList.class.php');
+	require_once(ROOT_DIR.'/lib/extern/rest/rest.inc.php');
 	
 	class API extends Rest {
 		private $domxml = null;

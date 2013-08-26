@@ -1,11 +1,11 @@
 <?php
 require_once('runtime.php');
-require_once('lib/classes/core/router.class.php');
-require_once('lib/classes/core/user.class.php');
-require_once('lib/classes/core/routersnotassigned.class.php');
-require_once('lib/classes/core/Eventlist.class.php');
-require_once('lib/classes/core/Service.class.php');
-require_once('lib/classes/core/Servicelist.class.php');
+require_once('lib/core/router.class.php');
+require_once('lib/core/user.class.php');
+require_once('lib/core/routersnotassigned.class.php');
+require_once('lib/core/Eventlist.class.php');
+require_once('lib/core/Service.class.php');
+require_once('lib/core/Servicelist.class.php');
 
 //get messages of the message system
 $smarty->assign('message', Message::getMessage());

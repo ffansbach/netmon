@@ -8,12 +8,12 @@
 	 * Necessary includes
 	 **/
 	require_once('runtime.php');
-	require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/rrdtool.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Eventlist.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/EventNotificationList.class.php');
+	require_once(ROOT_DIR.'/lib/core/crawling.class.php');
+	require_once(ROOT_DIR.'/lib/core/router.class.php');
+	require_once(ROOT_DIR.'/lib/core/rrdtool.class.php');
+	require_once(ROOT_DIR.'/lib/core/Eventlist.class.php');
+	require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
+	require_once(ROOT_DIR.'/lib/core/EventNotificationList.class.php');
 	
 	/**
 	 * Crawlcycle organisation

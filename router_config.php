@@ -1,9 +1,9 @@
 <?php
 	require_once('runtime.php');
-	require_once('lib/classes/core/interfaces.class.php');
-	require_once('lib/classes/core/router.class.php');
-	require_once('lib/classes/core/config.class.php');
-	require_once('lib/classes/core/Networkinterfacelist.class.php');
+	require_once('lib/core/interfaces.class.php');
+	require_once('lib/core/router.class.php');
+	require_once('lib/core/config.class.php');
+	require_once('lib/core/Networkinterfacelist.class.php');
 	
 	$smarty->assign('message', Message::getMessage());
 	

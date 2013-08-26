@@ -1,7 +1,7 @@
 <?php
 	require_once('runtime.php');
-	require_once('lib/classes/core/Router.class.php');
-	require_once('lib/classes/core/Networkinterface.class.php');
+	require_once('lib/core/Router.class.php');
+	require_once('lib/core/Networkinterface.class.php');
 	
 	if($_GET['section']=='add') {
 		$router = new Router((int)$_GET['router_id']);

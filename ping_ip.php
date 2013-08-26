@@ -1,7 +1,7 @@
 <?php
 	require_once('runtime.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Ip.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/ConfigLine.class.php');
+	require_once(ROOT_DIR.'/lib/core/Ip.class.php');
+	require_once(ROOT_DIR.'/lib/core/ConfigLine.class.php');
 	
 	$ip = new Ip((int)$_GET['ip_id']);
 	if($ip->fetch()) {

@@ -1,5 +1,5 @@
-<script src="lib/classes/extern/jquery/jquery.min.js"></script>
-<script src="lib/classes/extern/DataTables/jquery.dataTables.min.js"></script>
+<script src="lib/extern/jquery/jquery.min.js"></script>
+<script src="lib/extern/DataTables/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
 {literal}

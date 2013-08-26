@@ -1,6 +1,6 @@
 <?php
 	require_once('runtime.php');
-	require_once('lib/classes/core/router.class.php');
+	require_once('lib/core/router.class.php');
 	
 	$smarty->assign('message', Message::getMessage());
 	

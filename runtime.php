@@ -33,7 +33,7 @@
 	$GLOBALS['installed'] = false;
 	$GLOBALS['template'] = "freifunk_oldenburg";
 	$GLOBALS['monitor_root'] = __DIR__."/";
-	set_include_path(get_include_path() .PATH_SEPARATOR. __DIR__."/lib/classes/extern/");
+	set_include_path(get_include_path() .PATH_SEPARATOR. __DIR__."/lib/extern/");
 	$GLOBALS['community_name'] = "Freifunk Deinestadt";
 	$GLOBALS['community_slogan'] = "Die freie WLAN-Community aus deiner Stadt • Freie Netze für alle!";
 		
@@ -91,15 +91,15 @@
 	require_once(ROOT_DIR.'/config/release.php');
 
 	//include important classes
-	require_once(ROOT_DIR.'/lib/classes/core/db.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/config.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/message.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/helper.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/permission.class.php');  
-	require_once(ROOT_DIR.'/lib/classes/core/menus.class.php');
+	require_once(ROOT_DIR.'/lib/core/db.class.php');
+	require_once(ROOT_DIR.'/lib/core/config.class.php');
+	require_once(ROOT_DIR.'/lib/core/message.class.php');
+	require_once(ROOT_DIR.'/lib/core/helper.class.php');
+	require_once(ROOT_DIR.'/lib/core/permission.class.php');  
+	require_once(ROOT_DIR.'/lib/core/menus.class.php');
 
 	//load Zend framework
-	require_once(ROOT_DIR.'/lib/classes/extern/Zend/Loader/Autoloader.php');
+	require_once(ROOT_DIR.'/lib/extern/Zend/Loader/Autoloader.php');
 	Zend_Loader_Autoloader::getInstance();
 
 	if ($GLOBALS['installed']) {
@@ -134,7 +134,7 @@
 	}
 
 	//load smarty template engine
-	require_once (ROOT_DIR.'/lib/classes/extern/smarty/Smarty.class.php');
+	require_once (ROOT_DIR.'/lib/extern/smarty/Smarty.class.php');
 	$smarty = new Smarty;
 	$smarty->compile_check = true;
 	$smarty->debugging = false;
@@ -151,9 +151,9 @@
 	if ($GLOBALS['installed']) {
 		//if the user is not logged in and the remember me cookie is set
 		if (!isset($_SESSION['user_id']) AND !empty($_COOKIE["remember_me"])) {
-			require_once(ROOT_DIR.'/lib/classes/core/user.class.php');
-			require_once(ROOT_DIR.'/lib/classes/core/UserRememberMeList.class.php');
-			require_once(ROOT_DIR.'/lib/classes/extern/phpass/PasswordHash.php');
+			require_once(ROOT_DIR.'/lib/core/user.class.php');
+			require_once(ROOT_DIR.'/lib/core/UserRememberMeList.class.php');
+			require_once(ROOT_DIR.'/lib/extern/phpass/PasswordHash.php');
 			
 			//get user_id and password from remember_me cookie
 			$remember_me_cookie = explode(",", $_COOKIE["remember_me"]);

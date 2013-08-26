@@ -1,6 +1,6 @@
 <?php
 	require_once('runtime.php');
-	require_once('lib/classes/core/Event.class.php');
+	require_once('lib/core/Event.class.php');
 	
 	//get messages of the message system
 	$smarty->assign('message', Message::getMessage());

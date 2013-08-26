@@ -1,5 +1,5 @@
-<script src="lib/classes/extern/jquery/jquery.js"></script>
-<script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
+<script src="lib/extern/jquery/jquery.js"></script>
+<script src="lib/extern/DataTables/jquery.dataTables.js"></script>
 
 <link rel="stylesheet" type="text/css" href="templates/{$template}/css/jquery_data_tables.css">
 

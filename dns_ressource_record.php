@@ -1,8 +1,8 @@
 <?php
 	require_once('runtime.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsZone.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsZoneList.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsRessourceRecord.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsZone.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsZoneList.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecord.class.php');
 	
 	if(!isset($_GET['section']) AND isset($_GET['dns_ressource_record_id'])) {
 		//show ressource record

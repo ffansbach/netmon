@@ -1,14 +1,14 @@
 <?php
 
 require_once('runtime.php');
-require_once('lib/classes/core/install.class.php');
-require_once('lib/classes/core/chipsets.class.php');
-require_once('lib/classes/core/DnsZone.class.php');
-require_once('lib/classes/core/DnsZoneList.class.php');
-require_once('lib/classes/core/Network.class.php');
-require_once('lib/classes/core/Networklist.class.php');
-require_once('lib/classes/core/ConfigLine.class.php');
-require_once('lib/classes/extern/Zend/Oauth/Consumer.php');
+require_once('lib/core/install.class.php');
+require_once('lib/core/chipsets.class.php');
+require_once('lib/core/DnsZone.class.php');
+require_once('lib/core/DnsZoneList.class.php');
+require_once('lib/core/Network.class.php');
+require_once('lib/core/Networklist.class.php');
+require_once('lib/core/ConfigLine.class.php');
+require_once('lib/extern/Zend/Oauth/Consumer.php');
 
 
 $config_path = "./config/config.local.inc.php";

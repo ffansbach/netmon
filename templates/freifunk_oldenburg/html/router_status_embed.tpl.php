@@ -10,7 +10,7 @@
 	<body style="background: #FFFFFF; text-align:left; width: 200px; max-width: 200px">
 		<div style="border-style: solid; border-width: 1px; border-color: #99CCFF; background: #EBF5FF;">
 			{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
-				<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+				<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
 				<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
 				<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 				<div id="map" style="height:170px; width:198px;">

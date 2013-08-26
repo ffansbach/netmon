@@ -1,7 +1,7 @@
 <?php
 
 require_once('runtime.php');
-require_once('lib/classes/core/variablesplash.class.php');
+require_once('lib/core/variablesplash.class.php');
 
 if($_GET['section']=="insert_client") {
 	$entry = array();

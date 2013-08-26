@@ -1,17 +1,17 @@
 <?php
 
 require_once('runtime.php');
-require_once(ROOT_DIR.'/lib/classes/core/login.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/router.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/routersnotassigned.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/rrdtool.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/interfaces.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/chipsets.class.php');
-require_once(ROOT_DIR.'/lib/classes/extern/phpass/PasswordHash.php');
-require_once(ROOT_DIR.'/lib/classes/core/RouterStatus.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/Networkinterface.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/NetworkinterfaceStatus.class.php');
+require_once(ROOT_DIR.'/lib/core/login.class.php');
+require_once(ROOT_DIR.'/lib/core/router.class.php');
+require_once(ROOT_DIR.'/lib/core/routersnotassigned.class.php');
+require_once(ROOT_DIR.'/lib/core/rrdtool.class.php');
+require_once(ROOT_DIR.'/lib/core/interfaces.class.php');
+require_once(ROOT_DIR.'/lib/core/crawling.class.php');
+require_once(ROOT_DIR.'/lib/core/chipsets.class.php');
+require_once(ROOT_DIR.'/lib/extern/phpass/PasswordHash.php');
+require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
+require_once(ROOT_DIR.'/lib/core/Networkinterface.class.php');
+require_once(ROOT_DIR.'/lib/core/NetworkinterfaceStatus.class.php');
 
 if($_GET['section']=="get_standart_data") {
 	if ($_GET['authentificationmethod']=='hash') {

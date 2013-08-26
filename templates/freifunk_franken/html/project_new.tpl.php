@@ -141,7 +141,7 @@
 		<div style="width: 100%; overflow: hidden;">
 			<div style="float:left; width: 55%;">
 				<script type="text/javascript" src='https://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
-				<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+				<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
 				<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
 				<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 				

@@ -1,7 +1,7 @@
 <?php
 	require_once('runtime.php');
-	require_once('lib/classes/core/ip.class.php');
-	require_once('lib/classes/core/router.class.php');
+	require_once('lib/core/ip.class.php');
+	require_once('lib/core/router.class.php');
 
 	if(isset($_GET['section']) AND $_GET['section']=='upload') {
 		if(isset($_FILES['add_small']['tmp_name'])){

@@ -1,11 +1,11 @@
 <?php
 
 require_once('runtime.php');
-require_once(ROOT_DIR.'/lib/classes/core/config.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/install.class.php');
-require_once(ROOT_DIR.'/lib/classes/core/crawling.class.php');
-require_once(ROOT_DIR.'/lib/classes/extern/Zend/Mail.php');
-require_once(ROOT_DIR.'/lib/classes/extern/Zend/Mail/Transport/Smtp.php');
+require_once(ROOT_DIR.'/lib/core/config.class.php');
+require_once(ROOT_DIR.'/lib/core/install.class.php');
+require_once(ROOT_DIR.'/lib/core/crawling.class.php');
+require_once(ROOT_DIR.'/lib/extern/Zend/Mail.php');
+require_once(ROOT_DIR.'/lib/extern/Zend/Mail/Transport/Smtp.php');
 
 if ($GLOBALS['installed']) {
 	$message[] = array("Die Intallation wurde gesperrt.", 2);

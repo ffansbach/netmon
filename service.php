@@ -1,8 +1,8 @@
 <?php
 	require_once('runtime.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Service.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/DnsRessourceRecordList.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Routerlist.class.php');
+	require_once(ROOT_DIR.'/lib/core/Service.class.php');
+	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecordList.class.php');
+	require_once(ROOT_DIR.'/lib/core/Routerlist.class.php');
 	
 	if(!isset($_GET['section']) AND isset($_GET['service_id'])) {
 		$smarty->assign('message', Message::getMessage());

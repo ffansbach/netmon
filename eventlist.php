@@ -2,8 +2,8 @@
 
 /** Include Classes **/
 require_once('runtime.php');
-require_once('lib/classes/core/Eventlist.class.php');
-require_once('lib/classes/core/RouterStatus.class.php');
+require_once('lib/core/Eventlist.class.php');
+require_once('lib/core/RouterStatus.class.php');
 
 /** Get and assign global messages **/
 $smarty->assign('message', Message::getMessage());

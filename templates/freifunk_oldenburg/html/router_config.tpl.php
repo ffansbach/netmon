@@ -25,7 +25,7 @@
 		<h2>Standort</h2>
 		{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
 		<script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key={$google_maps_api_key}&sensor=false'></script>
-		<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+		<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
 		<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
 		<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 

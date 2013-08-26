@@ -1,14 +1,14 @@
-<script src="lib/classes/extern/jquery/jquery.min.js"></script>
-<script src="lib/classes/extern/DataTables/jquery.dataTables.min.js"></script>
+<script src="lib/extern/jquery/jquery.min.js"></script>
+<script src="lib/extern/DataTables/jquery.dataTables.min.js"></script>
 
 <!-- Javascript for the graphs -->
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/binaryXHR.js"></script>
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFile.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/binaryXHR.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFile.js"></script>
 <!-- rrdFlot class needs the following four include files !-->
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlotSupport.js"></script>
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlot.js"></script>
-<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.js"></script>
-<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.selection.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFlotSupport.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFlot.js"></script>
+<script type="text/javascript" src="lib/extern/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="lib/extern/flot/jquery.flot.selection.js"></script>
 
 <script type="text/javascript">
 {literal}
@@ -231,7 +231,7 @@ $(document).ready(function() {
 		<h2>Standort ({if !empty($router_last_crawl.latitude)}crawl{else}Netmon{/if})</h2>
 		{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
 			<script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key={$google_maps_api_key}&sensor=false'></script>
-			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+			<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
 			<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 			<div id="map" style="height:300px; width:400px; border:solid 1px black;font-size:9pt;">

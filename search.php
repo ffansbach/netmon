@@ -21,10 +21,10 @@
 	// +---------------------------------------------------------------------------+/
 	
 	require_once('runtime.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Ip.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Networkinterface.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Router.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/subnetcalculator.class.php');
+	require_once(ROOT_DIR.'/lib/core/Ip.class.php');
+	require_once(ROOT_DIR.'/lib/core/Networkinterface.class.php');
+	require_once(ROOT_DIR.'/lib/core/Router.class.php');
+	require_once(ROOT_DIR.'/lib/core/subnetcalculator.class.php');
 	
 	$smarty->assign('message', Message::getMessage());
 	

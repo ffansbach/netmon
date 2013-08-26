@@ -2,18 +2,18 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
-<script src="lib/classes/extern/DataTables/jquery.dataTables.js"></script>
+<script src="lib/extern/DataTables/jquery.dataTables.js"></script>
 
 <link rel="stylesheet" type="text/css" href="templates/{$template}/css/jquery_data_tables.css">
 
 <!-- Javascript for the graphs -->
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/binaryXHR.js"></script>
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFile.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/binaryXHR.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFile.js"></script>
 <!-- rrdFlot class needs the following four include files !-->
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlotSupport.js"></script>
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlot.js"></script>
-<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.js"></script>
-<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.selection.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFlotSupport.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFlot.js"></script>
+<script type="text/javascript" src="lib/extern/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="lib/extern/flot/jquery.flot.selection.js"></script>
 
 <script type="text/javascript">
 {literal}
@@ -251,7 +251,7 @@ $(document).ready(function() {
 			<script src='https://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
 			<script src="https://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2&mkt=en-us"></script>
 			
-			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+			<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
 			
 			<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>

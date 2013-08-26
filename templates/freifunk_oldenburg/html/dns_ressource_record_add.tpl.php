@@ -1,4 +1,4 @@
-<script src="lib/classes/extern/jquery/jquery.min.js"></script>
+<script src="lib/extern/jquery/jquery.min.js"></script>
 
 {literal}
 <script type="text/javascript">

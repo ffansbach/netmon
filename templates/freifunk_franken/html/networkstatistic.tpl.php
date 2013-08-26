@@ -3,13 +3,13 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
 <!-- Javascript for the graphs -->
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/binaryXHR.js"></script>
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFile.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/binaryXHR.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFile.js"></script>
 <!-- rrdFlot class needs the following four include files !-->
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlotSupport.js"></script>
-<script type="text/javascript" src="lib/classes/extern/javascriptrrd/rrdFlot.js"></script>
-<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.js"></script>
-<script type="text/javascript" src="lib/classes/extern/flot/jquery.flot.selection.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFlotSupport.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFlot.js"></script>
+<script type="text/javascript" src="lib/extern/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="lib/extern/flot/jquery.flot.selection.js"></script>
 
 {literal}
 <script type="text/javascript">

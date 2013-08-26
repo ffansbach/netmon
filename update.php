@@ -19,8 +19,8 @@
 	Script to remove duplicated ip adresses from interfaces
 	This happens when you switch from shortened ipv6 to extracted ipv6 format in db
 	require_once('runtime.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Iplist.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Networkinterfacelist.class.php');
+	require_once(ROOT_DIR.'/lib/core/Iplist.class.php');
+	require_once(ROOT_DIR.'/lib/core/Networkinterfacelist.class.php');
 	
 	$networkinterfacelist = new Networkinterfacelist(false, 0, -1);
 	$networkinterfacelist = $networkinterfacelist->getNetworkinterfacelist();

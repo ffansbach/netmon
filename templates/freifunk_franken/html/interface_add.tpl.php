@@ -5,9 +5,9 @@
 {literal}
 	<!--http://plugins.jquery.com/project/zendjsonrpc-->
 	
-	<script type="text/javascript" src="lib/classes/extern/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="lib/classes/extern/zend_framework_json-rpc/json2.js"></script>
-	<script type="text/javascript" src="lib/classes/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></script>
+	<script type="text/javascript" src="lib/extern/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="lib/extern/zend_framework_json-rpc/json2.js"></script>
+	<script type="text/javascript" src="lib/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></script>
 	<script type="text/javascript">
 		function getIpRange(range) {
 			free_ipv4_range = api_main.getFreeIpRangeByProjectId(document.getElementById('project_id').options[document.getElementById('project_id').selectedIndex].value, range, document.getElementById('ipv4_addr_input').value);
@@ -128,7 +128,7 @@
 		</div>
 		<div style="float:left; width: 55%;">
 			<script type="text/javascript" src='https://maps.google.com/maps?file=api&amp;v=2&amp;key={$google_maps_api_key}'></script>
-			<script type="text/javascript" src="./lib/classes/extern/openlayers/OpenLayers.js"></script>
+			<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
 			<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
 			<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 			

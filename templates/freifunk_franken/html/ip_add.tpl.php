@@ -1,6 +1,6 @@
-<script type="text/javascript" src="lib/classes/extern/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="lib/classes/extern/zend_framework_json-rpc/json2.js"></script>
-<script type="text/javascript" src="lib/classes/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></script>
+<script type="text/javascript" src="lib/extern/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/extern/zend_framework_json-rpc/json2.js"></script>
+<script type="text/javascript" src="lib/extern/zend_framework_json-rpc/jquery.zend.jsonrpc.js"></script>
 {literal}
 <script type="text/javascript">
 	function getIps(project_id) {

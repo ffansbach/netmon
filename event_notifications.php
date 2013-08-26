@@ -1,7 +1,7 @@
 <?php
 	require_once('runtime.php');
-	require_once(ROOT_DIR.'/lib/classes/core/EventNotificationList.class.php');
-	require_once(ROOT_DIR.'/lib/classes/core/Routerlist.class.php');
+	require_once(ROOT_DIR.'/lib/core/EventNotificationList.class.php');
+	require_once(ROOT_DIR.'/lib/core/Routerlist.class.php');
 	
 	$smarty->assign('message', Message::getMessage());
 	
