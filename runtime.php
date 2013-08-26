@@ -89,7 +89,11 @@
 	//include important configuration files
 	require_once(ROOT_DIR.'/config/config.local.inc.php');
 	require_once(ROOT_DIR.'/config/release.php');
-
+	
+	//load Zend framework
+	require_once(ROOT_DIR.'/lib/extern/Zend/Loader/Autoloader.php');
+	Zend_Loader_Autoloader::getInstance();
+	
 	//include important classes
 	require_once(ROOT_DIR.'/lib/core/db.class.php');
 	require_once(ROOT_DIR.'/lib/core/config.class.php');
@@ -97,11 +101,7 @@
 	require_once(ROOT_DIR.'/lib/core/helper.class.php');
 	require_once(ROOT_DIR.'/lib/core/permission.class.php');  
 	require_once(ROOT_DIR.'/lib/core/menus.class.php');
-
-	//load Zend framework
-	require_once(ROOT_DIR.'/lib/extern/Zend/Loader/Autoloader.php');
-	Zend_Loader_Autoloader::getInstance();
-
+	
 	if ($GLOBALS['installed']) {
 		//MAIL
 		$GLOBALS['mail_sending_type'] = Config::getConfigValueByName('mail_sending_type');
