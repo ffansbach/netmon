@@ -25,6 +25,9 @@
 			header('Location: ./router_config.php?router_id='.$_GET['router_id']);
 		}
 	} elseif($_GET['section']=='delete') {
+		if (!Permission::checkIfUserIsOwnerOrPermitted(64, $_GET['interface_id']))
+			Permission::denyAccess();
+		
 		$networkinterface = new Networkinterface((int)$_GET['interface_id']);
 		$networkinterface->fetch();
 		$networkinterface->delete();

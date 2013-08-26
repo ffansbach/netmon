@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 19, 2013 at 09:54 PM
+-- Generation Time: Aug 26, 2013 at 01:49 PM
 -- Server version: 5.5.32-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.17-1~dotdeb.1
 
@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   `name` varchar(100) NOT NULL,
   `hardware_name` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
@@ -254,23 +255,6 @@ CREATE TABLE IF NOT EXISTS `crawl_services` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `dns_hosts`
---
-
-CREATE TABLE IF NOT EXISTS `dns_hosts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `host` varchar(250) NOT NULL,
-  `ipv4_id` int(11) NOT NULL,
-  `ipv6_id` int(11) NOT NULL,
-  `create_date` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `host` (`host`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `dns_ressource_records`
 --
 
@@ -394,23 +378,6 @@ CREATE TABLE IF NOT EXISTS `ips` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ip_ranges`
---
-
-CREATE TABLE IF NOT EXISTS `ip_ranges` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `project_id` int(11) NOT NULL,
-  `interface_id` int(11) NOT NULL,
-  `router_id` int(11) NOT NULL,
-  `ip_start` varchar(100) NOT NULL,
-  `ip_end` varchar(100) NOT NULL,
-  `create_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `networks`
 --
 
@@ -424,24 +391,6 @@ CREATE TABLE IF NOT EXISTS `networks` (
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `olsr_crawl_data`
---
-
-CREATE TABLE IF NOT EXISTS `olsr_crawl_data` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `crawl_id` int(11) NOT NULL,
-  `olsrd_hna` text NOT NULL,
-  `olsrd_neighbors` text NOT NULL,
-  `olsrd_links` text NOT NULL,
-  `olsrd_mid` text NOT NULL,
-  `olsrd_routes` text NOT NULL,
-  `olsrd_topology` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -541,6 +490,8 @@ CREATE TABLE IF NOT EXISTS `router_adds` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `router_id` int(11) NOT NULL,
   `adds_allowed` tinyint(1) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -589,44 +540,6 @@ CREATE TABLE IF NOT EXISTS `service_ips` (
   `ip_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `subnets`
---
-
-CREATE TABLE IF NOT EXISTS `subnets` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `subnet_type` varchar(10) NOT NULL,
-  `host` varchar(15) NOT NULL,
-  `netmask` int(11) NOT NULL,
-  `real_host` varchar(15) NOT NULL,
-  `real_netmask` int(11) NOT NULL,
-  `dhcp_kind` varchar(7) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` text,
-  `essid` varchar(100) NOT NULL,
-  `bssid` varchar(20) NOT NULL,
-  `channel` int(11) NOT NULL,
-  `website` varchar(200) NOT NULL,
-  `polygons` text NOT NULL,
-  `dns_server` varchar(200) NOT NULL,
-  `vpn_server` varchar(100) DEFAULT NULL,
-  `vpn_server_port` int(11) NOT NULL,
-  `vpn_server_device` varchar(10) NOT NULL,
-  `vpn_server_proto` varchar(10) NOT NULL,
-  `vpn_server_ca_crt` text NOT NULL,
-  `vpn_server_ca_key` text NOT NULL,
-  `vpn_server_pass` varchar(255) NOT NULL,
-  `ftp_sync` tinyint(4) NOT NULL,
-  `ftp_ccd_folder` varchar(200) NOT NULL,
-  `ftp_ccd_username` varchar(20) NOT NULL,
-  `ftp_ccd_password` varchar(30) NOT NULL,
-  `create_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 
@@ -692,6 +605,7 @@ CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
   `ip` varchar(100) NOT NULL,
   `ipv` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 

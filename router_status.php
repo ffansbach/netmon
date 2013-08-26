@@ -61,10 +61,6 @@ $router_data = Router_old::getRouterInfo($_GET['router_id']);
 $smarty->assign('router_data', $router_data);
 $smarty->assign('crawl_cycle', $GLOBALS['crawl_cycle']);
 
-//Batman advanced interfaces
-$router_batman_adv_interfaces = BatmanAdvanced::getBatmanAdvancedInterfacesByRouterId($_GET['router_id']);
-$smarty->assign('router_batman_adv_interfaces', $router_batman_adv_interfaces);
-
 /** Get status status information and history of router **/
 $router_last_crawl = Router_old::getCrawlRouterByCrawlCycleId($last_ended_crawl_cycle['id'], $_GET['router_id']);
 $smarty->assign('router_last_crawl', $router_last_crawl);

@@ -57,7 +57,7 @@ class RouterEditor {
 			}
 			
 			$crawl_cycle_id = Crawling::getLastEndedCrawlCycle();
-			$router_status = New RouterStatus(false, (int)$crawl_cycle_id['id'], (int)$router_id, "unknown");
+			$router_status = New RouterStatus(false, (int)$crawl_cycle_id['id'], (int)$router_id, "offline");
 			$router_status->store();
 			
 			if($_POST['allow_router_auto_assign']=='1' AND !empty($_POST['router_auto_assign_login_string'])) {

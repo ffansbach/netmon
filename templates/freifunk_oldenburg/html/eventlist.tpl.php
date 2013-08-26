@@ -18,6 +18,9 @@
 					{if $event->getAction() == 'status' AND $data.to == 'offline'}
 						geht <span style="color: #CB0000;">offline</span>
 					{/if}
+					{if $event->getAction() == 'status' AND $data.to == 'unknown'}
+						erhält Status <span style="color: #F8C901;">pingbar</span>
+					{/if}
 					{if $event->getAction() == 'reboot'}
 						wurde <span style="color: #000f9c;">Rebootet</span>
 					{/if}

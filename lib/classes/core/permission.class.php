@@ -69,6 +69,7 @@ class Permission {
 		Message::setMessage($message);
 		$_SESSION['redirect_url'] = ".".$_SERVER['REQUEST_URI'];
 		header('Location: ./login.php?section=login');
+		die();
 	}
 	
 	/**

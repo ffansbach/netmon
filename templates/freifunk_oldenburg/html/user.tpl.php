@@ -256,29 +256,3 @@ $(document).ready(function() {
 {else}
 	<p>Keine Services vorhanden.</p>
 {/if}
-
-<!--TODO
-<h2>Domains von {$user.nickname}</h2>
-{if !empty($dns_hosts)}
-	<table class="display" id="domainlist" style="width: 100%;">
-		<thead>
-			<tr>
-				<th>Domain</th>
-				<th>IPv4 Adresse</th>
-				<th>IPv6 Adresse</th>
-				<th>Aktionen</th>
-			</tr>
-		</thead>
-		<tbody>
-			{foreach $dns_hosts as $dns_host}
-				<tr>
-					<td>{$dns_host.host}.{$dns_tld}</td>
-					<td>{if $dns_host.ipv4_id!=0}{$dns_host.ipv4_ip}{else}Keine IPv4 Adresse{/if}</td>
-					<td>{if $dns_host.ipv6_id!=0}{$dns_host.ipv6_ip}{else}Keine IPv6 Adresse{/if}</td>
-				</tr>
-			{/foreach}
-		</tbody>
-	</table>
-{else}
-	<p>Keine Domains vorhanden.</p>
-{/if}-->

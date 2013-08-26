@@ -73,6 +73,7 @@ class IntegratedXmlIPv6Crawler {
 								$exploded_ping_result = explode(",", $return[$ping_result_index]);
 
 								$ping=false;
+								$data_send=false;
 								if(trim($exploded_ping_result[1])!="0 received") {
 									$ping=true;
 									$exploded_ping_result = explode("=", $return[$ping_result_index+1]);
@@ -81,30 +82,43 @@ class IntegratedXmlIPv6Crawler {
 									$ip_data[0]['ip_id'] = $ip_address->getIp();
 									$ip_data[0]['ping_avg'] = $exploded_ping_result[1];
 								}
-
-								//fetch crawl data from router
-								$return = array();
-								$command = "curl -s --connect-timeout 4 -m8 -g http://[$ipv6_address[0]%25\$(cat /sys/class/net/$network_connection_ipv6_interface/ifindex)]/node.data";
-								echo $command."\n";
-								exec($command, $return);
-								$return_string = "";
-								foreach($return as $string) {
-									$return_string .= $string;
-								}
-
-								//store the crawl data into the database if the router is not offline
-								if(!empty($return_string)) {
-									try {
-										$xml = new SimpleXMLElement($return_string);
-										$xml_array = IntegratedXmlIPv6Crawler::simplexml2array($xml);
+								
+								if($ping) {
+									for($i=0; $i<3; $i++) {
+										//fetch crawl data from router
+										$return = array();
+										$command = "curl -s --connect-timeout 4 -m8 -g http://[$ipv6_address[0]%25\$(cat /sys/class/net/$network_connection_ipv6_interface/ifindex)]/node.data";
+										echo $command."\n";
+										exec($command, $return);
+										$return_string = "";
+										foreach($return as $string) {
+											$return_string .= $string;
+										}
+										
+										//store the crawl data into the database if the router is not offline
+										if(!empty($return_string)) {
+											try {
+												$xml = new SimpleXMLElement($return_string);
+												$xml_array = IntegratedXmlIPv6Crawler::simplexml2array($xml);
+												$xml_array['ip_data'] = $ip_data;                                                                            
+												$xml_array['router_id'] = $router['id'];
+												//if crawl data is being stored by this script, the status is always online
+												//because data is only beeing stored if a connection could be established
+												$xml_array['system_data']['status'] = "online";
+												$return = Crawl::insertCrawlData($xml_array);
+												$data_send=true;
+												break;
+											} catch (Exception $e) {
+												echo nl2br($e->getMessage());
+											}
+										}
+									}
+									
+									if($ping && !$data_send) {
 										$xml_array['ip_data'] = $ip_data;                                                                            
 										$xml_array['router_id'] = $router['id'];
-										//if crawl data is being stored by this script, the status is always online
-										//because data is only beeing stored if a connection could be established
-										$xml_array['system_data']['status'] = "online";
+										$xml_array['system_data']['status'] = "unknown";
 										$return = Crawl::insertCrawlData($xml_array);
-									} catch (Exception $e) {
-										echo nl2br($e->getMessage());
 									}
 								}
 							}

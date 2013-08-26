@@ -149,6 +149,7 @@
 		}
 		
 		public function setIp($ip) {
+			$ip = trim($ip);
 			if(is_string($ip) AND $this->getNetwork()!=null AND Ip::isValidIp($ip, $this->getNetwork()->getIpv())) {
 				if($this->getNetwork()->getIpv()==6) {
 					$this->ip = (string)Ip::ipv6Expand($ip);

@@ -33,6 +33,9 @@
 		}
 		header('Location: ./router_config.php?router_id='.$_GET['router_id']);
 	} elseif ($_GET['section']=='delete') {
+		if (!Permission::checkIfUserIsOwnerOrPermitted(64, $_GET['ip_id']))
+			Permission::denyAccess();
+		
 		$ip = new Ip((int)$_GET['ip_id']);
 		$ip->fetch();
 		$ip->delete();
