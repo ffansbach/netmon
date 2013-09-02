@@ -28,6 +28,9 @@
 					echo $e->getTraceAsString();
 				}
 				$this->setTotalCount((int)$total_count['total_count']);
+				//if limit -1 then get all ressource records
+				if($this->getLimit()==-1)
+					$this->setLimit($this->getTotalCount());
 				
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT id as dns_zone_id
@@ -62,6 +65,9 @@
 					echo $e->getTraceAsString();
 				}
 				$this->setTotalCount((int)$total_count['total_count']);
+				//if limit -1 then get all ressource records
+				if($this->getLimit()==-1)
+					$this->setLimit($this->getTotalCount());
 				
 				try {
 					$stmt = DB::getInstance()->prepare("SELECT id as dns_zone_id

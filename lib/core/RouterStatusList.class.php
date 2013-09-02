@@ -31,6 +31,9 @@
 					echo $e->getTraceAsString();
 				}
 				$this->setTotalCount((int)$total_count['total_count']);
+				//if limit -1 then get all ressource records
+				if($this->getLimit()==-1)
+					$this->setLimit($this->getTotalCount());
 				
 				// fetch ids from all objects of the list from the database
 				try {
@@ -67,6 +70,9 @@
 					echo $e->getTraceAsString();
 				}
 				$this->setTotalCount((int)$total_count['total_count']);
+				//if limit -1 then get all ressource records
+				if($this->getLimit()==-1)
+					$this->setLimit($this->getTotalCount());
 				
 				// fetch ids from all objects of the list from the database
 				try {

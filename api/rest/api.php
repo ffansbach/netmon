@@ -28,7 +28,8 @@
 		private $method = "";
 		private $error_code = 0;
 		private $error_message = "";
-	
+		private $default_limit = 50;
+		
 		public function __construct(){
 			parent::__construct();				// Init parent contructor
 			$this->domxml = new DOMDocument('1.0', 'utf-8');
@@ -37,7 +38,7 @@
 			if(!isset($this->_request['offset']))
 				$this->_request['offset'] = false;
 			if(!isset($this->_request['limit']))
-				$this->_request['limit'] = false;
+				$this->_request['limit'] = $this->default_limit;
 			if(!isset($this->_request['sort_by']))
 				$this->_request['sort_by'] = false;
 			if(!isset($this->_request['order']))

@@ -9,7 +9,7 @@
 		$dns_zone->fetch();
 		$smarty->assign('dns_zone', $dns_zone);
 		
-		$dns_ressource_record_list = new DnsRessourceRecordList(22, 1);
+		$dns_ressource_record_list = new DnsRessourceRecordList((int)$_GET['dns_zone_id']);
 		$smarty->assign('dns_ressource_record_list', $dns_ressource_record_list->getDnsRessourceRecordList());
 		
 		$smarty->assign('message', Message::getMessage());

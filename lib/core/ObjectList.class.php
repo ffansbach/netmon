@@ -1,6 +1,6 @@
 <?php
 	class ObjectList {
-		protected $limit = 50;
+		protected $limit = -1;
 		protected $offset = 0;
 		protected $total_count = 0;
 		protected $sort_by = "default";

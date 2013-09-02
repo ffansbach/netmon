@@ -10,7 +10,7 @@
 	$router_data = Router_old::getRouterInfo($_GET['router_id']);
 	$smarty->assign('router_data', $router_data);
 	
-	$networkinterfacelist = new Networkinterfacelist($_GET['router_id'], 0, 50);
+	$networkinterfacelist = new Networkinterfacelist($_GET['router_id']);
 	$smarty->assign('networkinterfacelist', $networkinterfacelist->getNetworkinterfacelist());
 
   $smarty->assign('google_maps_api_key', Config::getConfigValueByName("google_maps_api_key"));
