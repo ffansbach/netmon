@@ -29,6 +29,14 @@
 	
 	define('ROOT_DIR', dirname(__FILE__));
 	
+	//Define permission constants
+	define('PERM_ROOT', pow(2,6));
+	define('PERM_ADMIN', pow(2,5));
+	define('PERM_MOD', pow(2,4));
+	define('PERM_USER', pow(2,3));
+	define('PERM_LOGGEDIN', pow(2,2));
+	define('PERM_NOTLOGGEDIN', pow(2,1));
+	
 	//Set default values (only used if no values can be found in database)
 	$GLOBALS['installed'] = false;
 	$GLOBALS['template'] = "freifunk_oldenburg";

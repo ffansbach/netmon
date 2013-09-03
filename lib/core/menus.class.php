@@ -29,21 +29,14 @@
  */
 
 class Menus extends Permission {
-	function topMenu() {
-		$menu = array();
-		if (Permission::checkPermission(1)) {
-			return $GLOBALS['topMenu'];
-		}
-	}
-  
 	public function loginOutMenu() {
 		$menu = array();
-		if (Permission::checkPermission(2)) {
+		if (Permission::checkPermission(PERM_NOTLOGGEDIN)) {
 			$menu[] = array('name'=>'Login', 'href'=>'login.php?section=login');
 			$menu[] = array('name'=>'Registrieren', 'href'=>'register.php');
 		}
 	
-		if (Permission::checkPermission(4)) {
+		if (Permission::checkPermission(PERM_LOGGEDIN)) {
 			$menu[] = array('name'=>'Logout', 'href'=>'login.php?section=logout');
 		}
 		return $menu;
@@ -62,59 +55,70 @@ class Menus extends Permission {
 	
 	function normalMenu() {
 		$menu = array();
-		if (Permission::checkPermission(1)) {
-			$submenu = array();
-			$subsubmenu = array();
-			$submenu[] = array('name'=>'Karte', 'href'=>'map.php');
-			
-			$subsubmenu[] = array('name'=>'FFMAP-D3', 'href'=>'ffmap-d3/nodes.html');
-			$subsubmenu[] = array('name'=>'Tinc-Topologie', 'href'=>'http://dev.freifunk-ol.de/topo/batvpn.png');
-			$submenu[] = $subsubmenu;
-			$menu[] = $submenu;
-			
-			$submenu = array();
-			$subsubmenu = array();
-			$submenu[] = array('name'=>'Router', 'href'=>'routerlist.php');			
-			$subsubmenu[] = array('name'=>'Neue Router', 'href'=>'routers_trying_to_assign.php');
-			if (Permission::checkPermission(12)) //if user is logged in and has permission "user"
-				$subsubmenu[] = array('name'=>'Router anlegen', 'href'=>'routereditor.php?section=new');
-			$submenu[] = $subsubmenu;
-			$menu[] = $submenu;
 
+		$submenu = array();
+		$subsubmenu = array();
+		$submenu[] = array('name'=>'Karte', 'href'=>'map.php');
+		
+		$subsubmenu[] = array('name'=>'FFMAP-D3', 'href'=>'ffmap-d3/nodes.html');
+		$subsubmenu[] = array('name'=>'Tinc-Topologie', 'href'=>'http://dev.freifunk-ol.de/topo/batvpn.png');
+		$submenu[] = $subsubmenu;
+		$menu[] = $submenu;
+		
+		$submenu = array();
+		$subsubmenu = array();
+		$submenu[] = array('name'=>'Router', 'href'=>'routerlist.php');			
+		$subsubmenu[] = array('name'=>'Neue Router', 'href'=>'routers_trying_to_assign.php');
+		if (Permission::checkPermission(PERM_USER)) //if user is logged in and has permission "user"
+			$subsubmenu[] = array('name'=>'Router anlegen', 'href'=>'routereditor.php?section=new');
+		$submenu[] = $subsubmenu;
+		$menu[] = $submenu;
+
+		$submenu = array();
+		$subsubmenu = array();
+		$submenu[] = array('name'=>'Netzwerke', 'href'=>'networks.php');
+		$submenu[] = $subsubmenu;
+		$menu[] = $submenu;
+		
+		$submenu = array();
+		$subsubmenu = array();
+		$submenu[] = array('name'=>'DNS', 'href'=>'dns_zone.php');
+		$submenu[] = $subsubmenu;
+		$menu[] = $submenu;
+		
+		$submenu = array();
+		$subsubmenu = array();
+		$submenu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
+		$submenu[] = $subsubmenu;
+		$menu[] = $submenu;
+		
+		$submenu = array();
+		$subsubmenu = array();
+		$submenu[] = array('name'=>'Statistik', 'href'=>'networkstatistic.php');
+		$submenu[] = array();
+		$menu[] = $submenu;
+		
+		$submenu = array();
+		$subsubmenu = array();
+		$submenu[] = array('name'=>'Events', 'href'=>'eventlist.php');
+		$submenu[] = array();
+		$menu[] = $submenu;
+
+		if (Permission::checkPermission(PERM_USER)) { //if user is logged in
 			$submenu = array();
 			$subsubmenu = array();
-			$submenu[] = array('name'=>'Dienste', 'href'=>'servicelist.php');
+			$submenu[] = array('name'=>'Benutzer', 'href'=>'userlist.php');
+			$subsubmenu[] = array('name'=>'Mein Benutzer', 'href'=>'user.php?user_id='.$_SESSION['user_id']);
 			$submenu[] = $subsubmenu;
-			$menu[] = $submenu;
-			
-			$submenu = array();
-			$subsubmenu = array();
-			$submenu[] = array('name'=>'Statistik', 'href'=>'networkstatistic.php');
-			$submenu[] = array();
-			$menu[] = $submenu;
-			
-			$submenu = array();
-			$subsubmenu = array();
-			$submenu[] = array('name'=>'Events', 'href'=>'eventlist.php');
-			$submenu[] = array();
-			$menu[] = $submenu;
-
-			if (Permission::checkPermission(4)) { //if user is logged in
-				$submenu = array();
-				$subsubmenu = array();
-				$submenu[] = array('name'=>'Benutzer', 'href'=>'userlist.php');
-				$subsubmenu[] = array('name'=>'Mein Benutzer', 'href'=>'user.php?user_id='.$_SESSION['user_id']);
-				$submenu[] = $subsubmenu;
-				$menu[] = $submenu;
-			}
-
-			$submenu = array();
-			$subsubmenu = array();
-			$submenu[] = array('name'=>'Suchen', 'href'=>'search.php');
-			$submenu[] = array();
 			$menu[] = $submenu;
 		}
-//		$menu = Menus::checkIfSelected($menu);
+		
+		$submenu = array();
+		$subsubmenu = array();
+		$submenu[] = array('name'=>'Suchen', 'href'=>'search.php');
+		$submenu[] = array();
+		$menu[] = $submenu;
+
 		return $menu;
 	}
 	
@@ -122,7 +126,7 @@ class Menus extends Permission {
 		$menu = array();
 		$submenu = array();
 		$subsubmenu = array();
-		if (Permission::checkPermission(4)) {
+		if (Permission::checkPermission(PERM_USER)) {
 			if(strpos($_SERVER['PHP_SELF'], "router_status.php")!==false OR
 			   strpos($_SERVER['PHP_SELF'], "router_config.php")!==false) {
 				$submenu[] = array('name'=>'Routeroptionen', 'href'=>'#');
@@ -139,7 +143,7 @@ class Menus extends Permission {
 				$menu[] = $submenu;
 			} elseif(strpos($_SERVER['PHP_SELF'], "user.php")!==false) {
 				$submenu[] = array('name'=>'Benutzeroptionen', 'href'=>'#');
-				if(Permission::checkIfUserIsOwnerOrPermitted(64, $_SESSION['user_id'])) {
+				if(Permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, $_SESSION['user_id'])) {
 					$subsubmenu[] = array('name'=>'Bearbeiten', 'href'=>'user_edit.php?section=edit&user_id='.$_SESSION['user_id']);
 					$subsubmenu[] = array('name'=>'Benachrichtigungen', 'href'=>'event_notifications.php?section=edit&user_id='.$_SESSION['user_id']);
 					$subsubmenu[] = array('name'=>'Dienst hinzufügen', 'href'=>'service.php?section=add&user_id='.$_SESSION['user_id']);
@@ -153,16 +157,12 @@ class Menus extends Permission {
 	
 	function adminMenu() {
 		$menu = array();
-		if (Permission::checkPermission(32)) {
-
-		}
-		$menu = Menus::checkIfSelected($menu);
 		return $menu;
 	}
 
 	function rootMenu() {
 		$menu = array();
-		if (Permission::checkPermission(64)) {
+		if (Permission::checkPermission(PERM_ROOT)) {
 			$submenu = array();
 			$subsubmenu = array();
 			$submenu[] = array('name'=>'Konfiguration', 'href'=>'config.php?section=edit_netmon');			
@@ -173,8 +173,6 @@ class Menus extends Permission {
 			$subsubmenu[] = array('name'=>'Jabber', 'href'=>'config.php?section=edit_jabber');
 			$subsubmenu[] = array('name'=>'Twitter', 'href'=>'config.php?section=edit_twitter');
 			$subsubmenu[] = array('name'=>'Hardware', 'href'=>'config.php?section=edit_hardware');
-			$subsubmenu[] = array('name'=>'IP-Netzwerke', 'href'=>'config.php?section=edit_networks');
-			$subsubmenu[] = array('name'=>'DNS-Zonen', 'href'=>'dns_zone.php');
 			$submenu[] = $subsubmenu;
 			$menu[] = $submenu;
 		}

@@ -121,14 +121,15 @@
 			return false;
 		}
 		
-		public static function delete($event_notification_id) {
+		public function delete() {
 			try {
 				$stmt = DB::getInstance()->prepare("DELETE FROM event_notifications WHERE id=?");
-				$stmt->execute(array($event_notification_id));
+				$stmt->execute(array($this->getEventNotificationId()));
 			} catch(PDOException $e) {
 				echo $e->getMessage();
 				echo $e->getTraceAsString();
 			}
+			return true;
 		}
 		
 		public function notify() {

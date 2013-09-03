@@ -40,6 +40,8 @@
  * @package	Netmon
  */
 
+	require_once(ROOT_DIR.'/lib/core/User.class.php');
+ 
 class Permission {
 	/**
 	* Get all roles that are avaliable in netmon. For a description of the roles see class description.
@@ -64,12 +66,88 @@ class Permission {
 	* Deny acces to a special section. Sets a deny message and forwards the user to the login site.
 	* @author  Clemens John <clemens-john@gmx.de>
 	*/
-	static public function denyAccess() {
-		$message[] = array("Sie haben nicht das Recht auf diesen Bereich zuzugreifen.",2);
+	static public function denyAccess($permission=false, $owner=false) {
+		// if $permission is != false, then get the Names of the Roles that are wrapped into $permission
+		if($permission) {
+			$role_string = "";
+			foreach(Permission::getRolesByPermission($permission) as $key=>$role) {
+				if($key)
+					$role_string .= ", ";
+				$role_string .= permission::getRoleNameByRoleNumber($role);
+			}
+		}
+		
+		if($owner) {
+			$user = new User($owner);
+			$user->fetch();
+		}
+	
+		// prepare the "permission denied"-message for the user based on the combination of $permission and $owner
+		if($permission AND !$owner)
+			$message[] = array("Auf diesen Bereich dürfen nur Benutzer mit den folgenden Rechten zugreifen: ".$role_string, 2);
+		elseif(!$permission AND $owner)
+			$message[] = array("Auf diesen Bereich darf nur der Benutzer ".$user->getNickname()." zugreifen.",2);
+		elseif($permission AND $owner)
+			$message[] = array("Auf diesen Bereich dürfen nur der Benutzer ".$user->getNickname()." oder Benutzer mit den folgenden Rechten zugreifen: ".$role_string, 2);
+		else
+			$message[] = array("Du darfst auf diesen Bereich nicht zugreifen.",2);
+		
+		// set the message
 		Message::setMessage($message);
-		$_SESSION['redirect_url'] = ".".$_SERVER['REQUEST_URI'];
-		header('Location: ./login.php?section=login');
-		die();
+		
+		// redirect the user to the last page he visited if it was a page inside netmon
+		// if the page was not inside netmon, redirect to the default path
+		if(!empty($_SESSION['last_page']) AND $_SESSION['last_page']!=$_SESSION['current_page']) {
+			header('Location: '.$_SESSION['last_page']);
+		} else {
+			header('Location: ./');
+		}
+	}
+	
+	static public function checkPermissionByPermission($rolepermission, $permission) {
+		$sitepermission = $rolepermission;
+		$userpermission = $permission;
+		
+		//Transform permissions into binary
+		$sitepermission = decbin($sitepermission);
+		$userpermission = decbin($userpermission);
+		$sitepermission_len = strlen($sitepermission);
+		$userpermission_len = strlen($userpermission);
+		
+		//get all permissions
+		$roles = Permission::getAllRoles();
+		
+		for ($i=count($roles)-1; $i>=0; $i--) {
+			$exponent = $roles[$i];
+			if (($sitepermission_len-($exponent+1)>=0) && $sitepermission[$sitepermission_len-($exponent+1)]==1) {
+				if (($sitepermission_len-($exponent+1))>=0 AND $userpermission_len-($exponent+1)>= 0 AND $sitepermission[$sitepermission_len-($exponent+1)]==$userpermission[$userpermission_len-($exponent+1)]) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static function getRolesByPermission($permission) {
+		$roles = permission::getAllRoles();
+		$roles_edit = array();
+		foreach ($roles as $key=>$role) {
+			if(Permission::checkPermissionByPermission(pow(2,$role), $permission))
+				$roles_edit[] = $role;
+		}
+		return $roles_edit;
+	}
+	
+	public static function getRoleNameByRoleNumber($role) {
+		switch($role) {
+			case 0: return "Default";
+			case 1: return "nicht eingeloggt";
+			case 2: return "eingeloggt";
+			case 3: return "Benutzer";
+			case 4: return "Moderator";
+			case 5: return "Administrator";
+			case 6: return "Root";
+		}
 	}
 	
 	/**

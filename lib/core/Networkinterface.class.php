@@ -2,6 +2,7 @@
 	require_once(ROOT_DIR.'/lib/core/Object.class.php');
 	require_once(ROOT_DIR.'/lib/core/Iplist.class.php');
 	require_once(ROOT_DIR.'/lib/core/NetworkinterfaceStatus.class.php');
+	require_once(ROOT_DIR.'/lib/core/User.class.php');
 	
 	class Networkinterface extends Object {
 		private $networkinterface_id = 0;
@@ -170,6 +171,13 @@
 		
 		public function getIpList() {
 			return $this->iplist;
+		}
+		
+		public function getRouter() {
+			$router = new Router($this->getRouterId());
+			if($router->fetch())
+				return $router;
+			return false;
 		}
 		
 		public function getDomXMLElement($domdocument) {

@@ -190,6 +190,13 @@
 			return $this->network;
 		}
 		
+		public function getNetworkinterface() {
+			$networkinterface = new Networkinterface($this->getInterfaceId());
+			if($networkinterface->fetch())
+				return $networkinterface;
+			return false;
+		}
+		
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('ip');
 			$domxmlelement->appendChild($domdocument->createElement("ip_id", $this->getIpId()));
