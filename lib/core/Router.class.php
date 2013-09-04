@@ -3,6 +3,7 @@
 	require_once(ROOT_DIR.'/lib/core/Networkinterfacelist.class.php');
 	require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
 	require_once(ROOT_DIR.'/lib/core/RouterStatusList.class.php');
+	require_once(ROOT_DIR.'/lib/core/User.class.php');
 	
 	class Router extends Object {
  		private $router_id = 0;
@@ -196,6 +197,13 @@
 		
 		public function getStatusdataHistory() {
 			return  $this->statusdata_history;
+		}
+		
+		public function getUser() {
+			$user = new User($this->getUserId());
+			if($user->fetch())
+				return $user;
+			return false;
 		}
 		
 		public function getDomXMLElement($domdocument) {

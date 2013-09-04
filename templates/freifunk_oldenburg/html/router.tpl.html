@@ -1,0 +1,372 @@
+<!-- Javascript for Interfacelist -->
+<!-- <script src="./lib/extern/jquery/jquery.min.js"></script>-->
+<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="lib/extern/DataTables/jquery.dataTables.min.js"></script>
+
+<!-- Javascript for the graphs -->
+<script type="text/javascript" src="lib/extern/javascriptrrd/binaryXHR.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFile.js"></script>
+<!-- rrdFlot class needs the following four include files !-->
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFlotSupport.js"></script>
+<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFlot.js"></script>
+<script type="text/javascript" src="lib/extern/flot/jquery.flot.js"></script>
+<script type="text/javascript" src="lib/extern/flot/jquery.flot.selection.js"></script>
+
+{literal}
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#batman_adv_originator_list').dataTable( {
+				"bFilter": false,
+				"bInfo": false,
+				"sScrollY": "250px",
+				"bPaginate": false,
+				"aaSorting": [[ 2, "desc" ]]
+			} );
+		} );
+		
+		// This function updates the Web Page with the data from the RRD archive header
+		// when a new file is selected
+		function update_fname(html_graph_id) {
+			var graph_opts={legend: {position:"ne", noColumns:2} };
+			var ds_graph_opts={	'traffic_rx':{checked:true, color: "#3118c3", lines: { show: true, fill: true, fillColor:""} },
+								'traffic_tx':{checked:true, color: "#ef2700", lines: { show: true, fill: true, fillColor:""} },
+								'memory_caching':{checked:true, color: "#e30f0f", lines: { show: true, fill: true, fillColor:""} },
+								'memory_buffering':{checked:true, color: "#56f5e4", lines: { show: true, fill: true, fillColor:""} },
+								'memory_free':{checked:true, color: "#0009c3", lines: { show: true, fill: true, fillColor:""} },
+								'clients':{checked:true, color: "#006c7b", lines: { show: true, fill: false} },
+								'originators':{checked:true, color: "#46ddd4", lines: { show: true, fill: false} },
+								'total':{checked:true, color: "#d97500", lines: { show: true, fill: false} },
+								'runnable':{checked:true, color: "#d90000", lines: { show: true, fill: false} },
+								'quality':{checked:true, color: "#3118c3", lines: { show: true, fill: true, fillColor:""} } };
+			
+			// the rrdFlot object creates and handles the graph
+			var f=new rrdFlot(html_graph_id,rrd_data,graph_opts,ds_graph_opts);
+		}
+		
+		// This is the callback function that,
+		// given a binary file object,
+		// verifies that it is a valid RRD archive
+		// and performs the update of the Web page
+		function update_fname_handler(bf, html_graph_id) {
+			var i_rrd_data=undefined;
+			try {
+				var i_rrd_data=new RRDFile(bf);            
+			} catch(err) {
+				//alert("File "+fname+" is not a valid RRD archive!");
+			}
+			if (i_rrd_data!=undefined) {
+				rrd_data=i_rrd_data;
+				update_fname(html_graph_id)
+			}
+		}
+	</script>
+{/literal}
+
+<h1>Router {$router->getHostname()}</h1>
+<div style="width: 100%; margin-bottom: 20px;" class="clearfix">
+	<div style="float:left; width: 50%;">
+		<div style="height: 100px; margin-bottom: 6px;">
+			<div style="float:left; width: 137px; margin-right: 4px; height: 100px; border: solid 0px black;">
+				<img src="./data/panorama/round_view_1_234.png">
+			</div>
+			<div style="float:left; width: 137px; margin-right: 4px; height: 100px; border: solid 0px black;">
+				<img src="./data/panorama/round_view_2_234.png">
+			</div>
+			<div style="float:left; width: 137px; height: 100px; border: solid 0px black;">
+				<img src="./data/panorama/round_view_3_234.png">
+			</div>
+		</div>
+		<div style="height: 100px; margin-bottom: 6px;">
+			<div style="float:left; width: 137px; margin-right: 4px; height: 100px; border: solid 0px black;">
+				<img src="./data/panorama/round_view_8_234.png">
+			</div>
+			<div style="float:left; width: 137px; margin-right: 4px; height: 100px; border: solid 0px black;">
+				<img style="display: block; margin-left: auto; margin-right: auto" src="./templates/freifunk_oldenburg/img/kompass.png">
+			</div>
+			<div style="float:left; width: 137px; height: 100px; border: solid 0px black;">
+				<img src="./data/panorama/round_view_4_234.png">
+			</div>
+		</div>
+		
+		<div style="float:left; width: 137px; margin-right: 4px; height: 100px; border: solid 0px black;">
+			<img src="./data/panorama/round_view_7_234.png">
+		</div>
+		<div style="float:left; width: 137px; margin-right: 4px; height: 100px; border: solid 0px black;">
+			<img src="./data/panorama/round_view_5_234.png">
+		</div>
+		<div style="float:left; width: 137px; height: 100px; border: solid 0px black;">
+			<img src="./data/panorama/round_view_6_234.png">
+		</div>
+	</div>
+	<div style="float:left; width: 50%;">
+		{if $router->getLatitude() AND $router->getLongitude()}
+			<script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key={$google_maps_api_key}&sensor=false'></script>
+			<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
+			<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
+			<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
+			<div id="map" style="height:312px; width:100%; border:solid 0px black;font-size:9pt;">
+				<script type="text/javascript">
+					var lat = {$router->getLatitude()};
+					var lon = {$router->getLongitude()};
+					var radius = 30
+					var zoom = 17;
+					router_map({$router->getRouterId()});
+				</script>
+			</div>
+
+			<p><b>Standortbeschreibung:</b><br>
+				{$router->getLocation()}
+			</p>
+		{else}
+			<p>Keine Standortdaten verfügbar./p>
+		{/if}
+	</div>
+</div>
+
+<h2>Daten</h2>
+<div style="width: 100%; margin-bottom: 40px;" class="clearfix">
+	<div style="float:left; width: 25%;">
+		{if $router->getStatusdata()->getStatus()=="online"}
+			<img width="150" src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
+		{elseif $router->getStatusdata()->getStatus()=="offline"}
+			<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">
+		{elseif $router->getStatusdata()->getStatus()=="unknown"}
+			<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
+		{/if}
+	</div>
+	<div style="float:left; width: 30%;">
+		<p>
+			<b>Benutzer:</b> <a href="./user.php?user_id={$router->getUserId()}">{$router->getUser()->getNickname()}</a><br>
+			<b>Angelegt am:</b> {$router->getCreateDate()|date_format:"%d.%m.%Y"}<br>
+			<b>Aktualisiert am:</b> {$router->getUpdateDate()|date_format:"%d.%m.%Y"}<br>
+			<b>Statusdaten von:</b> {$router->getStatusdata()->getCreateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
+		</p>
+		<br>
+		<p>
+			{if $router->getStatusdata()->getChipset()}
+				<b>Chipset:</b> {$router->getStatusdata()->getChipset()}<br>
+			{/if}
+			{if $router->getStatusdata()->getCpu()}
+				<b>Cpu:</b> {$router->getStatusdata()->getCpu()}<br>
+			{/if}
+			{if $router->getStatusdata()->getMemoryTotal()}
+				<b>Memory:</b> {$router->getStatusdata()->getMemoryTotal()} Kb
+			{/if}
+			<b>Aktuelle Clients:</b> {$router->getStatusdata()->getClientCount()}
+		</p>
+	</div>
+	<div style="float:left; width: 45%;">
+		<p>
+			{if $router->getStatusdata()->getDistname()}
+				<b>Distname:</b> {$router->getStatusdata()->getDistname()}<br>
+			{/if}
+			{if $router->getStatusdata()->getDistversion()}
+				<b>Distversion:</b> {$router->getStatusdata()->getDistversion()}<br>
+			{/if}
+			{if $router->getStatusdata()->getOpenwrtCoreRevision()}
+				<b>OpenWrt Core Revision:</b> {$router->getStatusdata()->getOpenwrtCoreRevision()}<br>
+			{/if}
+			{if $router->getStatusdata()->getOpenwrtFeedsPackagesRevision()}
+				<b>OpenWrt Package Feed revision:</b> {$router->getStatusdata()->getOpenwrtFeedsPackagesRevision()}<br>
+			{/if}
+			{if $router->getStatusdata()->getKernelVersion()}
+				<b>Kernelversion:</b> {$router->getStatusdata()->getKernelVersion()}<br>
+			{/if}
+			{if $router->getStatusdata()->getBatmanAdvancedVersion()}
+				<b>Batman advanced Version:</b> {$router->getStatusdata()->getBatmanAdvancedVersion()}<br>
+			{/if}
+			{if $router->getStatusdata()->getNodewatcherVersion()}
+				<b>Nodewatcher Version:</b> {$router->getStatusdata()->getNodewatcherVersion()}<br>
+			{/if}
+			{if $router->getStatusdata()->getFirmwareVersion()}
+				<b>Firmware Version:</b> {$router->getStatusdata()->getFirmwareVersion()}<br>
+			{/if}
+			{if $router->getStatusdata()->getFirmwareRevision()}
+				<b>Firmware Revision:</b> {$router->getStatusdata()->getFirmwareRevision()}
+			{/if}
+		</p>
+	</div>
+</div>
+
+<h2>System</h2>
+<div style="width: 100%; margin-bottom: 40px;" class="clearfix">
+	<div style="float:left; width: 50%;">
+		<h3>Memory</h3>
+		<script type="text/javascript">
+			fname='./rrdtool/databases/router_{$router->getRouterId()}_memory.rrd';
+			html_graph_id="memory_graph"
+			try {
+				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+			} catch (err) {
+				alert("Failed loading "+fname+"\n"+err);
+			}
+		</script>
+		<div id="memory_graph" style="float:left; width: 100%;"></div>
+	</div>
+	<div style="width: 50%; float: left;">
+		<h3>Prozesse</h3>
+		<script type="text/javascript">
+			fname='./rrdtool/databases/router_{$router->getRouterId()}_processes.rrd';
+			html_graph_id="processes_graph"
+			try {
+				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+			} catch (err) {
+				alert("Failed loading "+fname+"\n"+err);
+			}
+		</script>
+		<div id="processes_graph" style="float:left; width: 100%;"></div>
+	</div>
+</div>
+
+<h2>Netzwerk</h2>
+<div style="width: 100%; margin-bottom: 40px;" class="clearfix">
+	<div style="float:left; width: 50%;">
+		<h3>Clients</h3>
+		<script type="text/javascript">
+			fname='./rrdtool/databases/router_{$router->getRouterId()}_clients.rrd';
+			html_graph_id="client_history_graph"
+			try {
+				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+			} catch (err) {
+				alert("Failed loading "+fname+"\n"+err);
+			}
+		</script> 
+		<div id="client_history_graph" style="float:left; width: 100%;"></div>
+	</div>
+	<div style="width: 50%; float: left;">
+		<h3>Nachbarn</h3>
+		<script type="text/javascript">
+			fname='./rrdtool/databases/router_{$router->getRouterId()}_originators.rrd';
+			html_graph_id="batman_adv_originator_graphic"
+			try {
+				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+			} catch (err) {
+				alert("Failed loading "+fname+"\n"+err);
+			}
+		</script> 
+		<div id="batman_adv_originator_graphic" style="float:left; width: 100%;"></div>
+	</div>
+</div>
+
+<div style="width: 100%; margin-bottom: 40px;" class="clearfix">
+	<h3>Verbindungsqualität</h3>
+	<div style="float:left; width: 50%;">
+		<div style="width: 95%">
+		<table class="display" id="batman_adv_originator_list" style="font-size: 8pt;">
+			<thead>
+				<tr>
+					<th>Originator</th>
+					<th>Seen</th>
+					<th>Qual.</th>
+					<th>Nexthop</th>
+					<th>Iface</th>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach $router->getStatusdata()->getOriginatorStatusList()->getOriginatorStatusList() as $originator}
+					<tr style="{if $originator->getOriginator()== $originator->getNexthop()}font-weight: bold;{/if} background-color: {if $originator->getLinkQuality() >= 0 AND $originator->getLinkQuality() < 105}#ff1e1e{else if $originator->getLinkQuality() >= 105 AND $originator->getLinkQuality() < 130}#ff4949{else if $originator->getLinkQuality() >= 130 AND $originator->getLinkQuality() < 155}#ff6a6a{else if $originator->getLinkQuality() >= 155 AND $originator->getLinkQuality() < 180}#ffac53{else if $originator->getLinkQuality() >= 180 AND $originator->getLinkQuality() < 205}#ffeb79{else if $originator->getLinkQuality() >= 205 AND $originator->getLinkQuality() < 230}#79ff7c{else if $originator->getLinkQuality() >= 230}#04ff0a{/if};">
+						<td><a href="search.php?search_range=mac_addr&search_string={$originators.originator}">{$originator->getOriginator()}</a></td>
+						<td>{$originator->getLastSeen()}</td>
+						<td>{$originator->getLinkQuality()}</td>
+						<td>{$originator->getNexthop()}</td>
+						<td>{$originator->getOutgoingInterface()}</td>
+					</tr>
+				{/foreach}
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<div style="width: 50%; float: left;">
+			<script type="text/javascript">
+				fname='./rrdtool/databases/router_{$router->getRouterId()}_batman_adv_link_quality_average.rrd';
+				html_graph_id="batman_adv_link_quality_average_graphic"
+				try {
+					FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+				} catch (err) {
+					alert("Failed loading "+fname+"\n"+err);
+				}
+			</script> 
+			<div id="batman_adv_link_quality_average_graphic" style="float:left; width: 100%;"></div>
+			
+			{foreach $router->getStatusdata()->getOriginatorStatusList()->getOriginatorStatusList() as $originator}
+				<script type="text/javascript">
+					fname='./rrdtool/databases/router_{$router->getRouterId()}_batman_adv_link_quality_{$originator->getOriginator()|replace:":":"_"}.rrd';
+					html_graph_id="batman_adv_link_quality_{$originator->getOriginator()|replace:":":"_"}_graphic"
+					try {
+						FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+					} catch (err) {
+						alert("Failed loading "+fname+"\n"+err);
+					}
+				</script> 
+				<div id="batman_adv_link_quality_{$originator->getOriginator()|replace:":":"_"}_graphic" style="float:left; width: 100%; display: none;"></div>
+			{/foreach}
+			
+			<p>
+				<select name="search_range" onChange="setBatmanAdvLinqQualityPictures(this.options[this.selectedIndex].value)">
+					<option value="average" >Zeige Grafik für Average</option>
+					{foreach $router->getStatusdata()->getOriginatorStatusList()->getOriginatorStatusList() as $originator}
+						<option value="{$originator->getOriginator()|replace:":":"_"}" >Zeige Grafik für {$originator->getOriginator()}</option>
+					{/foreach}
+				</select>
+			</p>
+	</div>
+</div>
+
+<h2>Netzwerkinterfaces</h2>
+{foreach item=interface from=$router->getNetworkinterfacelist()->getNetworkinterfacelist() key=schluessel}
+	<div style="width:100%; margin-bottom: 3px; background-color: #81b59e;" onclick='$("#{$interface->getName()|replace:".":"_"}").slideToggle("slow");'>
+		<b>{$interface->getName()}</b>
+	</div>
+	<div id="{$interface->getName()|replace:".":"_"}" style="{if !($interface->getName()|stristr:"wlan") AND !($interface->getName()|stristr:"br-mesh") AND !($interface->getName()|stristr:"vpn")}display:none{/if}; margin-bottom: 10px; width: 100%;" class="clearfix">
+		<div style="float:left; width: 50%;">
+			<ul>
+				<li>
+					<b>Aktionen:</b>
+					<ul>
+						<li><a href="./ip.php?section=add&router_id={$interface->getRouterId()}&interface_id={$interface->getNetworkinterfaceId()}">IP hinzufügen</a></li>
+						<li><a href="./interface.php?section=delete&interface_id={$interface->getNetworkinterfaceId()}">Interface entfernen</a></li>
+					</ul>
+				<li>
+			<ul>
+		
+			<ul>
+			{foreach item=ip from=$interface->getIplist()->getIplist()}
+				<li>
+					<b>IPv{$ip->getNetwork()->getIpv()} Adresse:</b> {$ip->getIpCompressed()}/{$ip->getNetwork()->getNetmask()}
+					<ul>
+						<li>
+							<b>Angelegt am:</b> {$ip->getCreateDate()|date_format:"%e.%m.%Y %H:%M"}
+						</li>
+						<li>
+							<b>Aktionen: </b>
+							<ul>
+								<li>
+									<a href="./ip.php?section=delete&ip_id={$ip->getIpId()}&router_id={$router_data.router_id}">IP entfernen</a>
+								</li>
+								<li>
+									<a href="./ping_ip.php?ip_id={$ip->getIpId()}">Ping</a>
+								</lu>
+								<li>
+									<a href="./show_crawl_data.php?ip_id={$ip->getIpId()}">Crawl Daten</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			{/foreach}
+			</ul>
+		</div>
+		<div style="width: 20%; float: left;">
+			<script type="text/javascript">
+				fname='./rrdtool/databases/router_{$router->getRouterId()}_interface_{$interface->getName()}_traffic_rx.rrd';
+				html_graph_id="jrrd_{$schluessel}"
+				try {
+					FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+				} catch (err) {
+					alert("Failed loading "+fname+"\n"+err);
+				}
+			</script>
+			<div id="jrrd_{$schluessel}"></div>
+		</div>
+	</div>
+{/foreach}

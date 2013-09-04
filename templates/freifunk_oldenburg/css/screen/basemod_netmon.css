@@ -1,3 +1,19 @@
+/* http://pascalkremp.com/div-elemente-nebeneinander-anordnen/ */
+.clearfix:before,
+.clearfix:after {
+	content: " ";
+	display: table;
+}
+
+.clearfix:after {
+	clear: both;
+}
+
+.clearfix {
+	*zoom: 1;
+}
+
+
 #topmenu {
   display: block;
   float:right;
@@ -44,6 +60,7 @@ min-height: 550px;
 font-size: 10pt;
 text-align: left;
 padding-left: 10px;
+padding-right: 10px;
 padding-top: 16px;
 padding-bottom: 20px;
 }
