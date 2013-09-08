@@ -255,6 +255,25 @@
 			return $this->wlan_frequency;
 		}
 		
+		public function getWlanChannel() {
+			switch($this->wlan_frequency) {
+				case "2.412": return 1; 
+				case "2.417": return 2; 
+				case "2.422": return 3; 
+				case "2.427": return 4; 
+				case "2.432": return 5; 
+				case "2.437": return 6; 
+				case "2.442": return 7; 
+				case "2.447": return 8; 
+				case "2.452": return 9; 
+				case "2.457": return 10; 
+				case "2.462": return 11; 
+				case "2.467": return 12; 
+				case "2.472": return 13; 
+				case "2.484": return 14; 
+			}
+		}
+		
 		public function getWlanEssid() {
 			return $this->wlan_essid;
 		}

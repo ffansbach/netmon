@@ -45,7 +45,7 @@ $(document).ready(function() {
 		<tbody>
 			{foreach key=count item=router from=$routerlist}
 				<tr>
-					<td><a href="./router_status.php?router_id={$router.router_id}">{$router.hostname}</a></td>
+					<td><a href="./router.php?router_id={$router.router_id}">{$router.hostname}</a></td>
 					<td>
 						{if $router.actual_crawl_data.status=="online"}
 							<img src="./templates/{$template}/img/ffmap/status_up_small.png" title="online" alt="online">

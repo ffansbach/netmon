@@ -4,6 +4,7 @@
 	require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
 	require_once(ROOT_DIR.'/lib/core/RouterStatusList.class.php');
 	require_once(ROOT_DIR.'/lib/core/User.class.php');
+	require_once(ROOT_DIR.'/lib/core/Chipset.class.php');
 	
 	class Router extends Object {
  		private $router_id = 0;
@@ -18,6 +19,7 @@
 		private $statusdata_history = array();
 		private $networkinterfacelist = null;
 		private $servicelist = null;
+		private $chipset = null;
 		
 		public function __construct($router_id=false, $user_id=false, $hostname=false, $description=false,
 									$location=false, $latitude=false, $longitude=false, $chipset_id=false,
@@ -75,12 +77,13 @@
 				$this->setLocation($result['location']);
 				$this->setLatitude($result['latitude']);
 				$this->setLongitude($result['longitude']);
-				$this->setChipsetId($result['chipset_id']);
+				$this->setChipsetId((int)$result['chipset_id']);
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
 				$this->setNetworkinterfacelist();
 				$this->setStatusdata();
 				$this->setStatusdataHistory();
+				$this->setChipset();
 				return true;
 			}
 			
@@ -155,6 +158,16 @@
 				$this->statusdata_history = new RouterStatusList($this->router_id, 0, 10);
 		}
 		
+		public function setChipset($chipset=false) {
+			if($chipset!=false) {
+				$this->chipset = $chipset;
+			} else {
+				$chipset = new Chipset($this->chipset_id);
+				$chipset->fetch();
+				$this->chipset = $chipset;
+			}
+		}
+		
 		public function getRouterId() {
 			return $this->router_id;
 		}
@@ -197,6 +210,10 @@
 		
 		public function getStatusdataHistory() {
 			return  $this->statusdata_history;
+		}
+		
+		public function getChipset() {
+			return  $this->chipset;
 		}
 		
 		public function getUser() {

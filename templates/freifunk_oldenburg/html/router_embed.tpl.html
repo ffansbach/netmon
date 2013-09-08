@@ -9,25 +9,19 @@
 	</head>
 	<body style="background: #FFFFFF; text-align:left; width: 200px; max-width: 200px">
 		<div style="border-style: solid; border-width: 1px; border-color: #99CCFF; background: #EBF5FF;">
-			{if (!empty($router_data.latitude) AND !empty($router_data.longitude)) OR (!empty($router_last_crawl.latitude) AND !empty($router_last_crawl.longitude))}
+			{if $router->getLatitude() AND $router->getLongitude()}
 				<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
 				<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
 				<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
 				<div id="map" style="height:170px; width:198px;">
 					<script type="text/javascript">
-						{if !empty($router_last_crawl.latitude)}
-							var lat = {$router_last_crawl.latitude};
-							var lon = {$router_last_crawl.longitude};
-						{else}
-							var lat = {$router_data.latitude};
-							var lon = {$router_data.longitude};
-						{/if}
-						
+						var lat = {$router->getLatitude()};
+						var lon = {$router->getLongitude()};
 						var radius = 30
 						var zoom = 17;
 						
 						/* Initialize Map */
-						router_map_embed({$router_data.router_id});
+						router_map_embed({$router->getRouterId()});
 					</script>
 				</div>
 				</p>
@@ -35,7 +29,7 @@
 		
 			<div style="padding: 5px">
 		
-			<h1 style="font-size: 13pt;">Router {$router_data.hostname}</h1>
+			<h1 style="font-size: 13pt;">Router {$router->getHostname()}</h1>
 			<h2 style="font-size: 9.5pt;">Was ist das?</h2>
 			<p style="font-size: 8pt;">Ich bin <a href="https://de.wikipedia.org/wiki/Freies_Funknetz" target="_blank">Freifunker</a> und der Blaue Punkt ist
 			mein Freifunkrouter.
@@ -43,14 +37,14 @@
 
 			<h2 style="font-size: 9.5pt;">Aktuelle Statusdaten</h2>
 			<p style="font-size: 8pt;">
-				<b>Status:</b> {if $router_status.status=="online"}
+				<b>Status:</b> {if $router->getStatusdata()->getStatus()=="online"}
 										<img width="13" src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
-									{elseif $router_status.status=="offline"}
+									{elseif $router->getStatusdata()->getStatus()=="offline"}
 										<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">
-									{elseif $router_status.status=="unknown"}
+									{elseif $router->getStatusdata()->getStatus()=="unknown"}
 										<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
 									{/if}<br>
-				<b>Verbundene Clients:</b> {$router_status.client_count}
+				<b>Verbundene Clients:</b> {$router->getStatusdata()->getClientCount()}
 			</p>
 			
 			<h2 style="font-size: 9.5pt;">Links</h2>

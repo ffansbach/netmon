@@ -377,7 +377,7 @@ class ApiMap {
 							//Make B.A.T.M.A.N advanced informaions
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
-									$xw->writeRaw("<![CDATA[Router <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
+									$xw->writeRaw("<![CDATA[Router <a href='./router.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 										$box_inhalt = "<b>Status:</b> $crawl_router[status]<br>";
@@ -564,7 +564,7 @@ class ApiMap {
 							if($crawl_router['status']=='online') {
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
-									$xw->writeRaw("<![CDATA[Router <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
+									$xw->writeRaw("<![CDATA[Router <a href='./router.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 										$box_inhalt = "Traffic";
@@ -748,7 +748,7 @@ else
 						if($do) {
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
-									$xw->writeRaw("<![CDATA[Router <a href='./router_status.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
+									$xw->writeRaw("<![CDATA[Router <a href='./router.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 										$box_inhalt = "Clients";

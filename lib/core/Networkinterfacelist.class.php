@@ -98,8 +98,44 @@
 			}
 		}
 		
+		public function setNetworkinterfacelist($networkinterfacelist) {
+			if(is_array($networkinterfacelist)) {
+				$this->networkinterfacelist = $networkinterfacelist;
+			}
+		}
+		
 		public function getNetworkinterfacelist() {
 			return $this->networkinterfacelist;
+		}
+		
+		public function sort($sort, $order) {
+			$tmp = array();
+			
+			$networkinterfacelist = $this->getNetworkinterfacelist();
+			foreach($networkinterfacelist as $key=>$event) {
+				switch($sort) {
+					case 'create_date':		$tmp[$key] = $event->getCreateDate();
+											break;
+					case 'name':			$tmp[$key] = $event->getName();
+											break;
+					default:				$tmp[$key] = $event->getCreateDate();
+											break;
+				}
+			}
+			
+			if($order == 'asc')
+				array_multisort($tmp, SORT_ASC, $networkinterfacelist);
+			elseif($order == 'desc')
+				array_multisort($tmp, SORT_DESC, $networkinterfacelist);
+			
+			$new_eventlist = array();
+			for($i=0; $i<count($networkinterfacelist); $i++) {
+				if(!empty($networkinterfacelist[$i])) {
+					$new_eventlist[] = $networkinterfacelist[$i];
+				}
+			}
+			
+			$this->setNetworkinterfacelist($new_eventlist);
 		}
 		
 		public function getDomXMLElement($domdocument) {

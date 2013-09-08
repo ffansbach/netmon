@@ -65,7 +65,7 @@
 			if(!empty($result)) {
 				$this->setDnsRessourceRecordId((int)$result['id']);
 				$this->setDnsZoneId((int)$result['dns_zone_id']);
-				$this->setUserId((int)(int)$result['user_id']);
+				$this->setUserId((int)$result['user_id']);
 				$this->setHost($result['host']);
 				$this->setType($result['type']);
 				$this->setPri((int)$result['pri']);

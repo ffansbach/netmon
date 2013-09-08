@@ -74,7 +74,8 @@
 
 	<p>
 		<b>Statusaktualisierung:</b><br>
-		Wählen Sie aus wie der Status ihres Routers aktualisiert wird 
+		Wählen Sie aus wie der Status ihres Routers aktualisiert wird.<br>
+		<b>Hinweis:</b><br>Wähle die Option <i>Der Router sendet die Daten selbstständig</i> nur, wenn du genau weißt, was du tust. Diest ist nicht die empfohlene Option!
 		<select name="crawl_method" onChange="getProjectInfo(this.options[this.selectedIndex].value)">
 			<option value="crawler" {if !isset($smarty.get.crawl_method) OR $smarty.get.crawl_method=='crawler'}selected='selected'{/if}>Netmon Crawlt den Router</option>
 			<option value="router" {if isset($smarty.get.crawl_method) AND $smarty.get.crawl_method=='router'}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>

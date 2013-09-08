@@ -177,7 +177,7 @@
 			$message = "Hallo ".$user->getNickname().",\n\n";
 			$message .= "dein Router ".$router->getHostname()." ist seit dem ".date("d.m H:i", $datetime)." Uhr offline.\n";
 			$message .= "Bitte stelle den Router zur Erhaltung des Freifunknetzwerkes wieder zur Verfuegung oder entferne den Router aus Netmon.\n\n";
-			$message .= "Statusseite ansehen:\n$GLOBALS[url_to_netmon]/router_status.php?router_id=".$router->getRouterId()."\n\n";
+			$message .= "Statusseite ansehen:\n$GLOBALS[url_to_netmon]/router.php?router_id=".$router->getRouterId()."\n\n";
 			$message .= "Router bearbeiten/entfernen:\n$GLOBALS[url_to_netmon]/routereditor.php?section=edit&router_id=".$router->getRouterId()."\n\n";
 			$message .= "Liebe Gruesse\n";
 			$message .= "$GLOBALS[community_name]";

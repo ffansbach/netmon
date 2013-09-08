@@ -72,7 +72,7 @@ class RouterEditor {
 			
 			//Send Message to twitter
 			if($_POST['twitter_notification']=='1') {
-				Message::postTwitterMessage("Neuer #Freifunk Knoten in #Oldenburg! Wo? Schau nach: ".Config::getConfigValueByName('url_to_netmon')."/router_status.php?router_id=$router_id");
+				Message::postTwitterMessage("Neuer #Freifunk Knoten in #Oldenburg! Wo? Schau nach: ".Config::getConfigValueByName('url_to_netmon')."/router.php?router_id=$router_id");
 			}
 
 			Message::setMessage($message);

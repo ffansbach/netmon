@@ -127,18 +127,11 @@ class Menus extends Permission {
 		$submenu = array();
 		$subsubmenu = array();
 		if (Permission::checkPermission(PERM_USER)) {
-			if(strpos($_SERVER['PHP_SELF'], "router_status.php")!==false OR
-			   strpos($_SERVER['PHP_SELF'], "router_config.php")!==false) {
+			if(strpos($_SERVER['PHP_SELF'], "router.php")!==false) {
 				$submenu[] = array('name'=>'Routeroptionen', 'href'=>'#');
-				
-				if(strpos($_SERVER['PHP_SELF'], "router_config.php")!==false) {
-					$subsubmenu[] = array('name'=>'Status ansehen', 'href'=>'router_status.php?router_id='.$_GET['router_id']);
-					$subsubmenu[] = array('name'=>'Konfig. bearbeiten', 'href'=>'routereditor.php?section=edit&router_id='.$_GET['router_id']);
-					$subsubmenu[] = array('name'=>'Interf. hinzufügen', 'href'=>'interface.php?section=add&router_id='.$_GET['router_id']);
-					$subsubmenu[] = array('name'=>'Werbung', 'href'=>'addeditor.php?router_id='.$_GET['router_id']);
-				} else {
-					$subsubmenu[] = array('name'=>'Konfig. ansehen', 'href'=>'router_config.php?router_id='.$_GET['router_id']);
-				}
+				$subsubmenu[] = array('name'=>'Konfig. bearbeiten', 'href'=>'routereditor.php?section=edit&router_id='.$_GET['router_id']);
+				$subsubmenu[] = array('name'=>'Interf. hinzufügen', 'href'=>'interface.php?section=add&router_id='.$_GET['router_id']);
+				$subsubmenu[] = array('name'=>'Werbung', 'href'=>'addeditor.php?router_id='.$_GET['router_id']);
 				$submenu[] = $subsubmenu;
 				$menu[] = $submenu;
 			} elseif(strpos($_SERVER['PHP_SELF'], "user.php")!==false) {

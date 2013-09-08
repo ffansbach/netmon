@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 26, 2013 at 01:49 PM
+-- Generation Time: Sep 08, 2013 at 09:27 PM
 -- Server version: 5.5.32-MariaDB-1~wheezy-log
--- PHP Version: 5.4.17-1~dotdeb.1
+-- PHP Version: 5.4.19-1~dotdeb.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -526,7 +526,7 @@ CREATE TABLE IF NOT EXISTS `service_dns_ressource_records` (
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

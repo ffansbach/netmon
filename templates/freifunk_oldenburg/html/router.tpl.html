@@ -30,14 +30,14 @@
 			var graph_opts={legend: {position:"ne", noColumns:2} };
 			var ds_graph_opts={	'traffic_rx':{checked:true, color: "#3118c3", lines: { show: true, fill: true, fillColor:""} },
 								'traffic_tx':{checked:true, color: "#ef2700", lines: { show: true, fill: true, fillColor:""} },
-								'memory_caching':{checked:true, color: "#e30f0f", lines: { show: true, fill: true, fillColor:""} },
-								'memory_buffering':{checked:true, color: "#56f5e4", lines: { show: true, fill: true, fillColor:""} },
-								'memory_free':{checked:true, color: "#0009c3", lines: { show: true, fill: true, fillColor:""} },
+								'memory_caching':{checked:true, color: "#ffd500", lines: { show: true, fill: true, fillColor:""} },
+								'memory_buffering':{checked:true, color: "#002fb5", lines: { show: true, fill: true, fillColor:""} },
+								'memory_free':{checked:true, color: "#2cbc00", lines: { show: true, fill: true, fillColor:""} },
 								'clients':{checked:true, color: "#006c7b", lines: { show: true, fill: false} },
 								'originators':{checked:true, color: "#46ddd4", lines: { show: true, fill: false} },
 								'total':{checked:true, color: "#d97500", lines: { show: true, fill: false} },
 								'runnable':{checked:true, color: "#d90000", lines: { show: true, fill: false} },
-								'quality':{checked:true, color: "#3118c3", lines: { show: true, fill: true, fillColor:""} } };
+								'quality':{checked:true, color: "#1fa600", lines: { show: true, fill: true, fillColor:""} } };
 			
 			// the rrdFlot object creates and handles the graph
 			var f=new rrdFlot(html_graph_id,rrd_data,graph_opts,ds_graph_opts);
@@ -62,9 +62,9 @@
 	</script>
 {/literal}
 
-<h1>Router {$router->getHostname()}</h1>
-<div style="width: 100%; margin-bottom: 20px;" class="clearfix">
-	<div style="float:left; width: 50%;">
+<h1>Router {$router->getHostname()} ({if $router->getChipset()->getHardwareName()}{$router->getChipset()->getHardwareName()}{/if})</h1>
+<div style="width: 100%; margin-bottom: 10px;" class="clearfix">
+	<!--<div style="float:left; width: 50%;">
 		<div style="height: 100px; margin-bottom: 6px;">
 			<div style="float:left; width: 137px; margin-right: 4px; height: 100px; border: solid 0px black;">
 				<img src="./data/panorama/round_view_1_234.png">
@@ -97,8 +97,8 @@
 		<div style="float:left; width: 137px; height: 100px; border: solid 0px black;">
 			<img src="./data/panorama/round_view_6_234.png">
 		</div>
-	</div>
-	<div style="float:left; width: 50%;">
+	</div>-->
+	<div style="float:left; width: 100%;">
 		{if $router->getLatitude() AND $router->getLongitude()}
 			<script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key={$google_maps_api_key}&sensor=false'></script>
 			<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
@@ -114,8 +114,8 @@
 				</script>
 			</div>
 
-			<p><b>Standortbeschreibung:</b><br>
-				{$router->getLocation()}
+			<p>
+				<b>Standort:</b> {$router->getLocation()}
 			</p>
 		{else}
 			<p>Keine Standortdaten verfügbar./p>
@@ -124,65 +124,69 @@
 </div>
 
 <h2>Daten</h2>
-<div style="width: 100%; margin-bottom: 40px;" class="clearfix">
-	<div style="float:left; width: 25%;">
-		{if $router->getStatusdata()->getStatus()=="online"}
-			<img width="150" src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
-		{elseif $router->getStatusdata()->getStatus()=="offline"}
-			<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">
-		{elseif $router->getStatusdata()->getStatus()=="unknown"}
-			<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
-		{/if}
-	</div>
-	<div style="float:left; width: 30%;">
+<div style="width: 100%; margin-bottom: 0px;" class="clearfix">
+	<div style="float:left; width: 33%;">
 		<p>
 			<b>Benutzer:</b> <a href="./user.php?user_id={$router->getUserId()}">{$router->getUser()->getNickname()}</a><br>
 			<b>Angelegt am:</b> {$router->getCreateDate()|date_format:"%d.%m.%Y"}<br>
 			<b>Aktualisiert am:</b> {$router->getUpdateDate()|date_format:"%d.%m.%Y"}<br>
 			<b>Statusdaten von:</b> {$router->getStatusdata()->getCreateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
-		</p>
-		<br>
-		<p>
-			{if $router->getStatusdata()->getChipset()}
-				<b>Chipset:</b> {$router->getStatusdata()->getChipset()}<br>
+			{if $router->getStatusdata()->getLocalTime()}
+				<b>Router-Zeit:</b> {$router->getStatusdata()->getLocalTime()|date_format:"%d.%m.%Y %H:%M"} Uhr
 			{/if}
+			
+			{if $router->getStatusdata()->getUptime()}
+				<b>Idletime/Uptime:</b> {math equation="round(x,1)" x=$router->getStatusdata()->getIdletime()/60/60}{if $router->getStatusdata()->getIdletime()}/{math equation="round(x,1)" x=$router->getStatusdata()->getUptime()/60/60}{/if} Stunden<br>
+			{/if}
+		</p>
+		
+	</div>
+	<div style="float:left; width: 27%;">
+		<p>
+			<b>Status: </b>
+			{if $router->getStatusdata()->getStatus()=="online"}
+				<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
+			{elseif $router->getStatusdata()->getStatus()=="offline"}
+				<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">
+			{elseif $router->getStatusdata()->getStatus()=="unknown"}
+				<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
+			{/if}<br>
+			<b>Clients:</b> {$router->getStatusdata()->getClientCount()}<br>
+			<b>Hostname:</b> {$router->getStatusdata()->getHostname()}<br>
 			{if $router->getStatusdata()->getCpu()}
 				<b>Cpu:</b> {$router->getStatusdata()->getCpu()}<br>
 			{/if}
-			{if $router->getStatusdata()->getMemoryTotal()}
-				<b>Memory:</b> {$router->getStatusdata()->getMemoryTotal()} Kb
+			{if $router->getStatusdata()->getMemoryFree()}
+				<b>Free memory:</b> {$router->getStatusdata()->getMemoryFree()}/{$router->getStatusdata()->getMemoryTotal()} Kb<br>
 			{/if}
-			<b>Aktuelle Clients:</b> {$router->getStatusdata()->getClientCount()}
+			{if $router->getStatusdata()->getLoadavg()}
+				<b>Loadaverage:</b> {$router->getStatusdata()->getLoadavg()}<br>
+			{/if}
+			{if $router->getStatusdata()->getProcesses()}
+				<b>Processes:</b> {$router->getStatusdata()->getProcesses()}<br>
+			{/if}
 		</p>
 	</div>
-	<div style="float:left; width: 45%;">
+	<div style="float:left; width: 39%;">
 		<p>
 			{if $router->getStatusdata()->getDistname()}
-				<b>Distname:</b> {$router->getStatusdata()->getDistname()}<br>
+				<b>Betriebssystem:</b> {$router->getStatusdata()->getDistname()} {if $router->getStatusdata()->getDistversion()}({$router->getStatusdata()->getDistversion()}){/if}<br>
 			{/if}
-			{if $router->getStatusdata()->getDistversion()}
-				<b>Distversion:</b> {$router->getStatusdata()->getDistversion()}<br>
-			{/if}
-			{if $router->getStatusdata()->getOpenwrtCoreRevision()}
-				<b>OpenWrt Core Revision:</b> {$router->getStatusdata()->getOpenwrtCoreRevision()}<br>
-			{/if}
-			{if $router->getStatusdata()->getOpenwrtFeedsPackagesRevision()}
-				<b>OpenWrt Package Feed revision:</b> {$router->getStatusdata()->getOpenwrtFeedsPackagesRevision()}<br>
+			{if $router->getStatusdata()->getOpenwrtCoreRevision() OR $router->getStatusdata()->getOpenwrtFeedsPackagesRevision()}
+				<b>Betriebssystem Revs.:</b> {$router->getStatusdata()->getOpenwrtCoreRevision()} (Core) und {$router->getStatusdata()->getOpenwrtCoreRevision()} (Packages)<br>
 			{/if}
 			{if $router->getStatusdata()->getKernelVersion()}
-				<b>Kernelversion:</b> {$router->getStatusdata()->getKernelVersion()}<br>
+				<b>Kernel:</b> {$router->getStatusdata()->getKernelVersion()}<br>
 			{/if}
 			{if $router->getStatusdata()->getBatmanAdvancedVersion()}
-				<b>Batman advanced Version:</b> {$router->getStatusdata()->getBatmanAdvancedVersion()}<br>
+				<b>B.A.T.M.A.N advanced:</b> {$router->getStatusdata()->getBatmanAdvancedVersion()}<br>
 			{/if}
 			{if $router->getStatusdata()->getNodewatcherVersion()}
-				<b>Nodewatcher Version:</b> {$router->getStatusdata()->getNodewatcherVersion()}<br>
+				<b>Nodewatcher:</b> {$router->getStatusdata()->getNodewatcherVersion()}<br>
 			{/if}
 			{if $router->getStatusdata()->getFirmwareVersion()}
-				<b>Firmware Version:</b> {$router->getStatusdata()->getFirmwareVersion()}<br>
-			{/if}
-			{if $router->getStatusdata()->getFirmwareRevision()}
-				<b>Firmware Revision:</b> {$router->getStatusdata()->getFirmwareRevision()}
+				<b>Firmware:</b> {$router->getStatusdata()->getFirmwareVersion()}
+				{if $router->getStatusdata()->getFirmwareRevision()}({$router->getStatusdata()->getFirmwareRevision()}){/if}<br>
 			{/if}
 		</p>
 	</div>
@@ -315,45 +319,70 @@
 <h2>Netzwerkinterfaces</h2>
 {foreach item=interface from=$router->getNetworkinterfacelist()->getNetworkinterfacelist() key=schluessel}
 	<div style="width:100%; margin-bottom: 3px; background-color: #81b59e;" onclick='$("#{$interface->getName()|replace:".":"_"}").slideToggle("slow");'>
-		<b>{$interface->getName()}</b>
+		<b>{$interface->getName()}</b> (<a href="./interface.php?section=delete&interface_id={$interface->getNetworkinterfaceId()}">entfernen</a>)
 	</div>
 	<div id="{$interface->getName()|replace:".":"_"}" style="{if !($interface->getName()|stristr:"wlan") AND !($interface->getName()|stristr:"br-mesh") AND !($interface->getName()|stristr:"vpn")}display:none{/if}; margin-bottom: 10px; width: 100%;" class="clearfix">
 		<div style="float:left; width: 50%;">
 			<ul>
+				{if $interface->getStatusdata()->getMacAddr()}
+					<li>
+						<b>Mac-Adresse:</b> {$interface->getStatusdata()->getMacAddr()}
+					</li>
+				{/if}
+				{if $interface->getStatusdata()->getMtu()}
+					<li>
+						<b>MTU:</b> {$interface->getStatusdata()->getMtu()}
+					</li>
+				{/if}
 				<li>
-					<b>Aktionen:</b>
-					<ul>
-						<li><a href="./ip.php?section=add&router_id={$interface->getRouterId()}&interface_id={$interface->getNetworkinterfaceId()}">IP hinzufügen</a></li>
-						<li><a href="./interface.php?section=delete&interface_id={$interface->getNetworkinterfaceId()}">Interface entfernen</a></li>
-					</ul>
+					<b>Traffic RX:</b> {$interface->getStatusdata()->getTrafficRxAvg()} Kb/sec
+				</li>
 				<li>
+					<b>Traffic TX:</b> {$interface->getStatusdata()->getTrafficTxAvg()} Kb/sec
+				</li>
+					{if $interface->getStatusdata()->getWlanMode()}
+					<li>
+						<b>WLAN-Mode:</b> {$interface->getStatusdata()->getWlanMode()}
+					</li>
+				{/if}
+				{if $interface->getStatusdata()->getWlanFrequency()}
+					<li>
+						<b>WLAN-Channel:</b> {$interface->getStatusdata()->getWlanChannel()} ({$interface->getStatusdata()->getWlanFrequency()})
+					</li>
+				{/if}
+				{if $interface->getStatusdata()->getWlanEssid()}
+					<li>
+						<b>WLAN-ESSID:</b> {$interface->getStatusdata()->getWlanEssid()}
+					</li>
+				{/if}
+				{if $interface->getStatusdata()->getWlanBssid()}
+					<li>
+						<b>WLAN-BSSID:</b> {$interface->getStatusdata()->getWlanBssid()}
+					</li>
+				{/if}
+				{if $interface->getStatusdata()->getWlanTxPower()}
+					<li>
+						<b>WLAN-TX-Power:</b> {$interface->getStatusdata()->getWlanTxPower()}
+					</li>
+				{/if}
+			</ul>
+
 			<ul>
-		
-			<ul>
-			{foreach item=ip from=$interface->getIplist()->getIplist()}
-				<li>
-					<b>IPv{$ip->getNetwork()->getIpv()} Adresse:</b> {$ip->getIpCompressed()}/{$ip->getNetwork()->getNetmask()}
+				<li><b>IP-Adressen:</b>
 					<ul>
+						{foreach item=ip from=$interface->getIplist()->getIplist()}
 						<li>
-							<b>Angelegt am:</b> {$ip->getCreateDate()|date_format:"%e.%m.%Y %H:%M"}
-						</li>
-						<li>
-							<b>Aktionen: </b>
+							<b>{$ip->getIpCompressed()}/{$ip->getNetwork()->getNetmask()}</b> (<a href="./ping_ip.php?ip_id={$ip->getIpId()}">Ping</a>, <a href="./show_crawl_data.php?ip_id={$ip->getIpId()}">Crawl</a>, <a href="./ip.php?section=delete&ip_id={$ip->getIpId()}&router_id={$router_data.router_id}">entfernen</a>)
 							<ul>
 								<li>
-									<a href="./ip.php?section=delete&ip_id={$ip->getIpId()}&router_id={$router_data.router_id}">IP entfernen</a>
-								</li>
-								<li>
-									<a href="./ping_ip.php?ip_id={$ip->getIpId()}">Ping</a>
-								</lu>
-								<li>
-									<a href="./show_crawl_data.php?ip_id={$ip->getIpId()}">Crawl Daten</a>
+									<b>Angelegt am:</b> {$ip->getCreateDate()|date_format:"%e.%m.%Y %H:%M"}
 								</li>
 							</ul>
 						</li>
+						{/foreach}
+						<li><a href="./ip.php?section=add&router_id={$interface->getRouterId()}&interface_id={$interface->getNetworkinterfaceId()}">IP hinzufügen</a></li>
 					</ul>
 				</li>
-			{/foreach}
 			</ul>
 		</div>
 		<div style="width: 20%; float: left;">
