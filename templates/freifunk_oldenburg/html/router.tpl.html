@@ -151,8 +151,12 @@
 			{elseif $router->getStatusdata()->getStatus()=="unknown"}
 				<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
 			{/if}<br>
-			<b>Clients:</b> {$router->getStatusdata()->getClientCount()}<br>
-			<b>Hostname:</b> {$router->getStatusdata()->getHostname()}<br>
+			{if $router->getStatusdata()->getStatus()=="online"}
+				<b>Clients:</b> {$router->getStatusdata()->getClientCount()}<br>
+			{/if}
+			{if $router->getStatusdata()->getHostname()}
+				<b>Hostname:</b> {$router->getStatusdata()->getHostname()}<br>
+			{/if}
 			{if $router->getStatusdata()->getCpu()}
 				<b>Cpu:</b> {$router->getStatusdata()->getCpu()}<br>
 			{/if}

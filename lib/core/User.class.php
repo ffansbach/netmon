@@ -58,15 +58,15 @@
 													FROM users
 													WHERE
 														(id = :user_id OR :user_id=0) AND
-														(session_id = :session_id OR :session_id=0) AND
-														(nickname = :nickname OR :nickname=0) AND
+														(session_id = :session_id OR :session_id='') AND
+														(nickname = :nickname OR :nickname='') AND
 														(password = :password OR :password='') AND
 														(openid = :openid OR :openid='') AND
 														(api_key = :api_key OR :api_key='') AND
 														(vorname = :firstname OR :firstname='') AND
 														(nachname = :lastname OR :lastname='') AND
 														(strasse = :street OR :street='') AND
-														(plz = :zipcode OR :zipcode='') AND
+														(plz = :zipcode OR :zipcode=0) AND
 														(ort = :city OR :city='') AND
 														(telefon = :phonenumber OR :phonenumber='') AND
 														(email = :email OR :email='') AND
