@@ -5,7 +5,7 @@
 	class Iplist Extends ObjectList {
 		private $iplist = array();
 		
-		public function __construct($interface_id=false, $offset=false, $limit=false, $sort_by=false, $order=false) {
+		public function __construct($interface_id=false, $network_id=false, $offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
 			if($offset!==false)
 				$this->setOffset((int)$offset);
@@ -15,82 +15,52 @@
 				$this->setSortBy($sort_by);
 			if($order!==false)
 				$this->SetOrder($order);
-				
-			if($interface_id!=false) {
-				// initialize $total_count with the total number of objects in the list (over all pages)
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-														FROM ips
-														WHERE ips.interface_id=?");
-					$stmt->execute(array($interface_id));
-					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				$this->setTotalCount((int)$total_count['total_count']);
-				//if limit -1 then get all ips
-				if($this->getLimit()==-1)
-					$this->setLimit($this->getTotalCount());
 			
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id
-														FROM ips
-														WHERE ips.interface_id=:interface_id
-														ORDER BY
-															case :sort_by
-																when 'ip' then ips.ip
-																when 'create_date' then ips.create_date
-																when 'ip_id' then ips.id
-																else ips.id
-															end
-														".$this->getOrder()."
-														LIMIT :offset, :limit");
-					$stmt->bindParam(':interface_id', $interface_id, PDO::PARAM_INT);
-					$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
-					$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
-					$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
-					$stmt->execute();
-					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-			} else {
-				// initialize $total_count with the total number of objects in the list (over all pages)
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-														FROM ips");
-					$stmt->execute();
-					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				$this->setTotalCount((int)$total_count['total_count']);
-				//if limit -1 then get all ips
-				if($this->getLimit()==-1)
-					$this->setLimit($this->getTotalCount());
+			// initialize $total_count with the total number of objects in the list (over all pages)
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
+													FROM ips
+													WHERE
+														(interface_id = :interface_id OR :interface_id=0) AND
+														(network_id = :network_id OR :network_id=0)");
+				$stmt->bindParam(':interface_id', $interface_id, PDO::PARAM_INT);
+				$stmt->bindParam(':network_id', $network_id, PDO::PARAM_INT);
+				$stmt->execute();
+				$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+			$this->setTotalCount((int)$total_count['total_count']);
+			//if limit -1 then get all ressource records
+			if($this->getLimit()==-1)
+				$this->setLimit($this->getTotalCount());
 			
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT ips.id as ip_id
-														FROM ips
-														ORDER BY
-															case :sort_by
-																when 'ip' then ips.ip
-																else ips.id
-															end
-														".$this->getOrder()."
-														LIMIT :offset, :limit");
-					$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
-					$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
-					$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
-					$stmt->execute();
-					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT id as ip_id
+													FROM ips
+													WHERE
+														(interface_id = :interface_id OR :interface_id=0) AND
+														(network_id = :network_id OR :network_id=0)
+													ORDER BY
+														case :sort_by
+															when 'create_date' then ips.create_date
+															when 'ip_id' then ips.id
+															when 'ip' then ips.ip
+															else ips.id
+														end
+													".$this->getOrder()."
+													LIMIT :offset, :limit");
+				$stmt->bindParam(':interface_id', $interface_id, PDO::PARAM_INT);
+				$stmt->bindParam(':network_id', $network_id, PDO::PARAM_INT);
+				$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
+				$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
+				$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
+				$stmt->execute();
+				$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 			
 			foreach($result as $ip) {

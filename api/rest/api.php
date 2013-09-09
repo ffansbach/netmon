@@ -66,14 +66,14 @@
 		
 		private function iplist() {
 			if($this->get_request_method() == "GET" && isset($this->_request['interface_id'])) {
-				$iplist = new Iplist($this->_request['interface_id'],
-									 $this->_request['offset'], $this->_request['limit'],
+				$iplist = new Iplist((int)$this->_request['interface_id'], (int)$this->_request['network_id'],
+									 (int)$this->_request['offset'], (int)$this->_request['limit'],
 									 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $iplist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} elseif($this->get_request_method() == "GET") {
-				$iplist = new Iplist(false,
-									 $this->_request['offset'], $this->_request['limit'],
+				$iplist = new Iplist(false, false,
+									 (int)$this->_request['offset'], (int)$this->_request['limit'],
 									 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $iplist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);

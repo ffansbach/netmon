@@ -62,7 +62,7 @@
 	</script>
 {/literal}
 
-<h1>Router {$router->getHostname()} ({if $router->getChipset()->getHardwareName()}{$router->getChipset()->getHardwareName()}{/if})</h1>
+<h1>Router {$router->getHostname()} {if $router->getChipset()->getHardwareName()}({$router->getChipset()->getHardwareName()}){/if}</h1>
 <div style="width: 100%; margin-bottom: 10px;" class="clearfix">
 	<!--<div style="float:left; width: 50%;">
 		<div style="height: 100px; margin-bottom: 6px;">
@@ -118,7 +118,7 @@
 				<b>Standort:</b> {$router->getLocation()}
 			</p>
 		{else}
-			<p>Keine Standortdaten verfügbar./p>
+			<p>Keine Standortdaten verfügbar.</p>
 		{/if}
 	</div>
 </div>

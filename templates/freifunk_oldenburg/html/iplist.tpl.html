@@ -1,0 +1,76 @@
+<script src="lib/extern/jquery/jquery.min.js"></script>
+<script src="lib/extern/DataTables/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+{literal}
+jQuery.fn.dataTableExt.oSort['uk_date-asc']  = function(a,b) {
+    var ukDatea = a.split('.');
+    var ukDateb = b.split('.');
+     
+    var x = (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+    var y = (ukDateb[2] + ukDateb[1] + ukDateb[0]) * 1;
+     
+    return ((x < y) ? -1 : ((x > y) ?  1 : 0));
+};
+ 
+jQuery.fn.dataTableExt.oSort['uk_date-desc'] = function(a,b) {
+    var ukDatea = a.split('.');
+    var ukDateb = b.split('.');
+     
+    var x = (ukDatea[2] + ukDatea[1] + ukDatea[0]) * 1;
+    var y = (ukDateb[2] + ukDateb[1] + ukDateb[0]) * 1;
+     
+    return ((x < y) ? 1 : ((x > y) ?  -1 : 0));
+};
+
+$(document).ready(function() {
+	$('#routerlist').dataTable( {
+		"bFilter": false,
+		"bInfo": false,
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "html" },
+			{ "sType": "numeric" },
+			{ "sType": "html" },
+			{ "sType": "html" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "uk_date" }
+		],
+		"aaSorting": [[ 0, "asc" ]]
+	} );
+} );
+{/literal}
+</script>
+
+<h1>IP-Adressen im Netzwerk {$network->getIpCompressed()}/{$network->getNetmask()}</h1>
+{if !empty($iplist)}
+	<table class="display" id="routerlist" style="width: 100%">
+		<thead>
+			<tr>
+				<th>IP</th>
+				<th>IP-Version</th>
+				<th>Benutzer</th>
+				<th>Router</th>
+				<th>Interface</th>
+				<th>Ressource-Records</th>
+				<th>Angelegt am</th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach $iplist as $ip}
+				<tr>
+					<td>{$ip->getIpCompressed()}</td>
+					<td>{$ip->getNetwork()->getIpv()}</td>
+					<td>TODO</td>
+					<td>TODO</td>
+					<td>TODO</td>
+					<td>TODO</td>
+					<td>{$ip->getCreateDate()|date_format:"%d.%m.%Y"}</td>
+				</tr>
+			{/foreach}
+		</tbody>
+	</table>
+{else}
+	<p>Keine IP-Adressen vorhanden.</p>
+{/if}

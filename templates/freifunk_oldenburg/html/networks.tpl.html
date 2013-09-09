@@ -41,7 +41,7 @@ $(document).ready(function() {
 		<tbody>
 			{foreach item=network from=$networklist}
 				<tr>
-					<td>{$network->getIp()}/{$network->getNetmask()}</td>
+					<td><a href="./iplist.php?network_id={$network->getNetworkId()}">{$network->getIp()}/{$network->getNetmask()}</a></td>
 					<td>{$network->getIpv()}</td>
 					<td></td>
 					<td></td>

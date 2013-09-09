@@ -148,6 +148,13 @@
 			return $this->ip;
 		}
 		
+		/**
+		* Usefull for ipv6 addresses
+		*/
+		public function getIpCompressed() {
+			return inet_ntop(inet_pton($this->getIp()));
+		}
+		
 		public function getIpv() {
 			return $this->ipv;
 		}

@@ -95,7 +95,7 @@
 		public function delete() {
 			if($this->getNetworkinterfaceId() != 0) {
 				//first delete all assigned ip addresses
-				$iplist = new Iplist($this->getNetworkinterfaceId(), 0, -1);
+				$iplist = new Iplist($this->getNetworkinterfaceId());
 				$iplist->delete();
 				
 				//then delete interface

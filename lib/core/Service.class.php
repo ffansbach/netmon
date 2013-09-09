@@ -223,7 +223,7 @@
 				$this->iplist = $itemlist;
 				return true;
 			} elseif(is_array($itemlist)) {
-				$iplist = new Iplist(false, 0, 0);
+				$iplist = new Iplist(false, false, 0, 0);
 				foreach($itemlist as $ip_id) {
 					$ip = new Ip((int)$ip_id);
 					if($ip->fetch()) {
@@ -245,7 +245,7 @@
 					echo $e->getTraceAsString();
 				}
 				
-				$iplist = new Iplist(false, 0, 0);
+				$iplist = new Iplist(false, false, 0, 0);
 				foreach($result as $ip_id) {
 					$ip = new Ip((int)$ip_id['ip_id']);
 					if($ip->fetch()) {
