@@ -26,11 +26,11 @@
 				
 				$message[] = array("Das Netzwerkinterface ".$_POST['name']." wurde hinzugefügt.", 1);
 				Message::setMessage($message);
-				header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+				header('Location: ./router.php?router_id='.$_GET['router_id']);
 			} else {
 				$message[] = array("Das Netzwerkinterface ".$_POST['name']." existiert bereits.", 2);
 				Message::setMessage($message);
-				header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+				header('Location: ./router.php?router_id='.$_GET['router_id']);
 			}
 		} else {
 			Permission::denyAccess(PERM_ROOT, $router->getUserId());
@@ -45,7 +45,7 @@
 			else
 				$message[] = array("Das Netzwerkinterface ".$networkinterface->getName()." konnte nicht entfernt werden.", 1);
 			Message::setMessage($message);
-			header('Location: ./router_config.php?router_id='.$networkinterface->getRouterId());
+			header('Location: ./router.php?router_id='.$networkinterface->getRouterId());
 		} else {
 			Permission::denyAccess(PERM_ROOT, $networkinterface->getRouter()->getUserId());
 		}

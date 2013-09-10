@@ -30,7 +30,7 @@
 		if(Permission::checkPermission(PERM_USER)) {
 			$insert_result = RouterEditor::insertNewRouter();
 			if($insert_result['result']) {
-				header('Location: ./router_config.php?router_id='.$insert_result['router_id']);
+				header('Location: ./router.php?router_id='.$insert_result['router_id']);
 			} else {
 				header("Location: ./routereditor.php?section=new&router_auto_assign_login_string=$_POST[router_auto_assign_login_string]&hostname=$_POST[hostname]");
 			}
@@ -68,7 +68,7 @@
 		if(permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, (int)$router_data['user_id'])) {
 			$insert_result = RouterEditor::insertEditRouter();
 			if($insert_result) {
-				header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+				header('Location: ./router.php?router_id='.$_GET['router_id']);
 			} else {
 				header('Location: ./routereditor.php?section=edit&router_id='.$_GET['router_id']);
 			}
@@ -82,12 +82,12 @@
 		if(permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, (int)$router_data['user_id'])) {
 			$insert_result = RouterEditor::insertEditHash($_GET['router_id'], $_POST['router_auto_assign_hash']);
 			if($insert_result) {
-				header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+				header('Location: ./router.php?router_id='.$_GET['router_id']);
 			} else {
 				header('Location: ./routereditor.php?section=edit&router_id='.$_GET['router_id']);
 			}
 			
-			header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+			header('Location: ./router.php?router_id='.$_GET['router_id']);
 		} else {
 			Permission::denyAccess(PERM_ROOT, (int)$router_data['user_id']);
 		}

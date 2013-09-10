@@ -38,7 +38,7 @@
 				$message[] = array('Die IP '.$_POST['ip'].' konnte nicht angelegt werden.', 2);
 				Message::setMessage($message);
 			}
-			header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+			header('Location: ./router.php?router_id='.$_GET['router_id']);
 		} else {
 			Permission::denyAccess(PERM_ROOT, $networkinterface->getRouter()->getUserId());
 		}
@@ -51,7 +51,7 @@
 			$message[] = array('Die IP '.$ip->getIp().'/'.$ip->getNetwork()->getNetmask().' wurde gelöscht.', 1);
 			Message::setMessage($message);
 			
-			header('Location: ./router_config.php?router_id='.$_GET['router_id']);
+			header('Location: ./router.php?router_id='.$_GET['router_id']);
 		} else {
 			Permission::denyAccess(PERM_ROOT, $ip->getNetworkinterface()->getRouter()->getUserId());
 		}
