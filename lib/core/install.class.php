@@ -1,15 +1,5 @@
 <?php
 class Install {
-	public function insertDB() {
-		try {
-			$sql = file_get_contents('./netmon.sql');
-			DB::getInstance()->exec($sql);
-		}
-		catch(PDOException $e) {
-			$exception = $e->getMessage();
-		}
-	}
-
 	public function getFileLineByLine($path) {
 		$file = file($path);
 		foreach($file as $key=>$value) {

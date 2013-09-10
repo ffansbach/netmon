@@ -16,7 +16,6 @@ if ($GLOBALS['installed']) {
 	$smarty->display("footer.tpl.html");
 } elseif (!isset($_GET['section'])) {
 	$smarty->assign('netmon_version', $GLOBALS['netmon_version']);
-	$smarty->assign('netmon_codename', $GLOBALS['netmon_codename']);
 
 	if (strnatcmp(phpversion(),'5.3') >= 0) $smarty->assign('php_version', true);
 	else $smarty->assign('php_version', false);
@@ -46,6 +45,7 @@ if ($GLOBALS['installed']) {
 	$smarty->display("install_info.tpl.html");
 	$smarty->display("footer.tpl.html");
 } elseif ($_GET['section']=="db") {
+	$smarty->assign('message', Message::getMessage());
 	$smarty->display("header.tpl.html");
 	$smarty->display("install_db_data.tpl.html");
 	$smarty->display("footer.tpl.html");
@@ -59,10 +59,7 @@ if ($GLOBALS['installed']) {
 	if($exception) {
 		$message[] = array($exception, 2);
 		Message::setMessage($message);
-		$smarty->assign('message', Message::getMessage());
-		$smarty->display("header.tpl.html");
-		$smarty->display("install_db_data.tpl.html");
-		$smarty->display("footer.tpl.html");
+		header('Location: ./install.php?section=db');
 	} else {
 		$config_path = "./config/config.local.inc.php";
 		$file = Install::getFileLineByLine($config_path);
@@ -72,7 +69,7 @@ if ($GLOBALS['installed']) {
 		$configs[3] = '$GLOBALS[\'mysql_password\'] = "'.$_POST['mysql_password'].'";';
 		$file = Install::changeConfigSection('//MYSQL', $file, $configs);
 		Install::writeEmptyFileLineByLine($config_path, $file);
-
+		
 		header('Location: ./install.php?section=db_insert_method');
 	}
 } elseif ($_GET['section']=="db_insert_method") {
@@ -84,13 +81,24 @@ if ($GLOBALS['installed']) {
 		$smarty->display("footer.tpl.html");
 	}
 } elseif ($_GET['section']=="db_insert") {
-	Install::insertDB();
-	header('Location: ./install.php?section=messages');
+	try {
+		$sql = file_get_contents('./netmon.sql');
+		DB::getInstance()->exec($sql);
+	} catch(PDOException $e) {
+		$exception = $e->getMessage();
+	}
+	
+	if($exception) {
+		$message[] = array($exception, 2);
+		Message::setMessage($message);
+		header('Location: ./install.php?section=db');
+	} else {
+		header('Location: ./install.php?section=messages');
+	}
 } elseif ($_GET['section']=="messages") {
-
-        $smarty->assign('mail_sending_type', $_SESSION['mail']);
-        $smarty->assign('url_to_netmon', "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));
-        $smarty->assign('enable_network_policy', false);
+	$smarty->assign('mail_sending_type', $_SESSION['mail']);
+	$smarty->assign('url_to_netmon', "http://".$_SERVER['HTTP_HOST'].dirname($_SERVER['PHP_SELF']));
+	$smarty->assign('enable_network_policy', false);
 	$smarty->assign('message', Message::getMessage());
 
 	$smarty->display("header.tpl.html");
@@ -158,7 +166,7 @@ if ($GLOBALS['installed']) {
 		
 		//create an initial crawl cycle
 		$crawl_cycle_id = Crawling::newCrawlCycle(10);
-		require_once(ROOT_DIR.'/cronjobs.php');
+		//require_once(ROOT_DIR.'/cronjobs.php');
 		header('Location: ./install.php?section=finish');
 	}
 } elseif ($_GET['section']=="finish") {

@@ -1,15 +1,18 @@
-<h1>Netmon installieren</h1>
-<p>Netmon ist ein Monitoring-Portal für Freifunknetzwerke. Du benutzt Version <i>{$netmon_version} ({$netmon_codename})</i>. Dieser Assistent wird dich durch die Installation führen und die wichtigsten Einstellungen vornehmen. Alle weiteren Einstellungen und Anpassungen an deine lokale Community kannst du später als eingeloggter Benutzer im Menü unter <i>Konfiguration</i> vornehmen.<br><br>Viel Spaß!</p>
+<h1>Installationsroutine</h1>
+<p>Herzlich willkommen in der Installationsroutine von Netmon. Du benutzt Netmon in der Version <i>{$netmon_version}</i>. Dieser Assistent wird dich durch die Installation führen und die wichtigsten Einstellungen vornehmen. Alle weiteren Einstellungen und Anpassungen an deine lokale Community kannst du später als eingeloggter Benutzer im Menü unter <i>Konfiguration</i> vornehmen.</p>
 
-<h2>Informationen im Web</h2>
+<h2>Wichtige Informationen</h2>
+<p>Auf den folgenden Webseiten findest du wichtige Informationen rund um Netmon sowie die für Netmon entwickelten Systeme.</p>
 <ul>
-	<li><a href="http://oldenburg.freifunk.net/">Freifunk Oldenburg</a></li>
-	<li><a href="http://wiki.freifunk-ol.de/w/Netmon">Netmon Wiki</a></li>
+	<li><a href="http://wiki.freifunk-ol.de/w/Netmon">Allgemeine Wikiseite zu Netmon</a></li>
+	<li><a href="http://wiki.freifunk-ol.de/w/Netmon/Handbuch">Handbuch zu Netmon</a></li>
+	<li><a href="http://wiki.freifunk-ol.de/w/Netmon/Handbuch#Installation">Handbuch Abschnitt Installation</a></li>
+	<li><a href="http://wiki.freifunk-ol.de/w/Netmon/Development-HowTo">Development-HowTo</a></li>
 	<li><a href="http://ticket.freifunk-ol.de/projects/netmon">Netmon Entwicklerportal</a></li>
 </ul>
 
 <h2>Systemcheck</h2>
-<p>Der Systemcheck überprüft ob alle wichtigen Funktionen deines Servers zum Betrieb von Netmon eingeschaltet sind.</p>
+<p>Der Systemcheck überprüft ob alle wichtigen PHP-Extensions, PHP-Funktionen sowie die passende PHP-Version auf deinem Webserver verfügbar sind und ob alle notwendigen externen Programme installiert sind.</p>
 <div style="width: 100%; display:inline-block">
     <div style="float:left; width: 33%;">
 		<h3>PHP-Extensions</h3>
@@ -34,12 +37,12 @@
 	</div>
 	<div style="float:left; width: 33%;">
 		<h3>Ergebnis</h3>
-		{if !$rrdtool_installed OR !$pdo_loaded OR !$pdo_mysql_loaded OR !$json_loaded OR !$curl_loaded OR !$gd_loaded OR !$exec OR !$php_version}
+		{if !$rrdtool_installed OR !$pdo_loaded OR !$pdo_mysql_loaded OR !$openssl_loaded OR !$gmp_loaded OR !$json_loaded OR !$curl_loaded OR !$gd_loaded OR !$iconv_loaded OR !$exec OR !$php_version}
 			<div class="error" style="margin: 0px;">Einige Funktionen sind inaktiv, es kann zu Problemen bei Installation und Betrieb kommen!</div>
 		{else}
 			<div class="notice" style="margin: 0px;">Alle Funktionen sind aktiv, Installation und Betrieb sollten ohne Probleme ablaufen.</div>
 			{if !$mail}
-				<div class="unknown" style="margin: 0px; margin-top: 10px;">Da kein Mailserver verfügbar ist, wird ein SMTP-Mailtransport genutzt.</div>
+				<div class="unknown" style="margin: 0px; margin-top: 10px;">Da kein Mailserver verfügbar ist, wird ein SMTP-Mailtransport genutzt der im folgenden eingerichtet werden <b>muss</b>.</div>
 			 {/if}
 		{/if}
 	</div>
