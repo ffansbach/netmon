@@ -17,6 +17,7 @@
 	require_once(ROOT_DIR.'/lib/core/DnsZoneList.class.php');
 	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecord.class.php');
 	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecordList.class.php');
+	require_once(ROOT_DIR.'/lib/core/Networklist.class.php');
 	require_once(ROOT_DIR.'/lib/extern/rest/rest.inc.php');
 	
 	class API extends Rest {
@@ -378,6 +379,22 @@
 			} else {
 				$this->error_code = 2;
 				$this->error_message = "The iplist could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
+		private function networklist() {
+			if($this->get_request_method() == "GET") {
+				$this->_request['user_id'] = (!isset($this->_request['user_id'])) ? false : $this->_request['user_id'];
+				$this->_request['ipv'] = (!isset($this->_request['ipv'])) ? false : $this->_request['ipv'];
+				$networklist = new Networklist((int)$this->_request['user_id'], (int)$this->_request['ipv'], 
+																		$this->_request['offset'], $this->_request['limit'],
+																		$this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $networklist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The Networklist could not be created, your request seems to be malformed.";
 				$this->response($this->finishxml(), 400);
 			}
 		}
