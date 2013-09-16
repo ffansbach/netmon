@@ -23,14 +23,18 @@
   * @access public
   *
   */
-  public static function getInstance() {
-    if (!self::$instance) {
-      self::$instance = new PDO("mysql:host=".$GLOBALS['mysql_host'].";dbname=".$GLOBALS['mysql_db'], $GLOBALS['mysql_user'], $GLOBALS['mysql_password']);
-      self::$instance-> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      self::$instance-> query('SET NAMES utf8');
-    }
-    return self::$instance;
-  }
+	public static function getInstance() {
+		if (!self::$instance) {
+			try {
+				self::$instance = new PDO("mysql:host=".$GLOBALS['mysql_host'].";dbname=".$GLOBALS['mysql_db'], $GLOBALS['mysql_user'], $GLOBALS['mysql_password']);
+			} catch (Exception $e) {
+				die("Bei der Verbindung zur Datenbank ist ein schwerer Fehler aufgetreten.");
+			}
+			self::$instance-> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			self::$instance-> query('SET NAMES utf8');
+		}
+		return self::$instance;
+	}
   
   /**
   *
