@@ -155,7 +155,7 @@
 				$this->statusdata_history = $statusdata_history;
 			else
 				//limit statusdata_history to 10 entrys otherwise it will produce to much load
-				$this->statusdata_history = new RouterStatusList($this->router_id, 0, 10);
+				$this->statusdata_history = new RouterStatusList($this->router_id, 0, 2);
 		}
 		
 		public function setChipset($chipset=false) {

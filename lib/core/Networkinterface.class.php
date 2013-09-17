@@ -10,16 +10,17 @@
 		private $name = "";
 		private $mac_addr = "";
 		private $statusdata = null;
-		private $statusdata_history = null;
 		private $iplist = null;
 		
 		public function __construct($networkinterface_id=false, $router_id=false, $name=false,
-									$create_date=false, $update_date=false) {
+									$create_date=false, $update_date=false, $statusdata=false) {
 			$this->setNetworkinterfaceId($networkinterface_id);
 			$this->setRouterId($router_id);
 			$this->setName($name);
 			$this->setCreateDate($create_date);
 			$this->setUpdateDate($update_date);
+			$this->setIplist();
+			$this->setStatusdata($statusdata);
 		}
 		
 		public function fetch() {
@@ -52,7 +53,7 @@
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
 				$this->setStatusdata();
-				$this->setIplist((int)$result['id']);
+				$this->setIplist();
 				return true;
 			}
 			
@@ -62,7 +63,6 @@
 		public function store() {
 			$networkinterface = new Networkinterface(false, $this->getRouterId(), $this->getName());
 			$networkinterface->fetch();
-//			var_dump($networkinterface);
 			
 			if($this->getNetworkinterfaceId() != 0 AND $networkinterface->getNetworkinterfaceId()==$this->getNetworkinterfaceId()) {
 				try {
@@ -132,12 +132,14 @@
 		}
 		
 		public function setStatusdata($statusdata=false) {
-			if($statusdata!=false) {
+			if($statusdata instanceof NetworkinterfaceStatus) {
 				$this->statusdata = $statusdata;
 			} else {
-				$networkinterface_status = new NetworkinterfaceStatus(false, false, (int)$this->getNetworkinterfaceId());
-				$networkinterface_status->fetch();
-				$this->statusdata = $networkinterface_status;
+				if($this->getNetworkinterfaceId()!=0) {
+					$networkinterface_status = new NetworkinterfaceStatus(false, false, (int)$this->getNetworkinterfaceId());
+					$networkinterface_status->fetch();
+					$this->statusdata = $networkinterface_status;
+				}
 			}
 		}
 		
@@ -145,7 +147,8 @@
 			if($iplist!=false && is_array($iplist)) {
 				$this->iplist = $iplist;
 			} else {
-				$this->iplist = new Iplist($this->networkinterface_id);
+				if($this->getNetworkinterfaceId()!=0)
+					$this->iplist = new Iplist($this->getNetworkinterfaceId());
 			}
 		}
 		

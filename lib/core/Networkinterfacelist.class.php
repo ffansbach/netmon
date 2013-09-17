@@ -15,85 +15,84 @@
 				$this->setSortBy($sort_by);
 			if($order!==false)
 				$this->SetOrder($order);
-				
-			if($router_id!=false) {
-				// initialize $total_count with the total number of objects in the list (over all pages)
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-														FROM interfaces
-														WHERE interfaces.router_id=?");
-					$stmt->execute(array($router_id));
-					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				$this->setTotalCount((int)$total_count['total_count']);
-				//if limit -1 then get all interfaces
-				if($this->getLimit()==-1)
-					$this->setLimit($this->getTotalCount());
-				
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT interfaces.id as networkinterface_id
-														FROM interfaces
-														WHERE interfaces.router_id = :router_id
-														ORDER BY
-															case :sort_by
-																when 'name' then interfaces.name
-																else interfaces.id
-															end
-														".$this->getOrder()."
-														LIMIT :offset, :limit");
-					$stmt->bindParam(':router_id', $router_id, PDO::PARAM_INT);
-					$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
-					$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
-					$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
-					$stmt->execute();
-					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-			} else {
-				// initialize $total_count with the total number of objects in the list (over all pages)
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-														FROM interfaces");
-					$stmt->execute();
-					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				$this->setTotalCount((int)$total_count['total_count']);
-				//if limit -1 then get all interfaces
-				if($this->getLimit()==-1)
-					$this->setLimit($this->getTotalCount());
 			
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT interfaces.id as networkinterface_id
-														FROM interfaces
-														ORDER BY
-															case :sort_by
-																when 'name' then interfaces.name
+			// initialize $total_count with the total number of objects in the list (over all pages)
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
+													FROM interfaces
+													WHERE
+														(interfaces.router_id = :router_id OR :router_id=0)");
+				$stmt->bindParam(':router_id', $router_id, PDO::PARAM_INT);
+				$stmt->execute();
+				$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+			$this->setTotalCount((int)$total_count['total_count']);
+			//if limit -1 then get all ressource records
+			if($this->getLimit()==-1)
+				$this->setLimit($this->getTotalCount());
+			
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT interfaces.id as networkinterface_id,
+													interfaces.router_id as networkinterface_router_id,
+													interfaces.name as networkinterface_name,
+													interfaces.create_date as networkinterface_create_date,
+													interfaces.update_date as networkinterface_update_date,
+													crawl_interfaces.id as crawl_interfaces_id,
+													crawl_interfaces.router_id as crawl_interfaces_router_id,
+													crawl_interfaces.crawl_cycle_id as crawl_interfaces_crawl_cycle_id,
+													crawl_interfaces.interface_id crawl_interfaces_interface_id,
+													crawl_interfaces.crawl_date as crawl_interfaces_crawl_date,
+													crawl_interfaces.name as crawl_interfaces_name,
+													crawl_interfaces.mac_addr as crawl_interfaces_mac_addr,
+													crawl_interfaces.traffic_rx crawl_interfaces_traffic_rx,
+													crawl_interfaces.traffic_rx_avg crawl_interfaces_traffic_rx_avg,
+													crawl_interfaces.traffic_tx crawl_interfaces_traffic_tx,
+													crawl_interfaces.traffic_tx_avg crawl_interfaces_traffic_tx_avg,
+													crawl_interfaces.wlan_mode crawl_interfaces_wlan_mode,
+													crawl_interfaces.wlan_frequency crawl_interfaces_wlan_frequency,
+													crawl_interfaces.wlan_essid crawl_interfaces_wlan_essid,
+													crawl_interfaces.wlan_bssid crawl_interfaces_wlan_bssid,
+													crawl_interfaces.wlan_tx_power crawl_interfaces_wlan_tx_power,
+													crawl_interfaces.mtu crawl_interfaces_mtu
+													FROM interfaces, crawl_interfaces
+													WHERE
+														(interfaces.router_id = :router_id OR :router_id=0) AND
+														interfaces.id = crawl_interfaces.interface_id
+													ORDER BY
+														case :sort_by
+															when 'name' then interfaces.name
 																else interfaces.id
-															end
-														".$this->getOrder()."
-														LIMIT :offset, :limit");
-					$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
-					$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
-					$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
-					$stmt->execute();
-					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
+														end
+													".$this->getOrder()."
+													LIMIT :offset, :limit");
+				$stmt->bindParam(':router_id', $router_id, PDO::PARAM_INT);
+				$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
+				$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
+				$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
+				$stmt->execute();
+				$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 			
 			foreach($result as $networkinterface) {
-				$networkinterface = new Networkinterface((int)$networkinterface['networkinterface_id']);
-				$networkinterface->fetch();
+				$networkinterface = new Networkinterface((int)$networkinterface['networkinterface_id'], (int)$networkinterface['networkinterface_router_id'],
+														 $networkinterface['networkinterface_name'],
+														 $networkinterface['networkinterface_create_date'], $networkinterface['networkinterface_update_date'],
+														 new NetworkinterfaceStatus($networkinterface['crawl_interfaces_id'], $networkinterface['crawl_interfaces_router_id'],
+																					$networkinterface['crawl_interfaces_crawl_cycle_id'], $networkinterface['crawl_interfaces_interface_id'], 
+																					$networkinterface['crawl_interfaces_crawl_date'], $networkinterface['crawl_interfaces_name'],
+																					$networkinterface['crawl_interfaces_mac_addr'], $networkinterface['crawl_interfaces_traffic_rx'], 
+																					$networkinterface['crawl_interfaces_traffic_rx_avg'], $networkinterface['crawl_interfaces_traffic_tx'],
+																					$networkinterface['crawl_interfaces_traffic_tx_avg'], $networkinterface['crawl_interfaces_wlan_mode'], 
+																					$networkinterface['crawl_interfaces_wlan_frequency'], $networkinterface['crawl_interfaces_wlan_essid'],
+																					$networkinterface['crawl_interfaces_wlan_bssid'], $networkinterface['crawl_interfaces_wlan_tx_power'], 
+																					$networkinterface['crawl_interfaces_mtu'])
+														 );
 				$this->networkinterfacelist[] = $networkinterface;
 			}
 		}

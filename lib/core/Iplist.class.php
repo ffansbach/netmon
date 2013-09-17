@@ -37,7 +37,7 @@
 				$this->setLimit($this->getTotalCount());
 			
 			try {
-				$stmt = DB::getInstance()->prepare("SELECT id as ip_id
+				$stmt = DB::getInstance()->prepare("SELECT id as ip_id, ips.*
 													FROM ips
 													WHERE
 														(interface_id = :interface_id OR :interface_id=0) AND
@@ -64,8 +64,8 @@
 			}
 			
 			foreach($result as $ip) {
-				$ip = new Ip((int)$ip['ip_id']);
-				$ip->fetch();
+				$ip = new Ip((int)$ip['ip_id'], (int)$ip['interface_id'], (int)$ip['network_id'],
+							 $ip['ip'], $ip['create_date'], $ip['update_date']);
 				$this->iplist[] = $ip;
 			}
 		}
