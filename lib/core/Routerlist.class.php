@@ -59,6 +59,7 @@
 														ORDER BY
 															case :sort_by
 																when 'hostname' then routers.hostname
+																when 'router_id' then routers.id
 																else routers.id
 															end
 														".$this->getOrder()."

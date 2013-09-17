@@ -16,55 +16,65 @@
 			if($order!==false)
 				$this->SetOrder($order);
 				
-			if($router_id!=false AND $crawl_cycle_id!=false) {
-				// initialize $total_count with the total number of objects in the list (over all pages)
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-														FROM crawl_batman_advanced_originators
-														WHERE crawl_batman_advanced_originators.router_id=? AND
-															  crawl_batman_advanced_originators.crawl_cycle_id=?");
-					$stmt->execute(array($router_id, $crawl_cycle_id));
-					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				$this->setTotalCount((int)$total_count['total_count']);
-				//if limit -1 then get all ressource records
-				if($this->getLimit()==-1)
-					$this->setLimit($this->getTotalCount());
-				
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT crawl_batman_advanced_originators.id as status_id
-														FROM crawl_batman_advanced_originators
-														WHERE crawl_batman_advanced_originators.router_id = :router_id AND
-															  crawl_batman_advanced_originators.crawl_cycle_id=:crawl_cycle_id
-														ORDER BY
-															case :sort_by
-																when 'originator' then crawl_batman_advanced_originators.originator
-																else crawl_batman_advanced_originators.id
-															end
-														".$this->getOrder()."
-														LIMIT :offset, :limit");
-					$stmt->bindParam(':router_id', $router_id, PDO::PARAM_INT);
-					$stmt->bindParam(':crawl_cycle_id', $crawl_cycle_id, PDO::PARAM_INT);
-					$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
-					$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
-					$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
-					$stmt->execute();
-					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
+			// initialize $total_count with the total number of objects in the list (over all pages)
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
+													FROM crawl_batman_advanced_originators
+													WHERE
+														(crawl_batman_advanced_originators.router_id = :router_id OR :router_id=0) AND
+														(crawl_batman_advanced_originators.crawl_cycle_id = :crawl_cycle_id OR :crawl_cycle_id=0)");
+				$stmt->bindParam(':router_id', $router_id, PDO::PARAM_INT);
+				$stmt->bindParam(':crawl_cycle_id', $crawl_cycle_id, PDO::PARAM_INT);
+				$stmt->execute();
+				$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+			$this->setTotalCount((int)$total_count['total_count']);
+			//if limit -1 then get all ressource records
+			if($this->getLimit()==-1)
+				$this->setLimit($this->getTotalCount());
+			
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT  crawl_batman_advanced_originators.id as status_id,
+															crawl_batman_advanced_originators.router_id,
+															crawl_batman_advanced_originators.crawl_cycle_id,
+															crawl_batman_advanced_originators.originator,
+															crawl_batman_advanced_originators.link_quality,
+															crawl_batman_advanced_originators.nexthop,
+															crawl_batman_advanced_originators.outgoing_interface,
+															crawl_batman_advanced_originators.last_seen,
+															crawl_batman_advanced_originators.crawl_date
+													FROM crawl_batman_advanced_originators
+													WHERE
+														(crawl_batman_advanced_originators.router_id = :router_id OR :router_id=0) AND
+														(crawl_batman_advanced_originators.crawl_cycle_id = :crawl_cycle_id OR :crawl_cycle_id=0)
+													ORDER BY
+														case :sort_by
+															when 'originator' then crawl_batman_advanced_originators.originator
+															else crawl_batman_advanced_originators.id
+														end
+													".$this->getOrder()."
+													LIMIT :offset, :limit");
+				$stmt->bindParam(':router_id', $router_id, PDO::PARAM_INT);
+				$stmt->bindParam(':crawl_cycle_id', $crawl_cycle_id, PDO::PARAM_INT);
+				$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
+				$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
+				$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
+				$stmt->execute();
+				$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 			
 			foreach($result as $res) {
-				$originator_status = new OriginatorStatus((int)$res['status_id'], 0);
-				$originator_status->fetch();
+				$originator_status = new OriginatorStatus((int)$res['status_id'], (int)$res['crawl_cycle_id'],
+														  (int)$res['router_id'], $res['originator'], (int)$res['link_quality'],
+														  $res['nexthop'], $res['outgoing_interface'], $res['last_seen'], $res['crawl_date']);
 				$this->originator_status_list[] = $originator_status;
 			}
-			
 		}
 		
 		public function getOriginatorStatusList() {
