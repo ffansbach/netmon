@@ -72,6 +72,8 @@
 			$this->setNodewatcherVersion($nodewatcher_version);
 			$this->setFastdVersion($fastd_version);
 			$this->setBatmanAdvancedVersion($batman_advanced_version);
+			
+			$this->setOriginatorStatusList();
 		}
 		
 		public function fetch() {
@@ -354,7 +356,8 @@
 		}
 		
 		public function setOriginatorStatusList() {
-			$this->originator_status_list = new OriginatorStatusList($this->getRouterId(), $this->getCrawlCycleId());
+			if($this->getRouterId()!=0 AND $this->getCrawlCycleId() != 0)
+				$this->originator_status_list = new OriginatorStatusList($this->getRouterId(), $this->getCrawlCycleId());
 		}
 		
 		public function getRouterId() {

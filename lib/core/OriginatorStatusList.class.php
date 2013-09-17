@@ -38,14 +38,7 @@
 			
 			try {
 				$stmt = DB::getInstance()->prepare("SELECT  crawl_batman_advanced_originators.id as status_id,
-															crawl_batman_advanced_originators.router_id,
-															crawl_batman_advanced_originators.crawl_cycle_id,
-															crawl_batman_advanced_originators.originator,
-															crawl_batman_advanced_originators.link_quality,
-															crawl_batman_advanced_originators.nexthop,
-															crawl_batman_advanced_originators.outgoing_interface,
-															crawl_batman_advanced_originators.last_seen,
-															crawl_batman_advanced_originators.crawl_date
+															crawl_batman_advanced_originators.*
 													FROM crawl_batman_advanced_originators
 													WHERE
 														(crawl_batman_advanced_originators.router_id = :router_id OR :router_id=0) AND

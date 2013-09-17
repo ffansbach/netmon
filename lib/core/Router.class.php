@@ -81,8 +81,8 @@
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
 				$this->setNetworkinterfacelist();
-				$this->setStatusdata();
 				$this->setStatusdataHistory();
+				$this->setStatusdata($this->getStatusdataHistory()->getRouterStatuslist()[0]);
 				$this->setChipset();
 				return true;
 			}
@@ -141,7 +141,7 @@
 		}
 		
 		public function setStatusdata($routerstatus=false) {
-			if($routerstatus!=false) {
+			if($routerstatus instanceof RouterStatus) {
 				$this->statusdata = $routerstatus;
 			} else {
 				$router_status = new RouterStatus(false, false, $this->router_id);
