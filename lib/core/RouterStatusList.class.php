@@ -43,7 +43,7 @@
 														case :sort_by
 															when 'crawl_date' then crawl_routers.crawl_date
 															when 'status_id' then crawl_routers.id
-															else crawl_routers.id
+															else NULL
 														end
 													".$this->getOrder()."
 													LIMIT :offset, :limit");

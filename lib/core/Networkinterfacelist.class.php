@@ -64,7 +64,7 @@
 													ORDER BY
 														case :sort_by
 															when 'name' then interfaces.name
-																else interfaces.id
+																else NULL
 														end
 													".$this->getOrder()."
 													LIMIT :offset, :limit");
@@ -83,15 +83,24 @@
 				$networkinterface = new Networkinterface((int)$networkinterface['networkinterface_id'], (int)$networkinterface['networkinterface_router_id'],
 														 $networkinterface['networkinterface_name'],
 														 $networkinterface['networkinterface_create_date'], $networkinterface['networkinterface_update_date'],
-														 new NetworkinterfaceStatus($networkinterface['crawl_interfaces_id'], $networkinterface['crawl_interfaces_router_id'],
-																					$networkinterface['crawl_interfaces_crawl_cycle_id'], $networkinterface['crawl_interfaces_interface_id'], 
-																					$networkinterface['crawl_interfaces_crawl_date'], $networkinterface['crawl_interfaces_name'],
-																					$networkinterface['crawl_interfaces_mac_addr'], $networkinterface['crawl_interfaces_traffic_rx'], 
-																					$networkinterface['crawl_interfaces_traffic_rx_avg'], $networkinterface['crawl_interfaces_traffic_tx'],
-																					$networkinterface['crawl_interfaces_traffic_tx_avg'], $networkinterface['crawl_interfaces_wlan_mode'], 
-																					$networkinterface['crawl_interfaces_wlan_frequency'], $networkinterface['crawl_interfaces_wlan_essid'],
-																					$networkinterface['crawl_interfaces_wlan_bssid'], $networkinterface['crawl_interfaces_wlan_tx_power'], 
-																					$networkinterface['crawl_interfaces_mtu'])
+														 new NetworkinterfaceStatus((int)$networkinterface['crawl_interfaces_id'],
+																					(int)$networkinterface['crawl_interfaces_crawl_cycle_id'],
+																					(int)$networkinterface['crawl_interfaces_interface_id'],
+																					(int)$networkinterface['crawl_interfaces_router_id'],
+																					$networkinterface['crawl_interfaces_name'],
+																					$networkinterface['crawl_interfaces_mac_addr'],
+																					(int)$networkinterface['crawl_interfaces_mtu'],
+																					(int)$networkinterface['crawl_interfaces_traffic_rx'], 
+																					(int)$networkinterface['crawl_interfaces_traffic_rx_avg'],
+																					(int)$networkinterface['crawl_interfaces_traffic_tx'],
+																					(int)$networkinterface['crawl_interfaces_traffic_tx_avg'],
+																					$networkinterface['crawl_interfaces_wlan_mode'], 
+																					$networkinterface['crawl_interfaces_wlan_frequency'],
+																					$networkinterface['crawl_interfaces_wlan_essid'],
+																					$networkinterface['crawl_interfaces_wlan_bssid'],
+																					(int)$networkinterface['crawl_interfaces_wlan_tx_power'],
+																					$networkinterface['crawl_interfaces_crawl_date']
+																					)
 														 );
 				$this->networkinterfacelist[] = $networkinterface;
 			}

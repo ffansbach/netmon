@@ -44,7 +44,7 @@
 													ORDER BY
 														case :sort_by
 															when 'create_date' then services.create_date
-															else services.id
+															else NULL
 														end
 													".$this->getOrder()."
 													LIMIT :offset, :limit");

@@ -21,7 +21,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then user_remember_mes.create_date
-																else user_remember_mes.id
+																else NULL
 															end
 														".$this->getOrder());
 					$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -39,7 +39,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then user_remember_mes.create_date
-																else user_remember_mes.id
+																else NULL
 															end
 														".$this->getOrder());
 					$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);

@@ -46,7 +46,7 @@
 													ORDER BY
 														case :sort_by
 															when 'originator' then crawl_batman_advanced_originators.originator
-															else crawl_batman_advanced_originators.id
+															else NULL
 														end
 													".$this->getOrder()."
 													LIMIT :offset, :limit");

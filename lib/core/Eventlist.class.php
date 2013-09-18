@@ -51,7 +51,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then events.create_date
-																else events.id
+																else NULL
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");
@@ -88,7 +88,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then events.create_date
-																else events.id
+																else NULL
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");
@@ -127,7 +127,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then events.create_date
-																else events.id
+																else NULL
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");
@@ -165,7 +165,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then events.create_date
-																else events.id
+																else NULL
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");
@@ -201,7 +201,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then events.create_date
-																else events.id
+																else NULL
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");

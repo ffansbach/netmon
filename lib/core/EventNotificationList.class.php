@@ -40,7 +40,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then event_notifications.create_date
-																else event_notifications.id
+																else NULL
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");
@@ -76,7 +76,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then event_notifications.create_date
-																else event_notifications.id
+																else NULL
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");

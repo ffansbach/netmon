@@ -39,7 +39,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then dns_zones.create_date
-																else dns_zones.id
+																else NULL
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");
@@ -75,7 +75,7 @@
 														ORDER BY
 															case :sort_by
 																when 'create_date' then dns_zones.create_date
-																else dns_zones.id
+																else NULL
 															end
 														".$this->getOrder()."
 														LIMIT :offset, :limit");

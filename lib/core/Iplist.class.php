@@ -47,7 +47,7 @@
 															when 'create_date' then ips.create_date
 															when 'ip_id' then ips.id
 															when 'ip' then ips.ip
-															else ips.id
+															else NULL
 														end
 													".$this->getOrder()."
 													LIMIT :offset, :limit");

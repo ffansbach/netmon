@@ -46,7 +46,7 @@
 													ORDER BY
 														case :sort_by
 															when 'create_date' then dns_ressource_records.create_date
-															else dns_ressource_records.id
+															else NULL
 														end
 													".$this->getOrder()."
 													LIMIT :offset, :limit");

@@ -59,6 +59,8 @@ class Menus extends Permission {
 		$submenu = array();
 		$subsubmenu = array();
 		$submenu[] = array('name'=>'Karte', 'href'=>'map.php');
+		$subsubmenu[] = array('name'=>'FFMAP-D3', 'href'=>'ffmap-d3/nodes.html');
+		$subsubmenu[] = array('name'=>'Tinc-Topologie', 'href'=>'http://dev.freifunk-ol.de/topo/batvpn.png');
 		$submenu[] = $subsubmenu;
 		$menu[] = $submenu;
 		
