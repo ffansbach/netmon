@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 08, 2013 at 09:27 PM
+-- Generation Time: Sep 18, 2013 at 02:18 AM
 -- Server version: 5.5.32-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.19-1~dotdeb.1
 
@@ -19,8 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `freifunksql5`
 --
--- CREATE DATABASE IF NOT EXISTS `freifunksql5` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
--- USE `freifunksql5`;
+--CREATE DATABASE IF NOT EXISTS `freifunksql5` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+--USE `freifunksql5`;
 
 -- --------------------------------------------------------
 
@@ -37,8 +37,9 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
   `hardware_name` varchar(200) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `hardware_name` (`hardware_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+  KEY `hardware_name` (`hardware_name`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -54,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `config` (
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -72,8 +73,10 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
   PRIMARY KEY (`id`),
   KEY `crawl_batman_advanced_interfaces_id` (`id`),
   KEY `router_id` (`router_id`),
-  KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+  KEY `crawl_cycle_id` (`crawl_cycle_id`),
+  KEY `router_id_2` (`router_id`),
+  KEY `crawl_cycle_id_2` (`crawl_cycle_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -94,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
   PRIMARY KEY (`id`),
   KEY `router_id` (`router_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -107,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `crawl_cycle` (
   `crawl_date` datetime NOT NULL,
   `crawl_date_end` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -139,8 +142,11 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   PRIMARY KEY (`id`),
   KEY `crawl_interfaces_id` (`id`),
   KEY `router_id` (`router_id`),
-  KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+  KEY `crawl_cycle_id` (`crawl_cycle_id`),
+  KEY `router_id_2` (`router_id`),
+  KEY `crawl_cycle_id_2` (`crawl_cycle_id`),
+  KEY `interface_id` (`interface_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -156,8 +162,10 @@ CREATE TABLE IF NOT EXISTS `crawl_ips` (
   `ping_avg` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip_id` (`ip_id`),
-  KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+  KEY `crawl_cycle_id` (`crawl_cycle_id`),
+  KEY `ip_id_2` (`ip_id`),
+  KEY `crawl_cycle_id_2` (`crawl_cycle_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -177,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `crawl_olsr` (
   `olsrd_topology` text NOT NULL,
   `crawl_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -231,8 +239,10 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   KEY `crawl_routers_id` (`id`),
   KEY `router_id` (`router_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`),
-  KEY `status` (`status`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+  KEY `status` (`status`),
+  KEY `router_id_2` (`router_id`),
+  KEY `crawl_cycle_id_2` (`crawl_cycle_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -250,7 +260,7 @@ CREATE TABLE IF NOT EXISTS `crawl_services` (
   PRIMARY KEY (`id`),
   KEY `service_id` (`service_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -310,7 +320,7 @@ CREATE TABLE IF NOT EXISTS `events` (
   `data` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -347,8 +357,9 @@ CREATE TABLE IF NOT EXISTS `interfaces` (
   `mac_addr` varchar(150) NOT NULL,
   `protected` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `router_id` (`router_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+  KEY `router_id` (`router_id`),
+  KEY `router_id_2` (`router_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -372,8 +383,11 @@ CREATE TABLE IF NOT EXISTS `ips` (
   KEY `ip` (`ip`),
   KEY `router_id` (`router_id`),
   KEY `ipv` (`ipv`),
-  KEY `project_id` (`project_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+  KEY `project_id` (`project_id`),
+  KEY `interface_id` (`interface_id`),
+  KEY `network_id` (`network_id`),
+  KEY `router_id_2` (`router_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -389,7 +403,8 @@ CREATE TABLE IF NOT EXISTS `networks` (
   `ipv` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -438,7 +453,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
   PRIMARY KEY (`id`),
   KEY `is_ipv4` (`is_ipv4`),
   KEY `is_batman_adv` (`is_batman_adv`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -460,9 +475,11 @@ CREATE TABLE IF NOT EXISTS `routers` (
   `location` varchar(250) NOT NULL,
   `latitude` varchar(15) NOT NULL,
   `longitude` varchar(15) NOT NULL,
-  `chipset_id` int(20) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+  `chipset_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `chipset_id` (`chipset_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -478,7 +495,7 @@ CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
   `router_auto_assign_login_string` varchar(50) NOT NULL,
   `interface` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -510,8 +527,9 @@ CREATE TABLE IF NOT EXISTS `services` (
   `visible` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -541,7 +559,7 @@ CREATE TABLE IF NOT EXISTS `service_ips` (
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -574,7 +592,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `update_date` datetime NOT NULL,
   `activated` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -589,7 +607,8 @@ CREATE TABLE IF NOT EXISTS `user_remember_mes` (
   `session_id` varchar(100) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -608,6 +627,76 @@ CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `crawl_batman_advanced_interfaces`
+--
+ALTER TABLE `crawl_batman_advanced_interfaces`
+  ADD CONSTRAINT `crawl_batman_advanced_interfaces_ibfk_2` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `crawl_batman_advanced_interfaces_ibfk_1` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `crawl_batman_advanced_originators`
+--
+ALTER TABLE `crawl_batman_advanced_originators`
+  ADD CONSTRAINT `crawl_batman_advanced_originators_ibfk_1` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `crawl_batman_advanced_originators_ibfk_2` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `crawl_interfaces`
+--
+ALTER TABLE `crawl_interfaces`
+  ADD CONSTRAINT `crawl_interfaces_ibfk_3` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `crawl_interfaces_ibfk_1` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `crawl_interfaces_ibfk_2` FOREIGN KEY (`interface_id`) REFERENCES `interfaces` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `crawl_ips`
+--
+ALTER TABLE `crawl_ips`
+  ADD CONSTRAINT `crawl_ips_ibfk_1` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `crawl_routers`
+--
+ALTER TABLE `crawl_routers`
+  ADD CONSTRAINT `crawl_routers_ibfk_2` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `crawl_routers_ibfk_1` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `interfaces`
+--
+ALTER TABLE `interfaces`
+  ADD CONSTRAINT `interfaces_ibfk_1` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `ips`
+--
+ALTER TABLE `ips`
+  ADD CONSTRAINT `ips_ibfk_2` FOREIGN KEY (`interface_id`) REFERENCES `interfaces` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ips_ibfk_1` FOREIGN KEY (`network_id`) REFERENCES `networks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `routers`
+--
+ALTER TABLE `routers`
+  ADD CONSTRAINT `routers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `services`
+--
+ALTER TABLE `services`
+  ADD CONSTRAINT `services_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_remember_mes`
+--
+ALTER TABLE `user_remember_mes`
+  ADD CONSTRAINT `user_remember_mes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
