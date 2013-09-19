@@ -14,93 +14,94 @@
 				);
 	$links = array();
 	$node_originators = array();
-	//$node_originators_fail = array();
-	$total_count = 50;
+
 	$doc = new DOMDocument();
 	
-	//fetch all routers from netmons api in steps of 50 routers per loop
-	for($i=0; $i<$total_count; $i+=50) {
-		//fetch the next 50 the routers
-		$doc->load("http://netmon.freifunk-ol.de/api/rest/routerlist?offset=$i&limit=50");
-		$xpath = new DOMXPath($doc);
+	//fetch all routers from netmons api
+	$doc->load("http://netmon.freifunk-ol.de/api/rest/routerlist?offset=0&limit=-1&status=online");
+	$xpath = new DOMXPath($doc);
+	
+	//get all nodes of type router from the xml and loop through them
+	$routers = $xpath->query('/netmon_response/routerlist/router');
+	foreach($routers as $router) {
+		//parse node values of the nodes inside the router node
+		$node_flags = array(
+					'client' => false,
+					'gateway' => false,
+					'online' => (($xpath->evaluate('string(./statusdata/status/text())', $router)=='online') ? true : false));
+		$node_geo = array((float)$xpath->evaluate('string(./latitude/text())', $router),
+						  (float)$xpath->evaluate('string(./longitude/text())', $router)
+						 );
 		
-		//fetch the total number of routers in the complete list
-		//we need to loop through the list in steps of 50 till we reach this number
-		$total_count = $xpath->evaluate('number(/netmon_response/routerlist/@total_count)');
+		$node_id = $xpath->evaluate('string(./router_id/text())', $router);
 		
-		//get all nodes of type router from the xml and loop through them
-		$routers = $xpath->query('/netmon_response/routerlist/router');
-		foreach($routers as $router) {
-			//parse node values of the nodes inside the router node
-			$node_flags = array(
-						'client' => false,
-						'gateway' => false,
-						'online' => (($xpath->evaluate('string(./statusdata/status/text())', $router)=='online') ? true : false));
-			$node_geo = array(
-						(float)$xpath->evaluate('string(./latitude/text())', $router),
-						(float)$xpath->evaluate('string(./longitude/text())', $router));
-			
-			//get mac addresses
-			$mac_addresses = $xpath->query('./networkinterfacelist/networkinterface/statusdata/mac_addr', $router);
-			$node_macs = "";
-			$prefix = "";
-			foreach($mac_addresses as $mac_addr) {
-				$mac_addr = $xpath->evaluate('string(./text())', $mac_addr);
-				if(!empty($mac_addr)) {
-					$node_macs .= $prefix.$mac_addr;
-					$prefix = ", ";
-				}
+		//get mac addresses
+		$doc_networkinterfaces = new DOMDocument();
+		$doc_networkinterfaces->load("http://netmon.freifunk-ol.de/api/rest/router/".$node_id."/networkinterfacelist?offset=0&limit=-1");
+		$xpath_interfaces = new DOMXPath($doc_networkinterfaces);
+		
+		$mac_addresses = $xpath_interfaces->query('/netmon_response/networkinterfacelist/networkinterface/statusdata/mac_addr');
+		$node_macs = "";
+		$prefix = "";
+		foreach($mac_addresses as $mac_addr) {
+			$mac_addr = $xpath_interfaces->evaluate('string(./text())', $mac_addr);
+			if(!empty($mac_addr)) {
+				$node_macs .= $prefix.$mac_addr;
+				$prefix = ", ";
 			}
+		}
+		
+		$node = array(
+					'flags' => $node_flags,
+					'geo' => $node_geo,
+					'macs' => $node_macs,
+					'name' => $xpath->evaluate('string(./hostname/text())', $router),
+					'id' => $node_id);
+		$node_index = array_push($nodes, $node)-1;
+		
+		//get clients
+		$client_count = (int)$xpath->evaluate('number(./statusdata/client_count/text())', $router);
+		for($j=0; $j<$client_count; $j++) {
+			$client_flags = array(
+							'client' => true,
+							'gateway' => false,
+							'online' => true);
+			$client = array(
+						'flags' => $client_flags,
+						'geo' => null,
+						'macs' => "",
+						'name' => "",
+						'id' => $node['id']."_client_".$j);
+			$client_index = array_push($nodes, $client)-1;
 			
-			$node = array(
-						'flags' => $node_flags,
-						'geo' => $node_geo,
-						'macs' => $node_macs,
-						'name' => $xpath->evaluate('string(./hostname/text())', $router),
-						'id' => $xpath->evaluate('string(./router_id/text())', $router));
-			$node_index = array_push($nodes, $node)-1;
+			$client_link = array(
+							'id' => $node['id']."-".$client['id'],
+							'source' => $client_index,
+							'quality' => 'TT',
+							'target' => $node_index,
+							'type' => 'client');
+			$links[] = $client_link;
+		}
+		
+		//get originators
+		$doc_originators = new DOMDocument();
+		$doc_originators->load("http://netmon.freifunk-ol.de/api/rest/router/".$node_id."/originator_status_list?offset=0&limit=-1");
+		$xpath_originators = new DOMXPath($doc_originators);
+		$originator_status_list = $xpath_originators->query('/netmon_response/originator_status_list/originator_status');
+		foreach($originator_status_list as $originator) {
+			$outgoing_interface = trim($xpath_originators->evaluate('string(./outgoing_interface/text())', $originator));
+			$link_quality = trim($xpath_originators->evaluate('string(./link_quality/text())', $originator));
+			$nexthop = trim($xpath_originators->evaluate('string(./nexthop/text())', $originator));
+			$originator = trim($xpath_originators->evaluate('string(./originator/text())', $originator));
 			
-			//get clients
-			$client_count = (int)$xpath->evaluate('number(./statusdata/client_count/text())', $router);
-			for($j=0; $j<$client_count; $j++) {
-				$client_flags = array(
-								'client' => true,
-								'gateway' => false,
-								'online' => true);
-				$client = array(
-							'flags' => $client_flags,
-							'geo' => null,
-							'macs' => "",
-							'name' => "",
-							'id' => $node['id']."_client_".$j);
-				$client_index = array_push($nodes, $client)-1;
-				
-				$client_link = array(
-								'id' => $node['id']."-".$client['id'],
-								'source' => $client_index,
-								'quality' => 'TT',
-								'target' => $node_index,
-								'type' => 'client');
-				$links[] = $client_link;
-			}
-			
-			//get originators
-			$originators = $xpath->query('./statusdata/originators/originator', $router);
-			foreach($originators as $originator) {
-				$outgoing_interface = trim($xpath->evaluate('string(./outgoing_interface/text())', $originator));
-				$link_quality = trim($xpath->evaluate('string(./link_quality/text())', $originator));
-				$nexthop = trim($xpath->evaluate('string(./nexthop/text())', $originator));
-				$originator = trim($xpath->evaluate('string(./originator/text())', $originator));
-				
-				//put all direct neighbours into tmp originator array
-				if($originator==$nexthop) {
-					$node_originators[] = array(
-											'node_id' => $node['id'],
-											'node_index' => $node_index,
-											'originator' => $originator,
-											'quality' => $link_quality,
-											'outgoing_interface' => $outgoing_interface);
-				}
+			//put all direct neighbours into tmp originator array
+			if($originator==$nexthop) {
+				$node_originators[] = array(
+										'node_id' => $node['id'],
+										'node_index' => $node_index,
+										'originator' => $originator,
+										'quality' => $link_quality,
+										'outgoing_interface' => $outgoing_interface);
 			}
 		}
 	}
@@ -130,5 +131,6 @@
 	
 //	print_r($mydocument);
 	//encode the array to json and output
+//	echo "<pre>";
 	echo json_encode($mydocument, JSON_PRETTY_PRINT);
 ?>

@@ -32,7 +32,6 @@
 		private $nodewatcher_version = "";
 		private $fastd_version = "";
 		private $batman_advanced_version = "";
-		private $originator_status_list = null;
 		public $available_statusses = array("online", "offline", "unknown");
 		
 		public function __construct($status_id=false, $crawl_cycle_id=false, $router_id=false,
@@ -72,8 +71,6 @@
 			$this->setNodewatcherVersion($nodewatcher_version);
 			$this->setFastdVersion($fastd_version);
 			$this->setBatmanAdvancedVersion($batman_advanced_version);
-			
-			$this->setOriginatorStatusList();
 		}
 		
 		public function fetch() {
@@ -85,61 +82,13 @@
 														(id = :status_id OR :status_id=0) AND
 														(crawl_cycle_id = :crawl_cycle_id OR :crawl_cycle_id=0) AND
 														(router_id = :router_id OR :router_id=0) AND
-														(status = :status OR :status='') AND
 														(crawl_date = FROM_UNIXTIME(:create_date) OR :create_date=0) AND
-														(hostname = :hostname OR :hostname='') AND
-														(client_count = :client_count OR :client_count=0) AND
-														(chipset = :chipset OR :chipset='') AND
-														(cpu = :cpu OR :cpu='') AND
-														(memory_total = :memory_total OR :memory_total=0) AND
-														(memory_buffering = :memory_buffering OR :memory_buffering=0) AND
-														(memory_caching = :memory_caching OR :memory_caching=0) AND
-														(memory_free = :memory_free OR :memory_free=0) AND
-														(loadavg = :loadavg OR :loadavg='') AND
-														(processes = :processes OR :processes='') AND
-														(uptime = :uptime OR :uptime='') AND
-														(idletime = :idletime OR :idletime='') AND
-														(local_time = :local_time OR :local_time='') AND
-														(distname = :distname OR :distname='') AND
-														(distversion = :distversion OR :distversion='') AND
-														(openwrt_core_revision = :openwrt_core_revision OR :openwrt_core_revision='') AND
-														(openwrt_feeds_packages_revision = :openwrt_feeds_packages_revision OR :openwrt_feeds_packages_revision='') AND
-														(firmware_version = :firmware_version OR :firmware_version='') AND
-														(firmware_revision = :firmware_revision OR :firmware_revision='') AND
-														(kernel_version = :kernel_version OR :kernel_version='') AND
-														(configurator_version = :configurator_version OR :configurator_version='') AND
-														(nodewatcher_version = :nodewatcher_version OR :nodewatcher_version='') AND
-														(fastd_version = :fastd_version OR :fastd_version='') AND
-														(batman_advanced_version = :batman_advanced_version OR :batman_advanced_version='')");
+														(hostname = :hostname OR :hostname='')");
 				$stmt->bindParam(':status_id', $this->getStatusId(), PDO::PARAM_INT);
 				$stmt->bindParam(':crawl_cycle_id', $this->getCrawlCycleId(), PDO::PARAM_INT);
 				$stmt->bindParam(':router_id', $this->getRouterId(), PDO::PARAM_INT);
-				$stmt->bindParam(':status', $this->getStatus(), PDO::PARAM_STR);
 				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
 				$stmt->bindParam(':hostname', $this->getHostname(), PDO::PARAM_STR);
-				$stmt->bindParam(':client_count', $this->getClientCount(), PDO::PARAM_INT);
-				$stmt->bindParam(':chipset', $this->getChipset(), PDO::PARAM_STR);
-				$stmt->bindParam(':cpu', $this->getCpu(), PDO::PARAM_STR);
-				$stmt->bindParam(':memory_total', $this->getMemoryTotal(), PDO::PARAM_INT);
-				$stmt->bindParam(':memory_buffering', $this->getMemoryBuffering(), PDO::PARAM_INT);
-				$stmt->bindParam(':memory_caching', $this->getMemoryCaching(), PDO::PARAM_INT);
-				$stmt->bindParam(':memory_free', $this->getMemoryFree(), PDO::PARAM_INT);
-				$stmt->bindParam(':loadavg', $this->getLoadavg(), PDO::PARAM_STR);
-				$stmt->bindParam(':processes', $this->getProcesses(), PDO::PARAM_STR);
-				$stmt->bindParam(':uptime', $this->getUptime(), PDO::PARAM_STR);
-				$stmt->bindParam(':idletime', $this->getIdletime(), PDO::PARAM_STR);
-				$stmt->bindParam(':local_time', $this->getLocaltime(), PDO::PARAM_STR);
-				$stmt->bindParam(':distname', $this->getDistname(), PDO::PARAM_STR);
-				$stmt->bindParam(':distversion', $this->getDistversion(), PDO::PARAM_STR);
-				$stmt->bindParam(':openwrt_core_revision', $this->getOpenwrtCoreRevision(), PDO::PARAM_STR);
-				$stmt->bindParam(':openwrt_feeds_packages_revision', $this->getOpenwrtFeedsPackagesRevision(), PDO::PARAM_STR);
-				$stmt->bindParam(':firmware_version', $this->getFirmwareVersion(), PDO::PARAM_STR);
-				$stmt->bindParam(':firmware_revision', $this->getFirmwareRevision(), PDO::PARAM_STR);
-				$stmt->bindParam(':kernel_version', $this->getFastdVersion(), PDO::PARAM_STR);
-				$stmt->bindParam(':configurator_version', $this->getConfiguratorVersion(), PDO::PARAM_STR);
-				$stmt->bindParam(':nodewatcher_version', $this->getNodewatcherVersion(), PDO::PARAM_STR);
-				$stmt->bindParam(':fastd_version', $this->getFastdVersion(), PDO::PARAM_STR);
-				$stmt->bindParam(':batman_advanced_version', $this->getBatmanAdvancedVersion(), PDO::PARAM_STR);
 				$stmt->execute();
 				$result = $stmt->fetch(PDO::FETCH_ASSOC);
 			} catch(PDOException $e) {
@@ -177,7 +126,6 @@
 				$this->setNodewatcherVersion($result['nodewatcher_version']);
 				$this->setFastdVersion($result['fastd_version']);
 				$this->setBatmanAdvancedVersion($result['batman_advanced_version']);
-				$this->setOriginatorStatusList();
 				return true;
 			}
 			
@@ -355,11 +303,6 @@
 				$this->batman_advanced_version = trim($batman_advanced_version);
 		}
 		
-		public function setOriginatorStatusList() {
-			if($this->getRouterId()!=0 AND $this->getCrawlCycleId() != 0)
-				$this->originator_status_list = new OriginatorStatusList($this->getRouterId(), $this->getCrawlCycleId());
-		}
-		
 		public function getRouterId() {
 			return $this->router_id;
 		}
@@ -464,10 +407,6 @@
 			return $this->batman_advanced_version;
 		}
 		
-		public function getOriginatorStatusList() {
-			return  $this->originator_status_list;
-		}
-		
 		public function compare($router_status) {
 			if($router_status INSTANCEOF RouterStatus) {
 				$eventlist = new Eventlist();
@@ -539,8 +478,6 @@
 			$domxmlelement->appendChild($domdocument->createElement("nodewatcher_version", $this->getNodewatcherVersion()));
 			$domxmlelement->appendChild($domdocument->createElement("fastd_version", $this->getFastdVersion()));
 			$domxmlelement->appendChild($domdocument->createElement("batman_advanced_version", $this->getBatmanAdvancedVersion()));
-			$domxmlelement->appendChild($this->getOriginatorStatusList()->getDomXMLElement($domdocument));
-			
 			return $domxmlelement;
 		}
 	

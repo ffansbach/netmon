@@ -63,42 +63,18 @@
 														(password = :password OR :password='') AND
 														(openid = :openid OR :openid='') AND
 														(api_key = :api_key OR :api_key='') AND
-														(vorname = :firstname OR :firstname='') AND
-														(nachname = :lastname OR :lastname='') AND
-														(strasse = :street OR :street='') AND
-														(plz = :zipcode OR :zipcode=0) AND
-														(ort = :city OR :city='') AND
-														(telefon = :phonenumber OR :phonenumber='') AND
 														(email = :email OR :email='') AND
 														(jabber = :jabber OR :jabber='') AND
-														(website = :website OR :website='') AND
-														(about = :description OR :description='') AND
-														(notification_method = :notification_method OR :notification_method='') AND
-														(permission = :permission OR :permission=0) AND
-														(activated = :activated OR :activated=0) AND
-														(create_date = FROM_UNIXTIME(:create_date) OR :create_date=0) AND
-														(update_date = FROM_UNIXTIME(:update_date) OR :update_date=0)");
+														(activated = :activated OR :activated=0)");
 				$stmt->bindParam(':user_id', $this->getUserId(), PDO::PARAM_INT);
 				$stmt->bindParam(':session_id', $this->getSessionId(), PDO::PARAM_STR);
 				$stmt->bindParam(':nickname', $this->getNickname(), PDO::PARAM_STR);
 				$stmt->bindParam(':password', $this->getPassword(), PDO::PARAM_STR);
 				$stmt->bindParam(':openid', $this->getOpenId(), PDO::PARAM_STR);
 				$stmt->bindParam(':api_key', $this->getApiKey(), PDO::PARAM_STR);
-				$stmt->bindParam(':firstname', $this->getFirstName(), PDO::PARAM_STR);
-				$stmt->bindParam(':lastname', $this->getLastName(), PDO::PARAM_STR);
-				$stmt->bindParam(':street', $this->getStreet(), PDO::PARAM_STR);
-				$stmt->bindParam(':zipcode', $this->getZipcode(), PDO::PARAM_INT);
-				$stmt->bindParam(':city', $this->getCity(), PDO::PARAM_STR);
-				$stmt->bindParam(':phonenumber', $this->getPhonenumer(), PDO::PARAM_STR);
 				$stmt->bindParam(':email', $this->getEmail(), PDO::PARAM_STR);
 				$stmt->bindParam(':jabber', $this->getJabber(), PDO::PARAM_STR);
-				$stmt->bindParam(':website', $this->getWebsite(), PDO::PARAM_STR);
-				$stmt->bindParam(':description', $this->getDescription(), PDO::PARAM_STR);
-				$stmt->bindParam(':notification_method', $this->getNotificationMethod(), PDO::PARAM_STR);
-				$stmt->bindParam(':permission', $this->getPermission(), PDO::PARAM_INT);
 				$stmt->bindParam(':activated', $this->getActivated(), PDO::PARAM_INT);
-				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
-				$stmt->bindParam(':update_date', $this->getUpdateDate(), PDO::PARAM_INT);
 				$stmt->execute();
 				$result = $stmt->fetch(PDO::FETCH_ASSOC);
 			} catch(PDOException $e) {
@@ -135,104 +111,155 @@
 		}
 		
 		public function setUserId($user_id) {
-			if(is_int($user_id))
+			if(is_int($user_id)) {
 				$this->user_id = $user_id;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setSessionId($session_id) {
-			if(is_string($session_id))
+			if(is_string($session_id)) {
 				$this->session_id = $session_id;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setNickname($nickname) {
-			if(!preg_match('/^([a-zA-Z0-9])+$/i', $nickname)) {
-				return false;
-			} else {
+			if(preg_match('/^([a-zA-Z0-9])+$/i', $nickname)) {
 				$this->nickname = $nickname;
+				return true;
 			}
+			return false;
 		}
 		
 		public function setPassword($password) {
-			if($password!=false)
+			if(is_string($password))  {
 				$this->password = $password;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setOpenId($openid) {
-			if(is_string($openid))
+			if(is_string($openid)) { //TODO: check if openid is valid format
 				$this->openid = $openid;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setApiKey($api_key) {
-			if($api_key!=false)
+			if(is_string($api_key)) {
 				$this->api_key = $api_key;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setFirstName($firstname) {
-			if(is_string($firstname))
+			if(is_string($firstname)) {
 				$this->firstname = $firstname;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setLastName($lastname) {
-			if(is_string($lastname))
+			if(is_string($lastname)) {
 				$this->lastname = $lastname;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setStreet($street) {
-			if(is_string($street))
+			if(is_string($street)) {
 				$this->street = $street;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setZipcode($zipcode) {
-			if(is_int($zipcode))
+			if(is_int($zipcode)) {
 				$this->zipcode = $zipcode;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setCity($city) {
-			if(is_string($city))
+			if(is_string($city)) {
 				$this->city = $city;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setPhonenumer($phonenumber) {
-			if($phonenumber!=false)
+			if(is_string($phonenumber) OR is_int($phonenumber)) {
 				$this->phonenumber = $phonenumber;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setEmail($email) {
-			if($email!=false)
+			if(is_string($email)) { //TODO: check if email is in valid format
 				$this->email = $email;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setJabber($jabber) {
-			if($jabber!=false)
+			if(is_string($jabber)) { //TODO: check if jabber id is in valid format
 				$this->jabber = $jabber;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setWebsite($website) {
-			if(is_string($website)) {
+			if(is_string($website)) { //TODO: check if website is in valid format
 				$this->website = $website;
+				return true;
 			}
+			return false;
 		}
 		
 		public function setDescription($description) {
-			if($description!=false)
+			if(is_string($description)) {
 				$this->description = $description;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setNotificationMethod($notification_method) {
-			if($notification_method!=false)
+			if($notification_method=="email" OR $notification_method=="jabber") {
 				$this->notification_method = $notification_method;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setPermission($permission) {
 			if(is_int($permission)) {
 				$this->permission = $permission;
+				return true;
 			}
+			return false;
 		}
 		
 		public function setActivated($activated) {
 			if(is_int($activated)) {
 				$this->activated = $activated;
+				return true;
 			}
+			return false;
 		}
 		
 		public function getUserId() {
@@ -310,6 +337,32 @@
 		
 		public function getActivated() {
 			return $this->activated;
+		}
+		
+		public function getDomXMLElement($domdocument) {
+			$domxmlelement = $domdocument->createElement('user');
+			$domxmlelement->appendChild($domdocument->createElement("user_id", $this->getUserId()));
+//private?			$domxmlelement->appendChild($domdocument->createElement("session_id", $this->getSessionId()));
+			$domxmlelement->appendChild($domdocument->createElement("nickname", $this->getNickname()));
+//private?			$domxmlelement->appendChild($domdocument->createElement("password", $this->getPassword()));
+			$domxmlelement->appendChild($domdocument->createElement("openid", $this->getOpenId()));
+//private?			$domxmlelement->appendChild($domdocument->createElement("api_key", $this->getApiKey()));
+			$domxmlelement->appendChild($domdocument->createElement("firstname", $this->getFirstName()));
+			$domxmlelement->appendChild($domdocument->createElement("lastname", $this->getLastName()));
+			$domxmlelement->appendChild($domdocument->createElement("street", $this->getStreet()));
+			$domxmlelement->appendChild($domdocument->createElement("zipcode", $this->getZipcode()));
+			$domxmlelement->appendChild($domdocument->createElement("city", $this->getCity()));
+			$domxmlelement->appendChild($domdocument->createElement("phonenumber", $this->getPhonenumer()));
+			$domxmlelement->appendChild($domdocument->createElement("email", $this->getEmail()));
+			$domxmlelement->appendChild($domdocument->createElement("jabber", $this->getJabber()));
+			$domxmlelement->appendChild($domdocument->createElement("website", $this->getWebsite()));
+			$domxmlelement->appendChild($domdocument->createElement("description", $this->getDescription()));
+			$domxmlelement->appendChild($domdocument->createElement("notification_method", $this->getNotificationMethod()));
+			$domxmlelement->appendChild($domdocument->createElement("permission", $this->getPermission()));
+			$domxmlelement->appendChild($domdocument->createElement("activated", $this->getActivated()));
+			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
+			$domxmlelement->appendChild($domdocument->createElement("update_date", $this->getUpdateDate()));
+			return $domxmlelement;
 		}
 	}
 ?>

@@ -116,7 +116,14 @@
 		}
 		
 		public function getDomXMLElement($domdocument) {
-			return false; //TODO
+			$domxmlelement = $domdocument->createElement('chipset');
+			$domxmlelement->appendChild($domdocument->createElement("chipset_id", $this->getChipsetId()));
+			$domxmlelement->appendChild($domdocument->createElement("user_id", $this->getUserId()));
+			$domxmlelement->appendChild($domdocument->createElement("name", $this->getName()));
+			$domxmlelement->appendChild($domdocument->createElement("hardware_name", $this->getHardwareName()));
+			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
+			$domxmlelement->appendChild($domdocument->createElement("update_date", $this->getUpdateDate()));
+			return $domxmlelement;
 		}
 	}
 ?>

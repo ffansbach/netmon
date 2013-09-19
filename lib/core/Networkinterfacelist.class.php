@@ -1,11 +1,12 @@
 <?php
 	require_once(ROOT_DIR.'/lib/core/ObjectList.class.php');
 	require_once(ROOT_DIR.'/lib/core/Networkinterface.class.php');
-
+	require_once(ROOT_DIR.'/lib/core/crawling.class.php');
+	
 	class Networkinterfacelist extends ObjectList {
 		private $networkinterfacelist = array();
 		
-		public function __construct($router_id=false, $offset=false, $limit=false, $sort_by=false, $order=false) {
+		public function __construct($status_id=false, $router_id=false, $offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
 			if($offset!==false)
 				$this->setOffset((int)$offset);
@@ -35,39 +36,27 @@
 				$this->setLimit($this->getTotalCount());
 			
 			try {
-				$stmt = DB::getInstance()->prepare("SELECT interfaces.id as networkinterface_id,
-													interfaces.router_id as networkinterface_router_id,
-													interfaces.name as networkinterface_name,
-													interfaces.create_date as networkinterface_create_date,
-													interfaces.update_date as networkinterface_update_date,
-													crawl_interfaces.id as crawl_interfaces_id,
-													crawl_interfaces.router_id as crawl_interfaces_router_id,
-													crawl_interfaces.crawl_cycle_id as crawl_interfaces_crawl_cycle_id,
-													crawl_interfaces.interface_id crawl_interfaces_interface_id,
-													crawl_interfaces.crawl_date as crawl_interfaces_crawl_date,
-													crawl_interfaces.name as crawl_interfaces_name,
-													crawl_interfaces.mac_addr as crawl_interfaces_mac_addr,
-													crawl_interfaces.traffic_rx crawl_interfaces_traffic_rx,
-													crawl_interfaces.traffic_rx_avg crawl_interfaces_traffic_rx_avg,
-													crawl_interfaces.traffic_tx crawl_interfaces_traffic_tx,
-													crawl_interfaces.traffic_tx_avg crawl_interfaces_traffic_tx_avg,
-													crawl_interfaces.wlan_mode crawl_interfaces_wlan_mode,
-													crawl_interfaces.wlan_frequency crawl_interfaces_wlan_frequency,
-													crawl_interfaces.wlan_essid crawl_interfaces_wlan_essid,
-													crawl_interfaces.wlan_bssid crawl_interfaces_wlan_bssid,
-													crawl_interfaces.wlan_tx_power crawl_interfaces_wlan_tx_power,
-													crawl_interfaces.mtu crawl_interfaces_mtu
-													FROM interfaces, crawl_interfaces
+				$stmt = DB::getInstance()->prepare("SELECT i.id as i_id, i.router_id as i_router_id, i.name as i_name,
+													i.create_date as i_create_date, i.update_date as i_update_date,
+													ci.id as ci_id, ci.router_id as ci_router_id, ci.crawl_cycle_id as ci_crawl_cycle_id,
+													ci.interface_id ci_interface_id, ci.crawl_date as ci_crawl_date, ci.name as ci_name,
+													ci.mac_addr as ci_mac_addr, ci.traffic_rx ci_traffic_rx, ci.traffic_rx_avg ci_traffic_rx_avg,
+													ci.traffic_tx ci_traffic_tx, ci.traffic_tx_avg ci_traffic_tx_avg, ci.wlan_mode ci_wlan_mode,
+													ci.wlan_frequency ci_wlan_frequency, ci.wlan_essid ci_wlan_essid, ci.wlan_bssid ci_wlan_bssid,
+													ci.wlan_tx_power ci_wlan_tx_power, ci.mtu ci_mtu
+													FROM interfaces i, crawl_interfaces ci
 													WHERE
-														(interfaces.router_id = :router_id OR :router_id=0) AND
-														interfaces.id = crawl_interfaces.interface_id
+														(i.router_id = :router_id OR :router_id=0) AND
+														ci.interface_id = i.id AND
+														ci.crawl_cycle_id = :status_id
 													ORDER BY
 														case :sort_by
-															when 'name' then interfaces.name
-																else NULL
+															when 'name' then i.name
+															else NULL
 														end
 													".$this->getOrder()."
 													LIMIT :offset, :limit");
+				$stmt->bindParam(':status_id', ($status_id) ? $status_id : (int)crawling::getLastEndedCrawlCycle()['id'], PDO::PARAM_INT);
 				$stmt->bindParam(':router_id', $router_id, PDO::PARAM_INT);
 				$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
 				$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
@@ -80,29 +69,27 @@
 			}
 			
 			foreach($result as $networkinterface) {
-				$networkinterface = new Networkinterface((int)$networkinterface['networkinterface_id'], (int)$networkinterface['networkinterface_router_id'],
-														 $networkinterface['networkinterface_name'],
-														 $networkinterface['networkinterface_create_date'], $networkinterface['networkinterface_update_date'],
-														 new NetworkinterfaceStatus((int)$networkinterface['crawl_interfaces_id'],
-																					(int)$networkinterface['crawl_interfaces_crawl_cycle_id'],
-																					(int)$networkinterface['crawl_interfaces_interface_id'],
-																					(int)$networkinterface['crawl_interfaces_router_id'],
-																					$networkinterface['crawl_interfaces_name'],
-																					$networkinterface['crawl_interfaces_mac_addr'],
-																					(int)$networkinterface['crawl_interfaces_mtu'],
-																					(int)$networkinterface['crawl_interfaces_traffic_rx'], 
-																					(int)$networkinterface['crawl_interfaces_traffic_rx_avg'],
-																					(int)$networkinterface['crawl_interfaces_traffic_tx'],
-																					(int)$networkinterface['crawl_interfaces_traffic_tx_avg'],
-																					$networkinterface['crawl_interfaces_wlan_mode'], 
-																					$networkinterface['crawl_interfaces_wlan_frequency'],
-																					$networkinterface['crawl_interfaces_wlan_essid'],
-																					$networkinterface['crawl_interfaces_wlan_bssid'],
-																					(int)$networkinterface['crawl_interfaces_wlan_tx_power'],
-																					$networkinterface['crawl_interfaces_crawl_date']
-																					)
-														 );
-				$this->networkinterfacelist[] = $networkinterface;
+				$new_networkinterface = new Networkinterface((int)$networkinterface['i_id'], (int)$networkinterface['i_router_id'],
+															 $networkinterface['i_name'],
+															 $networkinterface['i_create_date'], $networkinterface['i_update_date']);
+				$new_networkinterface->setStatusdata(new NetworkinterfaceStatus((int)$networkinterface['ci_id'],
+																						(int)$networkinterface['ci_crawl_cycle_id'],
+																						(int)$networkinterface['ci_interface_id'],
+																						(int)$networkinterface['ci_router_id'],
+																						$networkinterface['ci_name'],
+																						$networkinterface['ci_mac_addr'],
+																						(int)$networkinterface['ci_mtu'],
+																						(int)$networkinterface['ci_traffic_rx'], 
+																						(int)$networkinterface['ci_traffic_rx_avg'],
+																						(int)$networkinterface['ci_traffic_tx'],
+																						(int)$networkinterface['ci_traffic_tx_avg'],
+																						$networkinterface['ci_wlan_mode'], 
+																						$networkinterface['ci_wlan_frequency'],
+																						$networkinterface['ci_wlan_essid'],
+																						$networkinterface['ci_wlan_bssid'],
+																						(int)$networkinterface['ci_wlan_tx_power'],
+																						$networkinterface['ci_crawl_date']));
+				$this->networkinterfacelist[] = $new_networkinterface;
 			}
 		}
 		

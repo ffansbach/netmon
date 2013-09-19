@@ -1,7 +1,8 @@
 <?php
 	require_once(ROOT_DIR.'/lib/core/ObjectList.class.php');
 	require_once(ROOT_DIR.'/lib/core/OriginatorStatus.class.php');
-
+	require_once(ROOT_DIR.'/lib/core/crawling.class.php');
+	
 	class OriginatorStatusList extends ObjectList {
 		private $originator_status_list = array();
 		
@@ -24,7 +25,7 @@
 														(crawl_batman_advanced_originators.router_id = :router_id OR :router_id=0) AND
 														(crawl_batman_advanced_originators.crawl_cycle_id = :crawl_cycle_id OR :crawl_cycle_id=0)");
 				$stmt->bindParam(':router_id', $router_id, PDO::PARAM_INT);
-				$stmt->bindParam(':crawl_cycle_id', $crawl_cycle_id, PDO::PARAM_INT);
+				$stmt->bindParam(':crawl_cycle_id', ($crawl_cycle_id) ? $crawl_cycle_id : (int)crawling::getLastEndedCrawlCycle()['id'], PDO::PARAM_INT);
 				$stmt->execute();
 				$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
 			} catch(PDOException $e) {
@@ -45,13 +46,14 @@
 														(crawl_batman_advanced_originators.crawl_cycle_id = :crawl_cycle_id OR :crawl_cycle_id=0)
 													ORDER BY
 														case :sort_by
+															when 'status_id' then crawl_batman_advanced_originators.id
 															when 'originator' then crawl_batman_advanced_originators.originator
 															else NULL
 														end
 													".$this->getOrder()."
 													LIMIT :offset, :limit");
 				$stmt->bindParam(':router_id', $router_id, PDO::PARAM_INT);
-				$stmt->bindParam(':crawl_cycle_id', $crawl_cycle_id, PDO::PARAM_INT);
+				$stmt->bindParam(':crawl_cycle_id', ($crawl_cycle_id) ? $crawl_cycle_id : (int)crawling::getLastEndedCrawlCycle()['id'], PDO::PARAM_INT);
 				$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
 				$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
 				$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
@@ -75,7 +77,7 @@
 		}
 		
 		public function getDomXMLElement($domdocument) {
-			$domxmlelement = $domdocument->createElement('originators');
+			$domxmlelement = $domdocument->createElement('originator_status_list');
 			$domxmlelement->setAttribute("total_count", $this->getTotalCount());
 			$domxmlelement->setAttribute("offset", $this->getOffset());
 			$domxmlelement->setAttribute("limit", $this->getLimit());

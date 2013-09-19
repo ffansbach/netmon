@@ -271,7 +271,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				{foreach $router->getStatusdata()->getOriginatorStatusList()->getOriginatorStatusList() as $originator}
+				{foreach $originator_status_list->getOriginatorStatusList() as $originator}
 					<tr style="{if $originator->getOriginator()== $originator->getNexthop()}font-weight: bold;{/if} background-color: {if $originator->getLinkQuality() >= 0 AND $originator->getLinkQuality() < 105}#ff1e1e{else if $originator->getLinkQuality() >= 105 AND $originator->getLinkQuality() < 130}#ff4949{else if $originator->getLinkQuality() >= 130 AND $originator->getLinkQuality() < 155}#ff6a6a{else if $originator->getLinkQuality() >= 155 AND $originator->getLinkQuality() < 180}#ffac53{else if $originator->getLinkQuality() >= 180 AND $originator->getLinkQuality() < 205}#ffeb79{else if $originator->getLinkQuality() >= 205 AND $originator->getLinkQuality() < 230}#79ff7c{else if $originator->getLinkQuality() >= 230}#04ff0a{/if};">
 						<td><a href="search.php?search_range=mac_addr&search_string={$originators.originator}">{$originator->getOriginator()}</a></td>
 						<td>{$originator->getLastSeen()}</td>
@@ -296,7 +296,7 @@
 			</script> 
 			<div id="batman_adv_link_quality_average_graphic" style="float:left; width: 100%;"></div>
 			
-			{foreach $router->getStatusdata()->getOriginatorStatusList()->getOriginatorStatusList() as $originator}
+			{foreach $originator_status_list->getOriginatorStatusList() as $originator}
 				<script type="text/javascript">
 					fname='./rrdtool/databases/router_{$router->getRouterId()}_batman_adv_link_quality_{$originator->getOriginator()|replace:":":"_"}.rrd';
 					html_graph_id="batman_adv_link_quality_{$originator->getOriginator()|replace:":":"_"}_graphic"
@@ -312,7 +312,7 @@
 			<p>
 				<select name="search_range" onChange="setBatmanAdvLinqQualityPictures(this.options[this.selectedIndex].value)">
 					<option value="average" >Zeige Grafik für Average</option>
-					{foreach $router->getStatusdata()->getOriginatorStatusList()->getOriginatorStatusList() as $originator}
+					{foreach $originator_status_list->getOriginatorStatusList() as $originator}
 						<option value="{$originator->getOriginator()|replace:":":"_"}" >Zeige Grafik für {$originator->getOriginator()}</option>
 					{/foreach}
 				</select>
@@ -321,7 +321,7 @@
 </div>
 
 <h2>Netzwerkinterfaces</h2>
-{foreach item=interface from=$router->getNetworkinterfacelist()->getNetworkinterfacelist() key=schluessel}
+{foreach item=interface from=$networkinterfacelist->getNetworkinterfacelist() key=schluessel}
 	<div style="width:100%; margin-bottom: 3px; background-color: #81b59e;" onclick='$("#{$interface->getName()|replace:".":"_"}").slideToggle("slow");'>
 		<b>{$interface->getName()}</b> (<a href="./interface.php?section=delete&interface_id={$interface->getNetworkinterfaceId()}">entfernen</a>)
 	</div>

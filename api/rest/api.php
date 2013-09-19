@@ -18,7 +18,9 @@
 	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecord.class.php');
 	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecordList.class.php');
 	require_once(ROOT_DIR.'/lib/core/Networklist.class.php');
+	require_once(ROOT_DIR.'/lib/core/OriginatorStatusList.class.php');
 	require_once(ROOT_DIR.'/lib/extern/rest/rest.inc.php');
+	require_once(ROOT_DIR.'/lib/core/crawling.class.php');
 	
 	class API extends Rest {
 		private $domxml = null;
@@ -102,17 +104,14 @@
 		}
 		
 		private function networkinterfacelist() {
-			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
-				$networkinterfacelist = new Networkinterfacelist($this->_request['id'],
-																 $this->_request['offset'], $this->_request['limit'],
-																 $this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $networkinterfacelist->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} elseif($this->get_request_method() == "GET") {
-				$networkinterfacelist = new Networkinterfacelist(false,
-																 $this->_request['offset'], $this->_request['limit'],
-																 $this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $networkinterfacelist->getDomXMLElement($this->domxml);
+			if($this->get_request_method() == "GET") {
+				$this->_request['crawl_cycle_id'] = (isset($this->_request['crawl_cycle_id'])) ? $this->_request['crawl_cycle_id'] : false;
+				$this->_request['router_id'] = (isset($this->_request['router_id'])) ? $this->_request['router_id'] : false;
+				
+				$routerlist = new Networkinterfacelist((int)$this->_request['crawl_cycle_id'], (int)$this->_request['router_id'],
+													   (int)$this->_request['offset'], (int)$this->_request['limit'],
+														$this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $routerlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
 			} else {
 				$this->error_code = 2;
@@ -139,13 +138,20 @@
 		}
 		
 		private function routerlist() {
-			if($this->get_request_method() == "GET" && isset($this->_request['user_id'])) {
-				$routerlist = new Routerlist($this->_request['user_id'], $this->_request['offset'], $this->_request['limit'],
-											 $this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $routerlist->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} elseif($this->get_request_method() == "GET") {
-				$routerlist = new Routerlist(false, $this->_request['offset'], $this->_request['limit'],
+			if($this->get_request_method() == "GET") {
+				$this->_request['crawl_cycle_id'] = (isset($this->_request['crawl_cycle_id'])) ? $this->_request['crawl_cycle_id'] : false;
+				$this->_request['user_id'] = (isset($this->_request['user_id'])) ? $this->_request['user_id'] : false;
+				$this->_request['status'] = (isset($this->_request['status'])) ? $this->_request['status'] : false;
+				$this->_request['hardware_name'] = (isset($this->_request['hardware_name'])) ? $this->_request['hardware_name'] : false;
+				$this->_request['firmware_version'] = (isset($this->_request['firmware_version'])) ? $this->_request['firmware_version'] : false;
+				$this->_request['batman_advanced_version'] = (isset($this->_request['batman_advanced_version'])) ? $this->_request['batman_advanced_version'] : false;
+				$this->_request['kernel_version'] = (isset($this->_request['kernel_version'])) ? $this->_request['kernel_version'] : false;
+				
+				$routerlist = new Routerlist((int)$this->_request['crawl_cycle_id'], (int)$this->_request['user_id'],
+											 $this->_request['status'], $this->_request['hardware_name'],
+											 $this->_request['firmware_version'], $this->_request['batman_advanced_version'],
+											 $this->_request['kernel_version'],
+											 (int)$this->_request['offset'], (int)$this->_request['limit'],
 											 $this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $routerlist->getDomXMLElement($this->domxml);
 				$this->response($this->finishxml($domxmldata), 200);
@@ -169,6 +175,23 @@
 				}
 			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
 				header('Location: http://netmon.freifunk-ol.de/api/rest/routerlist/');
+			}
+		}
+		
+		private function originator_status_list() {
+			if($this->get_request_method() == "GET") {
+				$this->_request['router_id'] = (isset($this->_request['router_id'])) ? $this->_request['router_id'] : false;
+				$this->_request['crawl_cycle_id'] = (isset($this->_request['crawl_cycle_id'])) ? $this->_request['crawl_cycle_id'] : false;
+				
+				$originator_status_list = new OriginatorStatusList((int)$this->_request['router_id'], (int)$this->_request['crawl_cycle_id'],
+													   (int)$this->_request['offset'], (int)$this->_request['limit'],
+														$this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $originator_status_list->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The OriginatorStatusList could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
 			}
 		}
 		

@@ -13,7 +13,7 @@
 									$link_quality=false, $nexthop=false, $outgoing_interface=false, $last_seen=false,
 									$create_date=false) {
 			$this->setStatusId($status_id);
-//			$this->setCrawlCycleId($crawl_cycle_id);
+			$this->setCrawlCycleId($crawl_cycle_id);
 			$this->setRouterId($router_id);
 			$this->setOriginator($originator);
 			$this->setLinkQuality($link_quality);
@@ -125,7 +125,7 @@
 		}
 		
 		public function getDomXMLElement($domdocument) {
-			$domxmlelement = $domdocument->createElement('originator');
+			$domxmlelement = $domdocument->createElement('originator_status');
 			$domxmlelement->appendChild($domdocument->createElement("status_id", $this->getStatusId()));
 			$domxmlelement->appendChild($domdocument->createElement("crawl_cycle_id", $this->getCrawlCycleId()));
 			$domxmlelement->appendChild($domdocument->createElement("router_id", $this->getRouterId()));

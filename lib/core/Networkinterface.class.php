@@ -13,14 +13,12 @@
 		private $iplist = null;
 		
 		public function __construct($networkinterface_id=false, $router_id=false, $name=false,
-									$create_date=false, $update_date=false, $statusdata=false) {
+									$create_date=false, $update_date=false) {
 			$this->setNetworkinterfaceId($networkinterface_id);
 			$this->setRouterId($router_id);
 			$this->setName($name);
 			$this->setCreateDate($create_date);
 			$this->setUpdateDate($update_date);
-			$this->setIplist();
-			$this->setStatusdata($statusdata);
 		}
 		
 		public function fetch() {
@@ -52,8 +50,7 @@
 				$this->setName($result['name']);
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
-				$this->setStatusdata();
-				$this->setIplist();
+				$this->setStatusdata($result['networkinterface_id']);
 				return true;
 			}
 			
@@ -112,44 +109,51 @@
 		}
 		
 		public function setNetworkinterfaceId($networkinterface_id) {
-			if(is_int($networkinterface_id))
+			if(is_int($networkinterface_id)) {
 				$this->networkinterface_id = $networkinterface_id;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setRouterId($router_id) {
-			if(is_int($router_id))
+			if(is_int($router_id)) {
 				$this->router_id = $router_id;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setName($name) {
-			if(is_string($name))
+			if(is_string($name)) {
 				$this->name = $name;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setMacAddr($mac_addr) {
-			if(is_string($mac_addr))
+			if(is_string($mac_addr)) {
 				$this->mac_addr = $mac_addr;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setStatusdata($statusdata=false) {
 			if($statusdata instanceof NetworkinterfaceStatus) {
 				$this->statusdata = $statusdata;
+				return true;
 			} else {
-				if($this->getNetworkinterfaceId()!=0) {
-					$networkinterface_status = new NetworkinterfaceStatus(false, false, (int)$this->getNetworkinterfaceId());
-					$networkinterface_status->fetch();
-					$this->statusdata = $networkinterface_status;
+				if(is_int($statusdata)) {
+					$networkinterface_status = new NetworkinterfaceStatus(false, false, $statusdata);
+					if($networkinterface_status->fetch()) {
+						$this->statusdata = $networkinterface_status;
+						return true;
+					}
 				}
 			}
-		}
-		
-		public function setIplist($iplist=false) {
-			if($iplist!=false && is_array($iplist)) {
-				$this->iplist = $iplist;
-			} else {
-				if($this->getNetworkinterfaceId()!=0)
-					$this->iplist = new Iplist($this->getNetworkinterfaceId());
-			}
+			return false;
 		}
 		
 		public function getNetworkinterfaceId() {
@@ -172,15 +176,16 @@
 			return $this->statusdata;
 		}
 		
-		public function getIpList() {
-			return $this->iplist;
-		}
-		
 		public function getRouter() {
 			$router = new Router($this->getRouterId());
 			if($router->fetch())
 				return $router;
 			return false;
+		}
+		
+		public function getIplist() {
+			$iplist = new Iplist($this->getNetworkinterfaceId());
+			return $iplist;
 		}
 		
 		public function getDomXMLElement($domdocument) {
@@ -190,12 +195,7 @@
 			$domxmlelement->appendChild($domdocument->createElement("name", $this->getName()));
 			$domxmlelement->appendChild($domdocument->createElement("mac_addr", $this->getMacAddr()));
 			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
-			
 			$domxmlelement->appendChild($this->getStatusdata()->getDomXMLElement($domdocument));
-			
-			$domxmliplist = $domdocument->createElement('iplist');
-			$domxmliplist->appendChild($this->getIplist()->getDomXMLElement($domdocument));
-			$domxmlelement->appendChild($domxmliplist);
 			return $domxmlelement;
 		}
 	}

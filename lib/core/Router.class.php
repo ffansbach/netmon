@@ -15,10 +15,9 @@
 		private $latitude = "";
 		private $longitude = "";
 		private $chipset_id = 0;
-		private $statusdata = array();
-		private $statusdata_history = array();
-		private $networkinterfacelist = null;
-		private $servicelist = null;
+		
+		private $user = null;
+		private $statusdata = null;
 		private $chipset = null;
 		
 		public function __construct($router_id=false, $user_id=false, $hostname=false, $description=false,
@@ -39,7 +38,7 @@
 		public function fetch() {
 			$result = array();
 			try {
-				$stmt = DB::getInstance()->prepare("SELECT *
+				$stmt = DB::getInstance()->prepare("SELECT routers.id as router_id, routers.*
 													FROM routers
 													WHERE
 														(id = :router_id OR :router_id=0) AND
@@ -70,7 +69,7 @@
 			}
 			
 			if(!empty($result)) {
-				$this->setRouterId((int)$result['id']);
+				$this->setRouterId((int)$result['router_id']);
 				$this->setUserId((int)$result['user_id']);
 				$this->setHostname($result['hostname']);
 				$this->setDescription($result['description']);
@@ -80,92 +79,118 @@
 				$this->setChipsetId((int)$result['chipset_id']);
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
-				$this->setNetworkinterfacelist();
-				$this->setStatusdataHistory();
-				$this->setStatusdata($this->getStatusdataHistory()->getRouterStatuslist()[0]);
-				$this->setChipset();
+				$this->setUser($this->getUserId());
+				$this->setChipset($this->getChipsetId());
+				$this->setStatusdata($this->getRouterId());
 				return true;
 			}
-			
 			return false;
 		}
 		
 		public function setRouterId($router_id) {
-			if(is_int($router_id))
+			if(is_int($router_id)) {
 				$this->router_id = $router_id;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setUserId($user_id) {
-			if(is_int($user_id))
+			if(is_int($user_id)) {
 				$this->user_id = $user_id;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setHostname($hostname) {
-			if(!is_string($hostname) AND !preg_match('/^([a-zA-Z0-9])+$/i', $hostname)) {
-				return false;
-			} else {
+			if(is_string($hostname) AND preg_match('/^([a-zA-Z0-9])+$/i', $hostname)) {
 				$this->hostname = $hostname;
+				return true;
 			}
+			return false;
 		}
 		
 		public function setDescription($description) {
-			if($description!==false)
+			if(is_string($description)) {
 				$this->description = $description;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setLocation($location) {
-			if($location!==false)
+			if(is_string($location)) {
 				$this->location = $location;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setLatitude($latitude) {
-			if($latitude!==false)
+			if(is_string($latitude)) {
 				$this->latitude = $latitude;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setLongitude($longitude) {
-			if($longitude!==false)
+			if(is_string($longitude)) {
 				$this->longitude = $longitude;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setChipsetId($chipset_id) {
-			if(is_int($chipset_id))
+			if(is_int($chipset_id)) {
 				$this->chipset_id = $chipset_id;
+				return true;
+			}
+			return false;
 		}
 		
-		public function setNetworkinterfacelist($networkinterfacelist=false) {
-			if($networkinterfacelist!=false && is_array($networkinterfacelist))
-				$this->networkinterfacelist = $networkinterfacelist;
-			else
-				$this->networkinterfacelist = new Networkinterfacelist($this->router_id);
+		public function setUser($user) {
+			if($user instanceof User) {
+				$this->user = $user;
+				return true;
+			} elseif(is_int($user)) {
+				$user = new User($user);
+				if($user->fetch()) {
+					$this->user = $user;
+					return true;
+				}
+			}
+			return false;
 		}
 		
-		public function setStatusdata($routerstatus=false) {
+		public function setChipset($chipset) {
+			if($chipset instanceof Chipset) {
+				$this->chipset = $chipset;
+				return true;
+			} else {
+				$chipset = new Chipset($chipset);
+				if($chipset->fetch()) {
+					$this->chipset = $chipset;
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		public function setStatusdata($routerstatus) {
 			if($routerstatus instanceof RouterStatus) {
 				$this->statusdata = $routerstatus;
-			} else {
-				$router_status = new RouterStatus(false, false, $this->router_id);
-				$router_status->fetch();
-				$this->statusdata = $router_status;
+				return true;
+			} elseif(is_int($routerstatus)) {
+				$router_status = new RouterStatus(false, false, $routerstatus);
+				if($router_status->fetch()) {
+					$this->statusdata = $router_status;
+					return true;
+				}
 			}
-		}
-		
-		public function setStatusdataHistory($statusdata_history=false) {
-			if($statusdata_history!=false && is_array($statusdata_history))
-				$this->statusdata_history = $statusdata_history;
-			else
-				//limit statusdata_history to 10 entrys otherwise it will produce to much load
-				$this->statusdata_history = new RouterStatusList($this->router_id, 0, 2);
-		}
-		
-		public function setChipset($chipset=false) {
-			if($chipset!=false) {
-				$this->chipset = $chipset;
-			} else {
-				$chipset = new Chipset($this->chipset_id);
-				$chipset->fetch();
-				$this->chipset = $chipset;
-			}
+			return false;
 		}
 		
 		public function getRouterId() {
@@ -200,27 +225,16 @@
 			return $this->chipset_id;
 		}
 		
-		public function getNetworkinterfacelist() {
-			return  $this->networkinterfacelist;
-		}
-		
-		public function getStatusdata() {
-			return  $this->statusdata;
-		}
-		
-		public function getStatusdataHistory() {
-			return  $this->statusdata_history;
+		public function getUser() {
+			return $this->user;
 		}
 		
 		public function getChipset() {
 			return  $this->chipset;
 		}
 		
-		public function getUser() {
-			$user = new User($this->getUserId());
-			if($user->fetch())
-				return $user;
-			return false;
+		public function getStatusdata() {
+			return  $this->statusdata;
 		}
 		
 		public function getDomXMLElement($domdocument) {
@@ -235,9 +249,9 @@
 			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
 			$domxmlelement->appendChild($domdocument->createElement("update_date", $this->getUpdateDate()));
 			
-			$domxmlelement->appendChild($this->getNetworkinterfacelist()->getDomXMLElement($domdocument));
+			$domxmlelement->appendChild($this->getUser()->getDomXMLElement($domdocument));
+			$domxmlelement->appendChild($this->getChipset()->getDomXMLElement($domdocument));
 			$domxmlelement->appendChild($this->getStatusdata()->getDomXMLElement($domdocument));
-			$domxmlelement->appendChild($this->getStatusdataHistory()->getDomXMLElement($domdocument));
 			return $domxmlelement;
 		}
 	}
