@@ -339,10 +339,10 @@
 					</li>
 				{/if}
 				<li>
-					<b>Traffic RX:</b> {$interface->getStatusdata()->getTrafficRxAvg()} Kb/sec
+					<b>Traffic RX:</b> {round($interface->getStatusdata()->getTrafficRxAvg()/1000, 2)} kBit/s
 				</li>
 				<li>
-					<b>Traffic TX:</b> {$interface->getStatusdata()->getTrafficTxAvg()} Kb/sec
+					<b>Traffic TX:</b> {round($interface->getStatusdata()->getTrafficTxAvg()/1000, 2)} kBit/s
 				</li>
 					{if $interface->getStatusdata()->getWlanMode()}
 					<li>
