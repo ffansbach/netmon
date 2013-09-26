@@ -134,7 +134,10 @@ $opts="";
 $opts .= "f:";
 $opts .= "t:";
 $options = getopt($opts);
-
+$lockfile = "tmp/crawllock".$options['f'];
+fopen($lockfile,x);
 IntegratedXmlIPv6Crawler::crawl($options['f'], $options['t']);
+fclose($lockfile);
+unlink($lockfile);
 
 ?>

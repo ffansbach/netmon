@@ -105,18 +105,23 @@
 	
 	//Crawl routers
 	echo "Crawl routers\n";
+	$range=10;
 	$routers_count = Router_old::countRouters();
-	for ($i=0; $i<=$routers_count; $i+=10) {
-		//start an independet crawl process for each 10 routers to crawl routers simultaniously
-		echo "Initializing crawl process to crawl routers ".$i." to ".($i+10)."\n";
-		
-		$return = array();
-		$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -f".$i." -t10  &> /dev/null & echo $!";
-		echo "Running command: $cmd\n";
-		exec($cmd, $return);
-		echo "The initialized crawl process has the pid $return[0]\n";
+	for ($i=0; $i<=$routers_count; $i+=$range) {
+		$lockfile = ROOT_DIR."/tmp/crawllock".$i;
+
+			if (!file_exists($lockfile)) {
+
+				//start an independet crawl process for each $range routers to crawl routers simultaniously
+				$return = array();
+				$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -f".$i." -t".$range."  &> /dev/null & echo $!";
+				echo "Initializing crawl process to crawl routers ".$i." to ".($i+$range)."\n";
+				echo "Running command: $cmd\n";
+				exec($cmd, $return);
+				echo "The initialized crawl process has the pid $return[0]\n";
+			}
+		else echo "still crawling for ".$range." routers since ".$i.", aborting\n";
 	}
-	
 	/**
 	 * Notifications
 	 */
