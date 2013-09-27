@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 18, 2013 at 02:18 AM
--- Server version: 5.5.32-MariaDB-1~wheezy-log
--- PHP Version: 5.4.19-1~dotdeb.1
+-- Generation Time: Sep 27, 2013 at 09:20 PM
+-- Server version: 5.5.33-MariaDB-1~wheezy-log
+-- PHP Version: 5.4.20-1~dotdeb.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -54,7 +54,8 @@ CREATE TABLE IF NOT EXISTS `config` (
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `name_2` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -170,26 +171,6 @@ CREATE TABLE IF NOT EXISTS `crawl_ips` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `crawl_olsr`
---
-
-CREATE TABLE IF NOT EXISTS `crawl_olsr` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `router_id` int(11) NOT NULL,
-  `crawl_cycle_id` int(11) NOT NULL,
-  `olsrd_hna` text NOT NULL,
-  `olsrd_neighbors` text NOT NULL,
-  `olsrd_links` text NOT NULL,
-  `olsrd_mid` text NOT NULL,
-  `olsrd_routes` text NOT NULL,
-  `olsrd_topology` text NOT NULL,
-  `crawl_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `crawl_routers`
 --
 
@@ -260,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `crawl_services` (
   PRIMARY KEY (`id`),
   KEY `service_id` (`service_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -278,7 +259,9 @@ CREATE TABLE IF NOT EXISTS `dns_ressource_records` (
   `destination_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `dns_zone_id` (`dns_zone_id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -300,7 +283,8 @@ CREATE TABLE IF NOT EXISTS `dns_zones` (
   `ttl` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -529,7 +513,7 @@ CREATE TABLE IF NOT EXISTS `services` (
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -559,7 +543,7 @@ CREATE TABLE IF NOT EXISTS `service_ips` (
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -633,11 +617,17 @@ CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
 --
 
 --
+-- Constraints for table `chipsets`
+--
+ALTER TABLE `chipsets`
+  ADD CONSTRAINT `chipsets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE;
+
+--
 -- Constraints for table `crawl_batman_advanced_interfaces`
 --
 ALTER TABLE `crawl_batman_advanced_interfaces`
-  ADD CONSTRAINT `crawl_batman_advanced_interfaces_ibfk_2` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `crawl_batman_advanced_interfaces_ibfk_1` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `crawl_batman_advanced_interfaces_ibfk_1` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `crawl_batman_advanced_interfaces_ibfk_2` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `crawl_batman_advanced_originators`
@@ -650,9 +640,9 @@ ALTER TABLE `crawl_batman_advanced_originators`
 -- Constraints for table `crawl_interfaces`
 --
 ALTER TABLE `crawl_interfaces`
-  ADD CONSTRAINT `crawl_interfaces_ibfk_3` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `crawl_interfaces_ibfk_1` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `crawl_interfaces_ibfk_2` FOREIGN KEY (`interface_id`) REFERENCES `interfaces` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `crawl_interfaces_ibfk_2` FOREIGN KEY (`interface_id`) REFERENCES `interfaces` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `crawl_interfaces_ibfk_3` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `crawl_ips`
@@ -664,8 +654,28 @@ ALTER TABLE `crawl_ips`
 -- Constraints for table `crawl_routers`
 --
 ALTER TABLE `crawl_routers`
-  ADD CONSTRAINT `crawl_routers_ibfk_2` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `crawl_routers_ibfk_1` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `crawl_routers_ibfk_1` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `crawl_routers_ibfk_2` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `crawl_services`
+--
+ALTER TABLE `crawl_services`
+  ADD CONSTRAINT `crawl_services_ibfk_2` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `crawl_services_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `dns_ressource_records`
+--
+ALTER TABLE `dns_ressource_records`
+  ADD CONSTRAINT `dns_ressource_records_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `dns_ressource_records_ibfk_1` FOREIGN KEY (`dns_zone_id`) REFERENCES `dns_zones` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `dns_zones`
+--
+ALTER TABLE `dns_zones`
+  ADD CONSTRAINT `dns_zones_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `interfaces`
@@ -677,8 +687,14 @@ ALTER TABLE `interfaces`
 -- Constraints for table `ips`
 --
 ALTER TABLE `ips`
-  ADD CONSTRAINT `ips_ibfk_2` FOREIGN KEY (`interface_id`) REFERENCES `interfaces` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ips_ibfk_1` FOREIGN KEY (`network_id`) REFERENCES `networks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `ips_ibfk_1` FOREIGN KEY (`network_id`) REFERENCES `networks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ips_ibfk_2` FOREIGN KEY (`interface_id`) REFERENCES `interfaces` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `networks`
+--
+ALTER TABLE `networks`
+  ADD CONSTRAINT `networks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `routers`
