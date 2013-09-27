@@ -35,8 +35,9 @@ $(document).ready(function() {
 </script>
 
 <h1>Konfiguration der Hardwarenamen</h1>
-<p>Hier können den Chipbezeichnungen der Hersteller Routernamen für normalsterbliche zugewiesen werden.</p>
-<h2>Vorhandene Chipsets</h2>
+<p>Hier können den Chipbezeichnungen der Hersteller Routernamen für normalsterbliche zugewiesen werden. Neue Chipbezeichnungen werden
+normalerweise wärend des Crawlens automatisch aufgenommen. Es besteht auch die Möglichkeit diese manuell hinzuzufügen.</p>
+<h2>Vorhandene Chipsätze</h2>
 {if !empty($chipsets_with_name)}
 <table class="display" id="chipsetlist">
 	<thead>
@@ -59,16 +60,16 @@ $(document).ready(function() {
 	</tbody>
 </table>
 {else}
-	<p>Keine Chipsets vorhanden. Neue Chipsets werden wärend der Crawls automatisch hinzugefügt und können dann zugewiesen werden.</p>
+	<p>Keine Chipsätze vorhanden. Neue Chipsets werden wärend der Crawls automatisch hinzugefügt und können dann zugewiesen werden.</p>
 {/if}
 
 
-<h2>Nicht Zugewiesene Chipsets</h2>
+<h2>Nicht zugewiesene Chipsätze</h2>
 {if !empty($chipsets_without_name)}
 <table class="display" id="chipsetlist_unnamed">
 	<thead>
 		<tr>
-			<th>Chipset</th>
+			<th>Chipsatz</th>
 			<th>Erstellt</th>
 			<th>Aktionen</th>
 		</tr>
@@ -84,5 +85,13 @@ $(document).ready(function() {
 	</tbody>
 </table>
 {else}
-	<p>Keine nicht zugewiesenen Chipsets vorhanden.</p>
+	<p>Keine nicht zugewiesenen Chipsätze vorhanden.</p>
 {/if}
+
+<h2>Neuen Chipsatz eintragen</h2>
+<form action="./config.php?section=add_hardware" method="POST">
+	<p><b>Chipsatz:</b><br><input name="name" type="text" size="30" value=""></p>
+	<p><b>Name:</b><br><input name="hardware_name" type="text" size="30" value=""></p>
+	
+	<p><input type="submit" value="Eintragen"></p>
+</form>

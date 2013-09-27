@@ -24,7 +24,7 @@
 		public function fetch() {
 			$result = array();
 			try {
-				$stmt = DB::getInstance()->prepare("SELECT *
+				$stmt = DB::getInstance()->prepare("SELECT interfaces.id as networkinterface_id, interfaces.*
 													FROM interfaces
 													WHERE
 														(id = :networkinterface_id OR :networkinterface_id=0) AND

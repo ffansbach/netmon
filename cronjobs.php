@@ -13,6 +13,8 @@
 	require_once(ROOT_DIR.'/lib/core/rrdtool.class.php');
 	require_once(ROOT_DIR.'/lib/core/Eventlist.class.php');
 	require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
+	require_once(ROOT_DIR.'/lib/core/Networkinterfacelist.class.php');
+	require_once(ROOT_DIR.'/lib/core/NetworkinterfaceStatus.class.php');
 	require_once(ROOT_DIR.'/lib/core/EventNotificationList.class.php');
 	
 	/**
@@ -25,28 +27,58 @@
 	
 	//Create new crawl cycle and close old crawl cycle
 	if(empty($actual_crawl_cycle) OR strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
-		//Create new crawl cycle
 		echo "Close old crawl cycle and create new one\n";
+		//Create new crawl cycle
 		Crawling::newCrawlCycle();
-		
 		//Close old Crawl cycle
 		Crawling::closeCrawlCycle($actual_crawl_cycle['id']);
 		
-		echo "Mark all routers that could not be reached in last crawl cycle as offline\n";
+		echo "Create crawl data for offline routers\n";
 		//Set all routers in old crawl cycle that have not been crawled yet to status offline
-		$routers = Router_old::getRouters();
-		foreach ($routers as $router) {
-			$crawl = Router_old::getCrawlRouterByCrawlCycleId($actual_crawl_cycle['id'], $router['id']);
-			if(empty($crawl)) {
-				$router_status = New RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$router['id'], "offline");
-				$router_status->store();
-				
-				//make router history
-				$router_status_tmp = new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$router['id']);
-				$router_status_tmp->fetch();
-				$eventlist = $router_status->compare($router_status_tmp);
-				$eventlist->store();
-			}
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT *
+												FROM routers
+												WHERE id not in (SELECT router_id
+																 FROM crawl_routers
+																 WHERE crawl_cycle_id=$actual_crawl_cycle[id])");
+			$stmt->execute();
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		foreach($result as $router) {
+			echo "	Inserting offline data for router ".$router['hostname']."\n";
+			//store offline crawl for offline router
+			$router_status = New RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$router['id'], "offline");
+			$router_status->store();
+			
+			//make router history
+			$router_status_tmp = new RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$router['id']);
+			$router_status_tmp->fetch();
+			$eventlist = $router_status->compare($router_status_tmp);
+			$eventlist->store();
+		}
+		
+		echo "Create crawl data for offline interfaces\n";
+		//store offline crawl for all interfaces of offline router
+		try {
+			$stmt = DB::getInstance()->prepare("SELECT *
+												FROM interfaces
+												WHERE id not in (SELECT interface_id
+																 FROM crawl_interfaces
+																 WHERE crawl_cycle_id=$actual_crawl_cycle[id])");
+			$stmt->execute();
+			$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		foreach($result as $interface) {
+			echo "	Inserting offline data for interface ".$interface['name']."\n";
+			$networkinterface_status = new NetworkinterfaceStatus(false, (int)$actual_crawl_cycle['id'],
+																  (int)$interface['id'], (int)$interface['router_id']);
+			$networkinterface_status->store();
 		}
 		
 		echo "Create graph statistics\n";
@@ -105,29 +137,26 @@
 	
 	//Crawl routers
 	echo "Crawl routers\n";
-	$range=10;
+	
+	$range=20;
 	$routers_count = Router_old::countRouters();
 	for ($i=0; $i<=$routers_count; $i+=$range) {
-		$lockfile = ROOT_DIR."/tmp/crawllock".$i;
-
-			if (!file_exists($lockfile)) {
-
-				//start an independet crawl process for each $range routers to crawl routers simultaniously
-				$return = array();
-				$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -f".$i." -t".$range."  &> /dev/null & echo $!";
-				echo "Initializing crawl process to crawl routers ".$i." to ".($i+$range)."\n";
-				echo "Running command: $cmd\n";
-				exec($cmd, $return);
-				echo "The initialized crawl process has the pid $return[0]\n";
-			}
-		else echo "still crawling for ".$range." routers since ".$i.", aborting\n";
+		//start an independet crawl process for each $range routers to crawl routers simultaniously
+		$return = array();
+		$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range."  &> /dev/null & echo $!";
+		echo "Initializing crawl process to crawl routers ".$i." to ".($i+$range)."\n";
+		echo "Running command: $cmd\n";
+		exec($cmd, $return);
+		echo "The initialized crawl process has the pid $return[0]\n";
 	}
+	
 	/**
 	 * Notifications
 	 */
+	/*
 	echo "Sending notifications\n";
 	$event_notification_list = new EventNotificationList();
-	$event_notification_list->notify();
+	$event_notification_list->notify();*/
 	
 	echo "Done\n";
 ?>

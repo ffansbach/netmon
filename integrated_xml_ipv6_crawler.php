@@ -1,26 +1,115 @@
 <?php
+	//deny if script is not called by the server directly
+	if(!empty($_SERVER['REMOTE_ADDR'])) {
+		die("This script can only be run by the server directly.");
+	}
+	
+	//set include paths
+	if (empty($_SERVER["REQUEST_URI"])) {
+		$path = dirname(__FILE__)."/";
+		set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+	}
+	
+	//get depencies
+	require_once('runtime.php');
+	require_once(ROOT_DIR.'/lib/core/Routerlist.class.php');
+	require_once(ROOT_DIR.'/lib/core/Networkinterface.class.php');
+	require_once(ROOT_DIR.'/lib/core/Iplist.class.php');
+	require_once(ROOT_DIR.'/lib/core/interfaces.class.php');
+	require_once(ROOT_DIR.'/lib/api/crawl.class.php');
+	require_once(ROOT_DIR.'/lib/core/ConfigLine.class.php');
+	
+	//get offset and limit options (script parameters)
+	$router_offset = getopt("o:l:")['o'];
+	$router_limit = getopt("o:l:")['l'];
+	
+	// get configuration values
+	$ping_count = 4; // ping a node X times before fetching data
+	$ping_timeout = 1000; // set the timout for each ping to X ms
+	$crawl_timeout = 8; // timeout after X seconds on fetching crawldata
+	$network_connection_ipv6_interface = ConfigLine::configByName("network_connection_ipv6_interface"); //use this interface to connect to ipv6 linc local hosts
+	$interfaces_used_for_crawling = array("br-mesh"); //use the ip adresses of these interfaces for crawling
+	
+	echo "Crawling routers $router_offset-$router_limit (offset-limit) with the following options:\n";
+	echo "	ping_count: $ping_count\n";
+	echo "	ping_timeout: $ping_timeout\n";
+	echo "	crawl_timeout: $crawl_timeout\n";
+	echo "	network_connection_ipv6_interface: $network_connection_ipv6_interface\n";
+	echo "	interfaces_used_for_crawling: "; foreach($interfaces_used_for_crawling as $iface) echo $iface; echo "\n";
+	
+	//fetch all routers that need to be crawled by a crawler. Respect offset and limit!
+	$routerlist = new Routerlist(false, false, "crawler", false, false, false, false, false,
+								 (int)$router_offset, (int)$router_limit, "router_id", "asc");
+	foreach($routerlist->getRouterlist() as $key=>$router) {
+		echo ($key+1).". crawling Router ".$router->getHostname()." (".$router->getRouterId().")\n";
+		foreach($interfaces_used_for_crawling as $name) {
+			echo "	Fetching IP-Addresses of interface ".$name."\n";
+			$networkinterface = new Networkinterface(false, $router->getRouterId(), $name);
+			if($networkinterface->fetch()) {
+				$iplist = new Iplist($networkinterface->getNetworkinterfaceId());
+				foreach($iplist->getIplist() as $ip) {
+					echo "		Working with ".$ip->getIp()."\n";
+					
+					$ping=false;
+					$return = array();
+					if($ip->getNetwork()->getIpv()==6)
+						$command = "ping6 -c $ping_count -w $ping_timeout -I $network_connection_ipv6_interface ".$ip->getIp();
+					elseif($ip->getNetwork()->getIpv()==4)
+						$command = "ping -c $ping_count -w $ping_timeout ".$ip->getIp();
+					echo "			".$command."\n";
+					exec($command, $return);
+					foreach($return as $key=>$line) {
+						if(strpos($line, "packet loss")!==false) {
+							$ping_result_index=$key;
+							break;
+						}
+					}
+					if(trim(explode(",", $return[$ping_result_index])[1])!="0 received") {
+						echo "			Ping was successfull trying to crawl\n";
+						
+						//fetch crawl data from router
+						$return = array();
+						if($ip->getNetwork()->getIpv()==6)
+							$command = "curl -s --max-time $crawl_timeout -g http://[".$ip->getIp()."%25\$(cat /sys/class/net/$network_connection_ipv6_interface/ifindex)]/node.data";
+						elseif($ip->getNetwork()->getIpv()==4)
+							$command = "curl -s --max-time $crawl_timeout -g http://".$ip->getIp()."/node.data";
+						echo "			".$command."\n";
+						exec($command, $return);
+						$return_string = "";
+						foreach($return as $string) {
+							$return_string .= $string;
+						}
+						
+						//store the crawl data into the database if the router is not offline
+						if(!empty($return_string)) {
+							echo "			Craw was successfull, node gets marked as online\n";
+							try {
+								$xml = new SimpleXMLElement($return_string);
+								$xml_array = simplexml2array($xml);
+								$xml_array['router_id'] = $router->getRouterId();
+								$xml_array['system_data']['status'] = "online";
+								$return = Crawl::insertCrawlData($xml_array);
+								break;
+							} catch (Exception $e) {
+								echo nl2br($e->getMessage());
+							}
+							break 2;
+						} else {
+							echo "			Craw was not successfull, node gets marked as unknown because ping was possible. Mysterious!\n";
+							$xml_array['router_id'] = $router->getRouterId();
+							$xml_array['system_data']['status'] = "unknown";
+							$return = Crawl::insertCrawlData($xml_array);
+							break 2;
+						}
+					} else {
+						echo "			Ping was not successfull trying to ping next address\n";
+					}
+				}
+			}
+		}
+	}
 
-/**
-* IF Netmon is called by the server/cronjob
-*/
-if (empty($_SERVER["REQUEST_URI"])) {
-	$path = dirname(__FILE__)."/";
-	set_include_path(get_include_path() . PATH_SEPARATOR . $path);
-	$GLOBALS['netmon_root_path'] = $path."/";
-}
-
-if(!empty($_SERVER['REMOTE_ADDR'])) {
-	die("This script can only be run by the server directly.");
-}
-
-require_once('runtime.php');
-require_once('lib/core/interfaces.class.php');
-require_once('lib/core/router.class.php');
-require_once('lib/api/crawl.class.php');
-require_once('lib/core/config.class.php');
-
-class IntegratedXmlIPv6Crawler {
-	public function simplexml2array($xml) {
+	function simplexml2array($xml) {
 		if (!is_string($xml) AND (get_class($xml) == 'SimpleXMLElement')) {
 			$attributes = $xml->attributes();
 			foreach($attributes as $k=>$v) {
@@ -32,112 +121,11 @@ class IntegratedXmlIPv6Crawler {
 		if (is_array($xml)) {
 			if (count($xml) == 0) return (string) $x; // for CDATA
 			foreach($xml as $key=>$value) {
-				$r[$key] = IntegratedXmlIPv6Crawler::simplexml2array($value);
+				$r[$key] = simplexml2array($value);
 			}
 			if (isset($a)) $r['@attributes'] = $a;    // Attributes
 			return $r;
 		}
 		return (string) $xml;
 	}
-	
-	public function crawl($from, $to) {
-		$network_connection_ipv6_interface = Config::getConfigValueByName("network_connection_ipv6_interface");
-	
-		$routers = Router_old::getRoutersForCrawl($from, $to);
-		
-		foreach($routers as $router) {
-			if(!empty($router['interfaces'])) {
-				foreach($router['interfaces'] as $interface) {
-					if($interface['ip_addresses']->getTotalCount()!=0 ){
-						foreach($interface['ip_addresses']->getIplist() as $key=>$ip_address) {
-							echo $ip_address->getIp();
-							if($ip_address->getNetwork()->getIpv()==6) {
-								unset($return_string);
-								unset($xml_array);
-								unset($xml);
-								
-								//ping the router to preestablish a connection
-								$ipv6_address = explode("/", $ip_address->getIp());
-								$return = array();
-								$command = "ping6 -c 4 -I $network_connection_ipv6_interface $ipv6_address[0]";
-								echo $command."\n";
-								exec($command, $return);
-									
-								foreach($return as $key=>$line) {
-									if(strpos($line, "packet loss")!==false) {
-										$ping_result_index=$key;
-										break;
-									}
-								}
-
-								$exploded_ping_result = explode(",", $return[$ping_result_index]);
-
-								$ping=false;
-								$data_send=false;
-								if(trim($exploded_ping_result[1])!="0 received") {
-									$ping=true;
-									$exploded_ping_result = explode("=", $return[$ping_result_index+1]);
-									$exploded_ping_result = explode("/", trim($exploded_ping_result[1]));
-									
-									$ip_data[0]['ip_id'] = $ip_address->getIp();
-									$ip_data[0]['ping_avg'] = $exploded_ping_result[1];
-								}
-								
-								if($ping) {
-									for($i=0; $i<3; $i++) {
-										//fetch crawl data from router
-										$return = array();
-										$command = "curl -s --connect-timeout 4 -m8 -g http://[$ipv6_address[0]%25\$(cat /sys/class/net/$network_connection_ipv6_interface/ifindex)]/node.data";
-										echo $command."\n";
-										exec($command, $return);
-										$return_string = "";
-										foreach($return as $string) {
-											$return_string .= $string;
-										}
-										
-										//store the crawl data into the database if the router is not offline
-										if(!empty($return_string)) {
-											try {
-												$xml = new SimpleXMLElement($return_string);
-												$xml_array = IntegratedXmlIPv6Crawler::simplexml2array($xml);
-												$xml_array['ip_data'] = $ip_data;                                                                            
-												$xml_array['router_id'] = $router['id'];
-												//if crawl data is being stored by this script, the status is always online
-												//because data is only beeing stored if a connection could be established
-												$xml_array['system_data']['status'] = "online";
-												$return = Crawl::insertCrawlData($xml_array);
-												$data_send=true;
-												break;
-											} catch (Exception $e) {
-												echo nl2br($e->getMessage());
-											}
-										}
-									}
-									
-									if($ping && !$data_send) {
-										$xml_array['ip_data'] = $ip_data;                                                                            
-										$xml_array['router_id'] = $router['id'];
-										$xml_array['system_data']['status'] = "unknown";
-										$return = Crawl::insertCrawlData($xml_array);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-$opts="";
-$opts .= "f:";
-$opts .= "t:";
-$options = getopt($opts);
-$lockfile = "tmp/crawllock".$options['f'];
-fopen($lockfile,x);
-IntegratedXmlIPv6Crawler::crawl($options['f'], $options['t']);
-fclose($lockfile);
-unlink($lockfile);
-
 ?>

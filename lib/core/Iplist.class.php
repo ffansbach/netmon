@@ -44,9 +44,9 @@
 														(network_id = :network_id OR :network_id=0)
 													ORDER BY
 														case :sort_by
-															when 'create_date' then ips.create_date
 															when 'ip_id' then ips.id
-															when 'ip' then ips.ip
+															when 'interface_id' then ips.interface_id
+															when 'network_id' then ips.network_id
 															else NULL
 														end
 													".$this->getOrder()."

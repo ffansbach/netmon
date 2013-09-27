@@ -50,7 +50,7 @@
 														WHERE events.object=:object AND events.object_id=:object_id AND events.action=:action
 														ORDER BY
 															case :sort_by
-																when 'create_date' then events.create_date
+																when 'event_id' then events.id
 																else NULL
 															end
 														".$this->getOrder()."

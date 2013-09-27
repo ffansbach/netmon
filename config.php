@@ -3,6 +3,7 @@
 require_once('runtime.php');
 require_once('lib/core/install.class.php');
 require_once('lib/core/chipsets.class.php');
+require_once('lib/core/Chipset.class.php');
 require_once('lib/core/DnsZone.class.php');
 require_once('lib/core/DnsZoneList.class.php');
 require_once('lib/core/Network.class.php');
@@ -253,6 +254,15 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		$smarty->display("header.tpl.html");
 		$smarty->display("config_hardware.tpl.html");
 		$smarty->display("footer.tpl.html");
+	} elseif($_GET['section']=="add_hardware") {
+		$chipset = new Chipset(false, (int)$_SESSION['user_id'], $_POST['name'], $_POST['hardware_name']);
+		if($chipset->store()) {
+			$message[] = array("Der Chipsatz wurde gespeichert.", 1);
+		} else {
+			$message[] = array("Der Chipsatz konnte nicht gespeichert werden.", 2);
+		}
+		Message::setMessage($message);
+		header('Location: ./config.php?section=edit_hardware');
 	} elseif($_GET['section']=="edit_hardware_name") {
 		$smarty->assign('chipset_data', Chipsets::getChipsetById($_GET['chipset_id']));
 		

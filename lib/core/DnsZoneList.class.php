@@ -38,7 +38,8 @@
 														WHERE dns_zones.user_id = :user_id
 														ORDER BY
 															case :sort_by
-																when 'create_date' then dns_zones.create_date
+																when 'dns_zone_id' then dns_zones.id
+																when 'user_id' then dns_zones.user_id
 																else NULL
 															end
 														".$this->getOrder()."

@@ -15,6 +15,7 @@
 		private $latitude = "";
 		private $longitude = "";
 		private $chipset_id = 0;
+		private $crawl_method = "";
 		
 		private $user = null;
 		private $statusdata = null;
@@ -22,7 +23,7 @@
 		
 		public function __construct($router_id=false, $user_id=false, $hostname=false, $description=false,
 									$location=false, $latitude=false, $longitude=false, $chipset_id=false,
-									$create_date=false, $update_date=false) {
+									$crawl_method=false, $create_date=false, $update_date=false) {
 			$this->setRouterId($router_id);
 			$this->setUserId($user_id);
 			$this->setHostname($hostname);
@@ -31,6 +32,7 @@
 			$this->setLatitude($latitude);
 			$this->setLongitude($longitude);
 			$this->setChipsetId($chipset_id);
+			$this->setCrawlMethod($crawl_method);
 			$this->setCreateDate($create_date);
 			$this->setUpdateDate($update_date);
 		}
@@ -49,6 +51,7 @@
 														(latitude = :latitude OR :latitude='') AND
 														(longitude = :longitude OR :longitude='') AND
 														(chipset_id = :chipset_id OR :chipset_id=0) AND
+														(crawl_method = :crawl_method OR :crawl_method='') AND
 														(create_date = :create_date OR :create_date=0) AND
 														(update_date = :update_date OR :update_date=0)");
 				$stmt->bindParam(':router_id', $this->getRouterId(), PDO::PARAM_INT);
@@ -59,6 +62,7 @@
 				$stmt->bindParam(':latitude', $this->getLatitude(), PDO::PARAM_STR);
 				$stmt->bindParam(':longitude', $this->getLongitude(), PDO::PARAM_STR);
 				$stmt->bindParam(':chipset_id', $this->getChipsetId(), PDO::PARAM_INT);
+				$stmt->bindParam(':crawl_method', $this->getCrawlMethod(), PDO::PARAM_STR);
 				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
 				$stmt->bindParam(':update_date', $this->getUpdateDate(), PDO::PARAM_INT);
 				$stmt->execute();
@@ -77,6 +81,7 @@
 				$this->setLatitude($result['latitude']);
 				$this->setLongitude($result['longitude']);
 				$this->setChipsetId((int)$result['chipset_id']);
+				$this->setCrawlMethod($result['crawl_method']);
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
 				$this->setUser($this->getUserId());
@@ -146,6 +151,14 @@
 		public function setChipsetId($chipset_id) {
 			if(is_int($chipset_id)) {
 				$this->chipset_id = $chipset_id;
+				return true;
+			}
+			return false;
+		}
+		
+		public function setCrawlMethod($crawl_method) {
+			if($crawl_method=="router" OR $crawl_method=="crawler") {
+				$this->crawl_method = $crawl_method;
 				return true;
 			}
 			return false;
@@ -225,6 +238,10 @@
 			return $this->chipset_id;
 		}
 		
+		public function getCrawlMethod() {
+			return $this->crawl_method;
+		}
+		
 		public function getUser() {
 			return $this->user;
 		}
@@ -246,6 +263,7 @@
 			$domxmlelement->appendChild($domdocument->createElement("location", $this->getLocation()));
 			$domxmlelement->appendChild($domdocument->createElement("latitude", $this->getLatitude()));
 			$domxmlelement->appendChild($domdocument->createElement("longitude", $this->getLongitude()));
+			$domxmlelement->appendChild($domdocument->createElement("crawl_method", $this->getCrawlMethod()));
 			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
 			$domxmlelement->appendChild($domdocument->createElement("update_date", $this->getUpdateDate()));
 			

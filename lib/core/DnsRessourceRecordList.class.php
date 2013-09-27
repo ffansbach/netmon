@@ -45,7 +45,8 @@
 														(user_id = :user_id OR :user_id=0)
 													ORDER BY
 														case :sort_by
-															when 'create_date' then dns_ressource_records.create_date
+															when 'dns_ressource_record_id' then dns_ressource_records.id
+															when 'user_id' then dns_ressource_records.user_id
 															else NULL
 														end
 													".$this->getOrder()."

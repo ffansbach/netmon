@@ -24,7 +24,7 @@
 		 *							string: asc, desc
 		 *							boolean: false, order default asc
 		 */
-		public function __construct($status_id=false, $user_id=false, $status=false, $hardware_name=false,
+		public function __construct($status_id=false, $user_id=false, $crawl_method=false, $status=false, $hardware_name=false,
 									$firmware_version=false, $batman_advanced_version=false, $kernel_version=false,
 									$offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
@@ -40,10 +40,27 @@
 			// initialize $total_count with the total number of objects in the list (over all pages)
 			try {
 				$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-													FROM routers
+													FROM routers r, users u, chipsets c, crawl_routers s
 													WHERE
-														(routers.user_id = :user_id OR :user_id=0)");
+														(r.user_id = :user_id OR :user_id=0) AND
+														(r.crawl_method = :crawl_method OR :crawl_method='') AND
+														(s.status = :status OR :status='') AND
+														(c.hardware_name = :hardware_name OR :hardware_name='') AND
+														(s.firmware_version = :firmware_version OR :firmware_version='') AND
+														(s.batman_advanced_version = :batman_advanced_version OR :batman_advanced_version='') AND
+														(s.kernel_version = :kernel_version OR :kernel_version='') AND
+														r.user_id = u.id AND
+														r.chipset_id= c.id AND
+														r.id = s.router_id AND
+														s.crawl_cycle_id = :status_id");
+				$stmt->bindParam(':status_id', ($status_id) ? $status_id : (int)crawling::getLastEndedCrawlCycle()['id'], PDO::PARAM_INT);
 				$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+				$stmt->bindParam(':crawl_method', $crawl_method, PDO::PARAM_STR);
+				$stmt->bindParam(':status', $status, PDO::PARAM_STR);
+				$stmt->bindParam(':hardware_name', $hardware_name, PDO::PARAM_STR);
+				$stmt->bindParam(':firmware_version', $firmware_version, PDO::PARAM_STR);
+				$stmt->bindParam(':batman_advanced_version', $batman_advanced_version, PDO::PARAM_STR);
+				$stmt->bindParam(':kernel_version', $kernel_version, PDO::PARAM_STR);
 				$stmt->execute();
 				$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
 			} catch(PDOException $e) {
@@ -55,6 +72,7 @@
 			if($this->getLimit()==-1)
 				$this->setLimit($this->getTotalCount());
 			
+			
 			try {
 				$stmt = DB::getInstance()->prepare("SELECT r.id as r_id, r.user_id as r_user_id, r.create_date as r_create_date, r.update_date as r_update_date, r.crawl_method as r_crawl_method, r.hostname as r_hostname, r.allow_router_auto_assign as r_allow_router_auto_assign, r.router_auto_assign_login_string as r_allow_router_auto_assign, r.router_auto_assign_hash as r_router_auto_assign_hash, r.description as r_description, r.location as r_location, r.latitude as r_latitude, r.longitude as r_longitude, r.chipset_id as r_chipset_id,
 														   u.id as u_id, u.session_id as u_session_id, u.nickname as u_nickname, u.password as u_password, u.openid as u_openid, u.api_key as u_api_key, u.vorname as u_vorname, u.nachname as u_nachname, u.strasse as u_strasse, u.plz as u_plz, u.ort as u_ort, u.telefon as u_telefon, u.email as u_email, u.jabber as u_jabber, u.icq as u_icq, u.website as u_website, u.about as u_about, u.allow_node_delegation as u_allow_node_delegation, u.notification_method as u_notification_method, u.permission as u_permission, u.create_date as u_create_date, u.update_date as u_update_date, u.activated as u_activated,
@@ -63,6 +81,7 @@
 													FROM routers r, users u, chipsets c, crawl_routers s
 													WHERE
 														(r.user_id = :user_id OR :user_id=0) AND
+														(r.crawl_method = :crawl_method OR :crawl_method='') AND
 														(s.status = :status OR :status='') AND
 														(c.hardware_name = :hardware_name OR :hardware_name='') AND
 														(s.firmware_version = :firmware_version OR :firmware_version='') AND
@@ -72,17 +91,18 @@
 														r.chipset_id= c.id AND
 														r.id = s.router_id AND
 														s.crawl_cycle_id = :status_id
-													ORDER BY
+													ORDER BY 
 														case :sort_by
 															when 'router_id' then r.id
-															when 'hostname' then r.hostname
-															when 'create_date' then r.create_date
-															else NULL
+															when 'user_id' then u.id
+															when 'crawl_cycle_id' then s.crawl_cycle_id
+															else r.id
 														end
-													".$this->getOrder()."
+														".$this->getOrder()."
 													LIMIT :offset, :limit");
 				$stmt->bindParam(':status_id', ($status_id) ? $status_id : (int)crawling::getLastEndedCrawlCycle()['id'], PDO::PARAM_INT);
 				$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+				$stmt->bindParam(':crawl_method', $crawl_method, PDO::PARAM_STR);
 				$stmt->bindParam(':status', $status, PDO::PARAM_STR);
 				$stmt->bindParam(':hardware_name', $hardware_name, PDO::PARAM_STR);
 				$stmt->bindParam(':firmware_version', $firmware_version, PDO::PARAM_STR);
@@ -101,7 +121,7 @@
 			foreach($result as $router) {
 				$new_router = new Router((int)$router['r_id'], (int)$router['r_user_id'], $router['r_hostname'],
 										 $router['r_description'], $router['r_location'], $router['r_latitude'],
-										 $router['r_longitude'], (int)$router['r_chipset_id'],
+										 $router['r_longitude'], (int)$router['r_chipset_id'], $router['r_crawl_method'],
 										 $router['r_create_date'], $router['r_update_date']);
 				$new_router->setUser(new User((int)$router['u_id'], $router['u_session_id'], $router['u_nickname'],
 											  $router['u_password'], $router['u_openid'], $router['u_api_key'],

@@ -58,7 +58,33 @@
 		}
 		
 		public function store() {
-			return false; // TODO
+			if($this->getChipsetId() != 0) {
+				try {
+					$stmt = DB::getInstance()->prepare("UPDATE chipsets SET
+																user_id = ?,
+																name = ?,
+																hardware_name = ?,
+																update_date = NOW()
+														WHERE id=?");
+					$stmt->execute(array($this->getUserId(), $this->getName(), $this->getHardwareName()));
+					return $stmt->rowCount();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			} elseif($this->getUserId() != 0) {
+				try {
+					$stmt = DB::getInstance()->prepare("INSERT INTO chipsets (user_id, name, hardware_name, create_date, update_date)
+														VALUES (?, ?, ?, NOW(), NOW())");
+					$stmt->execute(array($this->getUserId(), $this->getName(), $this->getHardwareName()));
+					return DB::getInstance()->lastInsertId();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			}
+			
+			return false;
 		}
 		
 		public function delete() {
@@ -82,7 +108,7 @@
 			return false;
 		}
 		
-		public function setname($name) {
+		public function setName($name) {
 			if(is_string($name)) {
 				$this->name = $name;
 				return true;

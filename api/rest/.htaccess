@@ -25,6 +25,8 @@
 	
 	RewriteRule ^networkinterfacelist/?$ api.php?rquest=networkinterfacelist [QSA,L]
 	
+	RewriteRule ^originator_status_list/?$ api.php?rquest=originator_status_list [QSA,L]
+	
 	RewriteRule ^routerlist/?$ api.php?rquest=routerlist [QSA,L]
 	RewriteRule ^router/([0-9]+)/eventlist/([0-9A-Za-z_-]+)/?$ api.php?rquest=eventlist&router_id=$1&action=$2 [QSA,L]
 	RewriteRule ^router/([0-9]+)/eventlist/?$ api.php?rquest=eventlist&router_id=$1 [QSA,L]

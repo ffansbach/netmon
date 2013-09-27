@@ -226,13 +226,6 @@ class RouterEditor {
 			echo $e->getTraceAsString();
 		}
 		try {
-			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_olsr WHERE router_id=?");
-			$stmt->execute(array($router_id));
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-		try {
 			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_routers WHERE router_id=?");
 			$stmt->execute(array($router_id));
 		} catch(PDOException $e) {

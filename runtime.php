@@ -219,9 +219,10 @@
 	$smarty->assign('zeit', date("d.m.Y H:i:s", time())." Uhr");
 
 	//This is used for redirection after login
+	$current_page = "";
 	if(isset($_SERVER['REQUEST_URI']) AND isset($_SERVER['SERVER_NAME']))
 		$current_page = Helper::curPageURL();
-	//only take actual site if its not an ai site, see http://ticket.freifunk-ol.de/issues/466
+	//only take actual site if its not an api site, see http://ticket.freifunk-ol.de/issues/466
 	if(strpos($current_page, "api") === false) {
 		$_SESSION['last_page'] = "";
 		if(isset($_SESSION['current_page']))

@@ -39,7 +39,7 @@
 														WHERE event_notifications.user_id = :user_id
 														ORDER BY
 															case :sort_by
-																when 'create_date' then event_notifications.create_date
+																when 'event_notification_id' then event_notifications.id
 																else NULL
 															end
 														".$this->getOrder()."

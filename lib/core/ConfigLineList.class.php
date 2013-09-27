@@ -36,8 +36,8 @@
 													FROM config
 													ORDER BY
 														case :sort_by
-															when 'create_date' then config.create_date
-															else config.id
+															when 'config_id' then config.id
+															else NULL
 														end
 													".$this->getOrder()."
 													LIMIT :offset, :limit");
