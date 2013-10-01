@@ -2,6 +2,7 @@
 	require_once('runtime.php');
 	require_once('lib/core/Router.class.php');
 	require_once('lib/core/Networkinterface.class.php');
+	require_once('lib/core/NetworkinterfaceStatus.class.php');
 	
 	if($_GET['section']=='add') {
 		$router = new Router((int)$_GET['router_id']);
@@ -22,7 +23,11 @@
 		if(permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, $router->getUserId())) {
 			$networkinterface = new Networkinterface(false, (int)$_GET['router_id'], $_POST['name']);
 			if($networkinterface->fetch()==false) {
-				$networkinterface->store();
+				$networkinterface_id = $networkinterface->store();
+				
+				$networkinterface_status = new NetworkinterfaceStatus(false, (int)Crawling::getLastEndedCrawlCycle()['id'],
+																	  (int)$networkinterface_id, (int)$_GET['router_id']);
+				$networkinterface_status->store();
 				
 				$message[] = array("Das Netzwerkinterface ".$_POST['name']." wurde hinzugefügt.", 1);
 				Message::setMessage($message);

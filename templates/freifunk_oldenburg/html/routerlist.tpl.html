@@ -48,7 +48,7 @@ $(document).ready(function() {
 						{elseif $router->getStatusdata()->getStatus()=="offline"}
 							<img src="./templates/{$template}/img/ffmap/status_down_small.png" title="offline" alt="offline">
 						{elseif $router->getStatusdata()->getStatus()=="unknown"}
-							<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
+							<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="pingbar" alt="pingbar">
 						{/if}
 					</td>
 					<td>{if $router->getChipset()->getHardwareName()}{$router->getChipset()->getHardwareName()}{else}{$router->getChipset()->getName()}{/if}</td>

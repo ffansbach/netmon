@@ -77,7 +77,8 @@
 					$stmt = DB::getInstance()->prepare("INSERT INTO chipsets (user_id, name, hardware_name, create_date, update_date)
 														VALUES (?, ?, ?, NOW(), NOW())");
 					$stmt->execute(array($this->getUserId(), $this->getName(), $this->getHardwareName()));
-					return DB::getInstance()->lastInsertId();
+					$this->setChipsetId((int)DB::getInstance()->lastInsertId());
+					return $this->getChipsetId();
 				} catch(PDOException $e) {
 					echo $e->getMessage();
 					echo $e->getTraceAsString();

@@ -27,8 +27,10 @@ class RouterEditor {
 			$message[] = array("Ein Router mit dem Hostnamen $_POST[hostname] existiert bereits, bitte wählen Sie einen anderen Hostnamen.", 2);
 			Message::setMessage($message);
 			return array("result"=>false, "router_id"=>$router_id);
-		} elseif (!preg_match('/^([a-zA-Z0-9])+$/i', $_POST['hostname'])) {
-			$message[] = array("Der Hostname enthält ein oder mehr ungültige Zeichen. Erlaubt sind [a-zA-Z0-9]", 2);
+		} elseif (!(is_string($_POST['hostname']) AND strlen($_POST['hostname'])<=255 AND preg_match("/^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/", $_POST['hostname']))) {
+			//check for valid hostname as specified in rfc 1123
+			//see http://stackoverflow.com/a/3824105
+			$message[] = array("Der Hostname ist ungültig. Erlaubt sind Hostnames nach RFC 1123.", 2);
 			Message::setMessage($message);
 			return array("result"=>false, "router_id"=>$router_id);
 		} elseif (!empty($check_router_auto_assign_login_string)) {

@@ -92,6 +92,46 @@
 			return false;
 		}
 		
+		public function store() {
+			if($this->getRouterId() != 0) {
+				try {
+					$stmt = DB::getInstance()->prepare("UPDATE routers SET
+																user_id = ?,
+																hostname = ?,
+																description = ?,
+																location = ?,
+																latitude = ?,
+																longitude = ?,
+																chipset_id = ?,
+																crawl_method = ?,
+																update_date = NOW()
+														WHERE id=?");
+					$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getDescription(), $this->getLocation(),
+										 $this->getLatitude(), $this->getLongitude(), $this->getChipsetId(), $this->getCrawlMethod(),
+										 $this->getRouterId()));
+					return $stmt->rowCount();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			} elseif($this->getUserId() != 0 AND $this->getHostname() != "" AND $this->getCrawlMethod() != "" AND $this->getChipsetId() != 0) {
+				try {
+					$stmt = DB::getInstance()->prepare("INSERT INTO routers (user_id, hostname, description, location, 
+																			 latitude, longitude, chipset_id, crawl_method,
+																			 create_date, update_date)
+														VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+					$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getDescription(), $this->getLocation(),
+										 $this->getLatitude(), $this->getLongitude(), $this->getChipsetId(), $this->getCrawlMethod()));
+					$this->setRouterId((int)DB::getInstance()->lastInsertId());
+					return $this->getRouterId();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			}
+			return false;
+		}
+		
 		public function setRouterId($router_id) {
 			if(is_int($router_id)) {
 				$this->router_id = $router_id;
@@ -109,7 +149,10 @@
 		}
 		
 		public function setHostname($hostname) {
-			if(is_string($hostname) AND preg_match('/^([a-zA-Z0-9])+$/i', $hostname)) {
+			//check for valid hostname as specified in rfc 1123
+			//see http://stackoverflow.com/a/3824105
+			$regex = "/^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/";
+			if(is_string($hostname) AND strlen($hostname)<=255 AND preg_match($regex, $hostname)) {
 				$this->hostname = $hostname;
 				return true;
 			}

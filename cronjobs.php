@@ -54,7 +54,7 @@
 			$router_status->store();
 			
 			//make router history
-			$router_status_tmp = new RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$router['id']);
+			$router_status_tmp = new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$router['id']);
 			$router_status_tmp->fetch();
 			$eventlist = $router_status->compare($router_status_tmp);
 			$eventlist->store();
@@ -143,7 +143,7 @@
 	for ($i=0; $i<=$routers_count; $i+=$range) {
 		//start an independet crawl process for each $range routers to crawl routers simultaniously
 		$return = array();
-		$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range."  &> /dev/null & echo $!";
+		$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range."  &> ".ROOT_DIR."/logs/crawler_".$i."-".($i+$range).".txt & echo $!";
 		echo "Initializing crawl process to crawl routers ".$i." to ".($i+$range)."\n";
 		echo "Running command: $cmd\n";
 		exec($cmd, $return);

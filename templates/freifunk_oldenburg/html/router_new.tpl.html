@@ -1,17 +1,31 @@
-<h1>Einen neuen Router anlegen:</h1>
+<h1>Router anlegen:</h1>
+<p>Hier kannst du einen neuen Router anlegen. Dieser wird später unter seinem Hostname in der Routerliste aufgeführt und auch
+auf der Karte angezeigt sofern du einen Standort angibst.</p>
+
 <form action="./routereditor.php?section=insert" method="POST">
+	<h2>Standort</h2>
+	<span id="section_location">
+		<div style="margin-bottom: 10px; width: 100%; overflow: hidden;" class="section_location">
+			<script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key={$google_maps_api_key}&sensor=false'></script>
+			<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
+			<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
+			<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
+			<div id="map" style="height:312px; width:100%; font-size:9pt;">
+				<script type="text/javascript">
+					new_router_map('{$community_location_longitude}', '{$community_location_latitude}', '{$community_location_zoom}', '{$template}');
+				</script>
+			</div>
+		</div>
+		<input type="hidden" id="longitude" name="longitude" size="20" maxlength="15" value="">
+		<input type="hidden" id="latitude" name="latitude" size="20" maxlength="15" value="">
+		
+		<p style="margin-bottom: 10px">
+			<b>Standortbeschreibung:</b> (optional)<br><input name="location" type="text" size="80" maxlength="50">
+		</p>
+	</span>
+	
 	<p>
-		<b>Hostname:</b> <br><input name="hostname" type="text" size="40" maxlength="50" value="{if !empty($smarty.get.hostname)}{$smarty.get.hostname}{/if}">
-	</p>
-	<br>
-
-	<p>
-		<b>Anmerkungen:</b><br><textarea name="description" cols="40" rows="2"></textarea>
-	</p>
-	<br>
-
-	<p>
-		<b>Standortsspeicherung:</b><br>
+		<b>Standortoptionen:</b><br>
 		<input onChange="
 				{literal}
 					if(document.getElementById('no_location').checked) {
@@ -31,77 +45,49 @@
 					}
 				{/literal}" name="no_location" id="no_location" type="checkbox" value="1"> Ich möchte nicht, dass Standortdaten gespeichert werden.
 	</p>
-	<br>
-
-	<p>
-		<b>Standtort</b><br>
-		<div id="section_location">
-			<div style="width: 100%; overflow: hidden;" class="section_location">
-				<script type="text/javascript" src='https://maps.googleapis.com/maps/api/js?key={$google_maps_api_key}&sensor=false'></script>
-				<script type="text/javascript" src="./lib/extern/openlayers/OpenLayers.js"></script>
-				<script type="text/javascript" src="./templates/{$template}/js/OpenStreetMap.js"></script>
-				<script type="text/javascript" src="./templates/{$template}/js/OsmFreifunkMap.js"></script>
-				
-				<div id="map" style="height:300px; width:400px; border:solid 1px black;font-size:9pt;">
-					<script type="text/javascript">
-						new_router_map('{$community_location_longitude}', '{$community_location_latitude}', '{$community_location_zoom}', '{$template}');
-					</script>
-				</div>
-			</div>
-		</div>
-		<input type="hidden" id="longitude" name="longitude" size="20" maxlength="15" value="">
-		<input type="hidden" id="latitude" name="latitude" size="20" maxlength="15" value="">
+	
+	<h2>Daten</h2>
+	<p style="margin-bottom: 10px">
+		<b>Hostname:</b> <br><input name="hostname" type="text" size="40" maxlength="50" value="{if !empty($smarty.get.hostname)}{$smarty.get.hostname}{/if}">
 	</p>
-	<br>
-
-	<p>
-		<b>Kurze Beschreibung des Standorts:</b><br>
-		<textarea name="location" cols="40" rows="2"></textarea>
+	
+	<p style="margin-bottom: 10px">
+		<b>Beschreibung zum Router:</b> (optional)<br><textarea name="description" cols="40" rows="2"></textarea>
 	</p>
-	<br>
-
-	<p>
-		<b>Chipset:</b><br>
-		Wählen Sie wenn bekannt das Chipset ihres Routers aus 
+	
+	<p style="margin-bottom: 10px">
+		<b>Chipsatz</b> (optional):<br>
 		<select name="chipset_id">
-			<option value="9999999" selected='selected'>Unbekannt</option>
-			{foreach item=chipset from=$chipsets}
-				<option value="{$chipset.id}">{$chipset.name}</option>
+			{foreach item=chipset from=$chipsetlist}
+				<option value="{$chipset->getChipsetId()}">{if $chipset->getHardwareName()}{$chipset->getHardwareName()}{/if} {if $chipset->getHardwareName() AND $chipset->getName()}({/if}{$chipset->getName()}{if $chipset->getHardwareName() AND $chipset->getName()}){/if}</option>
 			{/foreach}
 		</select>
 	</p>
-	<br>
-
+	
 	<p>
-		<b>Statusaktualisierung:</b><br>
-		Wählen Sie aus wie der Status ihres Routers aktualisiert wird.<br>
-		<b>Hinweis:</b><br>Wähle die Option <i>Der Router sendet die Daten selbstständig</i> nur, wenn du genau weißt, was du tust. Diest ist nicht die empfohlene Option!
+		<b>MAC-Adresse:</b> (benötigt für Routerzuweisung)<br>
+		<input name="router_auto_assign_login_string" type="text" size="20" maxlength="50" value="{if isset($smarty.get.router_auto_assign_login_string)}{$smarty.get.router_auto_assign_login_string}{/if}">
+	</p>
+	
+	<h2>Sonstiges</h2>
+	<p style="margin-bottom: 10px">
+		<b>Routerzuweisung:</b><br>
+		<input name="allow_router_auto_assign" type="checkbox" value="1" {if !isset($smarty.get.allow_router_auto_assign) OR $smarty.get.allow_router_auto_assign==1}checked{/if}> Ich möchte dass sich mein Router mittels seiner MAC-Adresse mit Netmon verbindet. 
+	</p>
+	
+	<p style="margin-bottom: 10px">
+		<b>Statusaktualisierung:</b> (ändere diese Option nur, wenn du weißt was du tust)<br>
 		<select name="crawl_method" onChange="getProjectInfo(this.options[this.selectedIndex].value)">
 			<option value="crawler" {if !isset($smarty.get.crawl_method) OR $smarty.get.crawl_method=='crawler'}selected='selected'{/if}>Netmon Crawlt den Router</option>
 			<option value="router" {if isset($smarty.get.crawl_method) AND $smarty.get.crawl_method=='router'}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>
 		</select>
 	</p>
-	<br>
-
-<!--	<p>
-		<b>Offlinebenachrichtigung:</b><br>
-		<input name="notify" type="checkbox" value="1" checked> Ich möchte benachrichtigt werden, wenn dieser Router <input name="notification_wait" type="text" size="1" maxlength="5" value="6"> Crawlzyklen offline ist.
-	</p>
-	<br>-->
-
-	<p>
-		<b>Automatische Routerzuweisung:</b><br>
-		<input name="allow_router_auto_assign" type="checkbox" value="1" {if !isset($smarty.get.allow_router_auto_assign) OR $smarty.get.allow_router_auto_assign==1}checked{/if}> Erlauben <input name="router_auto_assign_login_string" type="text" size="20" maxlength="50" value="{if isset($smarty.get.router_auto_assign_login_string)}{$smarty.get.router_auto_assign_login_string}{else}Mac-Adresse...{/if}"
- {if !isset($smarty.get.router_auto_assign_login_string) OR $smarty.get.router_auto_assign_login_string == 'Mac-Adresse...'}onfocus="if(this.value == this.defaultValue) this.value = '';" onblur="if(!this.value) this.value = this.defaultValue;"{/if}>
-	</p>
-	<br>
-
+	
 	{if !empty($twitter_token)}
-	<p>
+	<p style="margin-bottom: 10px">
 		<b>Twitterankündigung:</b><br>
 		<input name="twitter_notification" type="checkbox" value="1" checked> Freifunker Per Twitter über den neuen Router informieren.
 	</p>
-	<br>
 	{/if}
 	
 	<p><input type="submit" value="Absenden"></p>

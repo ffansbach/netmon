@@ -3,7 +3,8 @@
 	require_once(ROOT_DIR.'/lib/core/Eventlist.class.php');
 	require_once(ROOT_DIR.'/lib/core/OriginatorStatusList.class.php');
 	require_once(ROOT_DIR.'/lib/core/Router.class.php');
-	
+	require_once(ROOT_DIR.'/lib/core/Chipset.class.php');
+	require_once(ROOT_DIR.'/lib/core/rrdtool.class.php');
 	
 	class RouterStatus extends ObjectStatus {
 		private $router_id = 0;
@@ -134,43 +135,70 @@
 		
 		public function store() {
 			if($this->getStatusId() != 0 AND $this->getCrawlCycleId() != 0 AND $this->getRouterId() != 0 AND $this->getStatus() != "") {
-				echo "UPDATE NOT IMPLEMENTED NOW";
+				echo "UPDATE NOT IMPLEMENTED NOW (and will possibly never be implemented because it is not needed...";
 			} elseif($this->getCrawlCycleId() != 0 AND $this->getRouterId() != 0 AND $this->getStatus() != "") {
-				try {
-					$stmt = DB::getInstance()->prepare("INSERT INTO crawl_routers (router_id, crawl_cycle_id, crawl_date, status,
-																				   hostname, distname, distversion, chipset,
-																				   cpu, memory_total, memory_caching, memory_buffering,
-																				   memory_free, loadavg, processes, uptime, idletime,
-																				   local_time, batman_advanced_version, fastd_version,
-																				   kernel_version, configurator_version,
-																				   nodewatcher_version, firmware_version,
-																				   firmware_revision, openwrt_core_revision,
-																				   openwrt_feeds_packages_revision, client_count)
-														VALUES (?, ?, NOW(), ?,
-																?, ?, ?, ?,
-																?, ?, ?, ?,
-																?, ?, ?, ?, ?,
-																?, ?, ?,
-																?, ?,
-																?, ?,
-																?, ?,
-																?, ?)");
-					$stmt->execute(array($this->getRouterId(), $this->getCrawlCycleId(), $this->getStatus(),
-										 $this->getHostname(), $this->getDistname(), $this->getDistversion(), $this->getChipset(),
-										 $this->getCpu(), $this->getMemoryTotal(), $this->getMemoryCaching(), $this->getMemoryBuffering(),
-										 $this->getMemoryFree(), $this->getLoadavg(), $this->getProcesses(), $this->getUptime(), $this->getIdletime(),
-										 $this->getLocaltime(), $this->getBatmanAdvancedVersion(), $this->getFastdVersion(),
-										 $this->getKernelVersion(), $this->getConfiguratorVersion(),
-										 $this->getNodewatcherVersion(), $this->getFirmwareVersion(),
-										 $this->getFirmwareRevision(), $this->getOpenwrtCoreRevision(),
-										 $this->getOpenwrtFeedsPackagesRevision(), $this->getClientCount()));
-					return DB::getInstance()->lastInsertId();
+				//check if there already exists an crawl item in this crawl cycle
+				$tmp = new RouterStatus(false, $this->getCrawlCycleId(), $this->getRouterId());
+				if(!$tmp->fetch()) {
+					try {
+						$stmt = DB::getInstance()->prepare("INSERT INTO crawl_routers (router_id, crawl_cycle_id, crawl_date, status,
+																					   hostname, distname, distversion, chipset,
+																					   cpu, memory_total, memory_caching, memory_buffering,
+																					   memory_free, loadavg, processes, uptime, idletime,
+																					   local_time, batman_advanced_version, fastd_version,
+																					   kernel_version, configurator_version,
+																					   nodewatcher_version, firmware_version,
+																					   firmware_revision, openwrt_core_revision,
+																					   openwrt_feeds_packages_revision, client_count)
+															VALUES (?, ?, NOW(), ?,
+																	?, ?, ?, ?,
+																	?, ?, ?, ?,
+																	?, ?, ?, ?, ?,
+																	?, ?, ?,
+																	?, ?,
+																	?, ?,
+																	?, ?,
+																	?, ?)");
+						$stmt->execute(array($this->getRouterId(), $this->getCrawlCycleId(), $this->getStatus(),
+											$this->getHostname(), $this->getDistname(), $this->getDistversion(), $this->getChipset(),
+											$this->getCpu(), $this->getMemoryTotal(), $this->getMemoryCaching(), $this->getMemoryBuffering(),
+											$this->getMemoryFree(), $this->getLoadavg(), $this->getProcesses(), $this->getUptime(), $this->getIdletime(),
+											$this->getLocaltime(), $this->getBatmanAdvancedVersion(), $this->getFastdVersion(),
+											$this->getKernelVersion(), $this->getConfiguratorVersion(),
+											$this->getNodewatcherVersion(), $this->getFirmwareVersion(),
+											$this->getFirmwareRevision(), $this->getOpenwrtCoreRevision(),
+											$this->getOpenwrtFeedsPackagesRevision(), $this->getClientCount()));
+					} catch(PDOException $e) {
+						echo $e->getMessage();
+						echo $e->getTraceAsString();
+					}
+						
+					//Update RRD-Files for graphs
+					RrdTool::updateRouterMemoryHistory($this->getRouterId(), $this->getMemoryFree(), $this->getMemoryCaching(), $this->getMemoryBuffering());
+					$processes = explode("/", $this->getProcesses());
+					$processes[0] = (isset($processes[0])) ? $processes[0] : 0;
+					$processes[1] = (isset($processes[1])) ? $processes[1] : 1;
+					RrdTool::updateRouterProcessHistory($this->getRouterId(), $processes[0], $processes[1]);
 					
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
+					//Check of netmon knows the given chipset aright and if
+					//the router assigned to this status has the right chipset set
+					$router = new Router($this->getRouterId());
+					$router->fetch();
+					if($this->getStatus() == "online" AND $router->getChipset()->getName() != $this->getChipset()) {
+						$chipset = new Chipset(false, false, $this->getChipset());
+						if(!$chipset->fetch()) {
+							$chipset->setUserId($router->getUserId());
+							$chipset->store();
+						}
+						$router->setChipsetId($chipset->getChipsetId());
+						$router->store();
+					}
+					
+					//Return the ID of the inserted RouterStatus
+					return DB::getInstance()->lastInsertId();
 				}
 			}
+			return false;
 		}
 		
 		public function setRouterId($router_id) {

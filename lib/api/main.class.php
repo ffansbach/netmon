@@ -20,10 +20,6 @@ class Main {
 	public function getAllServiceIDsByServiceType($type) {
 		return(Helper::getAllServiceIDsByServiceType($type));
 	}
-
-	public function getRoutersForCrawl() {
-		return(Router_old::getRoutersForCrawl());
-	}
 }
 
 ?>

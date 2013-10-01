@@ -126,7 +126,7 @@ class Menus extends Permission {
 		$submenu = array();
 		$subsubmenu = array();
 		if (Permission::checkPermission(PERM_USER)) {
-			if(strpos($_SERVER['PHP_SELF'], "router.php")!==false) {
+			if(strpos($_SERVER['PHP_SELF'], "router.php")!==false AND !isset($_GET['section'])) {
 				$submenu[] = array('name'=>'Routeroptionen', 'href'=>'#');
 				$subsubmenu[] = array('name'=>'Konfig. bearbeiten', 'href'=>'routereditor.php?section=edit&router_id='.$_GET['router_id']);
 				$subsubmenu[] = array('name'=>'Interf. hinzufügen', 'href'=>'interface.php?section=add&router_id='.$_GET['router_id']);

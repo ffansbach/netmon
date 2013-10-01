@@ -6,6 +6,7 @@ require_once(ROOT_DIR.'/lib/core/install.class.php');
 require_once(ROOT_DIR.'/lib/core/crawling.class.php');
 require_once(ROOT_DIR.'/lib/extern/Zend/Mail.php');
 require_once(ROOT_DIR.'/lib/extern/Zend/Mail/Transport/Smtp.php');
+require_once(ROOT_DIR.'/lib/core/Chipset.class.php');
 
 if ($GLOBALS['installed']) {
 	$message[] = array("Die Intallation wurde gesperrt.", 2);
@@ -163,6 +164,10 @@ if ($GLOBALS['installed']) {
 		Config::writeConfigLine('event_notification_router_offline_crawl_cycles', 6);
 		
 		Config::writeConfigLine('community_essid', 'deinestadt.freifunk.net');
+		
+		//create a default chipset
+		$default_chipset = new Chipset(false, 1, "", "Unbekannt");
+		$default_chipset->store();
 		
 		//create an initial crawl cycle
 		$crawl_cycle_id = Crawling::newCrawlCycle(10);

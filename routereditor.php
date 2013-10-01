@@ -2,7 +2,9 @@
 	require_once('runtime.php');
 	require_once('./lib/core/router.class.php');
 	require_once('./lib/core/routereditor.class.php');
+	require_once('./lib/core/Chipsetlist.class.php');
 	require_once('./lib/core/chipsets.class.php');
+	require_once('./lib/core/ConfigLine.class.php');
 	
 	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
 	
@@ -11,11 +13,14 @@
 		if(Permission::checkPermission(PERM_USER)) {
 			$smarty->assign('message', Message::getMessage());
 
-			$smarty->assign('community_location_longitude', Config::getConfigValueByName('community_location_longitude'));
-			$smarty->assign('community_location_latitude', Config::getConfigValueByName('community_location_latitude'));
-			$smarty->assign('community_location_zoom', Config::getConfigValueByName('community_location_zoom'));
-			$smarty->assign('chipsets', Chipsets::getChipsets());
-			$smarty->assign('twitter_token', Config::getConfigValueByName('twitter_token'));
+			$smarty->assign('google_maps_api_key', ConfigLine::configByName('google_maps_api_key'));
+			$smarty->assign('community_location_longitude', ConfigLine::configByName('community_location_longitude'));
+			$smarty->assign('community_location_latitude', ConfigLine::configByName('community_location_latitude'));
+			$smarty->assign('community_location_zoom', ConfigLine::configByName('community_location_zoom'));
+			$smarty->assign('twitter_token', ConfigLine::configByName('twitter_token'));
+			
+			$chipsetlist = new Chipsetlist(false, false, false, 0, -1);
+			$smarty->assign('chipsetlist', $chipsetlist->getList());
 
 			$smarty->display("header.tpl.html");
 			$smarty->display("router_new.tpl.html");

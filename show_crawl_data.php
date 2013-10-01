@@ -5,28 +5,21 @@
 	
 	$ip = new Ip((int)$_GET['ip_id']);
 	if($ip->fetch()) {
-		if ($ip->getNetwork()->getIpv()==6) {
-			$address="[".$ip->getIp()."%".ConfigLine::configByName("network_connection_ipv6_interface")."]";
-		} elseif($ip->getNetwork()->getIpv()==4) {
-			$address = $ip->getIp();
+		$return = array();
+		if($ip->getNetwork()->getIpv()==6)
+			$command = "curl -s --max-time 10 -g http://[".$ip->getIp()."%25\$(cat /sys/class/net/".ConfigLine::configByName("network_connection_ipv6_interface")."/ifindex)]/node.data";
+		elseif($ip->getNetwork()->getIpv()==4)
+			$command = "curl -s --max-time 10 -g http://".$ip->getIp()."/node.data";
+		exec($command, $return);
+		$return_string = "";
+		foreach($return as $string) {
+			$return_string .= $string;
 		}
-	} else {
-		echo "Could not fetch Info.";
+		$smarty->assign('crawl_data', htmlentities($return_string));
 	}
 	
-	$return = array();
-	$command = "wget_return=`busybox wget -q -O - http://$address/node.data & sleep 10; kill $!`
-	echo \$wget_return";
-	
-	exec($command, $return);
-	$return_string = "";
-	foreach($return as $string) {
-		$return_string .= $string;
-	}
-	
-	if(!empty($string)) {
-		echo $string;
-	} else {
-		echo $command;
-	}
+	$smarty->assign('message', Message::getMessage());
+	$smarty->display("header.tpl.html");
+	$smarty->display("show_crawl_data.tpl.html");
+	$smarty->display("footer.tpl.html");
 ?>
