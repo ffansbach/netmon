@@ -236,6 +236,20 @@
 			return false;
 		}
 		
+		public function delete() {
+			if($this->getStatusId() != 0) {
+				try {
+ 					$stmt = DB::getInstance()->prepare("DELETE FROM crawl_routers WHERE id=?");
+					$stmt->execute(array($this->getStatusId()));
+					return $stmt->rowCount();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			}
+			return false;
+		}
+		
 		public function setRouterId($router_id) {
 			if(is_int($router_id))
 				$this->router_id = $router_id;

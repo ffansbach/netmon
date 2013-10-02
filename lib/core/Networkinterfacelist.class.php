@@ -93,6 +93,12 @@
 			}
 		}
 		
+		public function delete() {
+			foreach($this->getNetworkinterfacelist() as $networkinterface) {
+				$networkinterface->delete();
+			}
+		}
+		
 		public function setNetworkinterfacelist($networkinterfacelist) {
 			if(is_array($networkinterfacelist)) {
 				$this->networkinterfacelist = $networkinterfacelist;

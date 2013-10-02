@@ -11,7 +11,7 @@
 		private $event_notification_id = 0;
 		private $user_id = 0;
 		private $action="";
-		private $object="";
+		private $object=0;
 		private $object_data=null;
 		private $notify=0;
 		private $notified=0;
@@ -40,7 +40,7 @@
 														(id = :event_notification_id OR :event_notification_id=0) AND
 														(user_id = :user_id OR :user_id=0) AND
 														(action = :action OR :action='') AND
-														(object = :object OR :object='') AND
+														(object = :object OR :object=0) AND
 														(notify = :notify OR :notify=0) AND
 														(notified = :notified OR :notified=0) AND
 														(notification_date = :notification_date OR :notification_date=0) AND
@@ -66,7 +66,7 @@
 				$this->setEventNotificationId((int)$result['id']);
 				$this->setUserId((int)$result['user_id']);
 				$this->setAction($result['action']);
-				$this->setObject($result['object']);
+				$this->setObject((int)$result['object']);
 				$this->setNotify((int)$result['notify']);
 				$this->setNotified((int)$result['notified']);
 				$this->setNotificationDate($result['notification_date']);
@@ -106,7 +106,7 @@
 			} elseif($this->getUserId() != 0 AND $this->getAction()!="") {
 				//check if there already exists an event for the given action, object and user_id
 				$event_notification = new EventNotification(false, $this->getUserId(), $this->getAction(), $this->getObject());
-				if($event_notification->fetch) {
+				if(!$event_notification->fetch()) {
 					try {
 						$stmt = DB::getInstance()->prepare("INSERT INTO event_notifications (user_id, create_date, update_date, action, object, notify, notified, notification_date)
 															VALUES (?, NOW(), NOW(), ?, ?, ?, ?, ?)");
@@ -234,7 +234,7 @@
 		}
 		
 		public function setObject($object) {
-			if(is_string($object))
+			if(is_int($object))
 				$this->object = $object;
 		}
 		

@@ -21,7 +21,8 @@
 		}
 	} elseif (empty($_POST)) {
 		if(Permission::checkPermission(PERM_USER)) {
-			$routerlist = new Routerlist(false, 0, -1, "hostname", "asc");
+			$routerlist = new Routerlist(false, false, false, false, false, false, false, false, 0, -1);
+			$routerlist->sort("hostname", "asc");
 			$smarty->assign('routerlist', $routerlist->getRouterlist());
 			
 			$event_notification_list = new EventNotificationList($_SESSION['user_id']);
@@ -35,8 +36,12 @@
 		}
 	} else {
 		if(Permission::checkPermission(PERM_USER)) {
-			$event_notification = new EventNotification(false, (int)$_SESSION['user_id'], $_POST['action'], $_POST['object'], true);
-			$event_notification->store();
+			$event_notification = new EventNotification(false, (int)$_SESSION['user_id'], $_POST['action'], (int)$_POST['object'], true);
+			if($event_notification->store())
+				$message[] = array('Die Benachrichtigung wurde eingetragen.', 1);
+			else
+				$message[] = array('Die Benachrichtigung konnte nicht eingetragen werden.', 2);
+			Message::setMessage($message);
 			header('Location: ./event_notifications.php');
 		} else {
 			Permission::denyAccess(PERM_USER);

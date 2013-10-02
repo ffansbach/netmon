@@ -1,6 +1,8 @@
 <?php
 	require_once(ROOT_DIR.'/lib/core/Object.class.php');
 	require_once(ROOT_DIR.'/lib/core/Networkinterfacelist.class.php');
+	require_once(ROOT_DIR.'/lib/core/EventNotificationList.class.php');
+	require_once(ROOT_DIR.'/lib/core/OriginatorStatusList.class.php');
 	require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
 	require_once(ROOT_DIR.'/lib/core/RouterStatusList.class.php');
 	require_once(ROOT_DIR.'/lib/core/User.class.php');
@@ -124,6 +126,65 @@
 										 $this->getLatitude(), $this->getLongitude(), $this->getChipsetId(), $this->getCrawlMethod()));
 					$this->setRouterId((int)DB::getInstance()->lastInsertId());
 					return $this->getRouterId();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			}
+			return false;
+		}
+		
+		public function delete() {
+			if($this->getRouterId() != 0) {
+				//delete all interfaces
+				$networkinterfacelist = new Networkinterfacelist(false, $this->getRouterId());
+				$networkinterfacelist->delete();
+				
+				//delete originator statusses
+				$originator_status_list = new OriginatorStatusList($this->getRouterId());
+				$originator_status_list->delete();
+				
+				//delete batman advanced interfaces
+				try {
+					$stmt = DB::getInstance()->prepare("DELETE FROM crawl_batman_advanced_interfaces WHERE router_id=?");
+					$stmt->execute(array($this->getRouterId()));
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+				
+				//delete router statusses
+				$router_status_list = new RouterStatusList($this->getRouterId());
+				$router_status_list->delete();
+				
+				//delete event notifications (we need to delete all notifications that users created for this router
+				//thats why we need a list here)
+				$event_notification = new EventNotification(false, "router_offline", $this->getRouterId());
+				$event_notification_list->delete();
+				
+				//delete splash client data
+				try {
+					$stmt = DB::getInstance()->prepare("DELETE FROM variable_splash_clients WHERE router_id=?");
+					$stmt->execute(array($this->getRouterId()));
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+				
+				//delete router adds
+				try {
+					$stmt = DB::getInstance()->prepare("DELETE FROM router_adds WHERE router_id=?");
+					$stmt->execute(array($this->getRouterId()));
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+				
+				//delete router
+				try {
+ 					$stmt = DB::getInstance()->prepare("DELETE FROM routers WHERE id=?");
+					$stmt->execute(array($this->getRouterId()));
+					return $stmt->rowCount();
 				} catch(PDOException $e) {
 					echo $e->getMessage();
 					echo $e->getTraceAsString();

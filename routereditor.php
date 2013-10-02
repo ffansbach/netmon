@@ -1,6 +1,7 @@
 <?php
 	require_once('runtime.php');
 	require_once('./lib/core/router.class.php');
+	require_once('./lib/core/Router.class.php');
 	require_once('./lib/core/routereditor.class.php');
 	require_once('./lib/core/Chipsetlist.class.php');
 	require_once('./lib/core/chipsets.class.php');
@@ -110,12 +111,21 @@
 	}
 
 	if ($_GET['section'] == "insert_delete") {
-		$router_data = Router_old::getRouterInfo($_GET['router_id']);
+		$router = new Router((int)$_GET['router_id']);
+		$router->fetch();
 		//Root and owning user can delete router
-		if(permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, (int)$router_data['user_id'])) {
+		if(permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, $router->getUserId())) {
 			if($_POST['really_delete']==1) {
-				$insert_result = RouterEditor::insertDeleteRouter($_GET['router_id']);
-				header('Location: ./user.php?user_id='.$_SESSION['user_id']);
+				if($router->delete()) {
+					$message[] = array("Der Router ".$router->getHostname()." wurde entfernt.", 1);
+					Message::setMessage($message);
+					die();
+					header('Location: ./user.php?user_id='.$_SESSION['user_id']);
+				} else {
+					$message[] = array("Der Router konnte nicht entfernt werden.", 2);
+					Message::setMessage($message);
+					header('Location: ./routereditor.php?section=edit&router_id='.$_GET['router_id']);
+				}
 			} else {
 				$message[] = array("Zum löschen des Routers ist eine Bestätigung erforderlich!", 2);
 				Message::setMessage($message);

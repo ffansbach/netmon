@@ -70,6 +70,12 @@
 			}
 		}
 		
+		public function delete() {
+			foreach($this->getRouterStatuslist() as $item) {
+				$item->delete();
+			}
+		}
+		
 		public function getRouterStatuslist() {
 			return $this->router_status_list;
 		}

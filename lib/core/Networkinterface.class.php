@@ -2,6 +2,7 @@
 	require_once(ROOT_DIR.'/lib/core/Object.class.php');
 	require_once(ROOT_DIR.'/lib/core/Iplist.class.php');
 	require_once(ROOT_DIR.'/lib/core/NetworkinterfaceStatus.class.php');
+	require_once(ROOT_DIR.'/lib/core/NetworkinterfaceStatusList.class.php');
 	require_once(ROOT_DIR.'/lib/core/User.class.php');
 	
 	class Networkinterface extends Object {
@@ -91,11 +92,15 @@
 		
 		public function delete() {
 			if($this->getNetworkinterfaceId() != 0) {
-				//first delete all assigned ip addresses
+				//delete all assigned ip addresses
 				$iplist = new Iplist($this->getNetworkinterfaceId());
 				$iplist->delete();
 				
-				//then delete interface
+				//delete all interface crawl data
+				$networkinterfacestatuslist = new NetworkinterfaceStatusList($this->getNetworkinterfaceId());
+				$networkinterfacestatuslist->delete();
+				
+				//delete interface
 				try {
  					$stmt = DB::getInstance()->prepare("DELETE FROM interfaces WHERE id=?");
 					$stmt->execute(array($this->getNetworkinterfaceId()));

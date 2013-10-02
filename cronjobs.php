@@ -23,16 +23,7 @@
 	echo "Organizing crawl cycles\n";
 	//Get crawl cycle data
 	$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-	$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle();
-	
-	//Create new crawl cycle and close old crawl cycle
 	if(empty($actual_crawl_cycle) OR strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
-		echo "Close old crawl cycle and create new one\n";
-		//Create new crawl cycle
-		Crawling::newCrawlCycle();
-		//Close old Crawl cycle
-		Crawling::closeCrawlCycle($actual_crawl_cycle['id']);
-		
 		echo "Create crawl data for offline routers\n";
 		//Set all routers in old crawl cycle that have not been crawled yet to status offline
 		try {
@@ -74,6 +65,13 @@
 																  (int)$interface['id'], (int)$interface['router_id']);
 			$networkinterface_status->store();
 		}
+		
+		echo "Close old crawl cycle and create new one\n";
+		//Create new crawl cycle and close old crawl cycle
+		//Create new crawl cycle
+		Crawling::newCrawlCycle();
+		//Close old Crawl cycle
+		Crawling::closeCrawlCycle($actual_crawl_cycle['id']);
 		
 		echo "Create graph statistics\n";
 		//Make statistic graphs

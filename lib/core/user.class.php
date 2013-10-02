@@ -22,7 +22,7 @@
 
 require_once(ROOT_DIR.'/lib/core/login.class.php');
 require_once(ROOT_DIR.'/lib/core/router.class.php');
-require_once(ROOT_DIR.'/lib/core/routereditor.class.php');
+require_once(ROOT_DIR.'/lib/core/Routerlist.class.php');
 require_once(ROOT_DIR.'/lib/extern/phpass/PasswordHash.php');
 
 /**
@@ -197,13 +197,11 @@ class User_old {
 	public function userDelete($user_id) {
 		$user_data = User_old::getUserByID($user_id);
 	
-		//Delete routers (and with the routers you delete interfaces, ips and services of the user)
-		foreach(Router_old::getRouterListByUserId($user_id) as $router) {
-			RouterEditor::insertDeleteRouter($router['router_id']);
-		}
+		//Delete routers
+		$routerlist = new Routerlist(false, (int)$user_id);
+		$routerlist->delete();
 		
-		//TODO: Delete ip´s, services etc
-
+		//TODO: delete services
 		
 		//If the user is logged in then logout the user before deleting him to get rid of session information an coockies
 		if($user_id == $_SESSION['user_id'])

@@ -72,6 +72,12 @@
 			}
 		}
 		
+		public function delete() {
+			foreach($this->getOriginatorStatusList() as $item) {
+				$item->delete();
+			}
+		}
+		
 		public function getOriginatorStatusList() {
 			return $this->originator_status_list;
 		}

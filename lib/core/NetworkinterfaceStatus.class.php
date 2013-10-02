@@ -141,6 +141,20 @@
 			return false;
 		}
 		
+		public function delete() {
+			if($this->getStatusId() != 0) {
+				try {
+ 					$stmt = DB::getInstance()->prepare("DELETE FROM crawl_interfaces WHERE id=?");
+					$stmt->execute(array($this->getStatusId()));
+					return $stmt->rowCount();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			}
+			return false;
+		}
+		
 		public function setNetworkinterfaceId($networkinterface_id) {
 			if(is_int($networkinterface_id))
 				$this->networkinterface_id = $networkinterface_id;

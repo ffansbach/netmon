@@ -153,8 +153,46 @@
 			}
 		}
 		
+		public function delete() {
+			foreach($this->getRouterlist() as $item) {
+				$item->delete();
+			}
+		}
+		
 		public function getRouterlist() {
 			return $this->routerlist;
+		}
+		
+		public function setRouterlist($list) {
+			if(is_array($list)) {
+				$this->routerlist = $list;
+			}
+		}
+		
+		public function sort($sort, $order) {
+			$tmp = array();
+			
+			$list = $this->getRouterlist();
+			foreach($list as $key=>$item) {
+				switch($sort) {
+					case 'hostname':		$tmp[$key] = $item->getHostname();
+											break;
+				}
+			}
+			
+			if($order == 'asc')
+				array_multisort($tmp, SORT_ASC, $list);
+			elseif($order == 'desc')
+				array_multisort($tmp, SORT_DESC, $list);
+			
+			$new_list = array();
+			for($i=0; $i<count($list); $i++) {
+				if(!empty($list[$i])) {
+					$new_list[] = $list[$i];
+				}
+			}
+			
+			$this->setRouterlist($new_list);
 		}
 		
 		public function getDomXMLElement($domdocument) {
