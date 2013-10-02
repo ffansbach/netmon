@@ -32,7 +32,6 @@
 	$interfaces_used_for_crawling = array("br-mesh", "floh_fix", "tata_fix"); //use the ip adresses of these interfaces for crawling
 	
 	$actual_crawl_cycle = Crawling::getActualCrawlCycle()['id'];
-	$last_endet_crawl_cycle = Crawling::getLastEndedCrawlCycle()['id'];
 	
 	echo "Crawling routers $router_offset-$router_limit (offset-limit) with the following options:\n";
 	echo "	ping_count: $ping_count\n";
@@ -41,7 +40,6 @@
 	echo "	network_connection_ipv6_interface: $network_connection_ipv6_interface\n";
 	echo "	interfaces_used_for_crawling: "; foreach($interfaces_used_for_crawling as $iface) echo $iface; echo "\n";
 	echo "	actual_crawl_cycle: ".$actual_crawl_cycle."\n";
-	echo "	last_endet_crawl_cycle: ".$last_endet_crawl_cycle."\n";
 	
 	//fetch all routers that need to be crawled by a crawler. Respect offset and limit!
 	$routerlist = new Routerlist(false, false, "crawler", false, false, false, false, false,
@@ -121,13 +119,6 @@
 														$data['system_data']['firmware_revision'], $data['system_data']['kernel_version'], $data['system_data']['configurator_version'], 
 														$data['system_data']['nodewatcher_version'], $data['system_data']['fastd_version'], $data['system_data']['batman_advanced_version']);
 						if($router_status->store()) {
-							echo "			Inserting Router History into DB\n";
-							//create router history
-							$last_router_status = new RouterStatus(false, (int)$last_endet_crawl_cycle, $router->getRouterId());
-							$last_router_status->fetch();
-							$eventlist = $router_status->compare($last_router_status);
-							$eventlist->store();
-							
 							echo "			Inserting all other Data into DB\n";
 							Crawl::insertCrawlData($data);
 						} else {

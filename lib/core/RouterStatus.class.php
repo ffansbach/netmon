@@ -180,10 +180,45 @@
 					$processes[1] = (isset($processes[1])) ? $processes[1] : 1;
 					RrdTool::updateRouterProcessHistory($this->getRouterId(), $processes[0], $processes[1]);
 					
-					//Check of netmon knows the given chipset aright and if
-					//the router assigned to this status has the right chipset set
+					//create events
+					$eventlist = new Eventlist();
 					$router = new Router($this->getRouterId());
 					$router->fetch();
+					
+					$last_router_status = new RouterStatus(false, (int)Crawling::getLastEndedCrawlCycle()['id'], $this->getRouterId());
+					if($last_router_status->fetch()) {
+						if ($this->getStatus() AND $last_router_status->getStatus() AND $this->getStatus()!=$last_router_status->getStatus()) {
+							$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "status", array('from'=>$last_router_status->getStatus(), 'to'=>$this->getStatus(), 'hostname'=>$router->getHostname())));
+						}
+						if($this->getUptime() AND $last_router_status->getUptime() AND $this->getUptime()<$last_router_status->getUptime()) {
+							$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "reboot", array('hostname'=>$router->getHostname())));
+						}
+						if ($this->getHostname() AND $last_router_status->getHostname() AND $this->getHostname()!=$last_router_status->getHostname()) {
+							$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "hostname", array('from'=>$last_router_status->getHostname(), 'to'=>$this->getHostname(), 'hostname'=>$router->getHostname())));
+						}
+						if ($this->getChipset() AND $last_router_status->getChipset() AND $this->getChipset()!=$last_router_status->getChipset()) {
+							$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "chipset", array('from'=>$last_router_status->getChipset(), 'to'=>$this->getChipset(), 'hostname'=>$router->getHostname())));
+						}
+						if ($this->getNodewatcherVersion() AND $last_router_status->getNodewatcherVersion() AND $this->getNodewatcherVersion()!=$last_router_status->getNodewatcherVersion()) {
+							$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "nodewatcher_version", array('from'=>$last_router_status->getNodewatcherVersion(), 'to'=>$this->getNodewatcherVersion(), 'hostname'=>$router->getHostname())));
+						}
+						if ($this->getFirmwareVersion() AND $last_router_status->getFirmwareVersion() AND $this->getFirmwareVersion()!=$last_router_status->getFirmwareVersion()) {
+							$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "firmware_version", array('from'=>$last_router_status->getFirmwareVersion(), 'to'=>$this->getFirmwareVersion(), 'hostname'=>$router->getHostname())));
+						}
+						if ($this->getBatmanAdvancedVersion() AND $last_router_status->getBatmanAdvancedVersion() AND $this->getBatmanAdvancedVersion()!=$last_router_status->getBatmanAdvancedVersion()) {
+							$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "batman_advanced_version", array('from'=>$last_router_status->getBatmanAdvancedVersion(), 'to'=>$this->getBatmanAdvancedVersion(), 'hostname'=>$router->getHostname())));
+						}
+						if ($this->getDistversion() AND $last_router_status->getDistversion() AND $this->getDistversion()!=$last_router_status->getDistversion()) {
+							$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "distversion", array('from'=>$last_router_status->getDistversion(), 'to'=>$this->getDistversion(), 'hostname'=>$router->getHostname())));
+						}
+						if ($this->getDistname() AND $last_router_status->getDistname() AND $this->getDistname()!=$last_router_status->getDistname()) {
+							$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "distname", array('from'=>$last_router_status->getDistname(), 'to'=>$this->getDistname(), 'hostname'=>$router->getHostname())));
+						}
+					}
+					$eventlist->store();
+					
+					//Check if netmon already knows the given chipset and if
+					//the router assigned to this status has the right chipset set
 					if($this->getStatus() == "online" AND $router->getChipset()->getName() != $this->getChipset()) {
 						$chipset = new Chipset(false, false, $this->getChipset());
 						if(!$chipset->fetch()) {
@@ -433,46 +468,6 @@
 		
 		public function getBatmanAdvancedVersion() {
 			return $this->batman_advanced_version;
-		}
-		
-		public function compare($router_status) {
-			if($router_status INSTANCEOF RouterStatus) {
-				$eventlist = new Eventlist();
-				$router = new Router((int)$this->getRouterId());
-				$router->fetch();
-				
-				if ($this->getStatus() AND $router_status->getStatus() AND $this->getStatus()!=$router_status->getStatus()) {
-					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "status", array('from'=>$router_status->getStatus(), 'to'=>$this->getStatus(), 'hostname'=>$router->getHostname())));
-				}
-				if($this->getUptime() AND $router_status->getUptime() AND $this->getUptime()<$router_status->getUptime()) {
-					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "reboot", array('hostname'=>$router->getHostname())));
-				}
-				if ($this->getHostname() AND $router_status->getHostname() AND $this->getHostname()!=$router_status->getHostname()) {
-					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "hostname", array('from'=>$router_status->getHostname(), 'to'=>$this->getHostname(), 'hostname'=>$router->getHostname())));
-				}
-				if ($this->getChipset() AND $router_status->getChipset() AND $this->getChipset()!=$router_status->getChipset()) {
-					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "chipset", array('from'=>$router_status->getChipset(), 'to'=>$this->getChipset(), 'hostname'=>$router->getHostname())));
-				}
-				if ($this->getNodewatcherVersion() AND $router_status->getNodewatcherVersion() AND $this->getNodewatcherVersion()!=$router_status->getNodewatcherVersion()) {
-					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "nodewatcher_version", array('from'=>$router_status->getNodewatcherVersion(), 'to'=>$this->getNodewatcherVersion(), 'hostname'=>$router->getHostname())));
-				}
-				if ($this->getFirmwareVersion() AND $router_status->getFirmwareVersion() AND $this->getFirmwareVersion()!=$router_status->getFirmwareVersion()) {
-					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "firmware_version", array('from'=>$router_status->getFirmwareVersion(), 'to'=>$this->getFirmwareVersion(), 'hostname'=>$router->getHostname())));
-				}
-				if ($this->getBatmanAdvancedVersion() AND $router_status->getBatmanAdvancedVersion() AND $this->getBatmanAdvancedVersion()!=$router_status->getBatmanAdvancedVersion()) {
-					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "batman_advanced_version", array('from'=>$router_status->getBatmanAdvancedVersion(), 'to'=>$this->getBatmanAdvancedVersion(), 'hostname'=>$router->getHostname())));
-				}
-				if ($this->getDistversion() AND $router_status->getDistversion() AND $this->getDistversion()!=$router_status->getDistversion()) {
-					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "distversion", array('from'=>$router_status->getDistversion(), 'to'=>$this->getDistversion(), 'hostname'=>$router->getHostname())));
-				}
-				if ($this->getDistname() AND $router_status->getDistname() AND $this->getDistname()!=$router_status->getDistname()) {
-					$eventlist->add(new Event(false, false, "router", $this->getRouterId(), "distname", array('from'=>$router_status->getDistname(), 'to'=>$this->getDistname(), 'hostname'=>$router->getHostname())));
-				}
-				
-				return $eventlist;
-			} else {
-				return false;
-			}
 		}
 		
 		public function getDomXMLElement($domdocument) {

@@ -24,9 +24,6 @@
 		$router->fetch();
 		$smarty->assign('router', $router);
 		
-		echo "status crawl cycle id: ".$router->getStatusdata()->getCrawlCycleId()."<br>";
-		echo "last endet: ".Crawling::getLastEndedCrawlCycle()['id'];
-		
 		$networkinterfacelist = new Networkinterfacelist(false, $router->getRouterId(),
 														 0, -1, 'name', 'asc');
 		$smarty->assign('networkinterfacelist', $networkinterfacelist);

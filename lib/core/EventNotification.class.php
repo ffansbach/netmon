@@ -2,6 +2,7 @@
 	require_once(ROOT_DIR.'/lib/core/Object.class.php');
 	require_once(ROOT_DIR.'/lib/core/Router.class.php');
 	require_once(ROOT_DIR.'/lib/core/Routerlist.class.php');
+	require_once(ROOT_DIR.'/lib/core/RouterStatusList.class.php');
 	require_once(ROOT_DIR.'/lib/core/User.class.php');
 	require_once(ROOT_DIR.'/lib/core/ConfigLine.class.php');
 	require_once(ROOT_DIR.'/lib/extern/xmpphp/XMPP.php');
@@ -138,32 +139,33 @@
 				//check which event to test
 				if($this->getAction() == 'router_offline') {
 					$crawl_cycles = ConfigLine::configByName('event_notification_router_offline_crawl_cycles');
+					
 					$router = new Router((int)$this->getObject());
 					$router->fetch();
-					
-					$online = false;
-					$statusdata_history = $router->getStatusdataHistory()->getRouterStatusList();
-					foreach($statusdata_history as $key=>$statusdata) {
-						if ($statusdata->getStatus() == 'online') {
-							$online = true;
-							break;
-						} elseif($key>=$crawl_cycles) {
-							break;
+					$statusdata_history = new RouterStatusList($router->getRouterId(), 0, (int)$crawl_cycles, "status_id", "desc");
+					if($statusdata_history->getTotalCount()>=$crawl_cycles) {
+						$statusdata_history = $statusdata_history->getRouterStatuslist();
+						$online = false;
+						foreach($statusdata_history as $key=>$statusdata) {
+							if ($statusdata->getStatus() == 'online') {
+								$online = true;
+								break;
+							}
 						}
-					}
-					
-					if(!$online AND $this->getNotified() == 0) {
-						//if router is marked as offline in each of the $crawl_cycles last crawl cycles, then
-						//send a notification
-						$this->notifyRouterOffline($router, $statusdata_history[$crawl_cycles]->getCreateDate());
-						//store into database that the router has been notified
-						$this->setNotified(1);
-						$this->setNotificationDate(time());
-						$this->store();
-					} elseif($online AND $this->getNotified() == 1) {
-						//if the router has been notified but is not offline anymore, then reset notification
-						$this->setNotified(0);
-						$this->store();
+						
+						if(!$online AND $this->getNotified() == 0) {
+							//if router is marked as offline in each of the $crawl_cycles last crawl cycles, then
+							//send a notification
+							$this->notifyRouterOffline($router, $statusdata_history[$crawl_cycles-1]->getCreateDate());
+							//store into database that the router has been notified
+							$this->setNotified(1);
+							$this->setNotificationDate(time());
+							$this->store();
+						} elseif($online AND $this->getNotified() == 1) {
+							//if the router has been notified but is not offline anymore, then reset notification
+							$this->setNotified(0);
+							$this->store();
+						}
 					}
 				} elseif($this->getAction() == 'network_down') {
 				
@@ -173,6 +175,7 @@
 		
 		public function notifyRouterOffline($router, $datetime) {
 			$user = new User($router->getUserId());
+			$user->fetch();
 
 			$message = "Hallo ".$user->getNickname().",\n\n";
 			$message .= "dein Router ".$router->getHostname()." ist seit dem ".date("d.m H:i", $datetime)." Uhr offline.\n";
@@ -186,7 +189,6 @@
 		
 		public function sendNotification($user, $subject, $message) {
 			if($user->getNotificationMethod() == 'jabber') {
-
 				$conn = new XMPPHP_XMPP(ConfigLine::configByName('jabber_server'), 5222, ConfigLine::configByName('jabber_username'), ConfigLine::configByName('jabber_password'), 'xmpphp', $server=null, $printlog=false, $loglevel=XMPPHP_Log::LEVEL_INFO);
 				try {
 					$conn->connect();

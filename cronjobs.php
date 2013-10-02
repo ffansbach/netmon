@@ -52,12 +52,6 @@
 			//store offline crawl for offline router
 			$router_status = New RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$router['id'], "offline");
 			$router_status->store();
-			
-			//make router history
-			$router_status_tmp = new RouterStatus(false, (int)$last_endet_crawl_cycle['id'], (int)$router['id']);
-			$router_status_tmp->fetch();
-			$eventlist = $router_status->compare($router_status_tmp);
-			$eventlist->store();
 		}
 		
 		echo "Create crawl data for offline interfaces\n";
@@ -153,10 +147,10 @@
 	/**
 	 * Notifications
 	 */
-	/*
+	
 	echo "Sending notifications\n";
 	$event_notification_list = new EventNotificationList();
-	$event_notification_list->notify();*/
+	$event_notification_list->notify();
 	
 	echo "Done\n";
 ?>
