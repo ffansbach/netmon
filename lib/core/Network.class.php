@@ -1,6 +1,7 @@
 <?php
 	require_once(ROOT_DIR.'/lib/core/Object.class.php');
 	require_once(ROOT_DIR.'/lib/core/Ip.class.php');
+	require_once(ROOT_DIR.'/lib/core/Iplist.class.php');
 	
 	class Network extends Object {
 		private $network_id = 0;
@@ -163,6 +164,18 @@
 			return $this->netmask;
 		}
 		
+		public function getFirstUsableIp() {
+		
+		}
+		
+		public function getLastUsableIp() {
+		
+		}
+		
+		public function getIplist() {
+			return new Iplist(false, $this->getNetworkId());
+		}
+		
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('network');
 			$domxmlelement->appendChild($domdocument->createElement("network_id", $this->getNetworkId()));
@@ -171,6 +184,7 @@
 			$domxmlelement->appendChild($domdocument->createElement("ipv", $this->getIpv()));
 			$domxmlelement->appendChild($domdocument->createElement("netmask", $this->getNetmask()));
 			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
+			$domxmlelement->appendChild($domdocument->createElement("update_date", $this->getUpdateDate()));
 			return $domxmlelement;
 		}
 		

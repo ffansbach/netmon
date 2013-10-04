@@ -1,12 +1,73 @@
 <IfModule mod_rewrite.c>
-    RewriteEngine On
+	RewriteEngine On
+	
+	###############
+	# ROUTER      #
+	###############
+	# api/rest/router/router_id
+	RewriteRule ^router/([0-9]+)/?$ api.php?rquest=router&id=$1 [QSA,L]
+	
+	################
+	# ROUTERLIST   #
+	################
+	# routerlist containig all routers (api/rest/routerlist)
+	RewriteRule ^routerlist/?$ api.php?rquest=routerlist [QSA,L]
+	#routerlist containing all routers of a special user (api/rest/user/user_id/routerlist)
+	RewriteRule ^user/([0-9]+)/routerlist/?$ api.php?rquest=routerlist&user_id=$1 [QSA,L]
+	
+	####################
+	# NETWORKINTERFACE #
+	####################
+	# api/rest/networkinterfacelist/networkinterface_id
+	RewriteRule ^networkinterface/([0-9]+)/?$ api.php?rquest=networkinterface&id=$1 [QSA,L]
+	
+	########################
+	# NETWORKINTERFACELIST #
+	########################
+	# networkinterfacelist containig all networkinterfaces (api/rest/networkinterfacelist)
+	RewriteRule ^networkinterfacelist/?$ api.php?rquest=networkinterfacelist [QSA,L]
+	# networkinterfacelist containig all networkinterfaces of a special router (api/rest/router_id/networkinterfacelist)
+	RewriteRule ^router/([0-9]+)/networkinterfacelist/?$ api.php?rquest=networkinterfacelist&router_id=$1 [QSA,L]
+	
+	###########
+	# IP      #
+	###########
+	# api/rest/ip/ip_id
+	RewriteRule ^ip/([0-9]+)/?$ api.php?rquest=ip&id=$1 [QSA,L]
+	
+	###########
+	# IPLIST  #
+	###########
+	# iplist containing all ip adresses (api/rest/iplist)
+	RewriteRule ^iplist/?$ api.php?rquest=iplist [QSA,L]
+	# iplist containing all ip adresses of a special networkinterface (api/rest/networkinterface/networkinterface_id/iplist)
+	RewriteRule ^networkinterface/([0-9]+)/iplist/?$ api.php?rquest=iplist&interface_id=$1 [QSA,L]
+	# iplist containing all ip adresses of a special network (api/rest/network/network_id/iplist)
+	RewriteRule ^network/([0-9]+)/iplist/?$ api.php?rquest=iplist&network_id=$1 [QSA,L]
+	
+	###########
+	# NETWORK #
+	###########
+	# api/rest/network/network_id
+	RewriteRule ^network/([0-9]+)/?$ api.php?rquest=network&network_id=$1 [QSA,L]
+	
+	################
+	# NETWORKLIST  #
+	################
+	# networklist containing all networks (api/rest/networklist)
+	RewriteRule ^networklist/?$ api.php?rquest=networklist [QSA,L]
+	
+	RewriteRule ^router/([0-9]+)/eventlist/([0-9A-Za-z_-]+)/?$ api.php?rquest=eventlist&router_id=$1&action=$2 [QSA,L]
+	RewriteRule ^router/([0-9]+)/eventlist/?$ api.php?rquest=eventlist&router_id=$1 [QSA,L]
 
+	RewriteRule ^router/([0-9]+)/originator_status_list/?$ api.php?rquest=originator_status_list&router_id=$1 [QSA,L]
+
+	
 	RewriteRule ^eventlist/([0-9A-Za-z_-]+)/?$ api.php?rquest=eventlist&action=$1 [L]
 	RewriteRule ^eventlist/?$ api.php?rquest=eventlist [QSA,L]
 	RewriteRule ^event/([0-9]+)/?$ api.php?rquest=event&id=$1 [QSA,L]
 	
-	RewriteRule ^iplist/?$ api.php?rquest=iplist [QSA,L]
-	RewriteRule ^ip/([0-9]+)/?$ api.php?rquest=ip&id=$1 [QSA,L]
+
 	
 	RewriteRule ^dns_zone_list/?$ api.php?rquest=dns_zone_list [QSA,L]
 	RewriteRule ^dns_zone/([0-9]+)/?$ api.php?rquest=dns_zone&id=$1 [QSA,L]
@@ -14,26 +75,12 @@
 	RewriteRule ^dns_ressource_record_list/?$ api.php?rquest=dns_ressource_record_list [QSA,L]
 	RewriteRule ^dns_ressource_record/([0-9]+)/?$ api.php?rquest=dns_ressource_record&id=$1 [QSA,L]
 	
-	RewriteRule ^networklist/?$ api.php?rquest=networklist [QSA,L]
-	
 	RewriteRule ^configlist/?$ api.php?rquest=configlist [QSA,L]
 	RewriteRule ^config/([0-9]+)/?$ api.php?rquest=config&id=$1 [QSA,L]
 	RewriteRule ^config/([0-9A-Za-z_-]+)/?$ api.php?rquest=config&name=$1 [QSA,L]
 	
-	RewriteRule ^networkinterface/([0-9]+)/iplist/?$ api.php?rquest=iplist&interface_id=$1 [QSA,L]
-	RewriteRule ^networkinterface/([0-9]+)/?$ api.php?rquest=networkinterface&id=$1 [QSA,L]
-	
-	RewriteRule ^networkinterfacelist/?$ api.php?rquest=networkinterfacelist [QSA,L]
-	
 	RewriteRule ^originator_status_list/?$ api.php?rquest=originator_status_list [QSA,L]
 	
-	RewriteRule ^routerlist/?$ api.php?rquest=routerlist [QSA,L]
-	RewriteRule ^router/([0-9]+)/eventlist/([0-9A-Za-z_-]+)/?$ api.php?rquest=eventlist&router_id=$1&action=$2 [QSA,L]
-	RewriteRule ^router/([0-9]+)/eventlist/?$ api.php?rquest=eventlist&router_id=$1 [QSA,L]
-	
-	RewriteRule ^router/([0-9]+)/networkinterfacelist/?$ api.php?rquest=networkinterfacelist&router_id=$1 [QSA,L]
-	RewriteRule ^router/([0-9]+)/originator_status_list/?$ api.php?rquest=originator_status_list&router_id=$1 [QSA,L]
-	
-	RewriteRule ^router/([0-9]+)/?$ api.php?rquest=router&id=$1 [QSA,L]
-	RewriteRule ^user/([0-9]+)/routerlist/?$ api.php?rquest=routerlist&user_id=$1 [QSA,L]
+
+
 </IfModule>

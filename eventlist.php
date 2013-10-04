@@ -17,7 +17,7 @@ if(empty($_POST['event_count'])) {
 
 $smarty->assign('event_count', $event_count);
 $eventlist = new Eventlist();
-$eventlist->init(false, false, false, 0, $event_count, 'create_date', 'desc');
+$eventlist->init(false, false, false, 0, $event_count, 'event_id', 'desc');
 $smarty->assign('eventlist', $eventlist->getEventlist());
 
 /** Display templates **/

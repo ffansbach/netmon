@@ -87,7 +87,7 @@
 														WHERE events.object=:object AND events.object_id=:object_id
 														ORDER BY
 															case :sort_by
-																when 'create_date' then events.create_date
+																when 'event_id' then events.id
 																else NULL
 															end
 														".$this->getOrder()."
@@ -126,7 +126,7 @@
 														WHERE events.object=:object
 														ORDER BY
 															case :sort_by
-																when 'create_date' then events.create_date
+																when 'event_id' then events.id
 																else NULL
 															end
 														".$this->getOrder()."
@@ -164,7 +164,7 @@
 														WHERE events.action=:action
 														ORDER BY
 															case :sort_by
-																when 'create_date' then events.create_date
+																when 'event_id' then events.id
 																else NULL
 															end
 														".$this->getOrder()."
@@ -200,7 +200,7 @@
 														FROM events
 														ORDER BY
 															case :sort_by
-																when 'create_date' then events.create_date
+																when 'event_id' then events.id
 																else NULL
 															end
 														".$this->getOrder()."

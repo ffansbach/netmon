@@ -51,7 +51,7 @@
 				$this->setName($result['name']);
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
-				$this->setStatusdata($result['networkinterface_id']);
+				$this->setStatusdata((int)$result['networkinterface_id']);
 				return true;
 			}
 			
@@ -200,6 +200,7 @@
 			$domxmlelement->appendChild($domdocument->createElement("name", $this->getName()));
 			$domxmlelement->appendChild($domdocument->createElement("mac_addr", $this->getMacAddr()));
 			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
+			$domxmlelement->appendChild($domdocument->createElement("update_date", $this->getUpdateDate()));
 			$domxmlelement->appendChild($this->getStatusdata()->getDomXMLElement($domdocument));
 			return $domxmlelement;
 		}

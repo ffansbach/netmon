@@ -31,23 +31,18 @@
 														(crawl_cycle_id = :crawl_cycle_id OR :crawl_cycle_id=0) AND
 														(object = :object OR :object='') AND
 														(object_id = :object_id OR :object_id=0) AND
-														(action = :action OR :action='') AND
-														(create_date = FROM_UNIXTIME(:create_date) OR :create_date=0) AND
-														(update_date = FROM_UNIXTIME(:update_date) OR :update_date=0)");
+														(action = :action OR :action='')");
 				$stmt->bindParam(':event_id', $this->getEventId(), PDO::PARAM_INT);
 				$stmt->bindParam(':crawl_cycle_id', $this->getCrawlCycleId(), PDO::PARAM_INT);
 				$stmt->bindParam(':object', $this->getObject(), PDO::PARAM_STR);
 				$stmt->bindParam(':object_id', $this->getObjectId(), PDO::PARAM_INT);
 				$stmt->bindParam(':action', $this->getAction(), PDO::PARAM_STR);
-				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
-				$stmt->bindParam(':update_date', $this->getUpdateDate(), PDO::PARAM_INT);
 				$stmt->execute();
 				$result = $stmt->fetch(PDO::FETCH_ASSOC);
 			} catch(PDOException $e) {
 				echo $e->getMessage();
 				echo $e->getTraceAsString();
 			}
-			
 			if(!empty($result)) {
 				$this->setEventId((int)$result['id']);
 				$this->setCrawlCycleId((int)$result['crawl_cycle_id']);

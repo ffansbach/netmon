@@ -123,55 +123,60 @@
 	</div>
 </div>
 
-<h2>Daten</h2>
 <div style="width: 100%; margin-bottom: 0px;" class="clearfix">
-	<div style="float:left; width: 33%;">
-		<p>
-			<b>Benutzer:</b> <a href="./user.php?user_id={$router->getUserId()}">{$router->getUser()->getNickname()}</a><br>
-			<b>Angelegt am:</b> {$router->getCreateDate()|date_format:"%d.%m.%Y"}<br>
-			<b>Aktualisiert am:</b> {$router->getUpdateDate()|date_format:"%d.%m.%Y"}<br>
-			<b>Statusdaten von:</b> {$router->getStatusdata()->getCreateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
-			{if $router->getStatusdata()->getLocalTime()}
-				<b>Router-Zeit:</b> {$router->getStatusdata()->getLocalTime()|date_format:"%d.%m.%Y %H:%M"} Uhr
-			{/if}
+	<div style="float:left; width: 60%;">
+		<h2>Systemdaten</h2>
+		<div style="float:left; width: 60%;">
+			<p>
+				<b>Benutzer:</b> <a href="./user.php?user_id={$router->getUserId()}">{$router->getUser()->getNickname()}</a><br>
+				<b>Angelegt am:</b> {$router->getCreateDate()|date_format:"%d.%m.%Y"}<br>
+				<b>Beschreibung:</b> {$router->getDescription()}<br>
+				
+				<b>Aktualisiert am:</b> {$router->getUpdateDate()|date_format:"%d.%m.%Y"}<br>
+				<b>Statusdaten von:</b> {$router->getStatusdata()->getCreateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
+				{if $router->getStatusdata()->getLocalTime()}
+					<b>Router-Zeit:</b> {$router->getStatusdata()->getLocalTime()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
+				{/if}
+				
+				{if $router->getStatusdata()->getUptime()}
+					<b>Idletime/Uptime:</b> {math equation="round(x,1)" x=$router->getStatusdata()->getIdletime()/60/60}{if $router->getStatusdata()->getIdletime()}/{math equation="round(x,1)" x=$router->getStatusdata()->getUptime()/60/60}{/if} Stunden<br>
+				{/if}
+			</p>
 			
-			{if $router->getStatusdata()->getUptime()}
-				<b>Idletime/Uptime:</b> {math equation="round(x,1)" x=$router->getStatusdata()->getIdletime()/60/60}{if $router->getStatusdata()->getIdletime()}/{math equation="round(x,1)" x=$router->getStatusdata()->getUptime()/60/60}{/if} Stunden<br>
-			{/if}
-		</p>
+		</div>
+		<div style="float:left; width: 40%;">
+			<p>
+				<b>Status: </b>
+				{if $router->getStatusdata()->getStatus()=="online"}
+					<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
+				{elseif $router->getStatusdata()->getStatus()=="offline"}
+					<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">
+				{elseif $router->getStatusdata()->getStatus()=="unknown"}
+					<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
+				{/if}<br>
+				{if $router->getStatusdata()->getStatus()=="online"}
+					<b>Clients:</b> {$router->getStatusdata()->getClientCount()}<br>
+				{/if}
+				{if $router->getStatusdata()->getHostname()}
+					<b>Hostname:</b> {$router->getStatusdata()->getHostname()}<br>
+				{/if}
+				{if $router->getStatusdata()->getCpu()}
+					<b>Cpu:</b> {$router->getStatusdata()->getCpu()}<br>
+				{/if}
+				{if $router->getStatusdata()->getMemoryFree()}
+					<b>Free memory:</b> {$router->getStatusdata()->getMemoryFree()}/{$router->getStatusdata()->getMemoryTotal()} Kb<br>
+				{/if}
+				{if $router->getStatusdata()->getLoadavg()}
+					<b>Loadaverage:</b> {$router->getStatusdata()->getLoadavg()}<br>
+				{/if}
+				{if $router->getStatusdata()->getProcesses()}
+					<b>Processes:</b> {$router->getStatusdata()->getProcesses()}<br>
+				{/if}
+			</p>
+		</div>
+		<br style="clear:both">
 		
-	</div>
-	<div style="float:left; width: 27%;">
-		<p>
-			<b>Status: </b>
-			{if $router->getStatusdata()->getStatus()=="online"}
-				<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
-			{elseif $router->getStatusdata()->getStatus()=="offline"}
-				<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">
-			{elseif $router->getStatusdata()->getStatus()=="unknown"}
-				<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
-			{/if}<br>
-			{if $router->getStatusdata()->getStatus()=="online"}
-				<b>Clients:</b> {$router->getStatusdata()->getClientCount()}<br>
-			{/if}
-			{if $router->getStatusdata()->getHostname()}
-				<b>Hostname:</b> {$router->getStatusdata()->getHostname()}<br>
-			{/if}
-			{if $router->getStatusdata()->getCpu()}
-				<b>Cpu:</b> {$router->getStatusdata()->getCpu()}<br>
-			{/if}
-			{if $router->getStatusdata()->getMemoryFree()}
-				<b>Free memory:</b> {$router->getStatusdata()->getMemoryFree()}/{$router->getStatusdata()->getMemoryTotal()} Kb<br>
-			{/if}
-			{if $router->getStatusdata()->getLoadavg()}
-				<b>Loadaverage:</b> {$router->getStatusdata()->getLoadavg()}<br>
-			{/if}
-			{if $router->getStatusdata()->getProcesses()}
-				<b>Processes:</b> {$router->getStatusdata()->getProcesses()}<br>
-			{/if}
-		</p>
-	</div>
-	<div style="float:left; width: 39%;">
+		<h2>Softwaredaten</h2>
 		<p>
 			{if $router->getStatusdata()->getDistname()}
 				<b>Betriebssystem:</b> {$router->getStatusdata()->getDistname()} {if $router->getStatusdata()->getDistversion()}({$router->getStatusdata()->getDistversion()}){/if}<br>
@@ -194,12 +199,68 @@
 			{/if}
 		</p>
 	</div>
+	<div style="float:left; width: 40%;">
+		<h2>Ereignisse</h2>
+		{if $eventlist->getTotalCount()>0}
+			<ul>
+				{foreach key=count item=event from=$eventlist->getEventlist()}
+					<li>
+						<b><a href="event.php?event_id={$event->getEventId()}">{$event->getCreateDate()|date_format:"%e.%m. %H:%M"}</a>:</b> 
+						{if $event->getObject() == 'router'}
+							{assign var="data" value=$event->getData()}
+							{if $event->getAction() == 'status' AND $data.to == 'online'}
+								geht <span style="color: #007B0F;">online</span>
+							{/if}
+							{if $event->getAction() == 'status' AND $data.to == 'offline'}
+								geht <span style="color: #CB0000;">offline</span>
+							{/if}
+							{if $event->getAction() == 'reboot'}
+								wurde <span style="color: #000f9c;">Rebootet</span>
+							{/if}
+							{if $event->getAction() == 'status' AND $data.to == 'unknown'}
+								erhält Status <span style="color: #F8C901;">pingbar</span>
+							{/if}
+							{if $event->getAction() == 'new'}
+								wurde Netmon hinzugefügt
+							{/if}
+							{if $event->getAction() == 'batman_advanced_version'}
+								änderte Batman adv. Version von {$data.from} zu {$data.to}</span>
+							{/if}
+							{if $event->getAction() == 'firmware_version'}
+								änderte Firmware Version von {$data.from} zu {$data.to}</span>
+							{/if}
+							{if $event->getAction() == 'nodewatcher_version'}
+								änderte Nodewatcher Version von {$data.from} zu {$data.to}</span>
+							{/if}
+							{if $event->getAction() == 'distversion'}
+								änderte Distversion Version von {$data.from} zu {$data.to}</span>
+							{/if}
+							{if $event->getAction() == 'distname'}
+								änderte Distname Version von {$data.from} zu {$data.to}</span>
+							{/if}
+							{if $event->getAction() == 'hostname'}
+								änderte Hostname von {$data.from} zu {$data.to}</span>
+							{/if}
+							{if $event->getAction() == 'chipset'}
+								änderte Chipset von {$data.from} zu {$data.to}</span>
+							{/if}
+							{if $event->getAction() == 'watchdog_ath9k_bug'}
+								<a href="./event.php?event_id={$event->getEventId()}">ATH9K Bug registriert</a>
+							{/if}
+						{/if}
+					</li>
+				{/foreach}
+			</ul>
+		{else}
+			<p>Es sind keine Events in der Datenbank gespeichert.</p>
+		{/if}
+	</div>
 </div>
 
-<h2>System</h2>
+<h2>Graphen</h2>
 <div style="width: 100%; margin-bottom: 40px;" class="clearfix">
 	<div style="float:left; width: 50%;">
-		<h3>Memory</h3>
+		<h3>Speicher</h3>
 		<script type="text/javascript">
 			fname='./rrdtool/databases/router_{$router->getRouterId()}_memory.rrd';
 			html_graph_id="memory_graph"
@@ -226,10 +287,9 @@
 	</div>
 </div>
 
-<h2>Netzwerk</h2>
 <div style="width: 100%; margin-bottom: 40px;" class="clearfix">
 	<div style="float:left; width: 50%;">
-		<h3>Clients</h3>
+		<h3>Verbundene Clients</h3>
 		<script type="text/javascript">
 			fname='./rrdtool/databases/router_{$router->getRouterId()}_clients.rrd';
 			html_graph_id="client_history_graph"
@@ -242,7 +302,7 @@
 		<div id="client_history_graph" style="float:left; width: 100%;"></div>
 	</div>
 	<div style="width: 50%; float: left;">
-		<h3>Nachbarn</h3>
+		<h3>Sichtbare Nachbarn</h3>
 		<script type="text/javascript">
 			fname='./rrdtool/databases/router_{$router->getRouterId()}_originators.rrd';
 			html_graph_id="batman_adv_originator_graphic"
@@ -257,7 +317,7 @@
 </div>
 
 <div style="width: 100%; margin-bottom: 40px;" class="clearfix">
-	<h3>Verbindungsqualität</h3>
+	<h3>Verbindungsqualität zu Nachbarn</h3>
 	<div style="float:left; width: 50%;">
 		<div style="width: 95%">
 		<table class="display" id="batman_adv_originator_list" style="font-size: 8pt;">

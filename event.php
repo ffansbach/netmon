@@ -6,7 +6,7 @@
 	$smarty->assign('message', Message::getMessage());
 	
 	//get data
-	$event = new Event((int)$_GET['event_id']);
+	$event = new Event((int)$_GET['event_id'], 0);
 	$event->fetch();
 	$smarty->assign('event', $event);
 	

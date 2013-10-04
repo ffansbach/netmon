@@ -5,6 +5,7 @@
 	require_once(ROOT_DIR.'/lib/core/OriginatorStatusList.class.php');
 	require_once(ROOT_DIR.'/lib/core/Chipsetlist.class.php');
 	require_once(ROOT_DIR.'/lib/core/ConfigLine.class.php');
+	require_once(ROOT_DIR.'/lib/core/Eventlist.class.php');
 	require_once(ROOT_DIR.'/lib/core/crawling.class.php');
 	
 	if(isset($_GET['router_id']) AND isset($_GET['embed']) AND $_GET['embed']) {
@@ -30,7 +31,10 @@
 		
 		$originator_status_list = new OriginatorStatusList($router->getRouterId(), $router->getStatusdata()->getCrawlCycleId(), 0, -1);
 		$smarty->assign('originator_status_list', $originator_status_list);
-
+		
+		$eventlist = new Eventlist();
+		$eventlist->init('router', $router->getRouterId(), false, 0, 10, 'event_id', 'desc');
+		$smarty->assign('eventlist', $eventlist);
 		
 		$smarty->display("header.tpl.html");
 		$smarty->display("router.tpl.html");

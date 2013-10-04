@@ -45,7 +45,7 @@ $(document).ready(function() {
 					<td>{$network->getIpv()}</td>
 					<td></td>
 					<td></td>
-					<td></td>
+					<td>{$network->getIplist()->getTotalCount()}</td>
 					<td><a href="./networks.php?action=delete&network_id={$network->getNetworkId()}">Löschen</a></td>
 				</tr>
 			{/foreach}

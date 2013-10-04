@@ -24,7 +24,7 @@
 		 *							string: asc, desc
 		 *							boolean: false, order default asc
 		 */
-		public function __construct($status_id=false, $user_id=false, $crawl_method=false, $status=false, $hardware_name=false,
+		public function __construct($crawl_cycle_id=false, $user_id=false, $crawl_method=false, $status=false, $hardware_name=false,
 									$firmware_version=false, $batman_advanced_version=false, $kernel_version=false,
 									$offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
@@ -52,8 +52,8 @@
 														r.user_id = u.id AND
 														r.chipset_id= c.id AND
 														r.id = s.router_id AND
-														s.crawl_cycle_id = :status_id");
-				$stmt->bindParam(':status_id', ($status_id) ? $status_id : (int)crawling::getLastEndedCrawlCycle()['id'], PDO::PARAM_INT);
+														s.crawl_cycle_id = :crawl_cycle_id");
+				$stmt->bindParam(':crawl_cycle_id', ($crawl_cycle_id) ? $crawl_cycle_id : (int)crawling::getLastEndedCrawlCycle()['id'], PDO::PARAM_INT);
 				$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 				$stmt->bindParam(':crawl_method', $crawl_method, PDO::PARAM_STR);
 				$stmt->bindParam(':status', $status, PDO::PARAM_STR);
@@ -90,17 +90,17 @@
 														r.user_id = u.id AND
 														r.chipset_id= c.id AND
 														r.id = s.router_id AND
-														s.crawl_cycle_id = :status_id
+														s.crawl_cycle_id = :crawl_cycle_id
 													ORDER BY 
 														case :sort_by
 															when 'router_id' then r.id
 															when 'user_id' then u.id
 															when 'crawl_cycle_id' then s.crawl_cycle_id
-															else r.id
+															else NULL
 														end
 														".$this->getOrder()."
 													LIMIT :offset, :limit");
-				$stmt->bindParam(':status_id', ($status_id) ? $status_id : (int)crawling::getLastEndedCrawlCycle()['id'], PDO::PARAM_INT);
+				$stmt->bindParam(':crawl_cycle_id', ($crawl_cycle_id) ? $crawl_cycle_id : (int)crawling::getLastEndedCrawlCycle()['id'], PDO::PARAM_INT);
 				$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 				$stmt->bindParam(':crawl_method', $crawl_method, PDO::PARAM_STR);
 				$stmt->bindParam(':status', $status, PDO::PARAM_STR);

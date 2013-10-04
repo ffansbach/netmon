@@ -17,6 +17,7 @@
 	require_once(ROOT_DIR.'/lib/core/DnsZoneList.class.php');
 	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecord.class.php');
 	require_once(ROOT_DIR.'/lib/core/DnsRessourceRecordList.class.php');
+	require_once(ROOT_DIR.'/lib/core/Network.class.php');
 	require_once(ROOT_DIR.'/lib/core/Networklist.class.php');
 	require_once(ROOT_DIR.'/lib/core/OriginatorStatusList.class.php');
 	require_once(ROOT_DIR.'/lib/extern/rest/rest.inc.php');
@@ -67,73 +68,17 @@
 				$this->response('',404);				// If the method not exist with in this class, response would be "Page not found".
 		}
 		
-		private function iplist() {
-			if($this->get_request_method() == "GET" && isset($this->_request['interface_id'])) {
-				$iplist = new Iplist((int)$this->_request['interface_id'], (int)$this->_request['network_id'],
-									 (int)$this->_request['offset'], (int)$this->_request['limit'],
-									 $this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $iplist->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} elseif($this->get_request_method() == "GET") {
-				$iplist = new Iplist(false, false,
-									 (int)$this->_request['offset'], (int)$this->_request['limit'],
-									 $this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $iplist->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} else {
-				$this->error_code = 2;
-				$this->error_message = "The iplist could not be created, your request seems to be malformed.";
-				$this->response($this->finishxml(), 400);
-			}
-		}
-		
-		private function ip() {
+		private function router() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
-				$ip = new Ip((int)$this->_request['id']);
-				if($ip->fetch()) {
-					$domxmldata = $ip->getDomXMLElement($this->domxml);
-					$this->response($this->finishxml($domxmldata), 200);
-				} else {
+				$router = new Router((int)$this->_request['id']);
+				if(!$router->fetch()) {
 					$this->error_code = 1;
-					$this->error_message = "IP not found";
+					$this->error_message = "Router not found";
 					$this->response($this->finishxml(), 404);
-				}
-			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
-				header('Location: http://netmon.freifunk-ol.de/api/rest/iplist/');
-			}
-		}
-		
-		private function networkinterfacelist() {
-			if($this->get_request_method() == "GET") {
-				$this->_request['crawl_cycle_id'] = (isset($this->_request['crawl_cycle_id'])) ? $this->_request['crawl_cycle_id'] : false;
-				$this->_request['router_id'] = (isset($this->_request['router_id'])) ? $this->_request['router_id'] : false;
-				
-				$routerlist = new Networkinterfacelist((int)$this->_request['crawl_cycle_id'], (int)$this->_request['router_id'],
-													   (int)$this->_request['offset'], (int)$this->_request['limit'],
-														$this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $routerlist->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} else {
-				$this->error_code = 2;
-				$this->error_message = "The networkinterfacelist could not be created, your request seems to be malformed.";
-				$this->response($this->finishxml(), 400);
-			}
-		}
-		
-		private function networkinterface() {
-			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
-				$networkinterface = new Networkinterface((int)$this->_request['id']);
-				if($networkinterface->fetch()) {
-					$domxmldata = $networkinterface->getDomXMLElement($this->domxml);
-					$this->response($this->finishxml($domxmldata), 200);
 				} else {
-					var_dump($networkinterface);
-					$this->error_code = 1;
-					$this->error_message = "Networkinterface not found";
-					$this->response($this->finishxml(), 404);
+					$domxmldata = $router->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
 				}
-			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
-				header('Location: http://netmon.freifunk-ol.de/api/rest/networkinterfaclist/');
 			}
 		}
 		
@@ -163,19 +108,108 @@
 			}
 		}
 		
-		private function router() {
+		private function networkinterface() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
-				$router = new Router((int)$this->_request['id']);
-				if(!$router->fetch()) {
-					$this->error_code = 1;
-					$this->error_message = "Router not found";
-					$this->response($this->finishxml(), 404);
-				} else {
-					$domxmldata = $router->getDomXMLElement($this->domxml);
+				$networkinterface = new Networkinterface((int)$this->_request['id']);
+				if($networkinterface->fetch()) {
+					$domxmldata = $networkinterface->getDomXMLElement($this->domxml);
 					$this->response($this->finishxml($domxmldata), 200);
+				} else {
+					$this->error_code = 1;
+					$this->error_message = "Networkinterface not found";
+					$this->response($this->finishxml(), 404);
+				}
+			}
+		}
+		
+		private function networkinterfacelist() {
+			if($this->get_request_method() == "GET") {
+				$this->_request['crawl_cycle_id'] = (isset($this->_request['crawl_cycle_id'])) ? $this->_request['crawl_cycle_id'] : false;
+				$this->_request['router_id'] = (isset($this->_request['router_id'])) ? $this->_request['router_id'] : false;
+				
+				$routerlist = new Networkinterfacelist((int)$this->_request['crawl_cycle_id'], (int)$this->_request['router_id'],
+													   (int)$this->_request['offset'], (int)$this->_request['limit'],
+														$this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $routerlist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The networkinterfacelist could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
+		private function ip() {
+			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+				$ip = new Ip((int)$this->_request['id']);
+				if($ip->fetch()) {
+					$domxmldata = $ip->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				} else {
+					$this->error_code = 1;
+					$this->error_message = "IP not found";
+					$this->response($this->finishxml(), 404);
 				}
 			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
-				header('Location: http://netmon.freifunk-ol.de/api/rest/routerlist/');
+				header('Location: http://netmon.freifunk-ol.de/api/rest/iplist/');
+			}
+		}
+		
+		private function iplist() {
+			if($this->get_request_method() == "GET") {
+				$this->_request['interface_id'] = (isset($this->_request['interface_id'])) ? $this->_request['interface_id'] : false;
+				$this->_request['network_id'] = (isset($this->_request['network_id'])) ? $this->_request['network_id'] : false;
+				
+				$iplist = new Iplist((int)$this->_request['interface_id'], (int)$this->_request['network_id'],
+									 (int)$this->_request['offset'], (int)$this->_request['limit'],
+									 $this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $iplist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The iplist could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
+		private function network() {
+			if($this->get_request_method() == "GET") {
+				$this->_request['network_id'] = (!isset($this->_request['network_id'])) ? false : $this->_request['network_id'];
+				$this->_request['user_id'] = (!isset($this->_request['user_id'])) ? false : $this->_request['user_id'];
+				$this->_request['ip'] = (!isset($this->_request['ip'])) ? false : $this->_request['ip'];
+				$this->_request['netmask'] = (!isset($this->_request['netmask'])) ? false : $this->_request['netmask'];
+				$this->_request['ipv'] = (!isset($this->_request['ipv'])) ? false : $this->_request['ipv'];
+				
+				$network = new Network((int)$this->_request['network_id'], (int)$this->_request['user_id'],
+									   $this->_request['ip'], $this->_request['netmask'], $this->_request['ipv']);
+				if($network->fetch()) {
+					$domxmldata = $network->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				} else {
+					$this->error_code = 2;
+					$this->error_message = "Network not found.";
+					$this->response($this->finishxml(), 404);
+				}
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The Network could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
+		private function networklist() {
+			if($this->get_request_method() == "GET") {
+				$this->_request['user_id'] = (!isset($this->_request['user_id'])) ? false : $this->_request['user_id'];
+				$this->_request['ipv'] = (!isset($this->_request['ipv'])) ? false : $this->_request['ipv'];
+				$networklist = new Networklist((int)$this->_request['user_id'], (int)$this->_request['ipv'], 
+																		$this->_request['offset'], $this->_request['limit'],
+																		$this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $networklist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The Networklist could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
 			}
 		}
 		
@@ -403,22 +437,6 @@
 			} else {
 				$this->error_code = 2;
 				$this->error_message = "The iplist could not be created, your request seems to be malformed.";
-				$this->response($this->finishxml(), 400);
-			}
-		}
-		
-		private function networklist() {
-			if($this->get_request_method() == "GET") {
-				$this->_request['user_id'] = (!isset($this->_request['user_id'])) ? false : $this->_request['user_id'];
-				$this->_request['ipv'] = (!isset($this->_request['ipv'])) ? false : $this->_request['ipv'];
-				$networklist = new Networklist((int)$this->_request['user_id'], (int)$this->_request['ipv'], 
-																		$this->_request['offset'], $this->_request['limit'],
-																		$this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $networklist->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} else {
-				$this->error_code = 2;
-				$this->error_message = "The Networklist could not be created, your request seems to be malformed.";
 				$this->response($this->finishxml(), 400);
 			}
 		}
