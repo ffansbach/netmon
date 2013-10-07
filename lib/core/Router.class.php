@@ -160,7 +160,9 @@
 				//delete event notifications (we need to delete all notifications that users created for this router
 				//thats why we need a list here)
 				$event_notification = new EventNotification(false, "router_offline", $this->getRouterId());
-				$event_notification_list->delete();
+				if($event_notification->fetch()) {
+					$event_notification_list->delete();
+				}
 				
 				//delete splash client data
 				try {
