@@ -119,7 +119,6 @@
 				if($router->delete()) {
 					$message[] = array("Der Router ".$router->getHostname()." wurde entfernt.", 1);
 					Message::setMessage($message);
-					die();
 					header('Location: ./user.php?user_id='.$_SESSION['user_id']);
 				} else {
 					$message[] = array("Der Router konnte nicht entfernt werden.", 2);
