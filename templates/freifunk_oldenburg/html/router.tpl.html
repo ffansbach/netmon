@@ -12,6 +12,23 @@
 <script type="text/javascript" src="lib/extern/flot/jquery.flot.js"></script>
 <script type="text/javascript" src="lib/extern/flot/jquery.flot.selection.js"></script>
 
+
+{literal}
+	<script>
+		function setBatmanAdvLinqQualityPictures(originator) {
+			$(document).ready(function(){
+				document.getElementById('batman_adv_link_quality_average_graphic').style.display = 'none';
+{/literal}
+				{foreach $originator_status_list->getOriginatorStatusList() as $originator}
+					document.getElementById('batman_adv_link_quality_{$originator->getOriginator()|replace:":":"_"}_graphic').style.display = 'none';
+				{/foreach}
+{literal}
+				document.getElementById('batman_adv_link_quality_'+originator+'_graphic').style.display = 'block';
+			});
+		}
+	</script>
+{/literal}
+
 {literal}
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -436,7 +453,7 @@
 					<ul>
 						{foreach item=ip from=$interface->getIplist()->getIplist()}
 						<li>
-							<b>{$ip->getIpCompressed()}/{$ip->getNetwork()->getNetmask()}</b> (<a href="./ping_ip.php?ip_id={$ip->getIpId()}">Ping</a>, <a href="./show_crawl_data.php?ip_id={$ip->getIpId()}">Crawl</a>, <a href="./ip.php?section=delete&ip_id={$ip->getIpId()}&router_id={$router_data.router_id}">entfernen</a>)
+							<b>{$ip->getIpCompressed()}/{$ip->getNetwork()->getNetmask()}</b> (<a href="./ping_ip.php?ip_id={$ip->getIpId()}">Ping</a>, <a href="./show_crawl_data.php?ip_id={$ip->getIpId()}">Crawl</a>, <a href="./ip.php?section=delete&ip_id={$ip->getIpId()}&router_id={$router->getRouterId()}">entfernen</a>)
 							<ul>
 								<li>
 									<b>Angelegt am:</b> {$ip->getCreateDate()|date_format:"%e.%m.%Y %H:%M"}
