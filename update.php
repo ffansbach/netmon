@@ -55,4 +55,8 @@
 	ALTER TABLE crawl_interfaces DROP INDEX crawl_interfaces_id
 	ALTER TABLE crawl_interfaces DROP INDEX router_id_2
 	ALTER TABLE crawl_interfaces DROP INDEX crawl_cycle_id_2
+	
+	DROP TABLE crawl_ips
+	
+	
 ?>

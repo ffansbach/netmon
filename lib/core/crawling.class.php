@@ -106,14 +106,6 @@ class Crawling {
 		}
 		
 		try {
-			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_ips WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except");
-			$stmt->execute(array($seconds));
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-		
-		try {
 			$stmt = DB::getInstance()->prepare("DELETE FROM crawl_batman_advanced_interfaces WHERE UNIX_TIMESTAMP(crawl_date) < UNIX_TIMESTAMP(NOW())-? $except");
 			$stmt->execute(array($seconds));
 		} catch(PDOException $e) {

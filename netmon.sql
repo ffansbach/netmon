@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 03:58 PM
+-- Generation Time: Oct 09, 2013 at 04:03 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -142,19 +142,7 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
 --
 -- Table structure for table `crawl_ips`
 --
-
-CREATE TABLE IF NOT EXISTS `crawl_ips` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `ip_id` int(11) NOT NULL,
-  `crawl_cycle_id` int(11) NOT NULL,
-  `crawl_date` datetime NOT NULL,
-  `ping_avg` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ip_id` (`ip_id`),
-  KEY `crawl_cycle_id` (`crawl_cycle_id`),
-  KEY `ip_id_2` (`ip_id`),
-  KEY `crawl_cycle_id_2` (`crawl_cycle_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+-- in use(#1146 - Table 'freifunksql5.crawl_ips' doesn't exist)
 
 -- --------------------------------------------------------
 
@@ -625,12 +613,6 @@ ALTER TABLE `crawl_interfaces`
   ADD CONSTRAINT `crawl_interfaces_ibfk_1` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `crawl_interfaces_ibfk_2` FOREIGN KEY (`interface_id`) REFERENCES `interfaces` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `crawl_interfaces_ibfk_3` FOREIGN KEY (`router_id`) REFERENCES `routers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `crawl_ips`
---
-ALTER TABLE `crawl_ips`
-  ADD CONSTRAINT `crawl_ips_ibfk_1` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `crawl_routers`
