@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 03:28 PM
+-- Generation Time: Oct 09, 2013 at 03:40 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -83,9 +83,9 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `router_id` int(11) NOT NULL,
   `crawl_cycle_id` int(11) NOT NULL,
-  `originator` varchar(100) NOT NULL,
+  `originator` varchar(17) NOT NULL,
   `link_quality` int(11) NOT NULL,
-  `nexthop` varchar(100) NOT NULL,
+  `nexthop` varchar(17) NOT NULL,
   `outgoing_interface` varchar(20) NOT NULL,
   `last_seen` varchar(20) NOT NULL,
   `crawl_date` datetime NOT NULL,

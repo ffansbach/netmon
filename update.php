@@ -43,4 +43,8 @@
 	ALTER TABLE crawl_batman_advanced_interfaces DROP INDEX router_id_2
 	ALTER TABLE crawl_batman_advanced_interfaces DROP INDEX crawl_cycle_id_2
 	
+	ALTER TABLE `crawl_batman_advanced_originators` CHANGE `originator` `originator` VARCHAR( 17 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+	ALTER TABLE `crawl_batman_advanced_originators` CHANGE `nexthop` `nexthop` VARCHAR( 17 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+	
+	
 ?>

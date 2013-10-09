@@ -85,33 +85,51 @@
 		}
 		
 		public function setRouterId($router_id) {
-			if(is_int($router_id))
+			if(is_int($router_id)) {
 				$this->router_id = $router_id;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setOriginator($originator) {
-			if(is_string($originator))
+			if(is_string($originator) AND strlen($originator)<=17) {
 				$this->originator = $originator;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setLinkQuality($link_quality) {
-			if(is_int($link_quality))
+			if(is_int($link_quality)) {
 				$this->link_quality = $link_quality;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setNexthop($nexthop) {
-			if(is_string($nexthop))
+			if(is_string($nexthop) AND strlen($nexthop)<=17) {
 				$this->nexthop = $nexthop;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setOutgoingInterface($outgoing_interface) {
-			if(is_string($outgoing_interface))
+			if(is_string($outgoing_interface)) {
 				$this->outgoing_interface = $outgoing_interface;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setLastSeen($last_seen) {
-			if(is_string($last_seen))
+			if(is_string($last_seen)) {
 				$this->last_seen = $last_seen;
+				return true;
+			}
+			return false;
 		}
 		
 		public function getRouterId() {
