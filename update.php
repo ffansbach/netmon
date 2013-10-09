@@ -58,5 +58,17 @@
 	
 	DROP TABLE crawl_ips
 	
+	ALTER TABLE crawl_routers DROP INDEX id
+	ALTER TABLE crawl_routers DROP INDEX crawl_routers_id
+	ALTER TABLE crawl_routers DROP INDEX status
+	ALTER TABLE crawl_routers DROP INDEX router_id_2
+	ALTER TABLE crawl_routers DROP INDEX crawl_cycle_id_2
+	ALTER TABLE `crawl_routers` DROP `ping` ;
+	ALTER TABLE `crawl_routers` CHANGE `memory_total` `memory_total` INT( 11 ) NOT NULL ;
+	ALTER TABLE `crawl_routers` CHANGE `memory_caching` `memory_caching` INT( 11 ) NOT NULL ;
+	ALTER TABLE `crawl_routers` CHANGE `memory_buffering` `memory_buffering` INT( 11 ) NOT NULL ;
+	ALTER TABLE `crawl_routers` CHANGE `memory_free` `memory_free` INT( 11 ) NOT NULL ;
+	ALTER TABLE `crawl_routers` CHANGE `hostname` `hostname` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+	
 	
 ?>

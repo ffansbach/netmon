@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 04:03 PM
+-- Generation Time: Oct 09, 2013 at 04:22 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -156,8 +156,7 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `crawl_cycle_id` int(11) NOT NULL,
   `crawl_date` datetime NOT NULL,
   `status` varchar(20) NOT NULL,
-  `ping` varchar(20) NOT NULL,
-  `hostname` varchar(40) NOT NULL,
+  `hostname` varchar(255) NOT NULL,
   `description` text NOT NULL,
   `location` varchar(250) NOT NULL,
   `latitude` varchar(15) NOT NULL,
@@ -168,10 +167,10 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `distversion` varchar(40) NOT NULL,
   `chipset` varchar(20) NOT NULL,
   `cpu` varchar(100) NOT NULL,
-  `memory_total` varchar(15) NOT NULL,
-  `memory_caching` varchar(15) NOT NULL,
-  `memory_buffering` varchar(30) NOT NULL,
-  `memory_free` varchar(15) NOT NULL,
+  `memory_total` int(11) NOT NULL,
+  `memory_caching` int(11) NOT NULL,
+  `memory_buffering` int(11) NOT NULL,
+  `memory_free` int(11) NOT NULL,
   `loadavg` varchar(8) NOT NULL,
   `processes` varchar(8) NOT NULL,
   `uptime` varchar(15) NOT NULL,
@@ -192,13 +191,8 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `openwrt_feeds_packages_revision` int(11) NOT NULL,
   `client_count` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `id` (`id`),
-  KEY `crawl_routers_id` (`id`),
   KEY `router_id` (`router_id`),
-  KEY `crawl_cycle_id` (`crawl_cycle_id`),
-  KEY `status` (`status`),
-  KEY `router_id_2` (`router_id`),
-  KEY `crawl_cycle_id_2` (`crawl_cycle_id`)
+  KEY `crawl_cycle_id` (`crawl_cycle_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
