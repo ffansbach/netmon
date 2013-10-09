@@ -79,4 +79,15 @@ ALTER TABLE `event_notifications` ADD INDEX ( `user_id` ) ;
 ALTER TABLE `event_notifications` ADD INDEX ( `action` ) ;
 ALTER TABLE `event_notifications` ADD INDEX ( `object` ) ;
 	
+	
+ALTER TABLE `router_adds` ADD INDEX ( `router_id` ) ;
+
+ALTER TABLE `service_dns_ressource_records` ADD INDEX ( `service_id` ) ;
+ALTER TABLE `service_dns_ressource_records` ADD INDEX ( `dns_ressource_record_id` ) ;
+
+ALTER TABLE `service_ips` ADD INDEX ( `service_id` ) ;
+ALTER TABLE `service_ips` ADD INDEX ( `ip_id` ) ;
+
+ALTER TABLE `variable_splash_clients` ADD INDEX ( `router_id` ) ;
+
 ?>

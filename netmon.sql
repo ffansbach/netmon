@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 04:36 PM
+-- Generation Time: Oct 09, 2013 at 04:44 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -136,13 +136,6 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   KEY `crawl_cycle_id` (`crawl_cycle_id`),
   KEY `interface_id` (`interface_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `crawl_ips`
---
--- in use(#1146 - Table 'freifunksql5.crawl_ips' doesn't exist)
 
 -- --------------------------------------------------------
 
@@ -467,7 +460,8 @@ CREATE TABLE IF NOT EXISTS `router_adds` (
   `adds_allowed` tinyint(1) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `router_id` (`router_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -501,7 +495,9 @@ CREATE TABLE IF NOT EXISTS `service_dns_ressource_records` (
   `dns_ressource_record_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `service_id` (`service_id`),
+  KEY `dns_ressource_record_id` (`dns_ressource_record_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -516,7 +512,9 @@ CREATE TABLE IF NOT EXISTS `service_ips` (
   `ip_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `service_id` (`service_id`),
+  KEY `ip_id` (`ip_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -583,7 +581,8 @@ CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
   `ipv` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `router_id` (`router_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
