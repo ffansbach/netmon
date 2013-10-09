@@ -101,4 +101,8 @@ ALTER TABLE `ips` DROP `ipv` ;
 ALTER TABLE `ips` DROP `protected` ;
 ALTER TABLE ips DROP INDEX router_id_2
 
+DROP TABLE projects
+
+
+
 ?>

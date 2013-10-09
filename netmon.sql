@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 05:14 PM
+-- Generation Time: Oct 09, 2013 at 05:17 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -353,48 +353,7 @@ CREATE TABLE IF NOT EXISTS `networks` (
 --
 -- Table structure for table `projects`
 --
-
-CREATE TABLE IF NOT EXISTS `projects` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `create_date` datetime NOT NULL,
-  `update_date` datetime NOT NULL,
-  `title` varchar(250) NOT NULL,
-  `description` text NOT NULL,
-  `is_wlan` tinyint(4) NOT NULL,
-  `wlan_essid` varchar(200) NOT NULL,
-  `wlan_bssid` varchar(100) NOT NULL,
-  `wlan_channel` int(11) NOT NULL,
-  `is_vpn` tinyint(4) NOT NULL,
-  `vpn_server` varchar(100) NOT NULL,
-  `vpn_server_port` int(11) NOT NULL,
-  `vpn_server_device` varchar(20) NOT NULL,
-  `vpn_server_proto` varchar(20) NOT NULL,
-  `vpn_server_ca_crt` text NOT NULL,
-  `vpn_server_ca_key` text NOT NULL,
-  `vpn_server_pass` varchar(200) NOT NULL,
-  `vpn_client_config` text NOT NULL,
-  `vpn_client_config_needs_script` tinyint(4) NOT NULL,
-  `vpn_client_config_script` text NOT NULL,
-  `is_ccd_ftp_sync` tinyint(4) NOT NULL,
-  `ccd_ftp_folder` varchar(250) NOT NULL,
-  `ccd_ftp_username` varchar(100) NOT NULL,
-  `ccd_ftp_password` varchar(200) NOT NULL,
-  `is_olsr` tinyint(4) NOT NULL,
-  `is_batman_adv` tinyint(4) NOT NULL,
-  `is_ipv4` tinyint(1) NOT NULL,
-  `ipv4_host` varchar(15) NOT NULL,
-  `ipv4_netmask` varchar(10) NOT NULL,
-  `ipv4_dhcp_kind` varchar(30) NOT NULL,
-  `is_ipv6` tinyint(1) NOT NULL,
-  `is_geo_specific` tinyint(4) NOT NULL,
-  `geo_polygons` text NOT NULL,
-  `dns_server` varchar(200) NOT NULL,
-  `website` varchar(250) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `is_ipv4` (`is_ipv4`),
-  KEY `is_batman_adv` (`is_batman_adv`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
+-- in use(#1146 - Table 'freifunksql5.projects' doesn't exist)
 
 -- --------------------------------------------------------
 
