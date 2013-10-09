@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 04:29 PM
+-- Generation Time: Oct 09, 2013 at 04:36 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -272,7 +272,9 @@ CREATE TABLE IF NOT EXISTS `events` (
   `update_date` datetime NOT NULL,
   `data` text NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `crawl_cycle_id` (`crawl_cycle_id`)
+  KEY `crawl_cycle_id` (`crawl_cycle_id`),
+  KEY `object` (`object`),
+  KEY `object_id` (`object_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -291,7 +293,10 @@ CREATE TABLE IF NOT EXISTS `event_notifications` (
   `notify` tinyint(1) NOT NULL,
   `notified` tinyint(1) NOT NULL,
   `notification_date` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `action` (`action`),
+  KEY `object` (`object`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

@@ -72,4 +72,11 @@
 	
 	ALTER TABLE `crawl_services` DROP `crawled_ipv4_addr` ;
 	
+	ALTER TABLE `events` ADD INDEX ( `object` ) ;
+	ALTER TABLE `events` ADD INDEX ( `object_id` ) ;
+	
+ALTER TABLE `event_notifications` ADD INDEX ( `user_id` ) ;
+ALTER TABLE `event_notifications` ADD INDEX ( `action` ) ;
+ALTER TABLE `event_notifications` ADD INDEX ( `object` ) ;
+	
 ?>
