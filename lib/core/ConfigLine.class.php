@@ -55,8 +55,11 @@
 		}
 		
 		public function setName($name) {
-			if(is_string($name))
+			if(is_string($name) AND strlen($name)<=50) {
 				$this->name = $name;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setValue($value) {

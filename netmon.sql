@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 01:53 PM
+-- Generation Time: Oct 09, 2013 at 03:22 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -52,8 +52,7 @@ CREATE TABLE IF NOT EXISTS `config` (
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`),
-  KEY `name_2` (`name`)
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
