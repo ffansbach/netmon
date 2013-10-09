@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 03:22 PM
+-- Generation Time: Oct 09, 2013 at 03:28 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -69,11 +69,8 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_interfaces` (
   `status` varchar(20) NOT NULL,
   `crawl_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `crawl_batman_advanced_interfaces_id` (`id`),
   KEY `router_id` (`router_id`),
-  KEY `crawl_cycle_id` (`crawl_cycle_id`),
-  KEY `router_id_2` (`router_id`),
-  KEY `crawl_cycle_id_2` (`crawl_cycle_id`)
+  KEY `crawl_cycle_id` (`crawl_cycle_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

@@ -39,4 +39,8 @@
 	ALTER TABLE config DROP INDEX name
 	ALTER TABLE `config` ADD UNIQUE (`name`);
 	
+	ALTER TABLE crawl_batman_advanced_interfaces DROP INDEX crawl_batman_advanced_interfaces_id
+	ALTER TABLE crawl_batman_advanced_interfaces DROP INDEX router_id_2
+	ALTER TABLE crawl_batman_advanced_interfaces DROP INDEX crawl_cycle_id_2
+	
 ?>
