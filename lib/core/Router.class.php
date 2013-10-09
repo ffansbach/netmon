@@ -96,45 +96,50 @@
 		}
 		
 		public function store() {
-			if($this->getRouterId() != 0) {
-				try {
-					$stmt = DB::getInstance()->prepare("UPDATE routers SET
-																user_id = ?,
-																hostname = ?,
-																description = ?,
-																location = ?,
-																latitude = ?,
-																longitude = ?,
-																chipset_id = ?,
-																crawl_method = ?,
-																update_date = NOW()
-														WHERE id=?");
-					$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getDescription(), $this->getLocation(),
-										 $this->getLatitude(), $this->getLongitude(), $this->getChipsetId(), $this->getCrawlMethod(),
-										 $this->getRouterId()));
-					return $stmt->rowCount();
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-			} elseif($this->getUserId() != 0 AND $this->getHostname() != "" AND $this->getCrawlMethod() != "" AND $this->getChipsetId() != 0) {
-				try {
-					$stmt = DB::getInstance()->prepare("INSERT INTO routers (user_id, hostname, description, location, 
-																			 latitude, longitude, chipset_id, crawl_method,
-																			 create_date, update_date)
-														VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
-					$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getDescription(), $this->getLocation(),
-										 $this->getLatitude(), $this->getLongitude(), $this->getChipsetId(), $this->getCrawlMethod()));
-					$this->setRouterId((int)DB::getInstance()->lastInsertId());
-					
-					//create event for new router
-					$event = new Event(false, false, 'router', $this->getRouterId(), 'new', array('hostname'=>$router->getHostname()));
-					$event->store();
-					
-					return $this->getRouterId();
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
+			if($this->getUserId() != 0 AND $this->getHostname() != "" AND $this->getCrawlMethod() != "" AND $this->getChipsetId() != 0) {
+				$router_test = new Router(false, false, $this->getHostname());
+				$router_test->fetch();
+				
+				if($this->getRouterId() != 0 AND !($router_test->getRouterId()!=$this->getRouterId() AND $router_test->getHostname()==$this->getHostname())) {
+					try {
+						$stmt = DB::getInstance()->prepare("UPDATE routers SET
+																	user_id = ?,
+																	hostname = ?,
+																	description = ?,
+																	location = ?,
+																	latitude = ?,
+																	longitude = ?,
+																	chipset_id = ?,
+																	crawl_method = ?,
+																	update_date = NOW()
+															WHERE id=?");
+						$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getDescription(), $this->getLocation(),
+											$this->getLatitude(), $this->getLongitude(), $this->getChipsetId(), $this->getCrawlMethod(),
+											$this->getRouterId()));
+						return $stmt->rowCount();
+					} catch(PDOException $e) {
+						echo $e->getMessage();
+						echo $e->getTraceAsString();
+					}
+				} elseif($router_test->getRouterId()==0) {
+					try {
+						$stmt = DB::getInstance()->prepare("INSERT INTO routers (user_id, hostname, description, location, 
+																				latitude, longitude, chipset_id, crawl_method,
+																				create_date, update_date)
+															VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+						$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getDescription(), $this->getLocation(),
+											$this->getLatitude(), $this->getLongitude(), $this->getChipsetId(), $this->getCrawlMethod()));
+						$this->setRouterId((int)DB::getInstance()->lastInsertId());
+						
+						//create event for new router
+						$event = new Event(false, false, 'router', $this->getRouterId(), 'new', array('hostname'=>$router->getHostname()));
+						$event->store();
+						
+						return $this->getRouterId();
+					} catch(PDOException $e) {
+						echo $e->getMessage();
+						echo $e->getTraceAsString();
+					}
 				}
 			}
 			return false;

@@ -103,6 +103,7 @@ ALTER TABLE ips DROP INDEX router_id_2
 
 DROP TABLE projects
 
-
+ALTER TABLE `routers` CHANGE `hostname` `hostname` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+ALTER TABLE `routers` ADD UNIQUE (`hostname`);
 
 ?>

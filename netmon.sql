@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 05:17 PM
+-- Generation Time: Oct 09, 2013 at 05:35 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -367,7 +367,7 @@ CREATE TABLE IF NOT EXISTS `routers` (
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
   `crawl_method` varchar(30) NOT NULL,
-  `hostname` varchar(40) NOT NULL,
+  `hostname` varchar(255) NOT NULL,
   `allow_router_auto_assign` tinyint(1) NOT NULL,
   `router_auto_assign_login_string` varchar(250) NOT NULL,
   `router_auto_assign_hash` varchar(250) NOT NULL,
@@ -377,6 +377,7 @@ CREATE TABLE IF NOT EXISTS `routers` (
   `longitude` varchar(15) NOT NULL,
   `chipset_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `hostname` (`hostname`),
   KEY `user_id` (`user_id`),
   KEY `chipset_id` (`chipset_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;

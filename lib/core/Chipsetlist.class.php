@@ -4,7 +4,7 @@
 	class Chipsetlist extends ObjectList {
 		private $list = array();
 		
-		public function __construct($user_id=false, $name=false, $hardware_name=false,
+		public function __construct($name=false, $hardware_name=false,
 									$offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
 			if($offset!==false)
@@ -21,10 +21,8 @@
 				$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
 													FROM chipsets
 													WHERE
-														(user_id = :user_id OR :user_id=0) AND
 														(name = :name OR :name='') AND
 														(hardware_name = :hardware_name OR :hardware_name='')");
-				$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 				$stmt->bindParam(':name', $name, PDO::PARAM_STR);
 				$stmt->bindParam(':hardware_name', $hardware_name, PDO::PARAM_STR);
 				$stmt->execute();
@@ -42,18 +40,15 @@
 				$stmt = DB::getInstance()->prepare("SELECT c.id as chipset_id, c.*
 													FROM chipsets c
 													WHERE
-														(c.user_id = :user_id OR :user_id=0) AND
 														(c.name = :name OR :name='') AND
 														(c.hardware_name = :hardware_name OR :hardware_name='')
 													ORDER BY 
 														case :sort_by
 															when 'chipset_id' then c.id
-															when 'user_id' then c.user_id
 															else c.id
 														end
 														".$this->getOrder()."
 													LIMIT :offset, :limit");
-				$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 				$stmt->bindParam(':name', $name, PDO::PARAM_STR);
 				$stmt->bindParam(':hardware_name', $hardware_name, PDO::PARAM_STR);
 				$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);

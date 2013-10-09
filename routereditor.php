@@ -20,7 +20,7 @@
 			$smarty->assign('community_location_zoom', ConfigLine::configByName('community_location_zoom'));
 			$smarty->assign('twitter_token', ConfigLine::configByName('twitter_token'));
 			
-			$chipsetlist = new Chipsetlist(false, false, false, 0, -1);
+			$chipsetlist = new Chipsetlist(false, false, 0, -1);
 			$smarty->assign('chipsetlist', $chipsetlist->getList());
 
 			$smarty->display("header.tpl.html");
