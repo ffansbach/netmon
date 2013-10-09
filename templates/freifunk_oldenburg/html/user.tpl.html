@@ -15,12 +15,10 @@ $(document).ready(function() {
 			{ "sType": "string" },
 			{ "sType": "date-eu" },
 			{ "sType": "html" },
-			{ "sType": "string" }, // zuverlässigkeit need own
 			{ "sType": "numeric" },
 			{ "sType": "numeric" },
-			{ "sType": "numeric" }
 		],
-		"aaSorting": [[ 7, "desc" ]]
+		"aaSorting": [[ 6, "desc" ]]
 	} );
 } );
 
@@ -57,27 +55,26 @@ $(document).ready(function() {
 {/literal}
 </script>
 
-<h1>Benutzerseite von {$user.nickname}</h1>
+<h1>Benutzerseite von {$user->getNickname()}</h1>
 
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 47%;">
 		<h2>Daten</h2>
 		<p>
 			{if $is_logged_in}
-				{if $smarty.session.user_id == $user.id}<b>API Key:</b> {$user.api_key}<br>{/if}
-				{if !empty($user.vorname) OR !empty($user.nachname)}<b>Name:</b> {$user.vorname} {$user.nachname}<br>{/if}
-				{if !empty($user.strasse)}<b>Strasse: </b>{$user.strasse}<br>{/if}
-				{if !empty($user.plz) OR !empty($user.ort)}<b>Wohnort:</b>  {$user.plz} {$user.ort}<br>{/if}
-				{if !empty($user.telefon)}<b>Telefon:</b> {$user.telefon}<br>{/if}
-				{if !empty($user.email)}<b>Email:</b> <a href="mailto:{$user.email}">{$user.email}</a><br>{/if}
-				{if !empty($user.jabber)}<b>Jabber-ID:</b> {$user.jabber}<br>{/if}
-				{if !empty($user.icq)}<b>ICQ:</b> {$user.icq}<br>{/if}
-				{if !empty($user.website)}<b>Website:</b> <a href="{$user.website}">{$user.website}</a><br>{/if}
+				{if $smarty.session.user_id == $user->getUserId()}<b>API Key:</b> {$user->getApiKey()}<br>{/if}
+				{if $user->getFirstname() OR $user->getLastname()}<b>Name:</b> {$user->getFirstname()} {$user->getLastname()}<br>{/if}
+				{if $user->getStreet()}<b>Strasse: </b>{$user->getStreet()}<br>{/if}
+				{if $user->getZipcode() OR $user->getCity()}<b>Wohnort:</b>  {$user->getZipcode()} {$user->getCity()}<br>{/if}
+				{if $user->getPhonenumer()}<b>Telefon:</b> {$user->getPhonenumer()}<br>{/if}
+				{if $user->getEmail()}<b>Email:</b> <a href="mailto:{$user->getEmail()}">{$user->getEmail()}</a><br>{/if}
+				{if $user->getJabber()}<b>Jabber-ID:</b> {$user->getJabber()}<br>{/if}
+				{if $user->getWebsite()}<b>Website:</b> <a href="{$user->getWebsite()}">{$user->getWebsite()}</a><br>{/if}
 			{/if}
-			{if !empty($user.telefon)}<b>Beschreibung:</b> {$user.about}<br>{/if}
-			<b>Anmeldedatum:</b> {$user.create_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
+			{if $user->getDescription()}<b>Beschreibung:</b> {$user->getDescription()}<br>{/if}
+			<b>Anmeldedatum:</b> {$user->getCreateDate()|date_format:"%d.%m.%Y"}<br>
 			<b>Benutzerrollen:</b>	{assign var="first_role" value=true}
-						{foreach item=role from=$user.roles}<!--
+						{foreach item=role from=$user->getRoles()}<!--
 							-->{if $role.check}<!--
 								-->{if !$first_role}, {/if}<!--
 								-->{if $role.role == 3}Benutzer{/if}<!--
@@ -104,6 +101,9 @@ $(document).ready(function() {
 							{/if}
 							{if $event->getAction() == 'status' AND $data.to == 'offline'}
 								geht <span style="color: #CB0000;">offline</span>
+							{/if}
+							{if $event->getAction() == 'status' AND $data.to == 'unknown'}
+								erhält Status <span style="color: #F8C901;">pingbar</span>
 							{/if}
 							{if $event->getAction() == 'reboot'}
 								wurde <span style="color: #000f9c;">Rebootet</span>
@@ -185,7 +185,7 @@ $(document).ready(function() {
 	{/if}
 {/if}
 
-<h2>Router von {$user.nickname}</h2>
+<h2>Router</h2>
 {if !empty($routerlist)}
 	<table class="display" id="routerlist" style="width: 100%;">
 		<thead>
@@ -195,41 +195,37 @@ $(document).ready(function() {
 				<th>Technik</th>
 				<th>Angelegt</th>
 				<th>Benutzer</th>
-				<th>Online</th>
 				<th>Up (Std.)</th>
 				<th>Clients</th>
-				<th>Traffic</th>
 			</tr>
 		</thead>
 		<tbody>
-			{foreach key=count item=router from=$routerlist}
+			{foreach $routerlist as $router}
 				<tr>
-					<td><a href="./router.php?router_id={$router.router_id}">{$router.hostname}</a></td>
+					<td><a href="./router.php?router_id={$router->getRouterId()}">{$router->getHostname()}</a></td>
 					<td>
-						{if $router.actual_crawl_data.status=="online"}
+						{if $router->getStatusdata()->getStatus()=="online"}
 							<img src="./templates/{$template}/img/ffmap/status_up_small.png" title="online" alt="online">
-						{elseif $router.actual_crawl_data.status=="offline"}
+						{elseif $router->getStatusdata()->getStatus()=="offline"}
 							<img src="./templates/{$template}/img/ffmap/status_down_small.png" title="offline" alt="offline">
-						{elseif $router.actual_crawl_data.status=="unknown"}
-							<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="unknown" alt="unknown">
+						{elseif $router->getStatusdata()->getStatus()=="unknown"}
+							<img src="./templates/{$template}/img/ffmap/status_unknown_small.png" title="pingbar" alt="pingbar">
 						{/if}
 					</td>
-					<td>{if !empty($router.hardware_name)}{$router.hardware_name}{else}{$router.short_chipset_name}{if $router.short_chipset_name!=$router.chipset_name}...{/if}{/if}</td>
-					<td>{$router.router_create_date|date_format:"%d.%m.%Y"}</td>
-					<td><a href="./user.php?user_id={$router.user_id}">{$router.nickname}</a></td>
-					<td value="{math equation='round(x,1)' x=$router.router_reliability.online_percent}">{math equation="round(x,1)" x=$router.router_reliability.online_percent}%</td>
-					<td>{math equation="round(x,1)" x=$router.actual_crawl_data.uptime/60/60}</td>
-					<td>{$router.actual_crawl_data.client_count}</td>
-					<td>{$router.traffic}</td>
+					<td>{if $router->getChipset()->getHardwareName()}{$router->getChipset()->getHardwareName()}{else}{$router->getChipset()->getName()}{/if}</td>
+					<td>{$router->getCreateDate()|date_format:"%d.%m.%Y"}</td>
+					<td><a href="./user.php?user_id={$router->getUserId()}">{$router->getUser()->getNickname()}</a></td>
+					<td>{math equation="round(x,1)" x=$router->getStatusdata()->getUptime()/60/60}</td>
+					<td>{$router->getStatusdata()->getClientCount()}</td>
 				</tr>
 			{/foreach}
 		</tbody>
 	</table>
 {else}
-	<p>Keine Router vorhanden.</p>
+<p>Keine Router vorhanden.</p>
 {/if}
 
-<h2>Dienste von {$user.nickname}</h2>
+<h2>Dienste</h2>
 {if !empty($servicelist)}
 	<table class="display" id="servicelist" style="width: 100%;">
 		<thead>

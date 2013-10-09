@@ -1,5 +1,6 @@
 <?php
 	require_once(ROOT_DIR.'/lib/core/Object.class.php');
+	require_once(ROOT_DIR.'/lib/core/permission.class.php');
 	
 	class User extends Object {
 		private $user_id=0;
@@ -102,8 +103,8 @@
 				$this->setNotificationMethod($result['notification_method']);
 				$this->setPermission((int)$result['permission']);
 				$this->setActivated((int)$result['activated']);
-				$this->setCreateDate($result['update_date']);
-				$this->setUpdateDate($result['create_date']);
+				$this->setCreateDate($result['create_date']);
+				$this->setUpdateDate($result['update_date']);
 				return true;
 			}
 			
@@ -224,6 +225,9 @@
 		
 		public function setWebsite($website) {
 			if(is_string($website)) { //TODO: check if website is in valid format
+				if(!empty($website) AND substr($website, 0, 8)!="https://" AND substr($website, 0, 7)!="https://") {
+					$website = "http://".$website;
+				}
 				$this->website = $website;
 				return true;
 			}
@@ -337,6 +341,19 @@
 		
 		public function getActivated() {
 			return $this->activated;
+		}
+		
+		public function getRoles() {
+			if($this->getUserId()!=0) {
+				$roles = Permission::getEditableRoles();
+				foreach ($roles as $key=>$role) {
+					$roles_edit[$key]['role'] = $role;
+					$roles_edit[$key]['dual'] = pow(2,$role);
+					$roles_edit[$key]['check'] = Permission::checkPermission($roles_edit[$key]['dual'], $this->getUserId());
+				}
+				return $roles_edit;
+			}
+			return array();
 		}
 		
 		public function getDomXMLElement($domdocument) {
