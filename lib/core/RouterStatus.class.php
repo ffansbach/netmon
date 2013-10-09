@@ -220,9 +220,8 @@
 					//Check if netmon already knows the given chipset and if
 					//the router assigned to this status has the right chipset set
 					if($this->getStatus() == "online" AND $router->getChipset()->getName() != $this->getChipset()) {
-						$chipset = new Chipset(false, false, $this->getChipset());
+						$chipset = new Chipset(false, $this->getChipset());
 						if(!$chipset->fetch()) {
-							$chipset->setUserId($router->getUserId());
 							$chipset->store();
 						}
 						$router->setChipsetId($chipset->getChipsetId());

@@ -67,7 +67,7 @@
 			}
 			
 			foreach($resultset as $item) {
-				$this->list[] = new Chipset((int)$item['chipset_id'], (int)$item['user_id'], $item['name'],
+				$this->list[] = new Chipset((int)$item['chipset_id'], $item['name'],
 										   $item['hardware_name'], $item['create_date'], $item['update_date']);
 			}
 		}

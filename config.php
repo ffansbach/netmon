@@ -255,7 +255,7 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		$smarty->display("config_hardware.tpl.html");
 		$smarty->display("footer.tpl.html");
 	} elseif($_GET['section']=="add_hardware") {
-		$chipset = new Chipset(false, (int)$_SESSION['user_id'], $_POST['name'], $_POST['hardware_name']);
+		$chipset = new Chipset(false, $_POST['name'], $_POST['hardware_name']);
 		if($chipset->store()) {
 			$message[] = array("Der Chipsatz wurde gespeichert.", 1);
 		} else {

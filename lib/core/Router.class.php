@@ -7,6 +7,7 @@
 	require_once(ROOT_DIR.'/lib/core/RouterStatusList.class.php');
 	require_once(ROOT_DIR.'/lib/core/User.class.php');
 	require_once(ROOT_DIR.'/lib/core/Chipset.class.php');
+	require_once(ROOT_DIR.'/lib/core/Event.class.php');
 	
 	class Router extends Object {
  		private $router_id = 0;
@@ -125,6 +126,11 @@
 					$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getDescription(), $this->getLocation(),
 										 $this->getLatitude(), $this->getLongitude(), $this->getChipsetId(), $this->getCrawlMethod()));
 					$this->setRouterId((int)DB::getInstance()->lastInsertId());
+					
+					//create event for new router
+					$event = new Event(false, false, 'router', $this->getRouterId(), 'new', array('hostname'=>$router->getHostname()));
+					$event->store();
+					
 					return $this->getRouterId();
 				} catch(PDOException $e) {
 					echo $e->getMessage();

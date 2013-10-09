@@ -31,4 +31,12 @@
 		$iplist->deleteDuplicates();
 	}*/
 	
+	ALTER TABLE `chipsets` ADD UNIQUE (
+	`name`
+	);
+	
+	ALTER TABLE `chipsets` CHANGE `hardware_name` `hardware_name` VARCHAR( 30 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+	
+	ALTER TABLE `chipsets` DROP `user_id` ;
+	
 ?>

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 27, 2013 at 09:20 PM
+-- Generation Time: Oct 09, 2013 at 01:53 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -30,15 +30,13 @@ SET time_zone = "+00:00";
 
 CREATE TABLE IF NOT EXISTS `chipsets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
   `name` varchar(100) NOT NULL,
-  `hardware_name` varchar(200) NOT NULL,
+  `hardware_name` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `name` (`name`),
-  KEY `hardware_name` (`hardware_name`),
-  KEY `user_id` (`user_id`)
+  UNIQUE KEY `name` (`name`),
+  KEY `hardware_name` (`hardware_name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -617,12 +615,6 @@ CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
 --
 
 --
--- Constraints for table `chipsets`
---
-ALTER TABLE `chipsets`
-  ADD CONSTRAINT `chipsets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE;
-
---
 -- Constraints for table `crawl_batman_advanced_interfaces`
 --
 ALTER TABLE `crawl_batman_advanced_interfaces`
@@ -661,15 +653,15 @@ ALTER TABLE `crawl_routers`
 -- Constraints for table `crawl_services`
 --
 ALTER TABLE `crawl_services`
-  ADD CONSTRAINT `crawl_services_ibfk_2` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `crawl_services_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `crawl_services_ibfk_1` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `crawl_services_ibfk_2` FOREIGN KEY (`crawl_cycle_id`) REFERENCES `crawl_cycle` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `dns_ressource_records`
 --
 ALTER TABLE `dns_ressource_records`
-  ADD CONSTRAINT `dns_ressource_records_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `dns_ressource_records_ibfk_1` FOREIGN KEY (`dns_zone_id`) REFERENCES `dns_zones` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `dns_ressource_records_ibfk_1` FOREIGN KEY (`dns_zone_id`) REFERENCES `dns_zones` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `dns_ressource_records_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `dns_zones`

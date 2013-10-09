@@ -166,7 +166,7 @@ if ($GLOBALS['installed']) {
 		Config::writeConfigLine('community_essid', 'deinestadt.freifunk.net');
 		
 		//create a default chipset
-		$default_chipset = new Chipset(false, 1, "", "Unbekannt");
+		$default_chipset = new Chipset(false, "", "Unbekannt");
 		$default_chipset->store();
 		
 		//create an initial crawl cycle
