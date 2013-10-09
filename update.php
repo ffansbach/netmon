@@ -46,5 +46,13 @@
 	ALTER TABLE `crawl_batman_advanced_originators` CHANGE `originator` `originator` VARCHAR( 17 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
 	ALTER TABLE `crawl_batman_advanced_originators` CHANGE `nexthop` `nexthop` VARCHAR( 17 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
 	
-	
+	ALTER TABLE `crawl_interfaces` CHANGE `name` `name` VARCHAR( 20 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+	ALTER TABLE `crawl_interfaces` CHANGE `mac_addr` `mac_addr` VARCHAR( 17 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+	ALTER TABLE `crawl_interfaces` DROP `ipv4_addr` ,
+								   DROP `ipv6_addr` ,
+								   DROP `ipv6_link_local_addr` ;
+	ALTER TABLE `crawl_interfaces` CHANGE `wlan_bssid` `wlan_bssid` VARCHAR( 17 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+	ALTER TABLE crawl_interfaces DROP INDEX crawl_interfaces_id
+	ALTER TABLE crawl_interfaces DROP INDEX router_id_2
+	ALTER TABLE crawl_interfaces DROP INDEX crawl_cycle_id_2
 ?>

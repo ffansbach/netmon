@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 03:40 PM
+-- Generation Time: Oct 09, 2013 at 03:58 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -119,11 +119,8 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `crawl_cycle_id` int(11) NOT NULL,
   `interface_id` int(11) NOT NULL,
   `crawl_date` datetime NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `mac_addr` varchar(150) NOT NULL,
-  `ipv4_addr` varchar(40) NOT NULL,
-  `ipv6_addr` varchar(200) NOT NULL,
-  `ipv6_link_local_addr` varchar(200) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `mac_addr` varchar(17) NOT NULL,
   `traffic_rx` bigint(30) NOT NULL,
   `traffic_rx_avg` bigint(30) NOT NULL,
   `traffic_tx` bigint(30) NOT NULL,
@@ -131,15 +128,12 @@ CREATE TABLE IF NOT EXISTS `crawl_interfaces` (
   `wlan_mode` varchar(20) NOT NULL,
   `wlan_frequency` varchar(10) NOT NULL,
   `wlan_essid` varchar(50) NOT NULL,
-  `wlan_bssid` varchar(40) NOT NULL,
+  `wlan_bssid` varchar(17) NOT NULL,
   `wlan_tx_power` varchar(10) NOT NULL,
   `mtu` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `crawl_interfaces_id` (`id`),
   KEY `router_id` (`router_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`),
-  KEY `router_id_2` (`router_id`),
-  KEY `crawl_cycle_id_2` (`crawl_cycle_id`),
   KEY `interface_id` (`interface_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 

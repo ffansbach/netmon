@@ -156,73 +156,115 @@
 		}
 		
 		public function setNetworkinterfaceId($networkinterface_id) {
-			if(is_int($networkinterface_id))
+			if(is_int($networkinterface_id)) {
 				$this->networkinterface_id = $networkinterface_id;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setRouterId($router_id) {
-			if(is_int($router_id))
+			if(is_int($router_id)) {
 				$this->router_id = $router_id;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setName($name) {
-			if(is_string($name))
+			if(is_string($name) AND strlen(trim($name))<=20) {
 				$this->name = trim($name);
+				return true;
+			}
+			return false;
 		}
 		
 		public function setMacAddr($mac_addr) {
-			if(is_string($mac_addr))
+			if(is_string($mac_addr) AND strlen(trim($mac_addr))<=17) {
 				$this->mac_addr = trim($mac_addr);
+				return true;
+			}
+			return false;
 		}
 		
 		public function setMtu($mtu) {
-			if(is_int($mtu))
+			if(is_int($mtu)) {
 				$this->mtu = $mtu;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setTrafficRx($traffic_rx) {
-			if(is_int($traffic_rx))
+			if(is_int($traffic_rx)) {
 				$this->traffic_rx = $traffic_rx;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setTrafficRxAvg($traffic_rx_avg) {
-			if(is_int($traffic_rx_avg))
+			if(is_int($traffic_rx_avg)) {
 				$this->traffic_rx_avg = $traffic_rx_avg;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setTrafficTx($traffic_tx) {
-			if(is_int($traffic_tx))
+			if(is_int($traffic_tx)) {
 				$this->traffic_tx = $traffic_tx;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setTrafficTxAvg($traffic_tx_avg) {
-			if(is_int($traffic_tx_avg))
+			if(is_int($traffic_tx_avg)) {
 				$this->traffic_tx_avg = $traffic_tx_avg;
+				return true;
+			}
+			return false;
 		}
 		
 		public function setWlanMode($wlan_mode) {
-			if(is_string($wlan_mode))
+			if(is_string($wlan_mode)) {
 				$this->wlan_mode = trim($wlan_mode);
+				return true;
+			}
+			return false;
 		}
 		
 		public function setWlanFrequency($wlan_frequency) {
-			if(is_string($wlan_frequency))
+			if(is_string($wlan_frequency)) {
 				$this->wlan_frequency = trim($wlan_frequency);
+				return true;
+			}
+			return false;
 		}
 		
 		public function setWlanEssid($wlan_essid) {
-			if(is_string($wlan_essid))
+			if(is_string($wlan_essid)) {
 				$this->wlan_essid = trim($wlan_essid);
+				return true;
+			}
+			return false;
 		}
 		
 		public function setWlanBssid($wlan_bssid) {
-			if(is_string($wlan_bssid))
+			if(is_string($wlan_bssid) AND strlen(trim($wlan_bssid))) {
 				$this->wlan_bssid = trim($wlan_bssid);
+				return true;
+			}
+			return false;
 		}
 		
 		public function setWlanTxPower($wlan_tx_power) {
-			if(is_int($wlan_tx_power))
+			if(is_int($wlan_tx_power)) {
 				$this->wlan_tx_power = $wlan_tx_power;
+				return true;
+			}
+			return false;
 		}
 		
 		public function getNetworkinterfaceId() {
