@@ -270,25 +270,6 @@ class Router_old {
 		return $routers;
 	}
 
-	public function getRoutersForCrawl($from, $to) {
-		$rows=array();
-		try {
-			$stmt = DB::getInstance()->prepare("SELECT * FROM routers WHERE crawl_method='crawler' ORDER BY id ASC LIMIT :from, :to");
-			$stmt->bindValue(':from', (int)$from, PDO::PARAM_INT);
-			$stmt->bindValue(':to', (int)$to, PDO::PARAM_INT);
-			$stmt->execute();			
-			$rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-
-		foreach($rows as $key => $row) {
-			$rows[$key]['interfaces'] = Interfaces::getInterfacesByRouterId($row['id']);
-		}
-		return $rows;
-	}
-
 	public function getCrawlRouterHistoryExceptActualCrawlCycle($router_id, $actual_crawl_cycle_id, $limit) {
 		$rows=array();
 		try {

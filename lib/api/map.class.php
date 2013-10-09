@@ -208,19 +208,6 @@ class ApiMap {
 		return true;
 	}
 
-	public function getProjectGeoPolygons() {
-		try {
-			$stmt = DB::getInstance()->prepare("SELECT geo_polygons FROM projects WHERE id=?");
-			$stmt->execute(array($_GET['project_id']));
-			$poligons = $stmt->fetch(PDO::FETCH_ASSOC);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-		
-		echo $poligons['geo_polygons'];
-	}
-
 	public function getRouters() {
 		header('Content-type: text/xml');
 		$xw = new xmlWriter();
