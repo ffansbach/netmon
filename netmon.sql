@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 05:04 PM
+-- Generation Time: Oct 09, 2013 at 05:14 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -320,21 +320,14 @@ CREATE TABLE IF NOT EXISTS `ips` (
   `interface_id` int(11) NOT NULL,
   `network_id` int(11) NOT NULL,
   `router_id` int(11) NOT NULL,
-  `project_id` int(11) NOT NULL,
   `ip` varchar(100) NOT NULL,
-  `netmask` int(3) NOT NULL,
-  `ipv` int(11) NOT NULL,
-  `protected` tinyint(1) NOT NULL,
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `router_id` (`router_id`),
-  KEY `ipv` (`ipv`),
-  KEY `project_id` (`project_id`),
   KEY `interface_id` (`interface_id`),
-  KEY `network_id` (`network_id`),
-  KEY `router_id_2` (`router_id`)
+  KEY `network_id` (`network_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

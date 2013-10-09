@@ -90,4 +90,15 @@ ALTER TABLE `service_ips` ADD INDEX ( `ip_id` ) ;
 
 ALTER TABLE `variable_splash_clients` ADD INDEX ( `router_id` ) ;
 
+ALTER TABLE `interfaces` DROP `project_id` ;
+ALTER TABLE `interfaces` CHANGE `name` `name` VARCHAR( 20 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+ALTER TABLE `interfaces` DROP `protected` ;
+ALTER TABLE interfaces DROP INDEX router_id_2
+
+ALTER TABLE `ips` DROP `project_id` ;
+ALTER TABLE `ips` DROP `netmask` ;
+ALTER TABLE `ips` DROP `ipv` ;
+ALTER TABLE `ips` DROP `protected` ;
+ALTER TABLE ips DROP INDEX router_id_2
+
 ?>
