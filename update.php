@@ -70,5 +70,6 @@
 	ALTER TABLE `crawl_routers` CHANGE `memory_free` `memory_free` INT( 11 ) NOT NULL ;
 	ALTER TABLE `crawl_routers` CHANGE `hostname` `hostname` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
 	
+	ALTER TABLE `crawl_services` DROP `crawled_ipv4_addr` ;
 	
 ?>

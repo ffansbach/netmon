@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 04:22 PM
+-- Generation Time: Oct 09, 2013 at 04:29 PM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -207,7 +207,6 @@ CREATE TABLE IF NOT EXISTS `crawl_services` (
   `crawl_cycle_id` int(11) NOT NULL,
   `crawl_date` datetime NOT NULL,
   `status` varchar(20) NOT NULL,
-  `crawled_ipv4_addr` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `service_id` (`service_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
