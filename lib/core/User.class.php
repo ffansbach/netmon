@@ -128,7 +128,7 @@
 		}
 		
 		public function setNickname($nickname) {
-			if(preg_match('/^([a-zA-Z0-9])+$/i', $nickname)) {
+			if(preg_match('/^([a-zA-Z0-9_\.-])+$/i', $nickname)) {
 				$this->nickname = $nickname;
 				return true;
 			}

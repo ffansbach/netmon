@@ -68,6 +68,8 @@ class Register {
 			$message[] = array("Die ausgewählte OpenID <i>".$openid."</i> ist bereits mit einem Benutzer verknüpft.",2);
 		} elseif(ConfigLine::configByName('enable_network_policy')=="true" AND !$agb) {
 			$message[] = array("Du musst die Netzwerkpolicy akzeptieren.",2);
+		} elseif(!preg_match('/^([a-zA-Z0-9_\.-])+$/i', $nickname)) {
+			$message[] = array("Dein Nickname enthält nicht erlaubte Zeichen (erlaubt sind Buchstaben, Unterstrich, Minus und Punkt.",2);
 		}
 		
 		if (count($message)>0) {
