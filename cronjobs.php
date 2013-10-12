@@ -129,6 +129,9 @@
 	
 	//Crawl routers
 	echo "Crawl routers\n";
+	if (!is_dir(ROOT_DIR."/logs/")) {
+		mkdir(ROOT_DIR."/logs/");         
+	}
 	
 	$range=20;
 	$routers_count = Router_old::countRouters();
