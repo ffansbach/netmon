@@ -15,86 +15,53 @@
 				$this->setSortBy($sort_by);
 			if($order!==false)
 				$this->SetOrder($order);
-			if($user_id!=false) {
-				// initialize $total_count with the total number of objects in the list (over all pages)
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-														FROM dns_zones
-														WHERE dns_zones.user_id=?");
-					$stmt->execute(array($user_id));
-					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				$this->setTotalCount((int)$total_count['total_count']);
-				//if limit -1 then get all ressource records
-				if($this->getLimit()==-1)
-					$this->setLimit($this->getTotalCount());
 				
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT id as dns_zone_id
+			// initialize $total_count with the total number of objects in the list (over all pages)
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
 														FROM dns_zones
-														WHERE dns_zones.user_id = :user_id
-														ORDER BY
-															case :sort_by
+														WHERE
+														(user_id = :user_id OR :user_id=0)");
+				$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+				$stmt->execute();
+				$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
+			}
+			$this->setTotalCount((int)$total_count['total_count']);
+			//if limit -1 then get all ressource records
+			if($this->getLimit()==-1)
+				$this->setLimit($this->getTotalCount());
+			
+			try {
+				$stmt = DB::getInstance()->prepare("SELECT id as dns_zone_id
+														FROM dns_zones
+													WHERE
+														(user_id = :user_id OR :user_id=0)
+													ORDER BY
+														case :sort_by
 																when 'dns_zone_id' then dns_zones.id
 																when 'user_id' then dns_zones.user_id
 																else NULL
-															end
-														".$this->getOrder()."
-														LIMIT :offset, :limit");
-					$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-					$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
-					$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
-					$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
-					$stmt->execute();
-					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-			} else {
-				// initialize $total_count with the total number of objects in the list (over all pages)
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT COUNT(*) as total_count
-														FROM dns_zones");
-					$stmt->execute(array($user_id));
-					$total_count = $stmt->fetch(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				$this->setTotalCount((int)$total_count['total_count']);
-				//if limit -1 then get all ressource records
-				if($this->getLimit()==-1)
-					$this->setLimit($this->getTotalCount());
-				
-				try {
-					$stmt = DB::getInstance()->prepare("SELECT id as dns_zone_id
-														FROM dns_zones
-														ORDER BY
-															case :sort_by
-																when 'create_date' then dns_zones.create_date
-																else NULL
-															end
-														".$this->getOrder()."
-														LIMIT :offset, :limit");
-					$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
-					$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
-					$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
-					$stmt->execute();
-					$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
+														end
+													".$this->getOrder()."
+													LIMIT :offset, :limit");
+				$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+				$stmt->bindParam(':offset', $this->getOffset(), PDO::PARAM_INT);
+				$stmt->bindParam(':limit', $this->getLimit(), PDO::PARAM_INT);
+				$stmt->bindParam(':sort_by', $this->getSortBy(), PDO::PARAM_STR);
+				$stmt->execute();
+				$resultset = $stmt->fetchAll(PDO::FETCH_ASSOC);
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				echo $e->getTraceAsString();
 			}
 			
-			foreach($result as $dns_zone) {
-				$dns_zone = new DnsZone((int)$dns_zone['dns_zone_id']);
-				$dns_zone->fetch();
-				$this->dns_zone_list[] = $dns_zone;
+			foreach($resultset as $item) {
+				$new_item = new DnsZone((int)$item['dns_zone_id']);
+				$new_item->fetch();
+				$this->dns_zone_list[] = $new_item;
 			}
 		}
 		

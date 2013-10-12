@@ -213,6 +213,35 @@
 			}
 		}
 		
+		private function dns_zone() {
+			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+				$dns_zone = new DnsZone((int)$this->_request['id']);
+				if($dns_zone->fetch()) {
+					$domxmldata = $dns_zone->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				} else {
+					$this->error_code = 1;
+					$this->error_message = "DNS Zone not found";
+					$this->response($this->finishxml(), 404);
+				}
+			}
+		}
+		
+		private function dns_zone_list() {
+			if($this->get_request_method() == "GET") {
+				$this->_request['user_id'] = (!isset($this->_request['user_id'])) ? false : $this->_request['user_id'];
+				$dns_zone_list = new DnsZoneList((int)$this->_request['user_id'],
+												 $this->_request['offset'], $this->_request['limit'],
+												 $this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $dns_zone_list->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The DNS-Zone-List could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
 		private function originator_status_list() {
 			if($this->get_request_method() == "GET") {
 				$this->_request['router_id'] = (isset($this->_request['router_id'])) ? $this->_request['router_id'] : false;
@@ -374,38 +403,6 @@
 				$this->authentication = 0;
 				$this->error_message = "The api_key is not valid.";
 				$this->response($this->finishxml(), 401);
-			}
-		}
-		
-		private function dns_zone() {
-			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
-				$dns_zone = new DnsZone((int)$this->_request['id']);
-				if($dns_zone->fetch()) {
-					$domxmldata = $dns_zone->getDomXMLElement($this->domxml);
-					$this->response($this->finishxml($domxmldata), 200);
-				} else {
-					$this->error_code = 1;
-					$this->error_message = "DNS Zone not found";
-					$this->response($this->finishxml(), 404);
-				}
-			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
-				header('Location: http://netmon.freifunk-ol.de/api/rest/dns_zone_list/');
-			}
-		}
-		
-		private function dns_zone_list() {
-			if($this->get_request_method() == "GET" && isset($this->_request['dns_zone_id'])) {
-
-			} elseif($this->get_request_method() == "GET") {
-				$dns_zone_list = new DnsZoneList(false,
-												 $this->_request['offset'], $this->_request['limit'],
-												 $this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $dns_zone_list->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} else {
-				$this->error_code = 2;
-				$this->error_message = "The iplist could not be created, your request seems to be malformed.";
-				$this->response($this->finishxml(), 400);
 			}
 		}
 		
