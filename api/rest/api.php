@@ -150,8 +150,6 @@
 					$this->error_message = "IP not found";
 					$this->response($this->finishxml(), 404);
 				}
-			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
-				header('Location: http://netmon.freifunk-ol.de/api/rest/iplist/');
 			}
 		}
 		
@@ -306,8 +304,6 @@
 					$this->error_message = "Event not found";
 					$this->response($this->finishxml(), 404);
 				}
-			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
-				header('Location: http://netmon.freifunk-ol.de/api/rest/events/');
 			} elseif ($this->get_request_method() == "POST" OR 
 			         ($this->get_request_method() == "GET" && !isset($this->_request['id']) && count($_GET)>1)) {
 			    if($this->isApiKeyValid($this->api_key)) {
@@ -316,7 +312,7 @@
 					$event = new Event(false, $data['object'], $data['object_id'], $data['action'], $data['data']);
 					$event_id = $event->store();
 					if($event_id!=false) {
-						header('Location: http://netmon.freifunk-ol.de/api/rest/event/'.$event_id);
+						header('Location: '.ConfigLine::configByName('url_to_netmon').'/api/rest/event/'.$event_id);
 					} else {
 						$this->authentication=false;
 						$this->error_code = 2;
@@ -395,8 +391,6 @@
 						$this->error_message = "Config not found";
 						$this->response($this->finishxml(), 404);
 					}
-				} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
-					header('Location: http://netmon.freifunk-ol.de/api/rest/configlist/');
 				}
 			} else {
 				$this->error_code = 2;
@@ -417,8 +411,6 @@
 					$this->error_message = "DNS Ressource Record not found";
 					$this->response($this->finishxml(), 404);
 				}
-			} elseif ($this->get_request_method() == "GET" && count($_GET) == 1) {
-				header('Location: http://netmon.freifunk-ol.de/api/rest/dns_ressource_record_list/');
 			}
 		}
 		
