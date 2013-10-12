@@ -146,10 +146,10 @@
 		<div style="float:left; width: 60%;">
 			<p>
 				<b>Benutzer:</b> <a href="./user.php?user_id={$router->getUserId()}">{$router->getUser()->getNickname()}</a><br>
-				<b>Angelegt am:</b> {$router->getCreateDate()|date_format:"%d.%m.%Y"}<br>
+				<b>Angelegt am:</b> {$router->getCreateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
 				<b>Beschreibung:</b> {$router->getDescription()}<br>
 				
-				<b>Aktualisiert am:</b> {$router->getUpdateDate()|date_format:"%d.%m.%Y"}<br>
+				<b>Aktualisiert am:</b> {$router->getUpdateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
 				<b>Statusdaten von:</b> {$router->getStatusdata()->getCreateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
 				{if $router->getStatusdata()->getLocalTime()}
 					<b>Router-Zeit:</b> {$router->getStatusdata()->getLocalTime()|date_format:"%d.%m.%Y %H:%M"} Uhr<br>
