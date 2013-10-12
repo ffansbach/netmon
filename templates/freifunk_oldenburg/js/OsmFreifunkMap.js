@@ -182,8 +182,7 @@ function fullmap(community_location_longitude, community_location_latitude, comm
 	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');
 	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
 	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
-	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
-	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop, olsr_conn]);
+	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop]);
 
 	// Set map center
 	point = new OpenLayers.LonLat(community_location_longitude, community_location_latitude);
@@ -241,8 +240,7 @@ function router_map(highlight_router_id) {
 	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');
 	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
 	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
-	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
-        map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop, olsr_conn]);
+	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop]);
 	
 	//Add control panels
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
@@ -288,8 +286,7 @@ function router_map_embed(highlight_router_id) {
 	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');
 	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
 	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
-	var olsr_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
-	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop, olsr_conn]);
+	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop]);
 	
 	//Add control panels
 	map.addControl(new OpenLayers.Control.Attribution());
@@ -356,104 +353,6 @@ function community_location_map(community_location_longitude, community_location
 		document.getElementById('community_location_latitude').value = lonlat.lat;
 		document.getElementById('community_location_zoom').value = zoom;
 	});
-}
-
-function new_interface_projectmap(project_id) {
-	// Handle image load errors
-	OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
-	OpenLayers.Util.onImageLoadErrorColor = "transparent";
-
-	// Initialize the map
-	map = new OpenLayers.Map ("geo_polygon_map", {
-		controls:[new OpenLayers.Control.ScaleLine(), new OpenLayers.Control.Navigation()],
-
-		displayProjection: new OpenLayers.Projection("EPSG:4326"),
-		units: "m",
-
-                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
-                                                 20037508.34, 20037508.34)
-	} );
-
-	// Add the map layer(s)
-	var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Open Street Map", {sphericalMercator:true, numZoomLevels: 20});
-	var gstreet = new OpenLayers.Layer.Google("Google Streets", {type: google.maps.MapTypeId.ROADMAP, numZoomLevels: 20});
-	var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 20});
-	var ghybrid = new OpenLayers.Layer.Google("Google Hybrid",{type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
-	var gsat = new OpenLayers.Layer.Google("Google Satellite",{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
- 	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid]);
-
-	// Set map center
-	point = new OpenLayers.LonLat(lon, lat);
-	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-	map.setCenter(point, zoom);
-
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
-
-	map.addControl(new OpenLayers.Control.PanPanel());
-	map.addControl(new OpenLayers.Control.ZoomPanel());
-
-	map.addControl(new OpenLayers.Control.MousePosition());
-	map.addControl(new OpenLayers.Control.Permalink());
-	map.addControl(new OpenLayers.Control.Attribution());
-
-	//Make Layers
-	var layer_project_geo = loadKmlLayer('Netzwerklocation', './api.php?class=apiMap&section=getProjectGeoPolygons&project_id='+project_id);
-//	var layer_conn = loadKmlLayer('Olsr Verbindungen', './api.php?class=apiMap&section=olsr_conn');
-//	var layer_nodes_offline = loadKmlLayer('Offline Knoten', './api.php?class=apiMap&section=getOfflineServiceKML&highlighted_subnet='+subnet_id);
-//	var layer_nodes = loadKmlLayer('Online Knoten ', './api.php?class=apiMap&section=getOnlineServiceKML&highlighted_subnet='+subnet_id);
-
-	//Add Layers
-    map.addLayers([layer_project_geo]);
-
-	// Define bubbles
-/*	selectControl = new OpenLayers.Control.SelectFeature([layer_conn, layer_nodes_offline, layer_nodes], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
-	map.addControl(selectControl);
-	selectControl.activate();*/
-}
-
-function newproject_map() {
-	// Handle image load errors
-	OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
-	OpenLayers.Util.onImageLoadErrorColor = "transparent";
-
-	// Initialize the map
-	map = new OpenLayers.Map ("map", {
-		controls:[new OpenLayers.Control.ScaleLine(), new OpenLayers.Control.Navigation()],
-
-		displayProjection: new OpenLayers.Projection("EPSG:4326"),
-		units: "m",
-
-                maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34,
-                                                 20037508.34, 20037508.34)
-	} );
-
-
-	// Add the map layer(s)
-	var layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Open Street Map", {sphericalMercator:true, numZoomLevels: 20});
-	var gstreet = new OpenLayers.Layer.Google("Google Streets", {type: google.maps.MapTypeId.ROADMAP, numZoomLevels: 20});
-	var gphy = new OpenLayers.Layer.Google("Google Physical", {type: google.maps.MapTypeId.TERRAIN, numZoomLevels: 20});
-	var ghybrid = new OpenLayers.Layer.Google("Google Hybrid",{type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
-	var gsat = new OpenLayers.Layer.Google("Google Satellite",{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
-	
-	var vectors = new OpenLayers.Layer.Vector("Vector Layer");
-	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid, vectors]);
-
-	// Set map center
-	point = new OpenLayers.LonLat(lon, lat);
-	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-	map.setCenter(point, zoom);
-	
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
-	map.addControl(new OpenLayers.Control.MousePosition());
-	map.addControl(new OpenLayers.Control.PanPanel());
-	map.addControl(new OpenLayers.Control.ZoomPanel());
-	
-	polycontrol = new OpenLayers.Control.DrawFeature(vectors,
-			OpenLayers.Handler.Polygon, {'featureAdded': setPolygonLocation}
-	);
-	
-	map.addControl(polycontrol);
-	polycontrol.activate();
 }
 
 function new_router_map(community_location_longitude, community_location_latitude, community_location_zoom, template) {
