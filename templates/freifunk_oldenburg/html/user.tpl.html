@@ -5,6 +5,22 @@
 <script type="text/javascript">
 {literal}
 $(document).ready(function() {
+	$('#new_routerlist').dataTable( {
+		"bFilter": false,
+		"bInfo": false,
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "html" }
+		],
+		"aaSorting": [[ 0, "desc" ]]
+	} );
+} );
+
+$(document).ready(function() {
 	$('#routerlist').dataTable( {
 		"bFilter": false,
 		"bInfo": false,
@@ -158,7 +174,7 @@ $(document).ready(function() {
 	<p>Du hast noch keine Router angelegt. Wenn dein Router schon angeschlossen ist, kannst du ihn aus dieser Liste übernehmen. Wenn dein Router trotzdem noch nicht in dieser Liste auftaucht, versuche die Seite in ein paar Minuten (5-10) noch einmal neu zu laden.</p>
 
 	{if !empty($routersnotassigned_list)}
-		<table class="display" id="routerlist" style="width: 100%;">
+		<table class="display" id="new_routerlist" style="width: 100%;">
 			<thead>
 				<tr>
 					<th>Hostname</th>
