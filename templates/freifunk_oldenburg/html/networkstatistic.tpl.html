@@ -94,7 +94,7 @@
 				}
 
 				var percent = parseFloat(obj.series.percent).toFixed(2);
-				$("#hover").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + percent + "%)</span>");
+				$("#hover_chipset").html("<span>" + obj.series.label + " (" + percent + "%)</span>");
 			});
 
 			placeholder.bind("plotclick", function(event, pos, obj) {
@@ -156,7 +156,7 @@
 				}
 
 				var percent = parseFloat(obj.series.percent).toFixed(2);
-				$("#hover").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + percent + "%)</span>");
+				$("#hover_firmwareversions").html("<span>" + obj.series.label + " (" + percent + "%)</span>");
 			});
 
 			placeholder.bind("plotclick", function(event, pos, obj) {
@@ -220,9 +220,9 @@
 				}
 
 				var percent = parseFloat(obj.series.percent).toFixed(2);
-				$("#hover").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + percent + "%)</span>");
+				$("#hover_batmanadv").html("<span>" + obj.series.label + " (" + percent + "%)</span>");
 			});
-
+			 
 			placeholder.bind("plotclick", function(event, pos, obj) {
 				if (!obj) {
 					return;
@@ -284,7 +284,7 @@
 				}
 
 				var percent = parseFloat(obj.series.percent).toFixed(2);
-				$("#hover").html("<span style='font-weight:bold; color:" + obj.series.color + "'>" + obj.series.label + " (" + percent + "%)</span>");
+				$("#hover_kernelversion").html("<span>" + obj.series.label + " (" + percent + "%)</span>");
 			});
 
 			placeholder.bind("plotclick", function(event, pos, obj) {
@@ -357,11 +357,27 @@
 
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 50%;">
-		<h2>Routers</h2>
+		<div style="width: 100%; overflow: hidden;">
+			<div style="float:left; margin-right: 5px;">
+				<h2>Routermodelle</h2>
+			</div>
+			<div style="float:left; margin-top: 10px;">
+				(<span id="hover_chipset">Details</span>)
+			</div>
+		</div>
+		<br style="clear: both;">
 		<div style="height: 300px;" id="chipset_chart"></div>
 	</div>
 	<div style="float:left; width: 50%;">
-		<h2>Firmware</h2>
+		<div style="width: 100%; overflow: hidden;">
+			<div style="float:left; margin-right: 5px;">
+				<h2>Firmware</h2>
+			</div>
+			<div style="float:left; margin-top: 10px;">
+				(<span id="hover_firmwareversions">Details</span>)
+			</div>
+		</div>
+		<br style="clear: both;">
 		<div style="height: 300px;" id="firmwareversions_chart"></div>
 	</div>
 </div>
@@ -369,11 +385,27 @@
 
 <div style="width: 100%; overflow: hidden;">
 	<div style="float:left; width: 50%;">
-		<h2>B.A.T.M.A.N advanced</h2>
+		<div style="width: 100%; overflow: hidden;">
+			<div style="float:left; margin-right: 5px;">
+				<h2>B.A.T.M.A.N adv.</h2>
+			</div>
+			<div style="float:left; margin-top: 10px;">
+				(<span id="hover_batmanadv">Details</span>)
+			</div>
+		</div>
+		<br style="clear: both;">
 		<div style="height: 300px;" id="batmanadv_div"></div>
 	</div>
 	<div style="float:left; width: 50%;">
-		<h2>Kernel</h2>
+		<div style="width: 100%; overflow: hidden;">
+			<div style="float:left; margin-right: 5px;">
+				<h2>Kernel</h2>
+			</div>
+			<div style="float:left; margin-top: 10px;">
+				(<span id="hover_kernelversion">Details</span>)
+			</div>
+		</div>
+		<br style="clear: both;">
 		<div style="height: 300px;" id="kernelversions_chart"></div>
 	</div>
 </div>
