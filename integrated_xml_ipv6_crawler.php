@@ -25,7 +25,7 @@
 	$router_limit = getopt("o:l:")['l'];
 	
 	// get configuration values
-	$ping_count = 4; // ping a node X times before fetching data
+	$ping_count = 6; // ping a node X times before fetching data
 	$ping_timeout = 1500; // set the timout for each ping to X ms
 	$crawl_timeout = 15; // timeout after X seconds on fetching crawldata
 	$network_connection_ipv6_interface = ConfigLine::configByName("network_connection_ipv6_interface"); //use this interface to connect to ipv6 linc local hosts
@@ -58,9 +58,9 @@
 					$return = array();
 					
 					if($ip->getNetwork()->getIpv()==6)
-						$command = "ping6 -c $ping_count -w $ping_timeout -I $network_connection_ipv6_interface ".$ip->getIp();
+						$command = "ping6 -c $ping_count -w ".$ping_timeout*($ping_count+1)." -W $ping_timeout -I $network_connection_ipv6_interface ".$ip->getIp();
 					elseif($ip->getNetwork()->getIpv()==4)
-						$command = "ping -c $ping_count -w $ping_timeout ".$ip->getIp();
+						$command = "ping -c $ping_count -w ".$ping_timeout*($ping_count+1)." -W $ping_timeout ".$ip->getIp();
 					echo "			".$command."\n";
 					exec($command, $return);
 					

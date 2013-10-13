@@ -156,11 +156,14 @@
 						if(!$online AND $this->getNotified() == 0) {
 							//if router is marked as offline in each of the $crawl_cycles last crawl cycles, then
 							//send a notification
-							$this->notifyRouterOffline($router, $statusdata_history[$crawl_cycles-1]->getCreateDate());
-							//store into database that the router has been notified
-							$this->setNotified(1);
-							$this->setNotificationDate(time());
-							$this->store();
+							$user = new User($this->getUserId());
+							if($user->fetch()) {
+								$this->notifyRouterOffline($user, $router, $statusdata_history[$crawl_cycles-1]->getCreateDate());
+								//store into database that the router has been notified
+								$this->setNotified(1);
+								$this->setNotificationDate(time());
+								$this->store();
+							}
 						} elseif($online AND $this->getNotified() == 1) {
 							//if the router has been notified but is not offline anymore, then reset notification
 							$this->setNotified(0);
@@ -173,12 +176,9 @@
 			}
 		}
 		
-		public function notifyRouterOffline($router, $datetime) {
-			$user = new User($router->getUserId());
-			$user->fetch();
-
+		public function notifyRouterOffline($user, $router, $datetime) {
 			$message = "Hallo ".$user->getNickname().",\n\n";
-			$message .= "dein Router ".$router->getHostname()." ist seit dem ".date("d.m H:i", $datetime)." Uhr offline.\n";
+			$message .= "der Router ".$router->getHostname()." ist seit dem ".date("d.m H:i", $datetime)." Uhr offline.\n";
 			$message .= "Bitte stelle den Router zur Erhaltung des Freifunknetzwerkes wieder zur Verfuegung oder entferne den Router aus Netmon.\n\n";
 			$message .= "Statusseite ansehen:\n$GLOBALS[url_to_netmon]/router.php?router_id=".$router->getRouterId()."\n\n";
 			$message .= "Router bearbeiten/entfernen:\n$GLOBALS[url_to_netmon]/routereditor.php?section=edit&router_id=".$router->getRouterId()."\n\n";
