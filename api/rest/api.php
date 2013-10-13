@@ -240,6 +240,36 @@
 			}
 		}
 		
+		private function dns_ressource_record() {
+			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
+				$dns_ressource_record = new DnsRessourceRecord((int)$this->_request['id']);
+				if($dns_ressource_record->fetch()) {
+					$domxmldata = $dns_ressource_record->getDomXMLElement($this->domxml);
+					$this->response($this->finishxml($domxmldata), 200);
+				} else {
+					$this->error_code = 1;
+					$this->error_message = "DNS Ressource Record not found";
+					$this->response($this->finishxml(), 404);
+				}
+			}
+		}
+		
+		private function dns_ressource_record_list() {
+			if($this->get_request_method() == "GET" && isset($this->_request['dns_zone_id'])) {
+
+			} elseif($this->get_request_method() == "GET") {
+				$dns_ressource_record_list = new DnsRessourceRecordList(false, false, 
+																		$this->_request['offset'], $this->_request['limit'],
+																		$this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $dns_ressource_record_list->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The DNS-Ressource-Record list could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
 		private function originator_status_list() {
 			if($this->get_request_method() == "GET") {
 				$this->_request['router_id'] = (isset($this->_request['router_id'])) ? $this->_request['router_id'] : false;
@@ -397,36 +427,6 @@
 				$this->authentication = 0;
 				$this->error_message = "The api_key is not valid.";
 				$this->response($this->finishxml(), 401);
-			}
-		}
-		
-		private function dns_ressource_record() {
-			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
-				$dns_ressource_record = new DnsRessourceRecord((int)$this->_request['id']);
-				if($dns_ressource_record->fetch()) {
-					$domxmldata = $dns_ressource_record->getDomXMLElement($this->domxml);
-					$this->response($this->finishxml($domxmldata), 200);
-				} else {
-					$this->error_code = 1;
-					$this->error_message = "DNS Ressource Record not found";
-					$this->response($this->finishxml(), 404);
-				}
-			}
-		}
-		
-		private function dns_ressource_record_list() {
-			if($this->get_request_method() == "GET" && isset($this->_request['dns_zone_id'])) {
-
-			} elseif($this->get_request_method() == "GET") {
-				$dns_ressource_record_list = new DnsRessourceRecordList(false, false, 
-																		$this->_request['offset'], $this->_request['limit'],
-																		$this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $dns_ressource_record_list->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} else {
-				$this->error_code = 2;
-				$this->error_message = "The iplist could not be created, your request seems to be malformed.";
-				$this->response($this->finishxml(), 400);
 			}
 		}
 		

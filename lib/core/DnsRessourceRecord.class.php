@@ -13,7 +13,6 @@
 		private $pri = 0;
 		private $destination_id = 0;
 		
-		private $destination = null;
 		private $user = null;
 		private $dns_zone = null;
 		
@@ -73,7 +72,6 @@
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
 				
-				$this->setDestination($this->getDestinationId());
 				$this->setUser($this->getUserId());
 				$this->setDnsZone($this->getDnsZoneId());
 				return true;
@@ -190,20 +188,6 @@
 			return false;
 		}
 		
-		public function setDestination($destination) {
-			if(is_object($destination)) {
-				$this->destination = $destination;
-				return true;
-			} elseif(is_int($destination) AND ($this->getType() == 'A' OR $this->getType() == 'AAAA')) {
-				$ip = new Ip($destination);
-				if($ip->fetch()) {
-					$this->destination = $ip;
-					return true;
-				}
-			}
-			return false;
-		}
-		
 		public function setUser($user) {
 			if($user instanceof User) {
 				$this->user = $user;
@@ -261,10 +245,6 @@
 			return $this->destination_id;
 		}
 		
-		public function getDestination() {
-			return $this->destination;
-		}
-		
 		public function getUser() {
 			return $this->user;
 		}
@@ -284,7 +264,6 @@
 			$domxmlelement->appendChild($domdocument->createElement("destination_id", $this->getDestinationId()));
 			$domxmlelement->appendChild($domdocument->createElement("create_date", $this->getCreateDate()));
 			$domxmlelement->appendChild($domdocument->createElement("update_date", $this->getUpdateDate()));
-			$domxmlelement->appendChild($this->getDestination()->getDomXMLElement($domdocument));
 			return $domxmlelement;
 		}
 	}
