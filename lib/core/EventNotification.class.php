@@ -197,7 +197,7 @@
 					$conn->message($user->getJabber(), $message);
 					$conn->disconnect();
 				} catch(XMPPHP_Exception $e) {
-					die($e->getMessage());
+					echo $e->getMessage();
 				}
 			} elseif($user->getNotificationMethod() == 'email') {
 				if ($GLOBALS['mail_sending_type']=='smtp') {
