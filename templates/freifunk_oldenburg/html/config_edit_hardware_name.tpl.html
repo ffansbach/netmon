@@ -5,9 +5,14 @@
 	<p><input type="submit" value="Löschen"></p>
 </form>
 
-<h2>Namen ändern</h2>
+<h2>Chipset ändern</h2>
 <form action="./config.php?section=insert_edit_chipset_name&chipset_id={$smarty.get.chipset_id}" method="POST">
-	Name:<br><input name="hardware_name" size="30" maxlength="30" value="{$chipset_data.hardware_name}">
+	<p>
+		<b>Chipset:</b><br><input name="name" size="30" maxlength="30" value="{$chipset_data.name}">
+	</p>
+	<p>
+		<b>Name:</b><br><input name="hardware_name" size="30" maxlength="30" value="{$chipset_data.hardware_name}">
+	</p>
 	
 	<p><input type="submit" value="Absenden"></p>
 </form>

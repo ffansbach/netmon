@@ -4,7 +4,6 @@
 	require_once('./lib/core/Router.class.php');
 	require_once('./lib/core/routereditor.class.php');
 	require_once('./lib/core/Chipsetlist.class.php');
-	require_once('./lib/core/chipsets.class.php');
 	require_once('./lib/core/ConfigLine.class.php');
 	
 	$smarty->assign('google_maps_api_key', $GLOBALS['google_maps_api_key']);
@@ -58,7 +57,8 @@
 			$smarty->assign('is_root', Permission::checkPermission(PERM_ROOT));
 
 			/** Get and assign Router Informations **/
-			$smarty->assign('chipsets', Chipsets::getChipsets());
+			$chipsetlist = new Chipsetlist(false, false, 0, -1);
+			$smarty->assign('chipsetlist', $chipsetlist->getList());
 			
 			$smarty->display("header.tpl.html");
 			$smarty->display("router_edit.tpl.html");

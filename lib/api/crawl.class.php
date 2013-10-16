@@ -2,7 +2,6 @@
 
 require_once(ROOT_DIR.'/lib/core/router.class.php');
 require_once(ROOT_DIR.'/lib/core/crawling.class.php');
-require_once(ROOT_DIR.'/lib/core/chipsets.class.php');
 require_once(ROOT_DIR.'/lib/core/rrdtool.class.php');
 require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
 require_once(ROOT_DIR.'/lib/core/Networkinterface.class.php');

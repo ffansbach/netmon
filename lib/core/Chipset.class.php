@@ -61,7 +61,7 @@
 																hardware_name = ?,
 																update_date = NOW()
 														WHERE id=?");
-					$stmt->execute(array($this->getName(), $this->getHardwareName()));
+					$stmt->execute(array($this->getName(), $this->getHardwareName(), $this->getChipsetId()));
 					return $stmt->rowCount();
 				} catch(PDOException $e) {
 					echo $e->getMessage();

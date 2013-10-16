@@ -8,7 +8,6 @@ require_once('lib/core/rrdtool.class.php');
 require_once('lib/core/Networkinterface.class.php');
 require_once('lib/core/Ip.class.php');
 require_once('lib/core/crawling.class.php');
-require_once('lib/core/chipsets.class.php');
 require_once('lib/core/Event.class.php');
 require_once('lib/extern/FwToolHash.class.php');
 

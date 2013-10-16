@@ -88,9 +88,8 @@
 	<p>
 		Chipset:
 		<select name="chipset_id">
-				<option value="9999999" {if $chipset.id==$router_data.chipset_id}selected='selected'{/if}>Unbekannt</option>
-			{foreach item=chipset from=$chipsets}
-				<option value="{$chipset.id}" {if $chipset.id==$router_data.chipset_id}selected='selected'{/if}>{$chipset.name}</option>
+			{foreach item=chipset from=$chipsetlist}
+				<option value="{$chipset->getChipsetId()}">{if $chipset->getHardwareName()}{$chipset->getHardwareName()}{/if} {if $chipset->getHardwareName() AND $chipset->getName()}({/if}{$chipset->getName()}{if $chipset->getHardwareName() AND $chipset->getName()}){/if}</option>
 			{/foreach}
 		</select>
 	</p>

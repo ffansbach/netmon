@@ -2,7 +2,7 @@
 
 require_once('runtime.php');
 require_once('lib/core/install.class.php');
-require_once('lib/core/chipsets.class.php');
+require_once('lib/core/Chipsetlist.class.php');
 require_once('lib/core/Chipset.class.php');
 require_once('lib/core/DnsZone.class.php');
 require_once('lib/core/DnsZoneList.class.php');
@@ -247,8 +247,8 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		// redirect the user
 		$consumer->redirect();
 	} elseif($_GET['section']=="edit_hardware") {
-		$smarty->assign('chipsets_with_name', Chipsets::getChipsetsWithName());
-		$smarty->assign('chipsets_without_name', Chipsets::getChipsetsWithoutName());
+		$chipsetlist = new Chipsetlist();
+		$smarty->assign('chipsetlist', $chipsetlist->getList());
 		
 		$smarty->assign('message', Message::getMessage());
 		$smarty->display("header.tpl.html");
@@ -271,11 +271,18 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		$smarty->display("config_edit_hardware_name.tpl.html");
 		$smarty->display("footer.tpl.html");
 	} elseif($_GET['section']=="insert_edit_chipset_name") {
-		Chipsets::editChipset($_GET['chipset_id'], $_POST['hardware_name']);
+		$chipset = new Chipset((int)$_GET['chipset_id'], $_POST['name'], $_POST['hardware_name']);
+		if($chipset->store()) {
+			$message[] = array("Der Chipsatz wurde gespeichert.", 1);
+		} else {
+			$message[] = array("Der Chipsatz konnte nicht gespeichert werden.", 2);
+		}
+		Message::setMessage($message);
 		header('Location: ./config.php?section=edit_hardware');
 	} elseif($_GET['section']=="insert_delete_chipset") {
 		if($_POST['really_delete']==1) {
-			Chipsets::deleteChipset($_GET['chipset_id']);
+			$message[] = array("Diese Funktion ist aktuell nicht implementiert", 0);
+			Message::setMessage($message);
 			header('Location: ./config.php?section=edit_hardware');
 		} else {
 			$message[] = array("Zum löschen des Chipsets ist eine Bestätigung erforderlich!", 2);

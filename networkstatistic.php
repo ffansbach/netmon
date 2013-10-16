@@ -4,7 +4,7 @@
 require_once('runtime.php');
 require_once('./lib/core/router.class.php');
 require_once('./lib/core/crawling.class.php');
-require_once('./lib/core/chipsets.class.php');
+require_once('./lib/core/Chipsetlist.class.php');
 
 /** Get and assign global messages **/
 $smarty->assign('message', Message::getMessage());
@@ -23,13 +23,13 @@ if(!empty($last_ended_crawl_cycle)) {
 	$smarty->assign('actual_crawl_cycle', $actual_crawl_cycle);
 	
 	/**Get number of routers by chipset **/
-	$chipsets = Chipsets::getChipsets();
+	$chipsetlist = new Chipsetlist();
 	$router_chipsets = array();
-	foreach ($chipsets as $key=>$chipset) {
-		$router_chipsets[$key]['chipset_id'] = $chipset['id'];
-		$router_chipsets[$key]['chipset_name'] = $chipset['name'];
-		$router_chipsets[$key]['hardware_name'] = $chipset['hardware_name'];
-		$router_chipsets[$key]['count'] = Router_old::countRoutersByChipsetId($chipset['id']);;
+	foreach ($chipsetlist->getList() as $key=>$chipset) {
+		$router_chipsets[$key]['chipset_id'] = $chipset->getChipsetId();
+		$router_chipsets[$key]['chipset_name'] = $chipset->getName();
+		$router_chipsets[$key]['hardware_name'] = $chipset->getHardwareName();
+		$router_chipsets[$key]['count'] = Router_old::countRoutersByChipsetId($chipset->getChipsetId());;
 	}
 	
 	$smarty->assign('router_chipsets', $router_chipsets);
