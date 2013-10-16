@@ -46,6 +46,7 @@
 													ORDER BY
 														case :sort_by
 															when 'dns_ressource_record_id' then dns_ressource_records.id
+															when 'dns_zone_id' then dns_ressource_records.dns_zone_id
 															when 'user_id' then dns_ressource_records.user_id
 															else NULL
 														end

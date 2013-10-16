@@ -255,10 +255,10 @@
 		}
 		
 		private function dns_ressource_record_list() {
-			if($this->get_request_method() == "GET" && isset($this->_request['dns_zone_id'])) {
-
-			} elseif($this->get_request_method() == "GET") {
-				$dns_ressource_record_list = new DnsRessourceRecordList(false, false, 
+			if($this->get_request_method() == "GET") {
+				$this->_request['dns_zone_id'] = (!isset($this->_request['dns_zone_id'])) ? false : $this->_request['dns_zone_id'];
+				$this->_request['user_id'] = (!isset($this->_request['user_id'])) ? false : $this->_request['user_id'];
+				$dns_ressource_record_list = new DnsRessourceRecordList((int)$this->_request['dns_zone_id'], (int)$this->_request['user_id'], 
 																		$this->_request['offset'], $this->_request['limit'],
 																		$this->_request['sort_by'], $this->_request['order']);
 				$domxmldata = $dns_ressource_record_list->getDomXMLElement($this->domxml);
