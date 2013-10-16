@@ -2,7 +2,7 @@
 
 /** Include Classes **/
 require_once('runtime.php');
-require_once('./lib/core/router.class.php');
+require_once('./lib/core/router_old.class.php');
 require_once('./lib/core/crawling.class.php');
 require_once('./lib/core/Chipsetlist.class.php');
 
