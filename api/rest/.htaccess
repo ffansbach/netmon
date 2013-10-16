@@ -83,7 +83,7 @@
 	# dns ressource record list containing all ressource record (api/rest/dns_ressource_record_list/)
 	RewriteRule ^dns_ressource_record_list/?$ api.php?rquest=dns_ressource_record_list [QSA,L]
 	# dns ressource record list containing all ressource records of a special dns_zone (api/rest/dns_zone/dns_zone_id/dns_ressource_record_list/)
-	RewriteRule ^dns_zone/([0-9]+)/dns_ressource_record_list/?$ api.php?rquest=dns_ressource_record_list&user_id=$1 [QSA,L]
+	RewriteRule ^dns_zone/([0-9]+)/dns_ressource_record_list/?$ api.php?rquest=dns_ressource_record_list&dns_zone_id=$1 [QSA,L]
 	# dns ressource record list containing all ressource records of a special user (api/rest/user/user_id/dns_ressource_record_list/)
 	RewriteRule ^user/([0-9]+)/dns_ressource_record_list/?$ api.php?rquest=dns_ressource_record_list&user_id=$1 [QSA,L]
 	
