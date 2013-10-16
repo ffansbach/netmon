@@ -1,7 +1,7 @@
 <?php
 require_once('runtime.php');
 require_once(ROOT_DIR.'/lib/core/login.class.php');
-require_once(ROOT_DIR.'/lib/core/user.class.php');
+require_once(ROOT_DIR.'/lib/core/user_old.class.php');
 require_once(ROOT_DIR.'/lib/core/UserRememberMe.class.php');
 
 if($_SESSION['last_page'] != $_SESSION['current_page'] AND empty($_SESSION['redirect_after_login_url'])) {

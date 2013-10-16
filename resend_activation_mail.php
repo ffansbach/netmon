@@ -2,7 +2,7 @@
 	require_once('runtime.php');
 	require_once('lib/core/helper.class.php');
 	require_once('lib/core/register.class.php');
-	require_once('lib/core/user.class.php');
+	require_once('lib/core/user_old.class.php');
 	
 	$register = new register;
 	

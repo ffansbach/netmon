@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // +---------------------------------------------------------------------------+/
 
-require_once(ROOT_DIR.'/lib/core/user.class.php');
+require_once(ROOT_DIR.'/lib/core/user_old.class.php');
 require_once(ROOT_DIR.'/lib/core/UserRememberMeList.class.php');
 require_once(ROOT_DIR.'/lib/extern/phpass/PasswordHash.php');
 

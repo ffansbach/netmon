@@ -3,7 +3,7 @@
 require_once(ROOT_DIR.'/lib/core/crawling.class.php');
 require_once(ROOT_DIR.'/lib/core/interfaces.class.php');
 require_once(ROOT_DIR.'/lib/core/batmanadvanced.class.php');
-require_once(ROOT_DIR.'/lib/core/user.class.php');
+require_once(ROOT_DIR.'/lib/core/user_old.class.php');
 require_once(ROOT_DIR.'/lib/extern/xmpphp/XMPP.php');
 
 /**

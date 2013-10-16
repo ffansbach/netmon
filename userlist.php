@@ -1,6 +1,6 @@
 <?php
 	require_once('runtime.php');
-	require_once('lib/core/user.class.php');
+	require_once('lib/core/user_old.class.php');
 	
 	$smarty->assign('message', Message::getMessage());
 	

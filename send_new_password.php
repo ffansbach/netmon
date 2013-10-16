@@ -3,7 +3,7 @@
 require_once('runtime.php');
 require_once(ROOT_DIR.'/lib/core/helper.class.php');
 require_once(ROOT_DIR.'/lib/core/register.class.php');
-require_once(ROOT_DIR.'/lib/core/user.class.php');
+require_once(ROOT_DIR.'/lib/core/user_old.class.php');
 require_once(ROOT_DIR.'/lib/extern/phpass/PasswordHash.php');
   
 $Register = new Register;

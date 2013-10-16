@@ -21,7 +21,7 @@
 // +---------------------------------------------------------------------------+/
 
 require_once("lib/core/login.class.php");
-require_once("lib/core/user.class.php");
+require_once("lib/core/user_old.class.php");
 require_once("lib/core/ConfigLine.class.php");
 require_once('lib/extern/Zend/Mail.php');
 require_once('lib/extern/Zend/Mail/Transport/Smtp.php');

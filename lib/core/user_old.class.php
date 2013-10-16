@@ -1,7 +1,7 @@
 <?php
 
 // +---------------------------------------------------------------------------+
-// user.class.php
+// user_old.class.php
 // Netmon, Freifunk Netzverwaltung und Monitoring Software
 //
 // Copyright (c) 2009 Clemens John <clemens-john@gmx.de>
