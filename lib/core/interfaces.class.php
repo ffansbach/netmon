@@ -28,44 +28,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once(ROOT_DIR.'/lib/core/Ip.class.php');
-require_once(ROOT_DIR.'/lib/core/Iplist.class.php');
-require_once(ROOT_DIR.'/lib/core/subnetcalculator.class.php');
-
 class Interfaces {
-	
-	public function deleteInterface($interface_id) {
-		$interface_data = Interfaces::getInterfaceByInterfaceId($interface_id);
-
-		//Delete IP Adresses
-		$iplist = new Iplist((int)$interface_id);
-		$iplist->delete();
-
-		//Delete Interface
-		try {
-			$stmt = DB::getInstance()->prepare("DELETE FROM interfaces WHERE id=?");
-			$stmt->execute(array($interface_id));
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-
-		$message[] = array("Das Interface $interface_data[name] wurde entfernt.",1);
-		Message::setMessage($message);
-		return true;
-	}
-	
-	public function getInterfaceByInterfaceId($interface_id) {
-		try {
-			$stmt = DB::getInstance()->prepare("SELECT * FROM interfaces WHERE id=?");
-			$stmt->execute(array($interface_id));
-			return $stmt->fetch(PDO::FETCH_ASSOC);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-	}
-	
 	public function getInterfacesCrawlByCrawlCycle($crawl_cycle_id, $router_id) {
 		$interfaces = array();
 		try {
