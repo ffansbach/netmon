@@ -1,6 +1,6 @@
 <?php
 	require_once('runtime.php');
-	require_once('./lib/core/router.class.php');
+	require_once('./lib/core/router_old.class.php');
 	require_once('./lib/core/Router.class.php');
 	require_once('./lib/core/routereditor.class.php');
 	require_once('./lib/core/Chipsetlist.class.php');

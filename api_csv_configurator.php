@@ -2,7 +2,7 @@
 
 require_once('runtime.php');
 require_once('lib/core/login.class.php');
-require_once('lib/core/router.class.php');
+require_once('lib/core/router_old.class.php');
 require_once('lib/core/routersnotassigned.class.php');
 require_once('lib/core/rrdtool.class.php');
 require_once('lib/core/Networkinterface.class.php');

@@ -27,7 +27,7 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
-require_once('./lib/core/router.class.php');
+require_once('./lib/core/router_old.class.php');
 require_once('./lib/core/interfaces.class.php');
 require_once('./lib/core/batmanadvanced.class.php');
 require_once('./lib/core/crawling.class.php');
