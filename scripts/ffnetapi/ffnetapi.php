@@ -25,7 +25,7 @@
 	
 	//state
 	//number of nodes
-	$doc->load('http://netmon.freifunk-ol.de/api/rest/routerlist/?offset=0&limit=0');
+	$doc->load('http://netmon.freifunk-ol.de/api/rest/routerlist/?status=online&offset=0&limit=0');
 	$xpath = new DOMXPath($doc);	
 	$mydocument['state']['nodes'] = $xpath->evaluate('string(/netmon_response/routerlist/@total_count)');
 	
