@@ -146,7 +146,14 @@
 	$smarty = new Smarty;
 	$smarty->compile_check = true;
 	$smarty->debugging = false;
-	$smarty->template_dir = ROOT_DIR.'/templates/'.$GLOBALS['template'].'/html';
+
+	// base template directory
+	// this is used as a fallback if nothing is found in the custom template folder
+	// lookup ordered by param2
+	$smarty->addTemplateDir(ROOT_DIR.'/templates/base/html', 10);
+	// custom template folder - smarty will try here first ( order 0 )
+	$smarty->addTemplateDir(ROOT_DIR.'/templates/'.$GLOBALS['template'].'/html', 0);
+
 	$smarty->compile_dir = ROOT_DIR.'/templates_c';
 	$smarty->assign('template', $GLOBALS['template']);
 	$smarty->assign('installed', $GLOBALS['installed']);
