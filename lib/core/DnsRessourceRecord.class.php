@@ -253,6 +253,16 @@
 			return $this->dns_zone;
 		}
 		
+		public function getDestination() {
+			if($this->getType() == 'A' OR $this->getType() == 'AAAA') {
+				$ip = new Ip($this->getDestinationId());
+				if($ip->fetch()) {
+					return $ip;
+				}
+			}
+			return false;
+		}
+		
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('dns_ressource_record');
 			$domxmlelement->appendChild($domdocument->createElement("dns_ressource_record_id", $this->getDnsRessourceRecordId()));

@@ -48,6 +48,40 @@
 		} else {
 			Permission::denyAccess(PERM_ROOT, $dns_zone->getUserId());
 		}
+	} elseif($_GET['section'] == 'edit') {
+		$dns_zone = new DnsZone((int)$_GET['dns_zone_id']);
+		$dns_zone->fetch();
+		if(permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, $dns_zone->getUserId())) {
+			$smarty->assign('dns_zone', $dns_zone);
+					
+			$smarty->assign('message', Message::getMessage());
+			$smarty->display("header.tpl.html");
+			$smarty->display("dns_zone_edit.tpl.html");
+			$smarty->display("footer.tpl.html");
+		} else {
+			Permission::denyAccess(PERM_ROOT, $dns_zone->getUserId());
+		}
+	} elseif($_GET['section'] == 'insert_edit') {
+		$dns_zone = new DnsZone((int)$_GET['dns_zone_id']);
+		$dns_zone->fetch();
+		if(permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, $dns_zone->getUserId())) {
+			$dns_zone->setName($_POST['name']);
+			$dns_zone->setPriDns($_POST['pri_dns']);
+			$dns_zone->setSecDns($_POST['sec_dns']);
+			$dns_zone->setRefresh((int)$_POST['refresh']);
+			$dns_zone->setRetry((int)$_POST['retry']);
+			$dns_zone->setExpire((int)$_POST['expire']);
+			$dns_zone->setTtl((int)$_POST['ttl']);
+			if($dns_zone->store()) {
+				$message[] = array('Die Änderungen wurden gespeichert.', 1);
+			} else {
+				$message[] = array('Die Änderungen konnten nicht gespeichert werden.', 2);
+			}
+			Message::setMessage($message);
+			header('Location: ./dns_zone.php?dns_zone_id='.$_GET['dns_zone_id']);
+		} else {
+			Permission::denyAccess(PERM_ROOT, $dns_zone->getUserId());
+		}
 	} else {
 		$dns_zone_list = new DnsZoneList();
 		$smarty->assign('dns_zone_list', $dns_zone_list->getDnsZoneList());

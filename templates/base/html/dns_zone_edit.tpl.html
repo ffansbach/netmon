@@ -1,0 +1,18 @@
+<h1>DNS-Zone <i>{$dns_zone->getName()}</i> bearbeiten</h1>
+<p>
+	Auf dieser Seite kannst du die DNS-Zone {$dns_zone->getName()} bearbeiten.
+	Die Seriennummer der Zone wird nach dem Speichern automatisch angepasst.
+</p>
+
+<h2>Daten</h2>
+<form action="./dns_zone.php?section=insert_edit&dns_zone_id={$smarty.get.dns_zone_id}" method="POST">
+	<p><b>Name:</b><br><input name="name" type="text" size="10" value="{$dns_zone->getName()}"></p>
+	<p><b>Primary DNS:</b><br><input name="pri_dns" type="text" size="10" value="{$dns_zone->getPriDns()}"></p>
+	<p><b>Secondary DNS:</b><br><input name="sec_dns" type="text" size="10" value="{$dns_zone->getSecDns()}"></p>
+	<p><b>Refresh:</b><br><input name="refresh" type="text" size="10" value="{$dns_zone->getRefresh()}"></p>
+	<p><b>Retry:</b><br><input name="retry" type="text" size="10" value="{$dns_zone->getRetry()}"></p>
+	<p><b>Expire:</b><br><input name="expire" type="text" size="10" value="{$dns_zone->getExpire()}"></p>
+	<p><b>Time to live:</b><br><input name="ttl" type="text" size="10" value="{$dns_zone->getTtl()}"></p>
+	
+	<p><input type="submit" value="Speichern"></p>
+</form>

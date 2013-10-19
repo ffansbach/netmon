@@ -94,9 +94,28 @@
 		
 		public function store() {
 			if($this->getDnsZoneId() != 0) {
+				//update 
+				//check if we need to update the serial number
+				$tmp_dns_zone = new DnsZone($this->getDnsZoneId());
+				$tmp_dns_zone->fetch();
+				if($tmp_dns_zone->getSerial()==$this->getSerial()) {
+					$tmd_serial_date = substr($tmp_dns_zone->getSerial(), 0, 8);
+					$today_serial_date = date("Ymd", time());
+					if($tmd_serial_date==$today_serial_date) {
+						$serial_inc = str_pad(substr($this->getSerial, -2)+1, 2, "0", STR_PAD_LEFT);
+					} else {
+						$serial_inc = "00";
+					}
+					$this->setSerial(intval($today_serial_date.$serial_inc));
+				}/*
+				echo "<pre>";
+				var_dump($tmp_dns_zone);
+				var_dump($this);
+				die();*/
 				try {
 					$stmt = DB::getInstance()->prepare("UPDATE dns_zones SET
 																user_id = ?,
+																name = ?,
 																pri_dns = ?,
 																sec_dns = ?,
 																serial = ?,

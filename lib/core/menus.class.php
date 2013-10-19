@@ -141,6 +141,13 @@ class Menus extends Permission {
 				}
 				$submenu[] = $subsubmenu;
 				$menu[] = $submenu;
+			} elseif(strpos($_SERVER['PHP_SELF'], "dns_zone.php")!==false AND isset($_GET['dns_zone_id'])) {
+				$submenu[] = array('name'=>'Zonenoptionen', 'href'=>'#');
+				if(Permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, $_SESSION['user_id'])) {
+					$subsubmenu[] = array('name'=>'Bearbeiten', 'href'=>'dns_zone.php?section=edit&dns_zone_id='.$_GET['dns_zone_id']);
+				}
+				$submenu[] = $subsubmenu;
+				$menu[] = $submenu;
 			}
 		}
 		return $menu;
