@@ -16,9 +16,9 @@
 		if(type == "A" || type == "AAAA") {
 			$.ajax({
 				type: "GET",
-				url: "./api/rest/user/"+user_id+"/routerlist/",
+				url: "./api/rest/user/"+user_id+"/routerlist/?offset=0&limit=-1",
 				dataType: "xml",
-				success: parse_ips,
+				success: parse_routers,
 				error:	function() {
 							alert("Error: Something went wrong");
 						}
@@ -28,44 +28,63 @@
 		} else {
 			alert("What?");
 		}
+		//remove the loading... option
+		$("#destination option[value='loading']").remove();
+	}
+	
+	function parse_routers(xml) {
+		var routerlist = $(xml).find("netmon_response routerlist router");
+		routerlist.each(function() {
+			var router_id = $(this).find("router_id:first").text();
+			$.ajax({
+				type: "GET",
+				url: "./api/rest/router/"+router_id+"/networkinterfacelist/?offset=0&limit=-1",
+				dataType: "xml",
+				success: parse_networkinterfaces,
+				error:	function() {
+							alert("Error: Something went wrong");
+						}
+			});
+			
+		});
+	}
+	
+	function parse_networkinterfaces(xml) {
+		var networkinterfacelist = $(xml).find("netmon_response networkinterfacelist networkinterface");
+		networkinterfacelist.each(function() {
+			var networkinterface_id = $(this).find("networkinterface_id:first").text();
+			$.ajax({
+				type: "GET",
+				url: "./api/rest/networkinterface/"+networkinterface_id+"/iplist/?offset=0&limit=-1",
+				dataType: "xml",
+				success: parse_ips,
+				error:	function() {
+							alert("Error: Something went wrong");
+						}
+			});
+			
+		});
 	}
 	
 	function parse_ips(xml) {
 		//get selected ressource record type
 		var type = $('#type').val();
 	
-		var routerlist = $(xml).find("netmon_response routerlist router");
-		
-		//loop through all router elements
-		routerlist.each(function() {
-			//fetch hostname
-			var hostname = $(this).find("hostname:first").text();
+		//fetch all ip elements in first level and loop through them
+		var iplist = $(xml).find("netmon_response iplist ip");
+		iplist.each(function() {
+			//fetch ip id and ip address
+			var ip_id = $(this).find("ip_id").text();
+			var ip = $(this).find("ip:first").text();
+			var ipv = $(this).find("ipv").text();
 			
-			//fetch all networkinterface elements and loop through them
-			var interfacelist = $(this).find("networkinterfacelist networkinterface");
-			interfacelist.each(function() {
-				//fetch interface name
-				var ifname = $(this).find("name:first").text();
-				
-				//fetch all ip elements in first level and loop through them
-				var iplist = $(this).find("ip:nth-child(1)");
-				iplist.each(function() {
-					//fetch ip id and ip address
-					var ip_id = $(this).find("ip_id").text();
-					var ip = $(this).find("ip:first").text();
-					var ipv = $(this).find("ipv").text();
-					
-					if((type == 'A' && ipv == 4) || (type == 'AAAA' && ipv == 6)) {
-						var option = document.createElement("option");
-						option.text = hostname+' -> '+ifname+' -> '+ip;
-						option.value = ip_id;
-						document.getElementById("destination").appendChild(option);
-					}
-				});
-			});
+			if((type == 'A' && ipv == 4) || (type == 'AAAA' && ipv == 6)) {
+				var option = document.createElement("option");
+				option.text = ip;
+				option.value = ip_id;
+				document.getElementById("destination").appendChild(option);
+			}
 		});
-		//remove the loading... option
-		$("#destination option[value='loading']").remove();
 	}
 	
 	$(document).ready(function(){

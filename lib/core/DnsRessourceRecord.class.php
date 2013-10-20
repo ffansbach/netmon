@@ -83,6 +83,11 @@
 		public function store() {
 			if($this->getDnsRessourceRecordId() != 0 AND $this->getDnsZoneId()!=0 AND $this->getUserId()!=0 AND
 			   $this->getHost()!="" AND $this->getType()!="" AND $this->getDestinationId()!=0) {
+				//do a fake update on dns zone to refresh the serial number of the zone
+				$dns_zone = new DnsZone($this->getDnsZoneId());
+				$dns_zone->fetch();
+				$dns_zone->store();
+				//insert data of ressource record
 				try {
 					$stmt = DB::getInstance()->prepare("UPDATE dns_ressource_records SET
 																dns_zone_id = ?,
@@ -102,6 +107,11 @@
 				}
 			} elseif($this->getDnsRessourceRecordId() == 0 AND $this->getDnsZoneId()!=0 AND $this->getUserId()!=0 AND
 					 $this->getHost()!="" AND $this->getType()!="" AND $this->getDestinationId()!=0) {
+				//do a fake update on dns zone to refresh the serial number of the zone
+				$dns_zone = new DnsZone($this->getDnsZoneId());
+				$dns_zone->fetch();
+				$dns_zone->store();
+				//insert data of ressource record
 				try {
 					$stmt = DB::getInstance()->prepare("INSERT INTO dns_ressource_records (dns_zone_id, user_id, host, type,
 																						   pri, destination_id,
@@ -121,6 +131,11 @@
 		
 		public function delete() {
 			// TODO: delete CNAME Records that point to this ressource record
+			//do a fake update on dns zone to refresh the serial number of the zone
+			$dns_zone = new DnsZone($this->getDnsZoneId());
+			$dns_zone->fetch();
+			$dns_zone->store();
+			//delete ressource record
 			try {
 				$stmt = DB::getInstance()->prepare("DELETE FROM dns_ressource_records WHERE id=?");
 				$stmt->execute(array($this->getDnsRessourceRecordId()));

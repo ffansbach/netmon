@@ -107,11 +107,8 @@
 						$serial_inc = "00";
 					}
 					$this->setSerial(intval($today_serial_date.$serial_inc));
-				}/*
-				echo "<pre>";
-				var_dump($tmp_dns_zone);
-				var_dump($this);
-				die();*/
+				}
+				
 				try {
 					$stmt = DB::getInstance()->prepare("UPDATE dns_zones SET
 																user_id = ?,
@@ -134,6 +131,9 @@
 					echo $e->getTraceAsString();
 				}
 			} elseif($this->getUserId() != 0 AND $this->getName()!="") {
+				if($this->getSerial()==0) {
+					$this->setSerial(intval($today_serial_date = date("Ymd", time())."00"));
+				}
 				try {
 					$stmt = DB::getInstance()->prepare("INSERT INTO dns_zones (user_id, name, pri_dns, sec_dns, serial, refresh, retry, expire, ttl, create_date, update_date)
 														VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
