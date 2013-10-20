@@ -19,6 +19,7 @@
 				url: "./api/rest/user/"+user_id+"/routerlist/?offset=0&limit=-1",
 				dataType: "xml",
 				success: parse_routers,
+				async: false,
 				error:	function() {
 							alert("Error: Something went wrong");
 						}
@@ -41,6 +42,7 @@
 				url: "./api/rest/router/"+router_id+"/networkinterfacelist/?offset=0&limit=-1",
 				dataType: "xml",
 				success: parse_networkinterfaces,
+				async: false,
 				error:	function() {
 							alert("Error: Something went wrong");
 						}
@@ -58,6 +60,7 @@
 				url: "./api/rest/networkinterface/"+networkinterface_id+"/iplist/?offset=0&limit=-1",
 				dataType: "xml",
 				success: parse_ips,
+				async: false,
 				error:	function() {
 							alert("Error: Something went wrong");
 						}

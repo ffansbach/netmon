@@ -12,7 +12,7 @@ $(document).ready(function() {
 			{ "sType": "string" },
 			{ "sType": "string" },
 			{ "sType": "string" },
-			{ "sType": "string" },
+			//{ "sType": "string" },
 			{ "sType": "html" },
 			{ "sType": "date-eu" },
 			{ "sType": "date-eu" },
@@ -56,7 +56,7 @@ Hier erfährst du alles über die DNS-Zone <i>{$dns_zone->getName()}</i>.
 				<th>Host</th>
 				<th>Type</th>
 				<th>Destination</th>
-				<th>Pri</th>
+				<!--<th>Pri</th>-->
 				<th>Benutzer</th>
 				<th>Erstellt</th>
 				<th>Letztes Update</th>
@@ -75,7 +75,7 @@ Hier erfährst du alles über die DNS-Zone <i>{$dns_zone->getName()}</i>.
 							{$dns_ressource_record->getDestinationId()}
 						{/if}
 					</td>
-					<td>{$dns_ressource_record->getPri()}</td>
+					<!--<td>{$dns_ressource_record->getPri()}</td>-->
 					<td><a href="./user.php?user_id={$dns_ressource_record->getUser()->getUserId()}">{$dns_ressource_record->getUser()->getNickname()}</a></td>
 					<td>{$dns_ressource_record->getCreateDate()|date_format:"%d.%m.%Y"}</td>
 					<td>{$dns_ressource_record->getUpdateDate()|date_format:"%d.%m.%Y %H:%M"}</td>

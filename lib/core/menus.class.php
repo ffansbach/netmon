@@ -28,6 +28,8 @@
  * @package	Netmon Freifunk Netzverwaltung und Monitoring Software
  */
 
+require_once(ROOT_DIR.'/lib/core/DnsZone.class.php');
+
 class Menus extends Permission {
 	public function loginOutMenu() {
 		$menu = array();
@@ -143,10 +145,12 @@ class Menus extends Permission {
 				$menu[] = $submenu;
 			} elseif(strpos($_SERVER['PHP_SELF'], "dns_zone.php")!==false AND isset($_GET['dns_zone_id'])) {
 				$submenu[] = array('name'=>'Zonenoptionen', 'href'=>'#');
-				if(Permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, $_SESSION['user_id'])) {
+				$dns_zone = new DnsZone((int)$_GET['dns_zone_id']);
+				$dns_zone->fetch();
+				if(Permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, $dns_zone->getUserId())) {
 					$subsubmenu[] = array('name'=>'Bearbeiten', 'href'=>'dns_zone.php?section=edit&dns_zone_id='.$_GET['dns_zone_id']);
 				}
-				if(Permission::checkIfUserIsOwnerOrPermitted(PERM_USER, $_SESSION['user_id'])) {
+				if (Permission::checkPermission(PERM_USER)) {
 					$subsubmenu[] = array('name'=>'RR hinzufügen', 'href'=>'dns_ressource_record.php?section=add&dns_zone_id='.$_GET['dns_zone_id']);
 				}
 				$submenu[] = $subsubmenu;
