@@ -31,6 +31,12 @@
 		}
 		//remove the loading... option
 		$("#destination option[value='loading']").remove();
+		if(document.getElementById("destination").length==0) {
+			var option = document.createElement("option");
+			option.text = "You do not have any destination elements.";
+			option.value = "";
+			document.getElementById("destination").appendChild(option);
+		}
 	}
 	
 	function parse_routers(xml) {
