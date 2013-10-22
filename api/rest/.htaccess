@@ -5,7 +5,8 @@
 	# ROUTER      #
 	###############
 	# api/rest/router/router_id
-	RewriteRule ^router/([0-9]+)/?$ api.php?rquest=router&id=$1 [QSA,L]
+	RewriteRule ^router/([0-9]+)/?$ api.php?rquest=router&router_id=$1 [QSA,L]
+	RewriteRule ^router/([a-zA-Z0-9.-]+)/?$ api.php?rquest=router&hostname=$1 [QSA,L]
 	
 	################
 	# ROUTERLIST   #
