@@ -337,7 +337,52 @@
 		<p>
 			<p>Die Daten die Netmon derzeit sammelt, werden nach beendigung dieses Crawls angezeigt.</p>
 			<b>Beginn:</b> {$actual_crawl_cycle.crawl_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
-			<b>Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr ({$actual_crawl_cycle.crawl_date_end_minutes} Minuten)
+			<b>Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr 
+			<script type="text/javascript">
+				var Time = "{$actual_crawl_cycle.crawl_date_end_minutes}";
+				
+				var Splittime = Time.split(':');
+				
+				var sec = parseInt((Splittime[1]));
+				
+				var cMinuten = parseInt((Splittime[0]));
+				
+				var cSekunden = (cMinuten * 60) + sec;
+				
+				function countdown() {
+					setTimeout('Decrement()',1000);
+				}
+				function Decrement() {
+					if (document.getElementById) {
+						minutes = document.getElementById("minutes");
+						seconds = document.getElementById("seconds");
+						if(cMinuten == 0 && cSekunden == 0){
+							location.reload();
+						}
+						if (seconds < 59) {
+							seconds.value = cSekunden;
+						} else {
+							minutes.value = getminutes();
+							seconds.value = getseconds();
+						}
+						cSekunden--;
+						if (cSekunden >= 0) {
+							setTimeout('Decrement()',1000); 
+						}
+					}
+				}
+				function getminutes() {
+					cMinuten = Math.floor(cSekunden / 60);
+					return cMinuten;
+				}
+				function getseconds() {
+					return cSekunden-Math.round(cMinuten *60);
+				}
+			</script>
+			(<input id="minutes" style="width: 14px; border: none;">:<input id="seconds" style="width: 26px; border: none;">Minuten)
+			<script>
+				countdown();
+			</script>
 		</p>
 	</div>
 	<div style="float:left; width: 33%;">
