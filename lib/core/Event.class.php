@@ -59,6 +59,10 @@
 		}
 		
 		public function store() {
+			if($this->crawl_cycle_id == 0) {
+				$this->setCrawlCycleId((int)crawling::getLastEndedCrawlCycle()['id']);
+			}
+			
 			if($this->crawl_cycle_id != 0 AND $this->object != "" AND $this->object_id != 0 AND $this->action != "" AND $this->data != null) {
 				try {
 					$stmt = DB::getInstance()->prepare("INSERT INTO events (crawl_cycle_id, object, object_id, action, create_date, update_date, data)

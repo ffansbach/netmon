@@ -289,42 +289,6 @@
 			}
 		}
 		
-		private function eventlist() {
-			if($this->get_request_method() == "GET" && isset($this->_request['router_id']) && isset($this->_request['action'])) {
-				$eventlist = new Eventlist();
-				$eventlist->init('router', $this->_request['router_id'], $this->_request['action'],
-								 $this->_request['offset'], $this->_request['limit'],
-								 $this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} elseif($this->get_request_method() == "GET" && isset($this->_request['router_id'])) {
-				$eventlist = new Eventlist();
-				$eventlist->init('router', $this->_request['router_id'], false,
-								 $this->_request['offset'], $this->_request['limit'],
-								 $this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} elseif($this->get_request_method() == "GET" && isset($this->_request['action'])) {
-				$eventlist = new Eventlist();
-				$eventlist->init(false, false, $this->_request['action'],
-								 $this->_request['offset'], $this->_request['limit'],
-								 $this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} elseif($this->get_request_method() == "GET") {
-				$eventlist = new Eventlist();
-				$eventlist->init(false, false, false,
-								 $this->_request['offset'], $this->_request['limit'],
-								 $this->_request['sort_by'], $this->_request['order']);
-				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
-				$this->response($this->finishxml($domxmldata), 200);
-			} else {
-				$this->error_code = 2;
-				$this->error_message = "The eventlist could not be created, your request seems to be malformed.";
-				$this->response($this->finishxml(), 400);
-			}
-		}
-		
 		private function event() {
 			if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
 				$event = new Event((int)$this->_request['id']);
@@ -340,8 +304,8 @@
 			         ($this->get_request_method() == "GET" && !isset($this->_request['id']) && count($_GET)>1)) {
 			    if($this->isApiKeyValid($this->api_key)) {
 					$data = (!empty($_POST)) ? $_POST : $_GET;
-					
-					$event = new Event(false, $data['object'], $data['object_id'], $data['action'], $data['data']);
+					$event = new Event(false, false, $this->_request['object'], (int)$this->_request['object_id'],
+									   $this->_request['action'], $this->_request['data']);
 					$event_id = $event->store();
 					if($event_id!=false) {
 						header('Location: '.ConfigLine::configByName('url_to_netmon').'/api/rest/event/'.$event_id);
@@ -361,8 +325,22 @@
 			}
 		}
 		
-		private function events() {
-			$this->response($this->finishxml(), 200);
+		private function eventlist() {
+			if($this->get_request_method() == "GET") {
+				$this->_request['object'] = (isset($this->_request['object'])) ? $this->_request['object'] : false;
+				$this->_request['object_id'] = (isset($this->_request['object_id'])) ? $this->_request['object_id'] : false;
+				$this->_request['action'] = (isset($this->_request['action'])) ? $this->_request['action'] : false;
+				$eventlist = new Eventlist();
+				$eventlist->init($this->_request['object'], (int)$this->_request['object_id'], $this->_request['action'],
+								(int)$this->_request['offset'], (int)$this->_request['limit'],
+								$this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The OriginatorStatusList could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
 		}
 		
 		public function isApiKeyValid($api_key) {

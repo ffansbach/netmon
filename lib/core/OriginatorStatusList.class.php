@@ -47,7 +47,8 @@
 													ORDER BY
 														case :sort_by
 															when 'status_id' then crawl_batman_advanced_originators.id
-															when 'originator' then crawl_batman_advanced_originators.originator
+															when 'router_id' then crawl_batman_advanced_originators.router_id
+															when 'crawl_cycle_id' then crawl_batman_advanced_originators.crawl_cycle_id
 															else NULL
 														end
 													".$this->getOrder()."
