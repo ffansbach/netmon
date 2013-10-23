@@ -106,9 +106,9 @@
 		function labelFormatter(label, series) {
 			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
 		}
-    </script>
-    
-    <script type="text/javascript">
+	</script>
+
+	<script type="text/javascript">
 		$(function() {
 			var placeholder = $("#firmwareversions_chart");
 			
@@ -172,9 +172,9 @@
 		function legendFormatter(label, series) {
 			return label.substr(0,10) ;
 		}
-    </script>
-    
-    <script type="text/javascript">
+	</script>
+
+	<script type="text/javascript">
 		$(function() {
 			var placeholder = $("#batmanadv_div");
 			
@@ -209,7 +209,7 @@
 					noColumns: 1
 				}
 			});
-			
+
 			placeholder.bind("plothover", function(event, pos, obj) {
 				if (!obj) {
 					return;
@@ -228,7 +228,7 @@
 				win.focus();
 			});
 		});
-		
+
 		function labelFormatter(label, series) {
 			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
 		}
@@ -236,9 +236,9 @@
 		function legendFormatter(label, series) {
 			return label.substr(0,25) ;
 		}
-    </script>
-    
-    <script type="text/javascript">
+	</script>
+
+	<script type="text/javascript">
 		$(function() {
 			var placeholder = $("#kernelversions_chart");
 			
@@ -292,7 +292,7 @@
 				win.focus();
 			});
 		});
-		
+
 		function labelFormatter(label, series) {
 			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
 		}
@@ -300,188 +300,188 @@
 		function legendFormatter(label, series) {
 			return label.substr(0,25) ;
 		}
-		</script>
-		<style type="text/css">
-			.legendLabel {
-				width: 110px;
-			}
-		</style>
-    {/literal}
+	</script>
+	<style type="text/css">
+		.legendLabel {
+			width: 110px;
+		}
+	</style>
+{/literal}
 
 
 
 <h1>Statistik</h1>
 {if !empty($last_ended_crawl_cycle)}
-<div style="width: 100%; overflow: hidden;">
-	<div style="float:left; width: 21%;">
-		<h2>Router</h2>
-		<table style="text-align: center; vertical-align: baseline; font-size: 2em; font-weight: bold;">
-			<tr>
-				<td style="width: 33%; color: #007B0F;" ><img src="templates/{$template}/img/status_up_big.png" title="up - node is reachable" alt="up"/><br><a style="color: #007B0F;" href="./routerlist.php?status=online">{$router_status_online}</a></td>
-				<td class="node_status_down nodes" style="width: 33%; color: #CB0000;" ><img src="templates/{$template}/img/status_down_big.png" title="down - node is not visible" alt="down"/><br><a style="color: #CB0000;" href="./routerlist.php?status=offline">{$router_status_offline}</a></td>
-				<td class="node_status_pending nodes" style="width: 33%; color: #F8C901;" ><img src="templates/{$template}/img/status_pending_big.png" title="pending - node has not yet been seen since registration" alt="pending"/><br><a style="color: #F8C901;" href="./routerlist.php?status=unknown">{$router_status_unknown}</a></td>
-			</tr>
-		</table>
-	</div>
-	<div style="float:left; width: 13%;">
-		<h2>Clients</h2>
-		<table style="text-align: center; vertical-align: baseline; font-size: 2em; font-weight: bold;">
-			<tr>
-				<td style="width: 100%; color: #006c7b;" ><img src="templates/{$template}/img/client-logo.png" title="clients" alt="clients"/><br>{$clients_connected}</td>				
-			</tr>
-		</table>
-	</div>
+	<div style="width: 100%; overflow: hidden;">
+		<div style="float:left; width: 21%;">
+			<h2>Router</h2>
+			<table style="text-align: center; vertical-align: baseline; font-size: 2em; font-weight: bold;">
+				<tr>
+					<td style="width: 33%; color: #007B0F;" ><img src="templates/{$template}/img/status_up_big.png" title="up - node is reachable" alt="up"/><br><a style="color: #007B0F;" href="./routerlist.php?status=online">{$router_status_online}</a></td>
+					<td class="node_status_down nodes" style="width: 33%; color: #CB0000;" ><img src="templates/{$template}/img/status_down_big.png" title="down - node is not visible" alt="down"/><br><a style="color: #CB0000;" href="./routerlist.php?status=offline">{$router_status_offline}</a></td>
+					<td class="node_status_pending nodes" style="width: 33%; color: #F8C901;" ><img src="templates/{$template}/img/status_pending_big.png" title="pending - node has not yet been seen since registration" alt="pending"/><br><a style="color: #F8C901;" href="./routerlist.php?status=unknown">{$router_status_unknown}</a></td>
+				</tr>
+			</table>
+		</div>
+		<div style="float:left; width: 13%;">
+			<h2>Clients</h2>
+			<table style="text-align: center; vertical-align: baseline; font-size: 2em; font-weight: bold;">
+				<tr>
+					<td style="width: 100%; color: #006c7b;" ><img src="templates/{$template}/img/client-logo.png" title="clients" alt="clients"/><br>{$clients_connected}</td>
+				</tr>
+			</table>
+		</div>
 
-	<div style="float:left; width: 33%;">
-		<h2>Aktueller Crawl</h2>
-		<p>
-			<p>Die Daten die Netmon derzeit sammelt, werden nach beendigung dieses Crawls angezeigt.</p>
-			<b>Beginn:</b> {$actual_crawl_cycle.crawl_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
-			<b>Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr 
-			<script type="text/javascript">
-				var Time = "{$actual_crawl_cycle.crawl_date_end_minutes}";
-				
-				var Splittime = Time.split(':');
-				
-				var sec = parseInt((Splittime[1]));
-				
-				var cMinuten = parseInt((Splittime[0]));
-				
-				var cSekunden = (cMinuten * 60) + sec;
-				
-				function countdown() {
-					setTimeout('Decrement()',1000);
-				}
-				function Decrement() {
-					if (document.getElementById) {
-						minutes = document.getElementById("minutes");
-						seconds = document.getElementById("seconds");
-						if(cMinuten == 0 && cSekunden == 0){
-							location.reload();
-						}
-						if (seconds < 59) {
-							seconds.value = cSekunden;
-						} else {
-							minutes.value = getminutes();
-							seconds.value = getseconds();
-						}
-						cSekunden--;
-						if (cSekunden >= 0) {
-							setTimeout('Decrement()',1000); 
+		<div style="float:left; width: 33%;">
+			<h2>Aktueller Crawl</h2>
+			<p>
+				<p>Die Daten die Netmon derzeit sammelt, werden nach beendigung dieses Crawls angezeigt.</p>
+				<b>Beginn:</b> {$actual_crawl_cycle.crawl_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
+				<b>Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr 
+				<script type="text/javascript">
+					var Time = "{$actual_crawl_cycle.crawl_date_end_minutes}";
+
+					var Splittime = Time.split(':');
+
+					var sec = parseInt((Splittime[1]));
+
+					var cMinuten = parseInt((Splittime[0]));
+
+					var cSekunden = (cMinuten * 60) + sec;
+
+					function countdown() {
+						setTimeout('Decrement()',1000);
+					}
+					function Decrement() {
+						if (document.getElementById) {
+								minutes = document.getElementById("minutes");
+								seconds = document.getElementById("seconds");
+								if(cMinuten == 0 && cSekunden == 0){
+									location.reload();
+								}
+								if (seconds < 59) {
+									seconds.value = cSekunden;
+								} else {
+									minutes.value = getminutes();
+									seconds.value = getseconds();
+								}
+							cSekunden--;
+							if (cSekunden >= 0) {
+									setTimeout('Decrement()',1000); 
+							}
 						}
 					}
-				}
-				function getminutes() {
-					cMinuten = Math.floor(cSekunden / 60);
-					return cMinuten;
-				}
-				function getseconds() {
-					return cSekunden-Math.round(cMinuten *60);
+					function getminutes() {
+						cMinuten = Math.floor(cSekunden / 60);
+						return cMinuten;
+					}
+					function getseconds() {
+						return cSekunden-Math.round(cMinuten *60);
+					}
+				</script>
+				(<input id="minutes" style="width: 14px; border: none;">:<input id="seconds" style="width: 26px; border: none;">Minuten)
+				<script>
+					countdown();
+				</script>
+			</p>
+		</div>
+		<div style="float:left; width: 33%;">
+			<h2>Letzter Crawl</h2>
+			<p>
+				<p>Die aktuell in Netmon gezeigten Daten wurden während dieses Crawls gesammelt.</p>
+				<b>Beginn:</b> {$last_ended_crawl_cycle.crawl_date} Uhr<br>
+				<b>Ende:</b> {$last_ended_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr
+			</p>
+		</div>
+	</div>
+	<br>
+
+	<div style="width: 100%; overflow: hidden;">
+		<div style="float:left; width: 50%;">
+			<div style="width: 100%; overflow: hidden;">
+				<div style="float:left; margin-right: 5px;">
+					<h2>Routermodelle</h2>
+				</div>
+				<div style="float:left; margin-top: 10px;">
+					(<span id="hover_chipset">Details</span>)
+				</div>
+			</div>
+			<br style="clear: both;">
+			<div style="height: 300px;" id="chipset_chart"></div>
+		</div>
+		<div style="float:left; width: 50%;">
+			<div style="width: 100%; overflow: hidden;">
+				<div style="float:left; margin-right: 5px;">
+					<h2>Firmware</h2>
+				</div>
+				<div style="float:left; margin-top: 10px;">
+					(<span id="hover_firmwareversions">Details</span>)
+				</div>
+			</div>
+			<br style="clear: both;">
+			<div style="height: 300px;" id="firmwareversions_chart"></div>
+		</div>
+	</div>
+	<br>
+
+	<div style="width: 100%; overflow: hidden;">
+		<div style="float:left; width: 50%;">
+			<div style="width: 100%; overflow: hidden;">
+				<div style="float:left; margin-right: 5px;">
+					<h2>B.A.T.M.A.N adv.</h2>
+				</div>
+				<div style="float:left; margin-top: 10px;">
+					(<span id="hover_batmanadv">Details</span>)
+				</div>
+			</div>
+			<br style="clear: both;">
+			<div style="height: 300px;" id="batmanadv_div"></div>
+		</div>
+		<div style="float:left; width: 50%;">
+			<div style="width: 100%; overflow: hidden;">
+				<div style="float:left; margin-right: 5px;">
+					<h2>Kernel</h2>
+				</div>
+				<div style="float:left; margin-top: 10px;">
+					(<span id="hover_kernelversion">Details</span>)
+				</div>
+			</div>
+			<br style="clear: both;">
+			<div style="height: 300px;" id="kernelversions_chart"></div>
+		</div>
+<	/div>
+	<br>
+
+	<div style="width: 100%; overflow: hidden;">
+		<div style="float:left; width: 47%;">
+			<h2>Router</h2>
+			<script type="text/javascript">
+				fname='./rrdtool/databases/netmon_history_router_status.rrd';
+				html_graph_id="routers_status_graph"
+				try {
+					FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+				} catch (err) {
+					alert("Failed loading "+fname+"\n"+err);
 				}
 			</script>
-			(<input id="minutes" style="width: 14px; border: none;">:<input id="seconds" style="width: 26px; border: none;">Minuten)
-			<script>
-				countdown();
+			
+			<div id="routers_status_graph" style="width: 100%;"></div>
+		</div>
+		<div style="float:left; width: 53%;">
+			<h2>Clients</h2>
+			<script type="text/javascript">
+				fname='./rrdtool/databases/netmon_history_client_count.rrd';
+				html_graph_id="client_count_graph"
+				try {
+					FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
+				} catch (err) {
+					alert("Failed loading "+fname+"\n"+err);
+				}
 			</script>
-		</p>
-	</div>
-	<div style="float:left; width: 33%;">
-		<h2>Letzter Crawl</h2>
-		<p>
-			<p>Die aktuell in Netmon gezeigten Daten wurden während dieses Crawls gesammelt.</p>
-			<b>Beginn:</b> {$last_ended_crawl_cycle.crawl_date} Uhr<br>
-			<b>Ende:</b> {$last_ended_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr
-		</p>
-	</div>
-</div>
-<br>
-
-<div style="width: 100%; overflow: hidden;">
-	<div style="float:left; width: 50%;">
-		<div style="width: 100%; overflow: hidden;">
-			<div style="float:left; margin-right: 5px;">
-				<h2>Routermodelle</h2>
-			</div>
-			<div style="float:left; margin-top: 10px;">
-				(<span id="hover_chipset">Details</span>)
-			</div>
+			<div id="client_count_graph" style="width: 100%;"></div>
 		</div>
-		<br style="clear: both;">
-		<div style="height: 300px;" id="chipset_chart"></div>
 	</div>
-	<div style="float:left; width: 50%;">
-		<div style="width: 100%; overflow: hidden;">
-			<div style="float:left; margin-right: 5px;">
-				<h2>Firmware</h2>
-			</div>
-			<div style="float:left; margin-top: 10px;">
-				(<span id="hover_firmwareversions">Details</span>)
-			</div>
-		</div>
-		<br style="clear: both;">
-		<div style="height: 300px;" id="firmwareversions_chart"></div>
-	</div>
-</div>
-<br>
-
-<div style="width: 100%; overflow: hidden;">
-	<div style="float:left; width: 50%;">
-		<div style="width: 100%; overflow: hidden;">
-			<div style="float:left; margin-right: 5px;">
-				<h2>B.A.T.M.A.N adv.</h2>
-			</div>
-			<div style="float:left; margin-top: 10px;">
-				(<span id="hover_batmanadv">Details</span>)
-			</div>
-		</div>
-		<br style="clear: both;">
-		<div style="height: 300px;" id="batmanadv_div"></div>
-	</div>
-	<div style="float:left; width: 50%;">
-		<div style="width: 100%; overflow: hidden;">
-			<div style="float:left; margin-right: 5px;">
-				<h2>Kernel</h2>
-			</div>
-			<div style="float:left; margin-top: 10px;">
-				(<span id="hover_kernelversion">Details</span>)
-			</div>
-		</div>
-		<br style="clear: both;">
-		<div style="height: 300px;" id="kernelversions_chart"></div>
-	</div>
-</div>
-<br>
-
-<div style="width: 100%; overflow: hidden;">
-	<div style="float:left; width: 47%;">
-		<h2>Router</h2>
-		<script type="text/javascript">
-			fname='./rrdtool/databases/netmon_history_router_status.rrd';
-			html_graph_id="routers_status_graph"
-			try {
-				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
-			} catch (err) {
-				alert("Failed loading "+fname+"\n"+err);
-			}
-		</script>
-		
-		<div id="routers_status_graph" style="width: 100%;"></div>
-	</div>
-	<div style="float:left; width: 53%;">
-		<h2>Clients</h2>
-		<script type="text/javascript">
-			fname='./rrdtool/databases/netmon_history_client_count.rrd';
-			html_graph_id="client_count_graph"
-			try {
-				FetchBinaryURLAsync(fname,update_fname_handler, html_graph_id);
-			} catch (err) {
-				alert("Failed loading "+fname+"\n"+err);
-			}
-		</script>
-		<div id="client_count_graph" style="width: 100%;"></div>
-	</div>
-</div>
-<br style="clear: both">
+	<br style="clear: both">
 {else}
 	<p>Es wurde noch kein Crawlzyklus vollständig beendet, sodass keine Daten generiert werden können</p>
 {/if}

@@ -26,9 +26,9 @@
 				</div>
 				</p>
 			{/if}
-		
+
 			<div style="padding: 5px">
-		
+
 			<h1 style="font-size: 13pt;">Router {$router->getHostname()}</h1>
 			<h2 style="font-size: 9.5pt;">Was ist das?</h2>
 			<p style="font-size: 8pt;">Ich bin <a href="https://de.wikipedia.org/wiki/Freies_Funknetz" target="_blank">Freifunker</a> und der Blaue Punkt ist
@@ -46,7 +46,7 @@
 									{/if}<br>
 				<b>Verbundene Clients:</b> {$router->getStatusdata()->getClientCount()}
 			</p>
-			
+
 			<h2 style="font-size: 9.5pt;">Links</h2>
 			<p style="font-size: 8pt;">
 				<a href="./router.php?router_id={$router->getRouterId()}" target="_blank">Vollständigen Status ansehen</a><br>

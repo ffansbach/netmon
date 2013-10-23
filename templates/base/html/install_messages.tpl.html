@@ -7,9 +7,9 @@
 
 	<h2>Email</h2>
 	<p>Versendeart: <select name="mail_sending_type" onChange="if(this.options[this.selectedIndex].value=='smtp') { document.getElementById('smtp_config').style.display = 'block'; } else { document.getElementById('smtp_config').style.display = 'none';}">
-					<option value="php_mail" {if $mail_sending_type == 'php_mail'}selected{/if}>php_mail</option>
-					<option value="smtp" {if $mail_sending_type == 'smtp'}selected{/if}>smtp</option>
-			      </select>
+				<option value="php_mail" {if $mail_sending_type == 'php_mail'}selected{/if}>php_mail</option>
+				<option value="smtp" {if $mail_sending_type == 'smtp'}selected{/if}>smtp</option>
+			</select>
 	</p>
 
 	<p>Absenderadresse:<br><input name="mail_sender_adress" type="text" size="30" value="{if isset($mail_sender_adress)}{$mail_sender_adress}{/if}"></p>
@@ -21,6 +21,6 @@
 		<p>SMTP-Login Methode:<br><input name="mail_smtp_login_auth" type="text" size="30" value="{if isset($mail_smtp_login_auth)}{$mail_smtp_login_auth}{/if}"></p>
 		<p>SMTP-SSL Typ: <br><input name="mail_smtp_ssl" type="text" size="30" value="{if isset($mail_smtp_ssl)}{$mail_smtp_ssl}{/if}"></p>
 	</span>
-	
+
 	<p><input type="submit" value="Weiter"></p>
 </form>

@@ -14,7 +14,7 @@
 <h2>Systemcheck</h2>
 <p>Der Systemcheck überprüft ob alle wichtigen PHP-Extensions, PHP-Funktionen sowie die passende PHP-Version auf deinem Webserver verfügbar sind und ob alle notwendigen externen Programme installiert sind.</p>
 <div style="width: 100%; display:inline-block">
-    <div style="float:left; width: 33%;">
+	<div style="float:left; width: 33%;">
 		<h3>PHP-Extensions</h3>
 		<a href="http://php.net/manual/de/book.pdo.php">PDO</a>: {if $pdo_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
 		<a href="http://php.net/manual/de/ref.pdo-mysql.php">PDO MySQL</a>: {if $pdo_mysql_loaded}<img src="./templates/{$template}/img/ffmap/status_up_small.png" alt="aktiviert">{else}<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="nicht aktiviert">{/if}<br>
@@ -50,5 +50,5 @@
 <br>
 <br>
 <form action="./install.php?section=db" method="POST">
-  <p><input type="submit" value="Weiter"></p>
+	<p><input type="submit" value="Weiter"></p>
 </form>
