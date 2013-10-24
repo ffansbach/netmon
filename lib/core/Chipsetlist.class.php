@@ -45,7 +45,7 @@
 													ORDER BY 
 														case :sort_by
 															when 'chipset_id' then c.id
-															else c.id
+															else NULL
 														end
 														".$this->getOrder()."
 													LIMIT :offset, :limit");

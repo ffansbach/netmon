@@ -111,9 +111,20 @@
 	RewriteRule ^eventlist/?$ api.php?rquest=eventlist [QSA,L]
 	# eventlist containing all events of a special router (api/rest/router/router_id/eventlist)
 	RewriteRule ^router/([0-9]+)/eventlist/?$ api.php?rquest=eventlist&router_id=$1 [QSA,L]
-		
-		
-	RewriteRule ^configlist/?$ api.php?rquest=configlist [QSA,L]
+	
+	###########
+	# CONFIG  #
+	###########
+	# config by id (api/rest/config/config_id)
 	RewriteRule ^config/([0-9]+)/?$ api.php?rquest=config&id=$1 [QSA,L]
+	# config by name (api/rest/config/name)
 	RewriteRule ^config/([0-9A-Za-z_-]+)/?$ api.php?rquest=config&name=$1 [QSA,L]
+	
+	###############
+	# CONFIGLIST  #
+	###############
+	# configlist containing all configs known to netmon (api/rest/configlist/)
+	RewriteRule ^configlist/?$ api.php?rquest=configlist [QSA,L]
+	
+	
 </IfModule>

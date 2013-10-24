@@ -353,61 +353,64 @@
 			}
 		}
 		
-		private function configlist() {
-			$_REQUEST['api_key'] = (isset($_REQUEST['api_key'])) ? $_REQUEST['api_key'] : 'a';
-			$user = new User(false, false, false, false, false, $_REQUEST['api_key']);
-			$user->fetch();
-			if($user->getPermission()==120) {
-				if($this->get_request_method() == "GET") {
-					$config_line_list = new ConfigLineList($this->_request['offset'], $this->_request['limit'],
-															$this->_request['sort_by'], $this->_request['order']);
-					$domxmldata = $config_line_list->getDomXMLElement($this->domxml);
-					$this->response($this->finishxml($domxmldata), 200);
+		private function config() {
+			$this->_request['api_key'] = (isset($this->_request['api_key'])) ? $this->_request['api_key'] : 'a';
+			$user = new User(false, false, false, false, false, $this->_request['api_key']);
+			if($user->fetch()) {
+				if($user->getPermission()==120) {
+					if($this->get_request_method() == "GET" && (isset($this->_request['id']) || isset($this->_request['name']))) {
+						$this->_request['id'] = (isset($this->_request['id'])) ? $this->_request['id'] : false;
+						$this->_request['name'] = (isset($this->_request['name'])) ? $this->_request['name'] : false;
+						$config_line = new ConfigLine((int)$this->_request['id'], $this->_request['name']);
+						if($config_line->fetch()) {
+							$domxmldata = $config_line->getDomXMLElement($this->domxml);
+							$this->response($this->finishxml($domxmldata), 200);
+						} else {
+							$this->error_code = 1;
+							$this->error_message = "Config not found";
+							$this->response($this->finishxml(), 404);
+						}
+					}
+					die();
 				} else {
 					$this->error_code = 2;
-					$this->error_message = "The Configlist could not be created, your request seems to be malformed.";
-					$this->response($this->finishxml(), 400);
+					$this->error_message = "Your API-Key has not enough permission.";
 				}
 			} else {
 				$this->error_code = 2;
-				$this->authentication = 0;
 				$this->error_message = "The api_key is not valid.";
-				$this->response($this->finishxml(), 401);
 			}
+			$this->authentication = 0;
+			$this->response($this->finishxml(), 401);
 		}
 		
-		private function config() {
-			$_REQUEST['api_key'] = (isset($_REQUEST['api_key'])) ? $_REQUEST['api_key'] : 'a';
-			$user = new User(false, false, false, false, false, $_REQUEST['api_key']);
-			$user->fetch();
-			if($user->getPermission()==120) {
-				if($this->get_request_method() == "GET" && isset($this->_request['id'])) {
-					$config_line = new ConfigLine((int)$this->_request['id']);
-					if($config_line->fetch()) {
-						$domxmldata = $config_line->getDomXMLElement($this->domxml);
+		private function configlist() {
+			$this->_request['api_key'] = (isset($this->_request['api_key'])) ? $this->_request['api_key'] : 'a';
+			$user = new User(false, false, false, false, false, $this->_request['api_key']);
+			if($user->fetch()) {
+				if($user->getPermission()==120) {
+
+					if($this->get_request_method() == "GET") {
+						$config_line_list = new ConfigLineList($this->_request['offset'], $this->_request['limit'],
+																$this->_request['sort_by'], $this->_request['order']);
+						$domxmldata = $config_line_list->getDomXMLElement($this->domxml);
 						$this->response($this->finishxml($domxmldata), 200);
 					} else {
-						$this->error_code = 1;
-						$this->error_message = "Config not found";
-						$this->response($this->finishxml(), 404);
+						$this->error_code = 2;
+						$this->error_message = "The Configlist could not be created, your request seems to be malformed.";
+						$this->response($this->finishxml(), 400);
 					}
-				} elseif($this->get_request_method() == "GET" && isset($this->_request['name'])) {
-					$config_line = new ConfigLine(false, $this->_request['name']);
-					if($config_line->fetch()) {
-						$domxmldata = $config_line->getDomXMLElement($this->domxml);
-						$this->response($this->finishxml($domxmldata), 200);
-					} else {
-						$this->error_code = 1;
-						$this->error_message = "Config not found";
-						$this->response($this->finishxml(), 404);
-					}
+					die();
+				} else {
+					$this->error_code = 2;
+					$this->error_message = "Your API-Key has not enough permission.";
 				}
 			} else {
 				$this->error_code = 2;
-				$this->authentication = 0;
 				$this->error_message = "The api_key is not valid.";
-				$this->response($this->finishxml(), 401);
 			}
+			$this->authentication = 0;
+			$this->response($this->finishxml(), 401);
 		}
 		
 		/*
