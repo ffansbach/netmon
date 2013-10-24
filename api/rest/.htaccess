@@ -126,5 +126,15 @@
 	# configlist containing all configs known to netmon (api/rest/configlist/)
 	RewriteRule ^configlist/?$ api.php?rquest=configlist [QSA,L]
 	
+	################
+	# CRAWL-CYCLE  #
+	################
+	# crawl_cycle by id (api/rest/config/crawl_cycle)
+	#RewriteRule ^crawl_cycle/([0-9]+)/?$ api.php?rquest=crawl_cycle&id=$1 [QSA,L]
 	
+	#####################
+	# CRAWL-CYCLE-LIST  #
+	#####################
+	# crawl_cycle_list containing all crawl_cycles known to netmon (api/rest/crawl_cycle_list/)
+	RewriteRule ^crawl_cycle_list/?$ api.php?rquest=crawl_cycle_list [QSA,L]
 </IfModule>

@@ -20,6 +20,7 @@
 	require_once(ROOT_DIR.'/lib/core/Network.class.php');
 	require_once(ROOT_DIR.'/lib/core/Networklist.class.php');
 	require_once(ROOT_DIR.'/lib/core/OriginatorStatusList.class.php');
+	require_once(ROOT_DIR.'/lib/core/CrawlCycleList.class.php');
 	require_once(ROOT_DIR.'/lib/extern/rest/rest.inc.php');
 	require_once(ROOT_DIR.'/lib/core/crawling.class.php');
 	
@@ -339,6 +340,19 @@
 			} else {
 				$this->error_code = 2;
 				$this->error_message = "The OriginatorStatusList could not be created, your request seems to be malformed.";
+				$this->response($this->finishxml(), 400);
+			}
+		}
+		
+		private function crawl_cycle_list() {
+			if($this->get_request_method() == "GET") {
+				$eventlist = new CrawlCycleList((int)$this->_request['offset'], (int)$this->_request['limit'],
+												$this->_request['sort_by'], $this->_request['order']);
+				$domxmldata = $eventlist->getDomXMLElement($this->domxml);
+				$this->response($this->finishxml($domxmldata), 200);
+			} else {
+				$this->error_code = 2;
+				$this->error_message = "The CrawlCycleList could not be created, your request seems to be malformed.";
 				$this->response($this->finishxml(), 400);
 			}
 		}
