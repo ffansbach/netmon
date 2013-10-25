@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 09, 2013 at 05:35 PM
+-- Generation Time: Oct 25, 2013 at 11:56 AM
 -- Server version: 5.5.33-MariaDB-1~wheezy-log
 -- PHP Version: 5.4.20-1~dotdeb.1
 
@@ -351,13 +351,6 @@ CREATE TABLE IF NOT EXISTS `networks` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `projects`
---
--- in use(#1146 - Table 'freifunksql5.projects' doesn't exist)
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `routers`
 --
 
@@ -397,22 +390,6 @@ CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
   `interface` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `router_adds`
---
-
-CREATE TABLE IF NOT EXISTS `router_adds` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `router_id` int(11) NOT NULL,
-  `adds_allowed` tinyint(1) NOT NULL,
-  `create_date` datetime NOT NULL,
-  `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `router_id` (`router_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -497,7 +474,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime NOT NULL,
   `activated` varchar(32) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `api_key` (`api_key`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -516,24 +494,6 @@ CREATE TABLE IF NOT EXISTS `user_remember_mes` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `variable_splash_clients`
---
-
-CREATE TABLE IF NOT EXISTS `variable_splash_clients` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `router_id` int(11) NOT NULL,
-  `mac_addr` varchar(150) NOT NULL,
-  `ip` varchar(100) NOT NULL,
-  `ipv` int(11) NOT NULL,
-  `create_date` datetime NOT NULL,
-  `update_date` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `router_id` (`router_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 --
 -- Constraints for dumped tables

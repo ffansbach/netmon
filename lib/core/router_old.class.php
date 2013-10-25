@@ -430,36 +430,6 @@ class Router_old {
 		return $rows;
 	}
 	
-	public function areAddsAllowed($router_id) {
-		try {
-			$stmt = DB::getInstance()->prepare("SELECT * FROM router_adds WHERE router_id=? LIMIT 1");
-			$stmt->execute(array($router_id));
-			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-
-		if(count($rows) AND $rows['adds_allowd']=='1') return true;
-		else return false;
-	}
-	
-	public function getAddData($router_id) {
-		try {
-			$stmt = DB::getInstance()->prepare("SELECT * FROM router_adds WHERE router_id=? LIMIT 1");
-			$stmt->execute(array($router_id));
-			$rows = $stmt->fetch(PDO::FETCH_ASSOC);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
-		}
-		
-		$rows['add_small_exists'] = file_exists("./data/adds/".$router_id."_add_small.jpg");
-		$rows['add_big_exists'] = file_exists("./data/adds/".$router_id."_add_big.jpg");
-
-		return $rows;
-	}
-	
 	/**
 	* Fetches the number of clients that where connected to all routers summed up.
 	* @author  Clemens John <clemens-john@gmx.de>

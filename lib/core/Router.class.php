@@ -173,24 +173,6 @@
 				$event_notification_list = new EventNotificationList(false, "router_offline", $this->getRouterId());
 				$event_notification_list->delete();
 				
-				//delete splash client data
-				try {
-					$stmt = DB::getInstance()->prepare("DELETE FROM variable_splash_clients WHERE router_id=?");
-					$stmt->execute(array($this->getRouterId()));
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				
-				//delete router adds
-				try {
-					$stmt = DB::getInstance()->prepare("DELETE FROM router_adds WHERE router_id=?");
-					$stmt->execute(array($this->getRouterId()));
-				} catch(PDOException $e) {
-					echo $e->getMessage();
-					echo $e->getTraceAsString();
-				}
-				
 				//delete router
 				try {
  					$stmt = DB::getInstance()->prepare("DELETE FROM routers WHERE id=?");
