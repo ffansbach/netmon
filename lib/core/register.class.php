@@ -100,7 +100,11 @@ class Register {
 			
 			//create acivation hash
 			$activation = Helper::randomPassword(8);
-			$api_key = Helper::randomPassword(32);
+			do {
+				$api_key = Helper::randomPassword(32);
+				$is_unique_api_key = User_old::isUniqueApiKey($api_key);
+			} while(!$is_unique_api_key);
+			echo $api_key;
 			
 			if(empty($openid))
 				$openid = "";
