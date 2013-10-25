@@ -189,6 +189,21 @@ class User_old {
 		}
 	}
 	
+	public function isUniqueApiKey($api_key, $user_id=false) {
+		try {
+			if(!$user_id) {
+				$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE api_key=?");
+				$stmt->execute(array($api_key));
+			} else {
+				$stmt = DB::getInstance()->prepare("SELECT * FROM users WHERE api_key=? AND id!=?");
+				$stmt->execute(array($api_key, $user_id));
+			}
+			return !$stmt->rowCount();
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+		}
+	}
+	
 	/**
 	* Deletes a user and all of the objects he owns
 	* @author  Clemens John <clemens-john@gmx.de>
