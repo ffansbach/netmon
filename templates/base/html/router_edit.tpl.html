@@ -89,7 +89,7 @@
 		Chipset:
 		<select name="chipset_id">
 			{foreach item=chipset from=$chipsetlist}
-				<option value="{$chipset->getChipsetId()}">{if $chipset->getHardwareName()}{$chipset->getHardwareName()}{/if} {if $chipset->getHardwareName() AND $chipset->getName()}({/if}{$chipset->getName()}{if $chipset->getHardwareName() AND $chipset->getName()}){/if}</option>
+				<option value="{$chipset->getChipsetId()}" {if $chipset->getChipsetId()==$router_data.chipset_id}selected="selected"{/if}>{if $chipset->getHardwareName()}{$chipset->getHardwareName()}{/if} {if $chipset->getHardwareName() AND $chipset->getName()}({/if}{$chipset->getName()}{if $chipset->getHardwareName() AND $chipset->getName()}){/if}</option>
 			{/foreach}
 		</select>
 	</p>
