@@ -25,9 +25,9 @@
 	$router_limit = getopt("o:l:")['l'];
 	
 	// get configuration values
-	$ping_count = 6; // ping a node X times before fetching data
+	$ping_count = 4; // ping a node X times before fetching data
 	$ping_timeout = 1500; // set the timout for each ping to X ms
-	$crawl_timeout = 15; // timeout after X seconds on fetching crawldata
+	$crawl_timeout = 20; // timeout after X seconds on fetching crawldata
 	$network_connection_ipv6_interface = ConfigLine::configByName("network_connection_ipv6_interface"); //use this interface to connect to ipv6 linc local hosts
 	$interfaces_used_for_crawling = array("br-mesh", "floh_fix", "tata_fix"); //use the ip adresses of these interfaces for crawling
 	
@@ -70,23 +70,27 @@
 							break;
 						}
 					}
-					if(trim(explode(",", $return[$ping_result_index])[1])!="0 received") {
+					$ping = (trim(explode(",", $return[$ping_result_index])[1])!="0 received") ? true : false;
+					if($ping)
 						echo "			Ping was successfull trying to crawl\n";
-						
-						//fetch crawl data from router
-						$return = array();
-						if($ip->getNetwork()->getIpv()==6)
-							$command = "curl -s --max-time $crawl_timeout -g http://[".$ip->getIp()."%25\$(cat /sys/class/net/$network_connection_ipv6_interface/ifindex)]/node.data";
-						elseif($ip->getNetwork()->getIpv()==4)
-							$command = "curl -s --max-time $crawl_timeout -g http://".$ip->getIp()."/node.data";
-						echo "			".$command."\n";
-						exec($command, $return);
-						$return_string = "";
-						foreach($return as $string) {
-							$return_string .= $string;
-						}
-						
-						//store the crawl data into the database if the router is not offline
+					else
+						echo "			Ping was not successfull trying to crawl\n";
+					
+					//fetch crawl data from router
+					$return = array();
+					if($ip->getNetwork()->getIpv()==6)
+						$command = "curl -s --max-time $crawl_timeout -g http://[".$ip->getIp()."%25\$(cat /sys/class/net/$network_connection_ipv6_interface/ifindex)]/node.data";
+					elseif($ip->getNetwork()->getIpv()==4)
+						$command = "curl -s --max-time $crawl_timeout -g http://".$ip->getIp()."/node.data";
+					echo "			".$command."\n";
+					exec($command, $return);
+					$return_string = "";
+					foreach($return as $string) {
+						$return_string .= $string;
+					}
+					
+					//store the crawl data into the database if the router is not offline
+					if(!empty($return_string) OR $ping) {
 						if(!empty($return_string)) {
 							echo "			Craw was successfull, online\n";
 							try {
@@ -101,7 +105,7 @@
 								$data['router_id'] = $router->getRouterId();
 								$data['system_data']['status'] = "unknown";
 							}
-						} else {
+						} elseif($ping) {
 							echo "			Craw was not successfull, ping only\n";
 							$data = array();
 							$data['router_id'] = $router->getRouterId();
@@ -111,13 +115,13 @@
 						/**Insert Router System Data*/
 						echo "			Inserting RouterStatus into DB\n";
 						$router_status = New RouterStatus(false, (int)$actual_crawl_cycle, $router->getRouterId(),
-														$data['system_data']['status'], false, $data['system_data']['hostname'], (int)$data['client_count'], $data['system_data']['chipset'],
-														$data['system_data']['cpu'], (int)$data['system_data']['memory_total'], (int)$data['system_data']['memory_caching'], (int)$data['system_data']['memory_buffering'],
-														(int)$data['system_data']['memory_free'], $data['system_data']['loadavg'], $data['system_data']['processes'], $data['system_data']['uptime'],
-														$data['system_data']['idletime'], $data['system_data']['local_time'], $data['system_data']['distname'], $data['system_data']['distversion'], $data['system_data']['openwrt_core_revision'], 
-														$data['system_data']['openwrt_feeds_packages_revision'], $data['system_data']['firmware_version'],
-														$data['system_data']['firmware_revision'], $data['system_data']['kernel_version'], $data['system_data']['configurator_version'], 
-														$data['system_data']['nodewatcher_version'], $data['system_data']['fastd_version'], $data['system_data']['batman_advanced_version']);
+															$data['system_data']['status'], false, $data['system_data']['hostname'], (int)$data['client_count'], $data['system_data']['chipset'],
+															$data['system_data']['cpu'], (int)$data['system_data']['memory_total'], (int)$data['system_data']['memory_caching'], (int)$data['system_data']['memory_buffering'],
+															(int)$data['system_data']['memory_free'], $data['system_data']['loadavg'], $data['system_data']['processes'], $data['system_data']['uptime'],
+															$data['system_data']['idletime'], $data['system_data']['local_time'], $data['system_data']['distname'], $data['system_data']['distversion'], $data['system_data']['openwrt_core_revision'], 
+															$data['system_data']['openwrt_feeds_packages_revision'], $data['system_data']['firmware_version'],
+															$data['system_data']['firmware_revision'], $data['system_data']['kernel_version'], $data['system_data']['configurator_version'], 
+															$data['system_data']['nodewatcher_version'], $data['system_data']['fastd_version'], $data['system_data']['batman_advanced_version']);
 						if($router_status->store()) {
 							echo "			Inserting all other Data into DB\n";
 							Crawl::insertCrawlData($data);
@@ -126,7 +130,7 @@
 						}
 						break 2;
 					} else {
-						echo "			Ping was not successfull trying to ping next address\n";
+						echo "			Ping and fetching Crawl-Data was not successfull trying to ping and crawl  next address\n";
 					}
 				}
 			}
