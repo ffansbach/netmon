@@ -264,7 +264,10 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		Message::setMessage($message);
 		header('Location: ./config.php?section=edit_hardware');
 	} elseif($_GET['section']=="edit_hardware_name") {
-		$smarty->assign('chipset_data', Chipsets::getChipsetById($_GET['chipset_id']));
+		$chipset = new Chipset((int)$_GET['chipset_id']);
+		$chipset->fetch();
+		$smarty->assign('chipset', $chipset);
+		
 		
 		$smarty->assign('message', Message::getMessage());
 		$smarty->display("header.tpl.html");

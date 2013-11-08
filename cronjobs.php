@@ -133,7 +133,7 @@
 		mkdir(ROOT_DIR."/logs/");         
 	}
 	
-	$range=20;
+	$range=15;
 	$routers_count = Router_old::countRouters();
 	for ($i=0; $i<=$routers_count; $i+=$range) {
 		//start an independet crawl process for each $range routers to crawl routers simultaniously
