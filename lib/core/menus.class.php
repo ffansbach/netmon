@@ -29,8 +29,19 @@
  */
 
 require_once(ROOT_DIR.'/lib/core/DnsZone.class.php');
+require_once(ROOT_DIR.'/lib/core/User.class.php');
 
 class Menus extends Permission {
+	function topMenu() {
+		$menu = array();
+		if (Permission::checkPermission(pow(2,2))) {
+			$user = new User((int)$_SESSION['user_id']);
+			$user->fetch();
+			$menu[] = array('name'=>$user->getNickname(), 'href'=>'user.php?user_id='.$user->getUserId());
+		}
+		return $menu;
+	}
+	
 	public function loginOutMenu() {
 		$menu = array();
 		if (Permission::checkPermission(PERM_NOTLOGGEDIN)) {
@@ -107,7 +118,6 @@ class Menus extends Permission {
 			$submenu = array();
 			$subsubmenu = array();
 			$submenu[] = array('name'=>'Benutzer', 'href'=>'userlist.php');
-			$subsubmenu[] = array('name'=>'Mein Benutzer', 'href'=>'user.php?user_id='.$_SESSION['user_id']);
 			$submenu[] = $subsubmenu;
 			$menu[] = $submenu;
 		}

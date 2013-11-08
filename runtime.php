@@ -212,6 +212,7 @@
 
 	//load menus
 	if ($GLOBALS['installed']) {
+		$smarty->assign('top_menu', Menus::topMenu());
 		$smarty->assign('loginOutMenu', Menus::loginOutMenu());
 		$smarty->assign('normal_menu', Menus::normalMenu());
 		$smarty->assign('object_menu', Menus::objectMenu());

@@ -21,9 +21,9 @@
 				<!-- end: skip link navigation -->
 				<span>
 					{if $installed}
-<!--						{foreach $top_menu as $topmenu}
-							<span class="topmenubox"><a style="color: #FFFFFF" href="{$topmenu.href}">{$topmenu.name}</a></span>
-						{/foreach}-->
+						{foreach $top_menu as $topmenu key=count}
+							<a href="{$topmenu.href}">{$topmenu.name}</a> | 
+						{/foreach}
 						{foreach $loginOutMenu as $menu key=count}
 							{if $count != 0}| {/if}<a href="{$menu.href}">{$menu.name}</a>
 						{/foreach}
