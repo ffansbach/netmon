@@ -442,7 +442,7 @@
 					$this->domxmlresponse->appendChild($domxmldata);
 				$this->domxml->appendChild($this->domxmlresponse);
 			
-				return $this->domxml->saveXML();
+				return $this->domxml->saveXML(NULL, LIBXML_NOEMPTYTAG);
 		}
 	}
 	// Initiiate Library
