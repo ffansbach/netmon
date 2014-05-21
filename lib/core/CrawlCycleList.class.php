@@ -3,8 +3,6 @@
 	require_once(ROOT_DIR.'/lib/core/CrawlCycle.class.php');
 	
 	class CrawlCycleList extends ObjectList {
-		private $list = array();
-		
 		public function __construct($offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
 			if($offset!==false)

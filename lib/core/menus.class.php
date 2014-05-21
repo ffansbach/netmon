@@ -72,6 +72,7 @@ class Menus extends Permission {
 		$submenu = array();
 		$subsubmenu = array();
 		$submenu[] = array('name'=>'Karte', 'href'=>'map.php');
+		$subsubmenu[] = array('name'=>'FF-Map 3D', 'href'=>'https://netmon.freifunk-ol.de/ffmap-d3/nodes.html');
 		$submenu[] = $subsubmenu;
 		$menu[] = $submenu;
 		
@@ -138,16 +139,18 @@ class Menus extends Permission {
 		if (Permission::checkPermission(PERM_USER)) {
 			if(strpos($_SERVER['PHP_SELF'], "router.php")!==false AND !isset($_GET['section'])) {
 				$submenu[] = array('name'=>'Routeroptionen', 'href'=>'#');
-				$subsubmenu[] = array('name'=>'Konfig. bearbeiten', 'href'=>'routereditor.php?section=edit&router_id='.$_GET['router_id']);
+				$subsubmenu[] = array('name'=>'Bearbeiten', 'href'=>'routereditor.php?section=edit&router_id='.$_GET['router_id']);
+				$subsubmenu[] = array('name'=>'API-Keys', 'href'=>'api_key_list.php?object_type=router&object_id='.$_GET['router_id']);
 				$subsubmenu[] = array('name'=>'Interf. hinzufügen', 'href'=>'interface.php?section=add&router_id='.$_GET['router_id']);
 				$submenu[] = $subsubmenu;
 				$menu[] = $submenu;
 			} elseif(strpos($_SERVER['PHP_SELF'], "user.php")!==false) {
 				$submenu[] = array('name'=>'Benutzeroptionen', 'href'=>'#');
-				if(Permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, $_SESSION['user_id'])) {
-					$subsubmenu[] = array('name'=>'Bearbeiten', 'href'=>'user_edit.php?section=edit&user_id='.$_SESSION['user_id']);
-					$subsubmenu[] = array('name'=>'Benachrichtigungen', 'href'=>'event_notifications.php?section=edit&user_id='.$_SESSION['user_id']);
-					$subsubmenu[] = array('name'=>'Dienst hinzufügen', 'href'=>'service.php?section=add&user_id='.$_SESSION['user_id']);
+				if(Permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, $_GET['user_id'])) {
+					$subsubmenu[] = array('name'=>'Bearbeiten', 'href'=>'user_edit.php?section=edit&user_id='.$_GET['user_id']);
+					$subsubmenu[] = array('name'=>'API-Keys', 'href'=>'api_key_list.php?object_type=user&object_id='.$_GET['user_id']);
+					$subsubmenu[] = array('name'=>'Benachrichtigungen', 'href'=>'event_notifications.php?section=edit&user_id='.$_GET['user_id']);
+					$subsubmenu[] = array('name'=>'Dienst hinzufügen', 'href'=>'service.php?section=add&user_id='.$_GET['user_id']);
 				}
 				$submenu[] = $subsubmenu;
 				$menu[] = $submenu;

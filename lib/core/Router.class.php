@@ -173,6 +173,8 @@
 				$event_notification_list = new EventNotificationList(false, "router_offline", $this->getRouterId());
 				$event_notification_list->delete();
 				
+				//TODO: delete api key(s)
+				
 				//delete router
 				try {
  					$stmt = DB::getInstance()->prepare("DELETE FROM routers WHERE id=?");

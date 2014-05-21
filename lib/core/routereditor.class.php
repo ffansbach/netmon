@@ -6,6 +6,7 @@ require_once(ROOT_DIR.'/lib/core/Event.class.php');
 require_once(ROOT_DIR.'/lib/core/routersnotassigned.class.php');
 require_once(ROOT_DIR.'/lib/core/config.class.php');
 require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
+require_once(ROOT_DIR.'/lib/core/ApiKey.class.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
@@ -61,6 +62,12 @@ class RouterEditor {
 			$crawl_cycle_id = Crawling::getLastEndedCrawlCycle();
 			$router_status = New RouterStatus(false, (int)$crawl_cycle_id['id'], (int)$router_id, "offline");
 			$router_status->store();
+			
+			//add new api key
+			do {
+				$api_key = new ApiKey(false, ApiKey::generateApiKey(), (int)$router_id, "router", "Initial key");
+				$api_key_id = $api_key->store();
+			} while(!$api_key_id);
 			
 			if($_POST['allow_router_auto_assign']=='1' AND !empty($_POST['router_auto_assign_login_string'])) {
 				RoutersNotAssigned::deleteByAutoAssignLoginString($_POST['router_auto_assign_login_string']);

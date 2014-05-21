@@ -205,38 +205,6 @@ class User_old {
 	}
 	
 	/**
-	* Deletes a user and all of the objects he owns
-	* @author  Clemens John <clemens-john@gmx.de>
-	* @param $user_id the id of the user to delete
-	*/
-	public function userDelete($user_id) {
-		$user_data = User_old::getUserByID($user_id);
-	
-		//Delete routers
-		$routerlist = new Routerlist(false, (int)$user_id);
-		$routerlist->delete();
-		
-		//TODO: delete services
-		
-		//If the user is logged in then logout the user before deleting him to get rid of session information an coockies
-		if($user_id == $_SESSION['user_id'])
-			Login::user_logout();
-		
-		//delete the user from the database
-		try {
-			$stmt = DB::getInstance()->prepare("DELETE FROM users WHERE id=?");
-			$stmt->execute(array($user_id));
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			return false;
-		}
-		
-		$message[] = array("Der Benutzer ".$user_data['nickname']." wurde gelöscht.",1);
-		message::setMessage($message);
-		return true;
-	}
-
-	/**
 	* Fetches a user by a given id from the database.
 	* @author  Clemens John <clemens-john@gmx.de>
 	* @param int $user_id Id of a user

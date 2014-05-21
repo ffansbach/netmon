@@ -19,6 +19,7 @@
 	require_once(ROOT_DIR.'/lib/core/Iplist.class.php');
 	require_once(ROOT_DIR.'/lib/api/crawl.class.php');
 	require_once(ROOT_DIR.'/lib/core/ConfigLine.class.php');
+	require_once(ROOT_DIR.'/lib/core/OriginatorStatus.class.php');
 	
 	//get offset and limit options (script parameters)
 	$router_offset = getopt("o:l:")['o'];
@@ -29,7 +30,7 @@
 	$ping_timeout = 1500; // set the timout for each ping to X ms
 	$crawl_timeout = 20; // timeout after X seconds on fetching crawldata
 	$network_connection_ipv6_interface = ConfigLine::configByName("network_connection_ipv6_interface"); //use this interface to connect to ipv6 linc local hosts
-	$interfaces_used_for_crawling = array("br-mesh", "br-client",  "floh_fix", "tata_fix"); //use the ip adresses of these interfaces for crawling
+	$interfaces_used_for_crawling = array("br-mesh", "br-client", "floh_fix", "tata_fix"); //use the ip adresses of these interfaces for crawling
 	
 	$actual_crawl_cycle = Crawling::getActualCrawlCycle()['id'];
 	
@@ -123,6 +124,40 @@
 															$data['system_data']['firmware_revision'], $data['system_data']['kernel_version'], $data['system_data']['configurator_version'], 
 															$data['system_data']['nodewatcher_version'], $data['system_data']['fastd_version'], $data['system_data']['batman_advanced_version']);
 						if($router_status->store()) {
+							echo "			Inserting Batman advanced interfaces into DB\n";
+							/**Insert Batman advanced Interfaces*/
+							foreach($data['batman_adv_interfaces'] as $bat_adv_int) {
+								try {
+									DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_interfaces (router_id, crawl_cycle_id, name, status, crawl_date)
+															 VALUES ('$data[router_id]', '$actual_crawl_cycle', '$bat_adv_int[name]', '$bat_adv_int[status]', NOW());");
+								} catch(PDOException $e) {
+									echo $e->getMessage();
+								}
+							}
+							
+							echo "			Inserting Batman advanced originators into DB\n";
+							/**Insert Batman Advanced Originators*/
+							$originator_count=count($data['batman_adv_originators']);
+							RrdTool::updateRouterBatmanAdvOriginatorsCountHistory($data['router_id'], $originator_count);
+							
+							$average_link_quality = 0;
+							if(!empty($data['batman_adv_originators'])) {
+								foreach($data['batman_adv_originators'] as $originator) {
+									if(ConfigLine::configByName('crawl_direct_originators_only')=='true' AND
+										$originator['originator'] == $originator['nexthop']) {
+										$originator_status = new OriginatorStatus(false, (int)$actual_crawl_cycle, (int)$data['router_id'], $originator['originator'],
+																				  (int)$originator['link_quality'], $originator['nexthop'], $originator['outgoing_interface'],
+																				   $originator['last_seen']);
+										$originator_status->store();
+										RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($data['router_id'], $originator['originator'], $originator['link_quality'], time());
+										$average_link_quality=$average_link_quality+$originator['link_quality'];
+									}
+								}
+							}
+							$average_link_quality=($average_link_quality/$originator_count);
+							RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($data['router_id'], "average", $average_link_quality, time());
+							
+							
 							echo "			Inserting all other Data into DB\n";
 							Crawl::insertCrawlData($data);
 						} else {

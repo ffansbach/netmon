@@ -138,7 +138,9 @@
 	for ($i=0; $i<=$routers_count; $i+=$range) {
 		//start an independet crawl process for each $range routers to crawl routers simultaniously
 		$return = array();
-		$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range."  &> ".ROOT_DIR."/logs/crawler_".$i."-".($i+$range).".txt & echo $!";
+		$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range." > ".ROOT_DIR."/logs/crawler_".$i."-".($i+$range).".txt &";
+//                $cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range." >/dev/null  &";
+
 		echo "Initializing crawl process to crawl routers ".$i." to ".($i+$range)."\n";
 		echo "Running command: $cmd\n";
 		exec($cmd, $return);

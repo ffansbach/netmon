@@ -1,7 +1,15 @@
 <?php
 	class Object {
+		protected $id = 0;
 		protected $create_date = 0;
 		protected $update_date = 0;
+		
+		public function setId($id) {
+			if(is_int($id)) {
+				$this->id = $id;
+			}
+			return false;
+		}
 		
 		public function setCreateDate($create_date) {
 			if(is_string($create_date)) {
@@ -21,12 +29,20 @@
 			}
 		}
 		
+		public function getId() {
+			return $this->id;
+		}
+		
 		public function getCreateDate() {
 			return $this->create_date;
 		}
 		
 		public function getUpdateDate() {
 			return $this->update_date;
+		}
+		
+		public function delete() {
+			return false;
 		}
 	}
 ?>

@@ -1,10 +1,17 @@
 <?php
 	class ObjectList {
+		protected $list = array();
 		protected $limit = -1;
 		protected $offset = 0;
 		protected $total_count = 0;
 		protected $sort_by = "default";
 		protected $order = "asc";
+		
+		public function setList($list) {
+			if(is_array($list)) {
+				$this->list = $list;
+			}
+		}
 		
 		public function setLimit($limit) {
 			if(is_int($limit))
@@ -31,6 +38,10 @@
 				$this->order = $order;
 		}
 		
+		public function getList() {
+			return $this->list;
+		}
+		
 		public function getLimit() {
 			return $this->limit;
 		}
@@ -49,6 +60,12 @@
 		
 		public function getOrder() {
 			return $this->order;
+		}
+		
+		public function delete() {
+			foreach($this->getList() as $item) {
+				$item->delete();
+			}
 		}
 	}
 ?>

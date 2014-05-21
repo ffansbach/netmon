@@ -70,6 +70,44 @@
 			return false;
 		}
 		
+		public function store() {
+			if($this->getId() != 0) {
+				try {
+					$stmt = DB::getInstance()->prepare("UPDATE crawl_batman_advanced_originators SET
+																router_id = ?,
+																crawl_cycle_id = ?,
+																originator = ?,
+																link_quality = ?,
+																nexthop = ?,
+																outgoing_interface = ?,
+																last_seen = ?,
+																update_date = NOW()
+														WHERE id=?");
+					$stmt->execute(array($this->getRouterId(), $this->getCrawlCycleId(), $this->getOriginator(),
+										 $this->getLinkQuality(), $this->getNexthop(), $this->getOutgoingInterface(),
+										 $this->getLastSeen(), $this->getId()));
+					return $stmt->rowCount();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			} elseif($this->getRouterId() != 0 AND $this->getCrawlCycleId()!=0) {
+				try {
+					$stmt = DB::getInstance()->prepare("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, nexthop,
+																									   outgoing_interface, last_seen, crawl_date, update_date)
+														VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+					$stmt->execute(array($this->getRouterId(), $this->getCrawlCycleId(), $this->getOriginator(),
+										 $this->getLinkQuality(), $this->getNexthop(), $this->getOutgoingInterface(),
+										 $this->getLastSeen()));
+					return DB::getInstance()->lastInsertId();
+				} catch(PDOException $e) {
+					echo $e->getMessage();
+					echo $e->getTraceAsString();
+				}
+			}
+			return false;
+		}
+		
 		public function delete() {
 			if($this->getStatusId() != 0) {
 				try {

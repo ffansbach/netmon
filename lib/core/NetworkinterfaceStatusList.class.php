@@ -4,8 +4,6 @@
 	require_once(ROOT_DIR.'/lib/core/crawling.class.php');
 	
 	class NetworkinterfaceStatusList extends ObjectList {
-		private $list = array();
-		
 		public function __construct($networkinterface_id=false,
 									$name=false, $mac_addr=false, $mtu=false, $wlan_mode=false, $wlan_frequency=false,
 									$wlan_essid=false, $wlan_bssid=false, $wlan_tx_power=false,
@@ -111,16 +109,6 @@
 			foreach($this->getList() as $item) {
 				$item->delete();
 			}
-		}
-		
-		public function setList($list) {
-			if(is_array($list)) {
-				$this->list = $list;
-			}
-		}
-		
-		public function getList() {
-			return $this->list;
 		}
 		
 		public function getDomXMLElement($domdocument) {

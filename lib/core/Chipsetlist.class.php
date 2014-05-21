@@ -2,8 +2,6 @@
 	require_once(ROOT_DIR.'/lib/core/ObjectList.class.php');
 	
 	class Chipsetlist extends ObjectList {
-		private $list = array();
-		
 		public function __construct($name=false, $hardware_name=false,
 									$offset=false, $limit=false, $sort_by=false, $order=false) {
 			$result = array();
@@ -65,10 +63,6 @@
 				$this->list[] = new Chipset((int)$item['chipset_id'], $item['name'],
 										   $item['hardware_name'], $item['create_date'], $item['update_date']);
 			}
-		}
-		
-		public function getList() {
-			return $this->list;
 		}
 		
 		public function getDomXMLElement($domdocument) {

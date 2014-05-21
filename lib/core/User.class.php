@@ -111,6 +111,26 @@
 			return false;
 		}
 		
+		/**
+		* Deletes a user and all of the objects he owns
+		* @author  Clemens John <clemens-john@gmx.de>
+		*/
+		public function delete() {
+			//Delete routers
+			$routerlist = new Routerlist(false, $this->getUserId());
+			$routerlist->delete();
+			
+			//delete the user from the database
+			try {
+				$stmt = DB::getInstance()->prepare("DELETE FROM users WHERE id=?");
+				$stmt->execute(array($this->getUserId()));
+			} catch(PDOException $e) {
+				echo $e->getMessage();
+				return false;
+			}
+			return true;
+		}
+		
 		public function setUserId($user_id) {
 			if(is_int($user_id)) {
 				$this->user_id = $user_id;

@@ -35,8 +35,21 @@ if ($_GET['section'] == "edit") {
 } elseif ($_GET['section'] == "delete") {
 	if(permission::checkIfUserIsOwnerOrPermitted(PERM_ROOT, (int)$_GET['user_id'])) {
 		if ($_POST['delete'] == "true") {
-			User_old::userDelete($_GET['user_id']);
-			header('Location: routerlist.php');
+			//fetch user data
+			$user = new User((int)$_GET['user_id']);
+			$user->fetch();
+			
+			//logout user if the logged in user is the user to be deleted
+			if($_GET['user_id'] == $_SESSION['user_id'])
+				Login::user_logout();
+			
+			//delete user
+			$user->delete();
+		
+			$message[] = array("Der Benutzer ".$user->getNickname()." wurde gelöscht.", 1);
+			message::setMessage($message);
+		
+			header('Location: index.php');
 		} else {
 			$message[] = array("Sie müssen das Häckchen bei <i>Ja</i> setzen um den Benutzer zu löschen.", 2);
 			message::setMessage($message);
