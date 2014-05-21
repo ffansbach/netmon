@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 21, 2014 at 06:31 PM
+-- Generation Time: May 21, 2014 at 06:45 PM
 -- Server version: 5.5.37
 -- PHP Version: 5.4.4-14+deb7u9
 
@@ -174,8 +174,8 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `longitude` varchar(15) NOT NULL,
   `luciname` varchar(40) NOT NULL,
   `luciversion` varchar(40) NOT NULL,
-  `distname` varchar(40) NOT NULL,
-  `distversion` varchar(40) NOT NULL,
+  `distname` varchar(100) NOT NULL,
+  `distversion` varchar(100) NOT NULL,
   `chipset` varchar(100) NOT NULL,
   `cpu` varchar(100) NOT NULL,
   `memory_total` int(11) NOT NULL,
