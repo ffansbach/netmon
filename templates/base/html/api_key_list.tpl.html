@@ -1,0 +1,60 @@
+<script src="lib/extern/DataTables/jquery.dataTables.min.js"></script>
+<script src="lib/extern/DataTables/jquery.dataTables.Plugin.DateSort.js"></script>
+
+<script type="text/javascript">
+{literal}
+$(document).ready(function() {
+	$('#api_key_list').dataTable( {
+		"bFilter": false,
+		"bInfo": false,
+		"bPaginate": false,
+		"aoColumns": [ 
+			{ "sType": "string" },
+			{ "sType": "string" },
+			{ "sType": "date-eu" },
+			{ "sType": "date-eu" },
+			{ "sType": "html" }
+		],
+		"aaSorting": [[ 2, "desc" ]]
+	} );
+} );
+{/literal}
+</script>
+
+<h1>Liste der API-Keys</h1>
+<p>Auf dieser Seite kannst du die API-Keys eines bestimmten Objekts verwalten. Mittels eines API-Keys kannst du einer Software
+den Zugriff auf die Daten eines Objekts sowie aller zu diesem Objekt gehörenden Unterobjekte erlauben. Diese Funktion wird
+beispielsweise benötigt um einen Router mit Netmon zu verknüpfen. So ist es möglich jederzeit aktuelle Statusdaten anzuzeigen.</p>
+{if !empty($api_key_list)}
+	<table class="display" id="api_key_list" style="width: 100%;">
+		<thead>
+			<tr>
+				<th>API-Key</th>
+				<th>Beschreibung</th>
+				<th>Angelegt</th>
+				<th>Letzte Änderung</th>
+				<th>Aktionen</th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach $api_key_list as $api_key}
+				<tr>
+					<td>{$api_key->getApiKey()}</a></td>
+					<td>{$api_key->getDescription()}</a></td>
+					<td>{$api_key->getCreateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr</td>
+					<td>{$api_key->getUpdateDate()|date_format:"%d.%m.%Y %H:%M"} Uhr</td>
+					<td><a href="./api_key.php?section=delete&api_key_id={$api_key->getId()}&object_id={$smarty.get.object_id}&object_type={$smarty.get.object_type}">Löschen</a></td>
+				</tr>
+			{/foreach}
+		</tbody>
+	</table>
+{else}
+<p>Keine API-Keys vorhanden.</p>
+{/if}
+
+
+<h2>Neuen API-Key generieren</h2>
+<form action="./api_key.php?section=insert_add&object_id={$smarty.get.object_id}&object_type={$smarty.get.object_type}" method="POST">
+	<p><b>Beschreibung:</b><br><input name="description" type="text" size="40" value=""></p>
+	<p><input type="submit" value="Generieren und Speichern"></p>
+</form>

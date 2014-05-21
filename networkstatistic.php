@@ -32,6 +32,10 @@ if(!empty($last_ended_crawl_cycle)) {
 		$router_chipsets[$key]['count'] = Router_old::countRoutersByChipsetId($chipset->getChipsetId());;
 	}
 	
+/*	echo "<pre>";
+	print_r($router_chipsets);
+	die();*/
+	
 	$smarty->assign('router_chipsets', $router_chipsets);
 
 	/**Get number of routers by batman advanced version **/

@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.0.4.1
+-- version 3.4.11.1deb2
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 25, 2013 at 11:56 AM
--- Server version: 5.5.33-MariaDB-1~wheezy-log
--- PHP Version: 5.4.20-1~dotdeb.1
+-- Generation Time: May 21, 2014 at 06:31 PM
+-- Server version: 5.5.37
+-- PHP Version: 5.4.4-14+deb7u9
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -17,10 +17,27 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `freifunksql5`
+-- Database: `netmon_ol`
 --
--- CREATE DATABASE IF NOT EXISTS `freifunksql5` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
--- USE `freifunksql5`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `api_keys`
+--
+
+CREATE TABLE IF NOT EXISTS `api_keys` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `api_key` varchar(32) NOT NULL,
+  `object_id` int(11) NOT NULL,
+  `object_type` varchar(20) NOT NULL,
+  `description` varchar(200) NOT NULL,
+  `create_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `api_key` (`api_key`),
+  KEY `key` (`api_key`,`object_id`,`object_type`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -89,6 +106,7 @@ CREATE TABLE IF NOT EXISTS `crawl_batman_advanced_originators` (
   `outgoing_interface` varchar(20) NOT NULL,
   `last_seen` varchar(20) NOT NULL,
   `crawl_date` datetime NOT NULL,
+  `update_date` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `router_id` (`router_id`),
   KEY `crawl_cycle_id` (`crawl_cycle_id`)
@@ -158,7 +176,7 @@ CREATE TABLE IF NOT EXISTS `crawl_routers` (
   `luciversion` varchar(40) NOT NULL,
   `distname` varchar(40) NOT NULL,
   `distversion` varchar(40) NOT NULL,
-  `chipset` varchar(20) NOT NULL,
+  `chipset` varchar(100) NOT NULL,
   `cpu` varchar(100) NOT NULL,
   `memory_total` int(11) NOT NULL,
   `memory_caching` int(11) NOT NULL,
