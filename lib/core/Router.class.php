@@ -8,6 +8,7 @@
 	require_once(ROOT_DIR.'/lib/core/User.class.php');
 	require_once(ROOT_DIR.'/lib/core/Chipset.class.php');
 	require_once(ROOT_DIR.'/lib/core/Event.class.php');
+	require_once(ROOT_DIR.'/lib/core/ApiKeyList.class.php');
 	
 	class Router extends Object {
  		private $router_id = 0;
@@ -173,7 +174,9 @@
 				$event_notification_list = new EventNotificationList(false, "router_offline", $this->getRouterId());
 				$event_notification_list->delete();
 				
-				//TODO: delete api key(s)
+				//Delete api keys
+				$api_key_list = new ApiKeyList($this->getRouterId(), 'router');
+				$api_key_list->delete();
 				
 				//delete router
 				try {

@@ -1,6 +1,9 @@
 <?php
 	require_once(ROOT_DIR.'/lib/core/Object.class.php');
 	require_once(ROOT_DIR.'/lib/core/permission.class.php');
+	require_once(ROOT_DIR.'/lib/core/ApiKeyList.class.php');
+	require_once(ROOT_DIR.'/lib/core/Routerlist.class.php');
+	require_once(ROOT_DIR.'/lib/core/UserRememberMeList.class.php');
 	
 	class User extends Object {
 		private $user_id=0;
@@ -119,6 +122,14 @@
 			//Delete routers
 			$routerlist = new Routerlist(false, $this->getUserId());
 			$routerlist->delete();
+			
+			//Delete api keys
+			$api_key_list = new ApiKeyList($this->getUserId(), 'user');
+			$api_key_list->delete();
+			
+			//Delete user remember mes
+			$user_remember_me_list = new UserRememberMeList($this->getUserId());
+			$user_remember_me_list->delete();
 			
 			//delete the user from the database
 			try {
