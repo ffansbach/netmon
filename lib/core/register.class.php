@@ -268,11 +268,12 @@ class Register {
 	*/
 	public function sendPassword($user_id, $email, $nickname, $newpassword, $new_password_hash, $old_password_hash) {
 		$text = "Hallo $nickname,\n\n";
-		$text .= "Deine neuen Logindaten Sind:\n";
+		$text .= "du hast ein neues Passwort fuer die Netmon-Installation von ".ConfigLine::configByName('community_name')." angefordert. Deine neuen Logindaten lauten:\n\n";
 		$text .= "Nickname: $nickname\n";
 		$text .= "Passwort: $newpassword\n\n";
 		$text .= "Bitte bestaetige die Aenderungen mit einem Klick auf diesen Link:\n";
 		$text .= ConfigLine::configByName('url_to_netmon')."/set_new_password.php?user_id=$user_id&new_passwordhash=$new_password_hash&oldpassword_hash=$old_password_hash\n\n";
+		$text .= "Hinweis: sollte das Anklicken des Links nicht funktionieren musst du den link vollstaendig in die Adressleiste deines Webbrowsers kopieren.\n\n";
 		$text .= "Liebe Gruesse\n";
 		$text .= ConfigLine::configByName('community_name');
 		
@@ -290,7 +291,7 @@ class Register {
 		$mail = new Zend_Mail();
 		$mail->setFrom($GLOBALS['mail_sender_adress'], $GLOBALS['mail_sender_name']);
 		$mail->addTo($email);
-		$mail->setSubject("Neues Passwort ".ConfigLine::configByName('community_name'));
+		$mail->setSubject("Neues Netmon Passwort fuer ".ConfigLine::configByName('community_name'));
 		$mail->setBodyText($text);
 		$mail->send($transport);
 
