@@ -1,0 +1,215 @@
+Wie viele Anwendung ist Netmon nach dem [https://de.wikipedia.org/wiki/Model_View_Controller Model-View-Controller Prinzip] geschrieben. Im Folgenden werden Teile des Netmon Codes im Kontext dieses Konzept beschrieben um so einen Einstieg in die Entwicklung von Netmon zu bekommen.
+
+== Git ==
+Der Quellcode von Netmon wird über das Git-Repository der Freifunk Oldenburg Community verwaltet. Zugang zu diesem Repository kann bei [[Benutzer:Bjo|Bjo]] erfragt werden. Alternativ können Änderungen auch per Patch über die [http://lists.nord-west.net/mailman/listinfo/freifunk-ol-dev Entwickler-Mailingliste] oder das [http://ticket.freifunk-ol.de/projects/netmon Ticketsystem] eingereicht werden.
+
+== MVC-Prinzip ==
+=== Model ===
+Als Model dienen die Datenbank sowie die zur Kommunikation mit der Datenbank gehörigen Klassen. Das Datenbankschema liegt in ''netmon.sql'' und wird während des Installationsprozesses auf die eingerichtete Datenbank angewendet. Zur Kommunikation mit der Datenbank sowie zur Manipulation und Verwaltung der Daten stellt Netmon eigene Klassen zur Verfügung, die größtenteils in ''lib/core/'' abgelegt sind.
+
+Für jedes in der Datenbank abzulegende Objekt (Router, Interfaces, IP-Adressen usw.) existiert eine Tabelle in der Datenbank. Ferner existieren in der Regel je zwei Klassen zur Verwaltung dieses Objekts. Jeweils eine Klasse zur Verwaltung eines einzelnen Objekts (z.B. ''[http://git.freifunk-ol.de/projects/ffol/netmon.git/blobs/?f=lib/core/DnsZone.class.php DnsZone.class.php]'') sowie eine weitere Klasse zur Verwaltung einer Liste mehrer Objekte dieses Typs (z.B. ''[http://git.freifunk-ol.de/projects/ffol/netmon.git/blobs/?f=lib/core/DnsZoneList.class.php DnsZoneList.class.php]'').
+
+==== Mit einzelnen Objekten arbeiten ====
+Mit Hilfe dieser Klassen können wir einzelne Objekte ganz einfach aus der Datenbank holen:
+<source lang='php'>
+require_once('lib/core/DnsZone.class.php');
+
+//instanziiere ein neues Objekt der Klasse DnsZone und initialisiere das Attribut $dns_zone_id des Objekts mit 10
+$dns_zone = new DnsZone(10);
+
+//führe eine Datenbankabfrage durch und hole den DnsZone-Eintrag mit der id 10
+if($dns_zone->fetch()) {
+    //wenn ein DnsZone-Eintrag mit der id 10 vorhanden ist, dann gib seinen Namen aus
+    echo $dns_zone->getName();
+}
+</source>
+
+
+Wir können nun mit Hilfe der Getter-Methoden nicht nur einzelne Attribute des DnsZone-Eintrags ausgeben wie oben gezeigt, sondern mittels der setter-Methoden jeder Klasse diese auch verändern und den DnsZone-Eintrag anschließend wieder speichern:
+<source lang='php'>
+// ändere den Namen der Zone
+$dns_zone->setName('Neuername');
+
+// speichere die Änderung am Namen
+if($dns_zone->store()) {
+    // wenn das Speichern geklappt hat, dann gib eine Meldung aus
+    echo 'Änderung gespeichert';
+}
+</source>
+
+
+Das Anlegen eines komplett neuen Eintrags funktioniert ähnlich einfach:
+<source lang='php'>
+require_once('lib/core/DnsZone.class.php');
+
+// instanziiere ein neues Objekt der Klasse DnsZone und belege seine Attribute mit den Werten,
+//die die neue Dns-Zone bekommen soll.
+//Die $dns_zone_id muss immer false sein, wenn eine neue Zone angelegt werden soll
+$dns_zone = new DnsZone(false, (int)$_SESSION['user_id'], 'myzone',
+                        'dns1.myzone', 'dns2.myzone', 604800, 86400, 2419200, 604800)
+
+// speichere die Dns-Zone. Die Methode merkt automatisch ob diese Zone bereits in der
+// Datenbank existiert und entscheidet dann ob die Zone neu angelegt oder ob nur
+// die Werte einer bereits existierenden Zone geändert wurden.
+// Da bei dieser Zone die $dns_zone_id auf false gesetzt wurde, ist klar, dass es sich um
+// eine neue Zone handelt (es sei denn der Name der Zone existiert bereits).
+$dns_zone_id = $dns_zone->store();
+if($dns_zone_id) {
+    // wenn die Zone erfolgreich angelegt wurde, gib die ID der neuen Zone aus
+    echo $dns_zone_id;
+}
+</source>
+
+
+
+==== Mit Listen von Objekten arbeiten ====
+Mit Hilfe der Listen-Klassen können wir mehrere Objekte aus der Datenbank holen. In der Regel lassen sich die Listen über bestimmte Kriterien einschränken oder mit einem Offset sowie einem Limit versehen.
+
+Um alle Dns-Zoneneinträge aus der Datenbank zu holen, zu durchlaufen und jeweils den Namen der Einträge auszugeben, können wir folgendes machen:
+<source lang='php'>
+require_once('lib/core/DnsZoneList.class.php');
+
+$dns_zone_list = new DnsZoneList();
+foreach($dns_zone_list->getDnsZoneList() as $dns_zone) {
+    echo $dns_zone->getName();
+}
+</source>
+
+
+Um nur die Einträge zu holen, die einem bestimmten Benutzer gehören, können wir der Klasse als ersten Parameter die User-ID des aktuell eingeloggten Benutzers (oder eines anderen Benutzers) mitgeben:
+<source lang='php'>
+require_once('lib/core/DnsZoneList.class.php');
+
+// Hole alle Objekte des aktuellen Benutzers aus der Datenbank
+$dns_zone_list = new DnsZoneList((int)$_SESSION['user_id');
+
+// Durchlaufe alle in der Liste enthaltenen Objekte.
+// Dazu kann mittels der Methode getDnsZoneList() auf das Listenarray zugegriffen werden
+foreach($dns_zone_list->getDnsZoneList() as $dns_zone) {
+    echo $dns_zone->getName();
+}
+</source>
+
+
+Zur Verwendung mit der Web-API gibt es noch weitere parameter wie $limit, $offset, $sort und $order mit Hilfe derer die Anzahl und Sortierung der aus der Datenbank geholten Objekte beeinflusst werden kann.
+
+Einige Listenklassen implementieren außerdem weitere Methoden, wie bspw. eine delete()-Methode um alle in der Liste enthaltenen Objekte aus der Datenbank zu löschen oder eine add()-Methode um einer (leeren) Liste einzelne Objekte hinzuzufügen. Eine leere Liste kann übrigens erzeugt werden, indem $offset und $limit auf 0 gesetzt werden:
+<source lang='php'>
+require_once('lib/core/DnsZoneList.class.php');
+
+// Erzeuge eine leere Liste
+$dns_zone_list = new DnsZoneList(false, 0, 0);
+</source>
+
+=== Controller ===
+Als Controller dienen die Scripte die im Wurzelverzeichnis von Netmon liegen. Sie steuern den Programmablauf, sprich welche Daten wann aus der Datenbank geholt werden, wie diese angezeigt werden und wie neue Daten gespeichert oder Daten verändert werden.
+
+Eine Sonderrolle spielt dabei die Datei runtime.php. Sie initialisiert in Netmon alle wichtigen Variablen, Pfade, Klassen und Sessions  und muss in jeder Controller-Datei als erstes aufgerufen werden.
+
+Ruft man die Netmoninstanz auf ohne eine der Controllerdateien direkt anzugeben (z.B. http://netmon.freifunk-ol.de), wird zuerst die index.php aufgerufen, die uns an die install.php verweist wenn Netmon noch nicht installiert wurde. Andernfalls werden wir an routerlist.php verwiesen.
+
+Um das nächste Beispiel Konsistent zum Model-Abschnitt zu halten, schauen wir uns die Datei [http://git.freifunk-ol.de/projects/ffol/netmon.git/blobs/7abcb557971e4b205814d9805261da012243966f?hb=90e6bcda23fbabe740a1d734deae5b54463597d2&f=dns_zone.php dns_zone.php] genauer an.
+
+Dieses Script steuert den Programmablauf zur Verwaltung von DNS-Zonen in Netmon. Ganz oben fügen wir zuerst alle benötigten Dateien und Klassen ein. Darunter wie bereits beschrieben zwingend die runtime.php sowie weitere Dateien, die die Model-Klassen zur Verwaltung der DNS-Zone und zur Verwaltung weiterer im Zusammenhang mit der DNS-Zone stehender Daten beinhalten:
+<source lang='php'>
+require_once('runtime.php');
+require_once(ROOT_DIR.'/lib/core/DnsZone.class.php');
+require_once(ROOT_DIR.'/lib/core/DnsZoneList.class.php');
+require_once(ROOT_DIR.'/lib/core/DnsRessourceRecordList.class.php');
+</source>
+
+
+Darunter folgt ein IF-Block, der Anhand der in der URL übergeben Daten entscheidet, was genau das Script tun soll. Der Aufruf einzelner Abschnitte wird dabei in Netmon insbesondere durch die GET-Variable $_GET['section'] beeinflusst. In ihr wird angegeben welche konkrete Funktionalität das Controller-Script aufrufen soll. Im folgenden Codeschnippsel wird bspw. der Abschnitt zum Löschen einer DNS-Zone aufgerufen:
+<source lang='php'>
+} elseif($_GET['section'] == 'delete') {
+</source>
+
+
+Wird in der GET-Variable nichts übergeben, so wird in diesem Fall der ELSE-Teil des IF-Blocks aufgerufen. Dieser sorgt dafür, dass dem Benutzer eine Liste aller DNS-Zonen angezeigt wird.
+
+<source lang='php'>
+} else {
+    $smarty->assign('message', Message::getMessage());
+
+    $dns_zone_list = new DnsZoneList();
+    $smarty->assign('dns_zone_list', $dns_zone_list->getDnsZoneList());
+    
+    $smarty->display("header.tpl.html");
+    $smarty->display("dns_zones.tpl.html");
+    $smarty->display("footer.tpl.html");
+}
+</source>
+
+Bevor wir irgendetwas tolles machen, müssen wir uns erstmal mittels Message::getMessage() bei der letzten Aktion möglicher Weise angefallene Systemnachrichten holen. Diese übergeben wir mittels $smarty->assign eine sogenannte Template-Variable um sie nachher in unserem HTML-Code, der in einer vom PHP-Code getrennten Datei liegt, verfügbar zu haben. Dazu im View-Abschnitt mehr.
+
+Als nächstes holen wir uns, wie im Model-Abschnitt beschrieben eine Liste aller DNS-Zonen und übergeben das Array, das die Daten enthält, wieder an eine Template Variable um die Liste nachher im HTML-Code aus der Liste eine Tabelle generieren zu können.
+
+Zu guter letzt geben wir noch an, welche HTML-Dateien zur Anzeige verwendet werden sollten. Darunter immer der Header mit Bild und Menü sowie der Footer mit Informationen zu Installation. Dazwischen kommt der eigentlich wichtige Teil den wir anzeigen wollen.
+
+=== View ===
+Die View ist die Schnittstelle zum Benutzer, das was tatsächlich im Browser als HTML angezeigt wird. Um PHP-Code von HTML-Code zu trennen, kommt die Templateengine [https://de.wikipedia.org/wiki/Smarty Smarty] zum Einsatz. Neben der Trennung des HTML-Codes vom PHP-Code sorgt sie außerdem dafür, dass es relativ einfach ist, Netmon ein anderes Aussehen zu verpassen.
+
+Die Initalisierung von Smarty erfolgt in der runtime.php. Interessant ist insbesondere die Zeile zur Festlegung des Template-Verzeichnisses (template_dir):
+<source lang='php'>
+require_once (ROOT_DIR.'/lib/extern/smarty/Smarty.class.php');
+$smarty = new Smarty;
+$smarty->compile_check = true;
+$smarty->debugging = false;
+$smarty->template_dir = ROOT_DIR.'/templates/'.$GLOBALS['template'].'/html';
+$smarty->compile_dir = ROOT_DIR.'/templates_c';
+$smarty->assign('template', $GLOBALS['template']);
+$smarty->assign('installed', $GLOBALS['installed']);
+$smarty->assign('community_name', $GLOBALS['community_name']);
+$smarty->assign('community_slogan', $GLOBALS['community_slogan']);
+</source>
+
+Die Variable template_dir gibt an, wo Smarty nach den HTML-Dateien suchen soll. Alle in Netmon verfügbaren Templates liegen in templates/. template_dir gibt nun an, welches der verfügbaren Templates genau genutzt werden soll. Standardmäßig wird hier auf templates/freifunk_oldenburg/html verwiesen.
+
+Dort finden wir auch die im Controller-Abschnitt bereits verwendete Datei dns_zones.tpl.html. Diese enthält normalen HTML-Code, der spezielle Aufrufe von Smarty nutzt, um auf den in der Controller-Datei übergebenen Daten schönes HTML zu machen.
+
+Das folgende Beispiel zeigt wie aus dem übergeben Array eine Tabelle wird:
+
+<source lang='html4strict'>
+<h2>Eingetragene DNS-Zonen</h2>
+{if !empty($dns_zone_list)}
+    <table class="display" id="dns_zone_list" style="width: 100%;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Primary DNS</th>
+                <th>Secondary DNS</th>
+                <th>Refresh</th>
+                <th>Retry</th>
+                <th>Expire</th>
+                <th>TTL</th>
+                <th>Benutzer</th>
+                <th>Angelegt</th>
+                <th>Aktionen</h2>
+            </tr>
+        </thead>
+    <tbody>
+        {foreach item=dns_zone from=$dns_zone_list}
+            <tr>
+                <td><a href="./dns_zone.php?dns_zone_id={$dns_zone->getDnsZoneId()}">{$dns_zone->getName()}</a></td>
+                <td>{$dns_zone->getPriDns()}</td>
+                <td>{$dns_zone->getSecDns()}</td>
+                <td>{$dns_zone->getRefresh()}</td>
+                <td>{$dns_zone->getRetry()}</td>
+                <td>{$dns_zone->getExpire()}</td>
+                <td>{$dns_zone->getTtl()}</td>
+                <td><a href="./user.php?user_id={$dns_zone->getUser()->getUserId()}">{$dns_zone->getUser()->getNickname()}</a></td>
+                <td>{$dns_zone->getCreateDate()|date_format:"%d.%m.%Y"}</td>
+                <td><a href="./dns_zone.php?section=delete&dns_zone_id={$dns_zone->getDnsZoneId()}">Löschen</a></td>
+            </tr>
+        {/foreach}
+        </tbody>
+    </table>
+{else}
+    <p>Keine DNS-Zonen eingetragen.</p>
+{/if}
+</source>
+
+== Testserver aufsetzen ==
+Die Installation von Netmon läuft ganz normal wie im Abschnitt [[Netmon/Handbuch#Installation|Installation des Handbuchs]] beschrieben. Schwierig wird es, wenn die Testinstallation mit Testdaten gefüttert werden soll.
+
+TODO

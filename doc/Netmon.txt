@@ -1,0 +1,104 @@
+Netmon ist eine in PHP geschriebene Webapplikation zur Verwaltung und zum Monitoring von Freifunk Netzwerken. Ziel ist es alle zur Verwaltung des Netzwerks notwendigen Daten an einer zentralen Stelle zu speichern und den Status des Netzwerkes zu visualisieren. Mit Hilfe von Netmon soll Administratoren die Verwaltung und Instandhaltung des Netzwerks ermöglicht und Benutzern die Integration eines eigenen Routers in das Freifunknetzwerk oder das Auffinden von Freifunkknoten in der Umgebung ermöglicht werden.
+
+
+[[Datei:Netmon_productscreen.png|520px|thumb]]<div style="float:left;>__TOC__</div>
+
+
+== Funktionsumfang == 
+=== Kernfunktionen ===
+==== Benutzer ====
+[[Datei:Netmon_userpage.png|110px|thumb|right|Benutzerseite]]
+Netmon arbeitet Nutzerbasiert und ermöglicht es daher Benutzer anzulegen und zu einem Benutzer optional verschiedene Daten (insbesondere Kontaktdaten) zu speichern.
+
+Auf einer Benutzerseite können die meisten dieser Daten von anderen Benutzern eingesehen werden. So können andere Benutzer schnell Kontakt aufnehmen, falls es ein Problem gibt.
+Außerdem kann sich ein Benutzer auf der Benutzerseite schnell einen Überblick darüber verschaffen, welche Router und Dienste ein Benutzer betreibt und wie ihr aktueller Status ist.
+
+Ferner unterstützt Netmon ein Rechtesystem das verschiedene Rollen ermöglicht mit deren Hilfe verschiedene Tätigkeiten auf bestimmte Benutzergruppen eingegrenzt werden können.
+
+==== Router ====
+[[Datei:Netmon_routerpage.png|110px|thumb|right|Statusseite eines Routers]]
+Das Zentrale Element von Netmon ist die Verwaltung von Freifunkroutern. Diese Können in Netmon unter einem Hostname abgespeichert und mit einer Position versehen werden. Mit Hilfe der Position kann ein Router nachher auf der Karte angezeigt werden.
+
+Für Router die in Netmon eingebunden werden sollen, gibt es ein Configurator-Script. Dieses sorgt zusammen mit der Firmware des Routers dafür, dass sich ein neuer Router gleich bei Netmon meldet, sobald er ans Netz geht. Auf einer Übersichtseite für neue Router kann ein Benutzer seinen neuen Router dann übernehmen und ohne große Umstände in Netmon eintragen.
+
+Sobald der Router in Netmon eingetragen ist, legt das Configurator-Script in Netmon selbstständig ein erstes Interface mit einer IP-Adresse für den Router an. Dadurch kann Netmon in Zukunft Daten vom Router abholen.
+
+Auf den Routern läuft ein kleiner HTTP-Server auf dem mit Hilfe des Nodewatcher-Scripts zahlreiche aktuelle Statusdaten des Routers im XML-Format zum Download angeboten werden. Da Netmon immer mindestens eine IP-Adresse des Routers kennt, kann Netmon diese Daten mit Hilfe eines Crawlers in regelmäßigen Abständen abholen. Dadurch kann man sich jederzeit einen sehr genauen Überblick darüber verschaffen, welche Router online sind und wie ausgelastet diese Router aktuell sind.
+
+==== Netzwerke und IP-Adressen ====
+Neben den Routern selbst, kann Netmon wie Bereits beschrieben auch die Interfaces und IP-Adressen eines Routers verwalten.
+So ist es möglich Netzwerke anzulegen aus denen Benutzer ihren Routern dann IP Adressen zuweisen können. Dabei unterstützt Netmon sowohl IPv4 als auch IPv6. Ein Administrator kann die genutzten Netzwerke der Freifunk Community eintragen (z.B. 10.18.0.0/16 für das IPv4 Netzwerk und fe80:: für das IPv6 Link Local Netzwerk). Aus den eingetragenen Netzwerken können Nutzer sich IP-Adressen aussuchen und diese einem Interface auf ihrem Router zuweisen. So kann in Netmon jederzeit nachvollzogen werden welche IP-Adressen für wen reserviert sind bzw. wofür diese genutzt werden und welche noch frei sind.
+
+Das IP Adressen Management wird zudem durch das Configurator-Script und den Crawler unterstützt. Mittels des Configurator-Scripts überträgt ein Router wie bereits beschrieben eine erste IP-Adresse an Netmon. Netmon legt auf dem entsprechenden Router ein passendes Interface an und weißt die Adresse diesem Interface zu. Beim nächsten Crawl nutzt der Crawler diese Adresse um die restlichen Daten vom Router zu holen. Dabei werden weitere IP-Adressen ebenfalls automatisch in Netmon hinzugefügt sofern Sie zu einem der vorher konfigurierten Netzwerke gehören.
+
+==== DNS ====
+Wenn Netmon bereits eine komplette IP-Verwaltung mitbringt, liegt es nahe auch noch eine DNS-Verwaltung anzubieten. Netmon orientiert sich dabei am Konzept von [https://de.wikipedia.org/wiki/BIND BIND] und bietet das Anlegen von Zonen und Ressource-Records an. Diese können mit den in Netmon eingetragenen IP-Adresses verknüpft werden.
+
+Mittels Netmons Web-API und externen Scripten können so Netzeigene DNS-Server mit den in Netmon angelegten DNS-Einträgen bedient werden.
+
+==== Dienste ====
+Freifunker werben häufig damit, dass es in ihrem Netzwerk nicht nur Internet, sondern auch verschiedene Dienste gibt. Doch diese Dienste zu finden ist nicht ganz einfach, da ihr Bekantheitsgrad gering ist und sie in der Regel nicht besonders gut dokumentiert sind.
+
+Netmon will dies in Kombination mit der IP- und DNS-Verwaltung ändern. So können Nutzer Dienste anlegen, diesen einen Titel, eine Beschreibung und einen Port mitgeben und sie IP-Adressen und Ressource vom Typ AA und AAAA zuweisen.
+
+Auf einer separaten Seite kann man sich so einen Überblick über alle im Freifunknetzwer angebotenen Dienste machen und Software die diese Dienste nutzen kann mit den Daten von Netmon einfach konfigurieren.
+
+=== Sonstige Funktionen ===
+==== Knoten-Karte ====
+Damit die Benutzer wissen wo es überall Freifunkknoten gibt, bietet Netmon natürlich eine Karte an auf der alle Standorte eingetragen sind. Auf dieser Karte kann auch eingesehen werden, ob ein Router online oder offline ist, zu welchen anderen Routern ein Router eine Mesh-Verbindung hat, wie viele Clients aktuell auf einem Router sind und wie groß der Traffic aktuell auf einem Router ist.
+
+==== Benachrichtigungen ====
+[[Datei:Netmon_jabber_notification.png|110px|thumb|right|XMPP-Nachricht]]
+Damit ein Benutzer mitbekommt wenn einer seiner Router ausversehen abgestürzt oder aus anderen gründen nicht mehr mit dem Netzwerk verbunden ist, kann sich ein Benutzer für jeden Router Benachrichtigungen konfigurieren lassen. Diese können sowohl per XMPP als auch per Email verschickt werden.
+
+Aktuell wird nur die Offlinebenachrichtigung unterstützt prinzipiell sind hier aber Benachrichtigungen zu allen möglichen Ereignissen denkbar.
+
+==== Twitter-Integration ====
+Netmon ermöglicht es auf einem Twitter-Account eine Nachricht zu veröffentlichen wenn ein neuer Router eingetragen wurde.
+
+=== Web-API ===
+Netmon bietet verschiedene Schnittstellen an um mit der Außenwelt zu kommunizieren:
+*[[Netmon/CSV_API_0.1|Netmon CSV Web-API 0.1]] (nicht mehr unterstützt)
+*[[Netmon/CSV_API_0.2|Netmon CSV Web-API 0.2]] (veraltet)
+*[[Netmon/CSV_API_0.3|Netmon CSV Web-API 0.3]] (aktuell)
+*[[Netmon/Nodewatcher-API|Nodewatcher-API (aktuell)]]
+*[[Netmon/API|Netmon XML REST Web-API (in Entwicklung)]]
+
+== Download ==
+Aktuell ist der Download nur über das Git-Repository möglich. Siehe dazu Abschnitt Entwickler.
+
+== Handbuch ==
+Eine Installationsaleitung sowie weitere Informationen sind im [[Netmon/Handbuch|Handbuch]] verfügbar.
+
+== Entwicklung ==
+=== Development-HowTo ===
+Um den Einstieg in die Entwicklung zu vereinfachen, steht unter [[Netmon/Development-HowTo]] ein HowTo zur Verfügung dass einige Grunddlegende Konzepte erklärt.
+
+=== Mailingliste ===
+Genutz wird die [http://lists.nord-west.net/mailman/listinfo/freifunk-ol-dev Entwicklerliste der Freifunk Community Oldenburg].
+
+=== Projektmanagement ===
+Der aktuelle Stand der Entwicklung kann in unserem Projektmanagementsystem eingesehen werden. Dort können auch Bugs gemeldet werden:
+*http://ticket.freifunk-ol.de/projects/netmon
+
+=== GIT Repository ===
+*http://git.freifunk-ol.de/projects/ffol/netmon.git
+
+Für schreibenden Zugriff zum Einpflegen eigener Bugfixes und Verbesserungen bitte an [[Benutzer:Bjo|Bjo]] wenden.
+
+=== Aktuelle Entwickler ===
+*[[Benutzer:Floh1111|Floh1111]]
+
+Wenn du mehr oder weniger Regelmäßig zur Entwicklung von Netmon beträgst oder in Zukunft beitragen möchtest, dann trag dich hier ein damit andere dich bei Problemen ansprechen können.
+
+== Bekannte Installationen ==
+*http://netmon.freifunk-ol.de
+*https://netmon.freifunk-franken.de/
+
+== Screenshots ==
+[[Datei:Netmon_routerlist.png|140px|Die Liste aller Router]]
+[[Datei:Netmon_routerpage.png|140px|Statusseite eines Routers]]
+[[Datei:Netmon_networkstatistics.png|140px|Eine Statistische Übersicht des Netzwerks]]
+[[Datei:Netmon_map.png|140px|Die Karte]]
+[[Datei:Netmon_userpage.png|140px|Die Übersichtsseite eines Benutzers]]
+[[Datei:Netmon_notifications.png|140px|Seite zur Konfiguration der Benachrichtigungen]]

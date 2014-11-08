@@ -1,0 +1,19 @@
+== Einrückung ==
+Zum Einrücken werden Tabs genutzt. Für jede Einrückungsebene wird ein Tab verwendet.
+
+== Klassennahmen ==
+CamelCased mit großem Anfangsbuchstaben (Beispiel: "class CamelCased {...")
+
+== Methodennahmen ==
+CamelCased mit kleinem Anfangsbuchstaben (Beispiel: "public function camelCased() {...)
+
+== Variablennahmen ==
+Underscored, alle Buchstaben klein (Beispiel: "$my_first_variable = ...)
+
+== Klammerung ==
+1TBS (One True Brace Style). Beispiel:
+<pre>if (1!=1) {
+  echo "Ohh my god the universe will collapse!";
+} else {
+  echo "Everything is fine :)";
+}</pre>

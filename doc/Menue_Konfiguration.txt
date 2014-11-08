@@ -1,0 +1,5 @@
+== Benutzerdefiniertes Menü ==
+Das Menü im Header von Netmon kann unter /config/menus.local.inc.php angepasst werden.
+
+== Netmon Menüs ==
+Alle Menüs die nicht benutzerdefiniert sind, sind Netmon eigene Menüs die von den Jeweiligen Rechten des aktuellen Benutzers abhängen. Sie werden in /lib/classes/core/menus.class.php konfiguriert.

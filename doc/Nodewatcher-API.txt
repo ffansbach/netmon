@@ -1,0 +1,116 @@
+Die Statusdaten der Router werden von Netmon mittels eines [http://git.freifunk-ol.de/projects/ffol/netmon.git/blobs/01b99b8b0db045c9e030bf43fc11748e1f7917f6?hb=b86472d1aef4cc32faeec27d28c73446a35288da&f=integrated_xml_ipv6_crawler.php Crawlers] von den Routern pro Crawl-Zyklus einmal  abgeholt.
+Dazu bietet jeder Router per HTTP eine node.data genannte XML-Datei an, die mittels des [http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/cd7e84e5da99dc857cb4436d404ff00f9f777721?hb=5fae48753c47bc37b2f38413e391a9da0760998d&f=bsp%2Fdefault%2Froot_file_system%2Fetc%2Fnodewatcher.sh nodewatcher.sh] Scripts in regelmäßigen Abständen generiert wird.
+
+<?xml version='1.0' standalone='yes'?>
+<data>
+  <system_data>
+    <status>online</status>
+    <hostname>Rosenplatz</hostname>
+    <distname>OpenWrt</distname>
+    <distversion>Attitude Adjustment</distversion>
+    <chipset>Atheros AR9330 rev 1</chipset>
+    <cpu>MIPS 24Kc V7.4</cpu>
+    <memory_total>29340</memory_total>
+    <memory_free>8872</memory_free>
+    <memory_buffering>1904</memory_buffering>
+    <memory_caching>6388</memory_caching>
+    <loadavg>0.06</loadavg>
+    <processes>1/46</processes>
+    <uptime>77495.43</uptime>
+    <idletime>74866.41</idletime>
+    <local_time>1380894301</local_time>
+    <batman_advanced_version>2013.0.0</batman_advanced_version>
+    <kernel_version>3.3.8</kernel_version>
+    <nodewatcher_version>30</nodewatcher_version>
+    <firmware_version>0.4.0rc4ol-7-g6f04a0f</firmware_version>
+    <firmware_revision>build date: Do 3. Okt 14:37:20 UTC 2013</firmware_revision>
+    <openwrt_core_revision>35298</openwrt_core_revision>
+    <openwrt_feeds_packages_revision>35298</openwrt_feeds_packages_revision>
+  </system_data>
+  <interface_data>
+    <bat0>
+      <name>bat0</name>
+      <mtu>1500</mtu>
+      <mac_addr>76:55:df:da:96:60</mac_addr>
+      <traffic_rx>116477541</traffic_rx>
+      <traffic_tx>6608565</traffic_tx>
+    </bat0>
+    <br-mesh>
+      <name>br-mesh</name>
+      <mtu>1500</mtu>
+      <mac_addr>f8:d1:11:af:fd:16</mac_addr>
+      <ipv6_link_local_addr>fe80::fad1:11ff:feaf:fd16/64</ipv6_link_local_addr>
+      <traffic_rx>88211476</traffic_rx>
+      <traffic_tx>2559553</traffic_tx>
+    </br-mesh>
+    <wlan0-1>
+      <name>wlan0-1</name>
+      <mtu>1528</mtu>
+      <mac_addr>fa:d1:11:af:fd:16</mac_addr>
+      <ipv6_link_local_addr>fe80::f8d1:11ff:feaf:fd16/64</ipv6_link_local_addr>
+      <traffic_rx>669620128</traffic_rx>
+      <traffic_tx>477017005</traffic_tx>
+      <wlan_essid>batman.oldenburg.freifunk.net</wlan_essid>
+      <wlan_mode>Ad-Hoc</wlan_mode>
+      <wlan_bssid>02:CA:FF:EE:BA:BE</wlan_bssid>
+      <wlan_frequency>2.437GHz</wlan_frequency>
+      <wlan_tx_power>18 dBm</wlan_tx_power>
+    </wlan0-1>
+    <wlan0>
+      <name>wlan0</name>
+      <mtu>1500</mtu>
+      <mac_addr>f8:d1:11:af:fd:16</mac_addr>
+      <traffic_rx>4058847</traffic_rx>
+      <traffic_tx>124892978</traffic_tx>
+      <wlan_mode>Master</wlan_mode>
+      <wlan_tx_power>18 dBm</wlan_tx_power>
+    </wlan0>
+  </interface_data>
+  <batman_adv_interfaces>
+    <eth0.3>
+      <name>eth0.3</name>
+      <status>active</status>
+    </eth0.3>
+    <wlan0-1>
+      <name>wlan0-1</name>
+      <status>active</status>
+    </wlan0-1>
+  </batman_adv_interfaces>
+  <batman_adv_originators>
+    <originator_0>
+      <originator>66:70:02:4d:44:57</originator>
+      <link_quality>190</link_quality>
+      <nexthop>a2:f3:c1:5b:54:a6</nexthop>
+      <last_seen>0.140s</last_seen>
+      <outgoing_interface>wlan0-1</outgoing_interface>
+    </originator_0>
+    <originator_1>
+      <originator>d2:03:59:2e:eb:1d</originator>
+      <link_quality>193</link_quality>
+      <nexthop>a2:f3:c1:5b:54:a6</nexthop>
+      <last_seen>0.550s</last_seen>
+      <outgoing_interface>wlan0-1</outgoing_interface>
+    </originator_1>
+  </batman_adv_originators>
+  <batman_adv_gateway_mode>string</batman_adv_gateway_mode>
+  <batman_adv_gateway_list>
+   <gateway_1>
+      <selected>boolean</selected>
+      <gateway>mac_addr</gateway>
+      <link_quality>int</link_quality>
+      <nexthop>mac_addr</nexthop>
+      <outgoing_interface>string</outgoing_interface>
+      <gw_class>string</gw_class>
+    </gateway_1>
+    <gateway_2>
+      <selected>boolean</selected>
+      <gateway>mac_addr</gateway>
+      <link_quality>int</link_quality>
+      <nexthop>mac_addr</nexthop>
+      <outgoing_interface>string</outgoing_interface>
+      <gw_class>string</gw_class>
+    </gateway_2>
+  </batman_adv_gateway_list>
+  <client_count>3</client_count>
+</data></pre>
+

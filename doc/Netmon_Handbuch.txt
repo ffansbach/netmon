@@ -1,0 +1,68 @@
+== Installation ==
+Die Installation von Netmon findet über das mitgelieferte Installationsscript statt. Im folgenden sollen die einzelnen Schnritte erläutert werden.
+
+=== Download ===
+Das letzte Release kann unter folgender URL heruntergeladen werden unter: http://dev.freifunk-ol.de/netmon/
+
+Alternativ kann der aktuelle Stand der Entwicklung aus unserem Git-Repository unter folgender URL bezogen werden: git://freifunk-ol.de/ffol/netmon.git
+
+=== Installationsroutine ===
+[[Datei:Netmon_install_dir_permissions.png|130px|thumb|right|Schreibrechte setzen]]
+
+Nachdem wir Netmon heruntergeladen und in das gewünschte Verzeichnis des Webservers entpackt haben, rufen wir den Ordner über unseren Webbrowser auf. Dort werden wir mit dem Hinweis begrüßt, dass wir dem Webserver zum Aufruf der Installationsroutine in einigen Ordnern Schreibrechte gewähren müssen.
+
+[[Datei:Netmon_install_systemcheck.png|130px|thumb|right|Systemcheck]]
+
+Nachdem der Webserver Schreibrechte bekommen und wir die Seite neu geladen haben, begrüßt uns die Installationsroutine mit einem Systemcheck. Rot markierte Punkte müssen von uns installiert werden, gelb markierte Punkte sind zum Betrieb nicht zwingend notwendig, beschränken aber bestimmte Funktionen. Grüne Punkte zeigen an, dass alles ok ist. Mit einem Klick auf ''Weiter'' fahren wir mit der Installation fort.
+
+[[Datei:Netmon_install_db_data.png|130px|thumb|right|Datenbanklogin]]
+
+Im nächsten Schritt werden wir aufgefordert die Zugangsdaten zu der Datenbank in die Netmon installiert werden soll azugeben. Dazu müssen wir vorher manuell eine Mysql-Datenbank angelegt haben. Bei Erfolg wird das in netmon.sql abgelegte Datenbankschema in die Datenbank geschoben. Die Logindaten zur Datenbank werden in config/config.local.inc.php abgelegt.
+
+[[Datei:Netmon_install_needed_data.png|130px|thumb|right|Grunddaten]]
+
+Im nächsten Schritt werden die zum Betrieb von Netmon unbedingt notwendigen Daten abgefragt. Sofern auf unserem Server ein Mailserver eingerichtet ist, können wir für den Mailversant einfach die Versendeart ''php_mail'' auswählen. Andernfalls können wir mit der Option ''smtp'' den SMTP-Transport eines der großen Anbieter zum Mailversand nutzen. Im Zusammenhang mit der SMTP-Methode kann der Fehler ''Could not open socket'' auftreten. Hier kann es helfen die IP-Adresse des Mailservers fest in die /etc/hosts einzutragen. Z.B. ''212.227.17.168  mail.gmx.net''.
+Netmon testet ob der Mailversand an die Absenderadresse klappt. Bei Erfolg wird an die Absenderadresse daher eine Testmail geschickt. An dieser Stelle werden auch zahlreiche Standard-Einstellungen festgelegt die später geändert werden können.
+
+<!--[[Datei:Netmon_install_finish.png|130px|thumb|right|Finish]]-->
+
+Anschließend ist ist Installation abgeschlossen und die Installationsroutine wird gesperrt. Die Sperrung der Installation sowie die Logindaten zur Datenbank können nach der Installation in der Datei ''config/config.inc.php'' eingesehen werden. Alle weiteren Konfigurationseinstellung werden in der Datenbank in der Tabelle ''config'' abgelegt. Alle Einstellung können vom Administrator nach dem Login im Konfigurationsmenü bearbeitet werden.
+
+Um die Einstellungen bearbeiten zu können, benötigt man jedoch einen Benutzer mit Administrationsrechten. Dieser erhält der erste Benutzer, der sich bei Netmon registriert. Dies sollten wir daher als erstes tun und werden nach Abschluss der Installationsroutine daher auch gleich passend auf die Seite zur Registration eines neuen Benutzers weitergeleitet.
+
+=== Testdaten ===
+Für Entwickler die eine Testinstant aufsetzen wollen, steht eine komplette Testdatenbank sowie ein Archiv mit RRD-Tool Dateien für Testgrafiken zur Verfügung:
+* http://dev.freifunk-ol.de/netmon/testdata/netmon_test_data.sql
+* http://dev.freifunk-ol.de/netmon/testdata/netmon_test_rrd_data.tar.gz
+
+Die Datenbank kann mit folgendem Befehl in die Leere Datenbank 
+"deinedatenbank" des Mysql-Benutzers deinbenutzer gedumped werden. Wird die Datenbank genutzt, sollte der nachfolgend beschriebene Cronjob nicht aktiviert werden. Der in der Datenbank enthaltene Testbenutzer lautet "admin", das zugehörige Passwort lautet ebenfalls "admin":
+{{User Code|mysql -u deinbenutzer -p deinedatenbank < netmon_test_data.sql}}
+
+Das Archiv enthält ca. 40.000 Dateien und kann aus Netmons Wurzenverzeichnis heraus mit folgendem Befehl entpackt werden:
+{{User Code|tar xfvz netmon_test_rrd_data.tar.gz}}
+
+=== Cronjob einrichten ===
+Diverse Funktionen in Netmon müssen regelmäßig erledigt werden. Dazu ist es notwendig, dass wir für Netmon einen Cronjob einrichten, der die Datei cronjobs.php alle 5 Minuten ausführt:
+{{User Code|*/5 * * * *     root    php /pfad/zu/netmons/verzeichnis/cronjobs.php}}
+
+=== Anpassung der Router-Firmware ===
+Netmon stellt Verwaltungs- und Monitoringfunktionen in Kombination zur Verfügung. Insbesondere die Monitoringfunktion, aber auch die Verwaltungsfunktion benötigt Anpassungen der Freifunk Firmware damit Netmon mit den Routern interagieren kann. Dies geschieht im Wesentlichen über zwei Scripte:
+
+==== Configurator ====
+* [http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/49a067552d58018fc96c2c5a9571d6d15839cb13?hb=1f189ca402863203cb9522b8ed8f4d0a8141560c&f=bsp%2Fdefault%2Froot_file_system%2Fetc%2Fconfigurator.sh /etc/configurator.sh] (Configurator-Script kompatibel mit Netmon 0.3)
+** [http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/89c0c78951386fd4976f47b73feffc4df1b15638?hb=1f189ca402863203cb9522b8ed8f4d0a8141560c&f=bsp%2Fdefault%2Froot_file_system%2Fetc%2Fconfig%2Fconfigurator /etc/config/configurator] (Konfigunrationsdatei für configurator.sh)
+
+Das Configurator-Script wird per Cronjob alle fünf Minuten aufgerufen und prüft mittels der [[Netmon/CSV_API_0.3|Netmon CSV Web-API 0.3]] ob der Router bereits in Netmon eingetragen ist. Ist dies nicht der Fall, wird der Router auf die Liste der neuen Router gesetzt, die in Netmon über ''Router->Neue Router'' aufgerufen werden kann. Sobald das Configurator-Script den Router in diese Liste eingetragen hat, kann ein Benutzer diesen Router übernehmen. Sobald das Configurator-Script vom Cronjob dann das nächste mal aufgerufen wird, holt es soch von Netmon die Router-ID, einen eindeutigen Schlüssel, den API-Key des Benutzers und den neuen Hostname den der Benutzer gerade in Netmon festgelegt hat. Außerdem teilt der Router Netmon eine IPv6 Link-Local Adresse mit, über die Netmon den Router erreichen kann. Diese nutzt dann der Crawler von Netmon um aktuelle Statusdaten vom Router abzuholen. Hierzu wird jedoch noch das Nodewatcher-Script benötigt.
+
+==== Nodewatcher ====
+* [http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/cd7e84e5da99dc857cb4436d404ff00f9f777721?hb=1f189ca402863203cb9522b8ed8f4d0a8141560c&f=bsp%2Fdefault%2Froot_file_system%2Fetc%2Fnodewatcher.sh /etc/nodewatcher.sh] (Nodewatcher-Script kompatibel mit Netmon 0.3)
+** [http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/1bd13f72d83b3158c7e767f65161be3d1aed3a21?hb=1f189ca402863203cb9522b8ed8f4d0a8141560c&f=bsp%2Fdefault%2Froot_file_system%2Fetc%2Fconfig%2Fnodewatcher /etc/config/nodewatcher] (Konfigurationsdatei für nodewatcher.sh)
+
+Das Nodewatcher-Script sammelt eine ganze Reihe interessanter Statusdaten. Das Script wird alle fünf Minuten per Cronjob aufgerufen und legt die gesammelten Daten im XML-Format in /tmp ab. Ein kleiner HTTP-Server auf den Routern macht diese Datei dann nach außen verfügbar, sodass Netmon sich in regelmäßigen Abständen die Statusdaten aller Router abholen kann.
+
+== Router ==
+=== Router eintragen ===
+Kurze Zeit nachdem ein neuer Router angeschlossen wurde, sorgt das [http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/49a067552d58018fc96c2c5a9571d6d15839cb13?hb=da97aa7a927afa8062178fe5274cae97c699cdd6&f=bsp%2Fdefault%2Froot_file_system%2Fetc%2Fconfigurator.sh Configurator-Script] der Firmware dafür, dass der Router mit seiner Mac-Adresse in der [https://netmon.freifunk-ol.de/routers_trying_to_assign.php Liste der neuen Router] auftaucht.
+
+Dort kann er von einem eingeloggten Benutzer übernommen und so fest in Netmon eingetragen werden. Nachdem ein neuer Router eingetragen wurde kann es bis zu einer halben Stunde dauern bis dieser als ''online'' angezeigt wird.

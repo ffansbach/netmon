@@ -1,0 +1,136 @@
+Diese API wird in der Freifunk Oldenburg Firmware Version 0.2 eingesetzt und ist veraltet. Einige nicht zwingend benötigte Teile der API wurden bereits entfernt und sind hier nicht mehr dokumentiert.
+
+Angesprochen wird die API über api_nodewatcher.php. Jede Funktion hat ein eigenes Format.
+
+== get_hostnames_and_mac ==
+'''GET-Parameter:'''
+*'''section''' (Identifier um diese API-Funktion aufzurufen. Mögliche Werte: ''get_hostnames_and_mac'')
+
+'''Rückgabe:'''<br>
+Mac-Adressen der Router sowie ihres Hostnames und des Interfaces von dem die Mac-Adresse genommen wurde ([http://netmon.freifunk-ol.de/api_nodewatcher.php?section=get_hostnames_and_mac Beispiel]):
+<pre>
+00:1C:F0:E3:3E:20 BloCroel_eth0.4
+00:1E:58:82:AF:78 TONKUHLE_eth0.3
+00:1E:58:84:87:20 BeiBeppo_eth0.4
+00:1E:58:BC:1A:3C Blo18RoofN_eth0.4
+</pre>
+
+'''Genutzt in:'''
+*[http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/b146a1bbdae2cac7238198bec18bc0cf98f810bd?hb=ddc5c78e6c3f5c42bb04a8e5483c90a23f9e24d3&f=root_file_system%2Fdefault%2Fetc%2Fhostsupdate.sh hostupdate.sh] (Freifunk Oldenburg Firmware 0.2)
+
+== test_login_strings ==
+Testet ob einer der übergebenen login_strings in Netmon für eine automatische Routerzuweisung hinterlegt ist.
+
+'''GET-Parameter:'''
+*'''section''' (Identifier um diese API-Funktion aufzurufen. Mögliche Werte: ''test_login_strings'')
+*'''login_strings''' (Eine durch Semikolons getrennte Liste von Mac-Adressen ohne Doppelpunkte)
+
+'''Rückgabe:'''<br>
+Wenn einer der login_strings hinterlegt ist wird der Identifier für Erfolg sowie der erfolgreich getestete Login string getrennt durch ein Semikolon zurückgegeben:
+<pre>success;login_string</pre>
+
+Wenn keiner der login_strings hinterlegt ist wird der Identifier für einen Fehler sowie eine Fehlermeldung getrennt durch ein Semikolon zurückgegeben:
+<pre>error;login_string_not_found</pre>
+
+'''Genutzt in:'''
+*[http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/99367cacacd5b477ce65258572213df9d72e9a49?hb=ddc5c78e6c3f5c42bb04a8e5483c90a23f9e24d3&f=root_file_system%2Fdefault%2Fetc%2Fnodewatcher.sh nodewatcher.sh] (Freifunk Oldenburg Firmware 0.2)
+
+== router_auto_assign ==
+Verknüpft einen realen Router mit einem in Netmon hinterlegten Router.
+
+'''GET-Parameter:'''
+*'''section''' (Identifier um diese API-Funktion aufzurufen. Mögliche Werte: ''router_auto_assign'')
+*'''router_auto_assign_login_string''' (Login String. In der Regel wird hier der zuvor mit der Methode ''test_login_strings'' ermittelte und in Netmon hinterlegte String verwendet.)
+*'''hostname''' (Der Hostname des Routers)
+
+'''Rückgabe:'''<br>
+Bei Erfolg wird der Identifier für Erfolg, die Router-ID, ein Auto-Assign-Hash sowie der in Netmon hinterlegte Hostname für diesen Router getrennt durch Semikolons zurückgegeben:
+<pre>success;router_id;hash;hostname</pre>
+
+Bei Misserfolg wird der Identifier für Misserfolg sowie ein Identifier für den Grund getrennt durch Semikolons zurückgegeben:
+<pre>error;new_not_assigned;;login_string</pre> (Netmon nicht bekannt)
+<pre>error;updated_not_assigned;;login_string</pre> (Netmon als unbekannt bekannt)
+<pre>error;autoassign_not_allowed;login_string</pre> (Automatische Zuweisung nicht erlaubt)
+<pre>error;already_assigned;login_string</pre> (Bereits zugewiesen)
+
+'''Genutzt in:'''
+*[http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/99367cacacd5b477ce65258572213df9d72e9a49?hb=ddc5c78e6c3f5c42bb04a8e5483c90a23f9e24d3&f=root_file_system%2Fdefault%2Fetc%2Fnodewatcher.sh nodewatcher.sh] (Freifunk Oldenburg Firmware 0.2)
+
+== get_standart_data ==
+Holt Router-ID, Auto assign hash und den durch den Benutzer in Netmon gesetzten Hostname eines Routers.
+
+'''GET-Parameter:'''
+*'''section''' (Identifier um diese API-Funktion aufzurufen. Mögliche Werte: ''get_standart_data'')
+*'''authentificationmethod:''' (Methode mit der sich der Router gegenüber Netmon identifiziert. Mögliche Werte: ''hash'')
+*'''router_auto_update_hash:''' (Auto assign hash des Routers den er sich in der Regel mit der Methode ''router_auto_assign'' geholt hat)
+
+'''Rückgabe:'''<br>
+Im Erfolgsfall:
+<pre>success;router_id;router_auto_assign_hash;hostname</pre>
+
+Bei Misserfolg:
+<pre>error;router_not_found</pre>
+
+'''Genutzt in:'''
+*[http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/99367cacacd5b477ce65258572213df9d72e9a49?hb=ddc5c78e6c3f5c42bb04a8e5483c90a23f9e24d3&f=root_file_system%2Fdefault%2Fetc%2Fnodewatcher.sh nodewatcher.sh] (Freifunk Oldenburg Firmware 0.2)
+
+== insert_crawl_data ==
+Über die Methode kann ein Router pro Crawl-Zyklus einmal Statusdaten an Netmon senden.
+
+'''GET-Parameter:'''
+*'''section''' (Identifier um diese API-Funktion aufzurufen. Mögliche Werte: ''insert_crawl_data'')
+
+'''POST-Parameter:'''
+*'''router_id''' (ID des Routers in Netmon, in der Regel bekommt der Router diese ID über die Methode ''router_auto_assign'')
+*'''authentificationmethod''' (Methode mit der sich der Router gegenüber Netmon identifiziert. Mögliche Werte: ''hash'')
+*'''status:'''
+*'''description:'''
+*'''location:'''
+*'''ping:'''
+*'''latitude:'''
+*'''longitude:'''
+*'''luciname:'''
+*'''luciversion:'''
+*'''distname:'''
+*'''distversion:'''
+*'''chipset:'''
+*'''cpu:'''
+*'''memory_total:'''
+*'''memory_caching:'''
+*'''memory_buffering:'''
+*'''memory_free:'''
+*'''loadavg:'''
+*'''processes:'''
+*'''uptime:'''
+*'''idletime:'''
+*'''local_time:'''
+*'''community_essid:'''
+*'''community_nickname:'''
+*'''community_email:'''
+*'''community_prefix:'''
+*'''batman_advanced_version:'''
+*'''kernel_version:'''
+*'''nodewatcher_version:'''
+*'''firmware_version:'''
+*'''firmware_revision:'''
+*'''openwrt_core_revision:'''
+*'''openwrt_feeds_packages_revision:'''
+*'''hostname:'''
+*'''int''': (Zweidimensionales Array der Interfaces des Router. Jedes Interfaces hat folgende Indizes: name, mac_addr, ipv4_addr, ipv6_addr, ipv6_link_local_addr, traffic_rx, traffic_tx, wlan_mode, wlan_frequency, wlan_essid, wlan_bssid, wlan_tx_power, mtu)
+*'''bat_adv_int''': (Zweidimensionales Array der Batman Advanced Interfaces des Router. Jedes Interfaces hat folgende Indizes: name, status)
+*'''bat_adv_orig''': (Zweidimensionales Array der Batman Advanced Originators des Router. Jeder Originator hat folgende Indizes: originator, link_quality, nexthop, outgoing_interface, last_seen)
+*'''client_count'''
+
+'''Rückgabe:'''<br>
+Im Erfolgsfall:
+<pre>success;hostname;message</pre>
+
+Bei Misserfolg:
+<pre>error;message</pre>
+
+'''Genutzt in:'''
+*[http://git.freifunk-ol.de/projects/ffol/firmware.git/blobs/99367cacacd5b477ce65258572213df9d72e9a49?hb=ddc5c78e6c3f5c42bb04a8e5483c90a23f9e24d3&f=root_file_system%2Fdefault%2Fetc%2Fnodewatcher.sh nodewatcher.sh] (Freifunk Oldenburg Firmware 0.2)
+
+== Welche Methoden wurden bereits entfernt? ==
+*version
+*update

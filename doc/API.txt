@@ -1,0 +1,866 @@
+== Crawl-Cycle-List ==
+Die Crawl-Cycle-List ist ein Objekt in dem eine Liste von Crawl-Cycle Einträgen hinterlegt wird.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+*Anzahl standardmäßig zurückgelieferter Elemente: maximal 50
+
+Um sich die Liste aus der Datenbank zu holen, kann man folgende URLs anfragen:
+*'''api/rest/crawl_cycle_list/''' (alle Einträge die Netmon bekannt sind, [http://netmon.freifunk-ol.de/api/rest/crawl_cycle_list/ Beispiel])
+
+Um die Antworten von der Größe handhabbahr zu behalten, wird die Liste standardmäßig in der Anzahl der zurückgelieferten Elemente beschränkt. Die Gesamte Anzahl der in der Liste enthaltenen Elemente kann aus dem Attribut ''total_count'' des Elements ''routerlist'' entnommen werden. Dieses kann außerdem genutzt werden um sich über die folgenden optionalen GET-Parameter die gesamte Liste stückweise ausgeben zu lassen:
+*''Int'' '''offset''': Start der Liste
+*''Int'' '''limit''': Anzahl maximal enthaltener Elemente
+
+Beispiel:
+*'''api/rest/crawl_cycle_list?offset=50&limit=10''' (holen der Einträge 50-60)
+
+Das Ergebnis kann durch weitere Optionale GET-Parameter sortiert werden:
+*''String'' '''sort_by''': Attribut nach dem sortiert werden soll (mögliche Werte: ''crawl_cycle_id'')
+*''String'' '''order''': Reihenfolge der Sortierung (mögliche Werte: ''asc'', ''desc'')
+
+Beispiel:
+*'''api/rest/crawl_cycle_list?sort_by=crawl_cycle_id&order=asc''' (Aufsteigend nach Crawl-Cycle-ID sortierte Liste)
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgeliefert.
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <crawl_cycle_list total_count="int" offset="int" limit="int">
+    <crawl_cycle>
+      <crawl_cycle_id>int</crawl_cycle_id>
+      <create_date>1381808403</create_date>
+      <update_date>1381809005</update_date>
+    </crawl_cycle>
+    [...]
+  </crawl_cycle_list>
+<netmon_response>
+</pre>
+
+== Router ==
+=== holen ===
+*API Format: Alpha
+*API implementation: Alpha
+*Benötigt Authentifizierung per API Key: nein
+
+Um sich einen Router aus der Datenbank zu holen, können folgende URLs aufgerufen werden: * api/rest/router/router_id
+* api/rest/router/hostname
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau ([http://netmon.freifunk-ol.de/api/rest/router/234 Beispiel]). Bei Misserfolg wird der HTTP Statuscode 404 sowie eine entsprechende Fehlermeldung zurückgeliefert:
+
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <router>
+    <router_id>int</router_id>
+    <user_id>int</user_id>
+    <hostname>string</hostname>
+    <description>string</description>
+    <location>string</location>
+    <latitude></latitude>
+    <longitude></longitude>
+    <create_date>unixtime</create_date>
+    <update_date>unixtime</update_date>
+    <user>
+      user object
+    </user>
+    <chipset>
+      chipset object
+    </chipset>
+    <statusdata>
+      <status_id>int</status_id>
+      <router_id>int</router_id>
+      <crawl_cycle_id>int</crawl_cycle_id>
+      <create_date>unixtime</create_date>
+      <status>string</status>
+      <hostname>string</hostname>
+      <chipset>string</chipset>
+      <cpu>string</cpu>
+      <memory_total>int</memory_total>
+      <memory_caching>int</memory_caching>
+      <memory_buffering>int</memory_buffering>
+      <memory_free>int</memory_free>
+      <loadavg></loadavg>
+      <processes></processes>
+      <uptime></uptime>
+      <idletime></idletime>
+      <distname>string</distname>
+      <distversion>string</distversion>
+      <openwrt_core_revision>string</openwrt_core_revision>
+      <openwrt_feeds_packages_revision>string</openwrt_feeds_packages_revision>
+      <firmware_version>string</firmware_version>
+      <firmware_revision>string</firmware_revision>
+      <kernel_version>string</kernel_version>
+      <configurator_version>string</configurator_version>
+      <nodewatcher_version>string</nodewatcher_version>
+      <fastd_version>string</fastd_version>
+      <batman_advanced_version>string</batman_advanced_version>
+    </statusdata>
+  </router>
+<netmon_response>
+</pre>
+
+=== anlegen ===
+*API Format: not implemented
+*API implementation: not implemented
+*Benötigt Authentifizierung per API Key: ja
+
+=== updaten ===
+*API Format: not implemented
+*API implementation: not implemented
+*Benötigt Authentifizierung per API Key: ja
+
+== Routerlist ==
+Die Routerlist ist ein Objekt in dem eine Liste von Routern hinterlegt wird.
+
+=== holen ===
+*API Format: Alpha
+*API implementation: Alpha
+*Benötigt Authentifizierung per API Key: nein
+*Anzahl standardmäßig zurückgelieferter Elemente: maximal 50
+
+Um sich die Liste der Router aus der Datenbank zu holen, kann man folgende URLs anfragen:
+*'''api/rest/routerlist/''' (alle Router die Netmon bekannt sind, [http://netmon.freifunk-ol.de/api/rest/routerlist/ Beispiel])
+*'''api/rest/user/user_id/routerlist/''' (alle Router eines Bestimmten Benutzers definiert über ''user_id'', [http://netmon.freifunk-ol.de/api/rest/user/1/routerlist/ Beispiel])
+
+Um die Antworten von der Größe handhabbahr zu behalten, wird die Liste standardmäßig in der Anzahl der zurückgelieferten Elemente beschränkt. Die Gesamte Anzahl der in der Liste enthaltenen Elemente kann aus dem Attribut ''total_count'' des Elements ''routerlist'' entnommen werden. Dieses kann außerdem genutzt werden um sich über die folgenden optionalen GET-Parameter die gesamte Liste stückweise ausgeben zu lassen:
+*''Int'' '''offset''': Start der Liste
+*''Int'' '''limit''': Anzahl maximal enthaltener Elemente
+
+Beispiel:
+*'''api/rest/routerlist?offset=50&limit=10''' (holen der Router 50-60)
+
+Das Ergebnis kann durch weitere Optionale GET-Parameter sortiert werden:
+*''String'' '''sort_by''': Attribut nach dem sortiert werden soll (mögliche Werte: ''router_id'', ''user_id'', ''crawl_cycle_id'')
+*''String'' '''order''': Reihenfolge der Sortierung (mögliche Werte: ''asc'', ''desc'')
+
+Beispiel:
+*'''api/rest/routerlist?sort_by=router_id&order=asc''' (Aufsteigend nach Router-ID sortierte Routerliste)
+
+Das Ergebnis kann durch folgende Optionale Parameter weiter eingegrenzt werden:
+*''String'' '''user_id'''
+*''String'' '''crawl_method'''
+*''String'' '''status'''
+*''String'' '''hardware_name'''
+*''String'' '''firmware_version'''
+*''String'' '''batman_advanced_version'''
+*''String'' '''kernel_version'''
+
+Beispiel:
+*'''api/rest/routerlist/?status=online''' (Alle Router deren Status ''online'' ist)
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgeliefert.
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <routerlist total_count="int" offset="int" limit="int">
+    Array mit Router objekten. Siehe Router Objekt
+  </routerlist>
+<netmon_response>
+</pre>
+
+== Networkinterface ==
+Das Networkinterface ist ein Objekt in dem Daten zu einem Netzwerkinterface eines bestimmten Routers hinterlegt werden. Daher ist ein Networkinterface immer einem bestimmten Router zugewiesen, dessen ID im Feld ''router_id'' hinterlegt ist. Ein Interface hat einen Namen, der im Feld ''name'' hinterlegt ist, sowie eine Mac-Addresse die im Feld ''mac_addr'' liegt.
+Das Feld ''create_date'' enthält zudem das Datum an dem das Interface erstellt wurde und das Feld ''update_date'' enthält das Datum an dem das Interface zuletzt bearbeitet wurde. Eindeutig identifizierbar ist das Objekt über das Feld ''networkinterface_id''.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+
+Um sich ein Networkinterface aus der Datenbank zu holen, wird folgende URL aufgerufen: api/rest/networkinterface/networkinterface_id.
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau ([http://netmon.freifunk-ol.de/api/rest/networkinterface/1718 Beispiel]). Bei Misserfolg wird der HTTP Statuscode 404 sowie eine entsprechende Fehlermeldung zurückgeliefert:
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <networkinterface>
+    <networkinterface_id>int</networkinterface_id>
+    <router_id>string</router_id>
+    <name>string</name>
+    <create_date>unixtimestamp<create_date>
+    <statusdata>
+      <status_id>int</status_id>
+      <crawl_cycle_id>int</crawl_cycle_id>
+      <networkinterface_id>int</networkinterface_id>
+      <name>string</name>
+      <mac_addr>string</mac_addr>
+      <mtu>int</mtu>
+      <traffic_rx>int</traffic_rx>
+      <traffic_rx_avg>int</traffic_rx_avg>
+      <traffic_tx>int</traffic_tx>
+      <traffic_tx_avg>int</traffic_tx_avg>
+      <wlan_mode>string<wlan_mode>
+      <wlan_frequency>string</wlan_frequency>
+      <wlan_essid>string</wlan_essid/>
+      <wlan_bssid>string</wlan_bssid>
+      <wlan_tx_power>int</wlan_tx_power>
+      <create_date>unixtimestamp</create_date>
+    </statusdata>
+  </networkinterface>
+<netmon_response>
+</pre>
+
+=== anlegen ===
+=== updaten ===
+
+== Networkinterfacelist ==
+Die Networkinterfacelist ist ein Objekt in dem eine Liste von Networkinterfaces hinterlegt wird.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+*Anzahl standardmäßig zurückgelieferter Elemente: maximal 50
+
+Um sich die Liste der Networkinterfaces aus der Datenbank zu holen, kann man folgende URLs anfragen:
+*'''api/rest/networkinterfacelist/''' (alle Networkinterfaces die Netmon bekannt sind, [http://netmon.freifunk-ol.de/api/rest/networkinterfacelist/ Beispiel])
+*'''api/rest/router/router_id/networkinterfacelist/''' (alle Networkinterfaces eines bestimmten Routers definiert über ''router_id'', [http://netmon.freifunk-ol.de/api/rest/router/177/networkinterfacelist/ Beispiel])
+
+Um die Antworten von der Größe handhabbahr zu behalten, wird die Liste standardmäßig in der Anzahl der zurückgelieferten Elemente beschränkt. Die Gesamte Anzahl der in der Liste enthaltenen Elemente kann aus dem Attribut ''total_count'' des Elements ''networkinterfacelist'' entnommen werden. Dieses kann außerdem genutzt werden um sich über die folgenden optionalen GET-Parameter die gesamte Liste stückweise ausgeben zu lassen:
+*''Int'' '''offset''': Start der Liste
+*''Int'' '''limit''': Anzahl maximal enthaltener Elemente
+
+Beispiel:
+*'''api/rest/networkinterfacelist?offset=50&limit=10''' (holen der Networkinterfaces 50-60)
+
+Das Ergebnis kann durch weitere Optionale GET-Parameter sortiert werden:
+*''String'' '''sort_by''': Attribut nachdem sortiert werden soll (mögliche Werte: ''name'')
+*''String'' '''order''': Reihenfolge der Sortierung (mögliche Werte: ''asc'', ''desc'')
+
+Beispiel:
+*'''api/rest/networkinterfacelist?sort_by=name&order=asc''' (Aufsteigend nach Name sortierte Networkinterfacelist)
+
+
+Das Ergebnis kann durch folgende Optionale Parameter weiter eingegrenzt werden:
+*''String'' '''router_id'''
+*''String'' '''crawl_cycle_id'''
+
+Beispiel:
+*'''api/rest/router/267/networkinterfacelist/?crawl_cycle_id=178295''' (Alle Networkinterfaces des Routers 267 mit den Statusdaten des Crawl-Zyklus 178295)
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau ([http://netmon.freifunk-ol.de/api/rest/networkinterfacelist/ Beispiel]). Bei Misserfolg wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgeliefert.
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <networkinterfacelist>
+    Array mit Networkinterface Objekten. Siehe Networkinterface Objekt
+  </networkinterfacelist>
+<netmon_response>
+</pre>
+
+== IP ==
+Die IP ist ein Objekt in dem IP Adressen hinterlegt werden. Eine IP Adresse ist immer einem bestimmten Networkinterface zugewiesen, dessen ID im Feld ''interface_id'' hinterlegt ist. Die eigentliche IP Adresse wird im Feld ''ip'' gespeichert, wärend das Feld ''ipv'' die Version der hinterlegten IP Adresse enthält. Das Feld ''create_date'' enthält zudem das Datum an dem die Adresse erstellt wurde, das Feld ''update_date'' das Datum an dem die Adresse zuletzt bearbeitet wurde. Eindeutig identifizierbar ist das Objekt über das Feld ''ip_id''.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+
+Um sich eine IP aus der Datenbank zu holen, wird folgende URL aufgerufen: api/rest/ip/ip_id.
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau ([http://netmon.freifunk-ol.de/api/rest/ip/1660 Beispiel]). Bei Misserfolg wird der HTTP Statuscode 404 sowie eine entsprechende Fehlermeldung zurückgeliefert:
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <ip>
+    <ip_id>int</ip_id>
+    <interface_id>int</interface_id>
+    <ip>string</ip>
+    <create_date>unixtimestamp<create_date>
+    <update_date>unixtimestamp<update_date>
+    <network>
+      Network object
+    </network>
+  </ip>
+<netmon_response>
+</pre>
+
+=== anlegen ===
+=== updaten ===
+
+== IPList ==
+Die IPList ist ein Objekt in dem eine Liste von IP Adressen hinterlegt wird.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+*Anzahl standardmäßig zurückgelieferter Elemente: maximal 50
+
+Um sich die Liste der IPs aus der Datenbank zu holen, kann man folgende URLs anfragen:
+*'''api/rest/iplist/''' (Alle IPs die Netmon bekannt sind, [http://netmon.freifunk-ol.de/api/rest/iplist/ Beispiel])
+*'''api/rest/networkinterface/interface_id/iplist/'''  (Alle IPs eines bestimmten Interfaces definiert über ''interface_id'', [http://netmon.freifunk-ol.de/api/rest/networkinterface/126/iplist/ Beispiel])
+*'''api/rest/network/network_id/iplist/'''  (Alle IPs eines bestimmten Netzwerks definiert über ''network_id'', [http://netmon.freifunk-ol.de/api/rest/network/3/iplist/ Beispiel])
+
+Um die Antworten von der Größe handhabbahr zu behalten, wird die Liste standardmäßig in der Anzahl der zurückgelieferten Elemente beschränkt. Die Gesamte Anzahl der in der Liste enthaltenen Elemente kann aus dem Attribut ''total_count'' des Elements ''iplist'' entnommen werden. Dieses kann außerdem genutzt werden um sich über die folgenden optionalen GET-Parameter die gesamte Liste stückweise ausgeben zu lassen:
+*''Int'' '''offset''': Start der Liste
+*''Int'' '''limit''': Anzahl maximal enthaltener Elemente
+
+Beispiel:
+*'''api/rest/iplist/?offset=20&limit=10''' (holen der IPs 20-30)
+
+Das Ergebnis kann durch weitere Optionale GET-Parameter sortiert werden:
+*''String'' '''sort_by''': Attribut nachdem sortiert werden soll (mögliche Werte: ''ip_id'', ''interface_id'', ''network_id'')
+*''String'' '''order''': Reihenfolge der Sortierung (mögliche Werte: ''asc'', ''desc'')
+
+Beispiel:
+*'''api/rest/iplist/?sort_by=ip&order=asc''' (Aufsteigend nach IP sortierte Networkinterfacelist)
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgeliefert (bspw. wenn die interface_id per POST statt per GET mitgeliefert wird).
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <iplist>
+    Array mit IP objekten. Siehe IP Objekt
+  </iplist>
+<netmon_response>
+</pre>
+
+== Network ==
+Network ist ein Objekt in dem IP-Netzwerke hinterlegt werden. Ein Netzwerk bietet dem Rahmen zum Anlegen von IP-Adressen. Eindeutig identifizierbar ist das Objekt über das Feld ''network_id''. Das Feld ''user_id'' gibt an von welchem Benutzer das Netzwerk angelegt wurden. Im Feld ''ip'' wird der Netzadresse und im Feld ''ipv'' die IP-Version (4 oder 6) abgelegt. Das Feld ''netmask'' gibt bei IPv4-Netzwerken die Netzmaske und bei IPv6-Netzwerken das Prefix an.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+
+Um sich ein Netzwerk aus der Datenbank zu holen, wird folgende URL aufgerufen: api/rest/network/network_id.
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau ([http://netmon.freifunk-ol.de/api/rest/network/3 Beispiel]). Bei Misserfolg wird der HTTP Statuscode 404 sowie eine entsprechende Fehlermeldung zurückgeliefert:
+
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <network>
+    <network_id>int</network_id>
+    <user_id>int</user_id>
+    <ip>string</ip>
+    <ipv>string</ipv>
+    <netmask>string</netmask>
+    <create_date>unixtimestamp<create_date>
+    <update_date>unixtimestamp<update_date>
+  </network>
+<netmon_response>
+</pre>
+
+=== anlegen ===
+=== updaten ===
+
+== Networklist ==
+Die Networklist ist ein Objekt in dem eine Liste von Netzwerken hinterlegt wird.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+*Anzahl standardmäßig zurückgelieferter Elemente: maximal 50
+
+Um sich die Liste der Netzwerke aus der Datenbank zu holen, kann man folgende URLs anfragen:
+*'''api/rest/networklist/''' (Alle Netzwerke die Netmon bekannt sind, [http://netmon.freifunk-ol.de/api/rest/networklist/ Beispiel])
+
+Um die Antworten von der Größe handhabbahr zu behalten, wird die Liste standardmäßig in der Anzahl der zurückgelieferten Elemente beschränkt. Die Gesamte Anzahl der in der Liste enthaltenen Elemente kann aus dem Attribut ''total_count'' des Elements ''networklist'' entnommen werden. Dieses kann außerdem genutzt werden um sich über die folgenden optionalen GET-Parameter die gesamte Liste stückweise ausgeben zu lassen:
+*''Int'' '''offset''': Start der Liste
+*''Int'' '''limit''': Anzahl maximal enthaltener Elemente
+
+Beispiel:
+*'''api/rest/networklist/?offset=20&limit=10''' (holen der IPs 20-30)
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgeliefert (bspw. wenn  die interface_id per POST statt per GET mitgeliefert wird).
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <iplist>
+    Array mit Network objekten. Siehe Network Objekt
+  </iplist>
+<netmon_response>
+</pre>
+
+== DNS-Zone ==
+Die DNS-Zone ist ein Objekt in dem DNS-Zonen hinterlegt werden. Eindeutig identifizierbar ist das Objekt über das Feld ''dns_zone_id''.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+
+Um sich eine DNS-Zone der Datenbank zu holen, wird folgende URL aufgerufen: api/rest/dns_zone/dns_zone_id.
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau ([https://netmon.freifunk-ol.de/api/rest/dns_zone/22 Beispiel]). Bei Misserfolg wird der HTTP Statuscode 404 sowie eine entsprechende Fehlermeldung zurückgeliefert:
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <dns_zone>
+    <dns_zone_id>int</dns_zone_id>
+    <user_id>int</user_id>
+    <name>string</name>
+    <pri_dns>string</pri_dns>
+    <sec_dns>string</sec_dns>
+    <serial>int</serial>
+    <refresh>int</refresh>
+    <retry>int</retry>
+    <expire>int</expire>
+    <ttl>int</ttl>
+    <create_date>unixtimestamp</create_date>
+    <update_date>unixtimestamp</update_date>
+  </dns_zone>
+</netmon_response>
+</pre>
+
+=== anlegen ===
+=== updaten ===
+
+== DNS-Zone-List ==
+Die DNS-Zone-List ist ein Objekt in dem eine Liste von DNS-Zonen hinterlegt wird.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+*Anzahl standardmäßig zurückgelieferter Elemente: maximal 50
+
+Um sich die Liste der DNS-Zonen aus der Datenbank zu holen, kann man folgende URLs anfragen:
+*'''api/rest/dns_zone_list/''' (alle DNS-Zonen die Netmon bekannt sind, [http://netmon.freifunk-ol.de/api/rest/dns_zone_list/ Beispiel])
+*'''api/rest/user/user_id/dns_zone_list/''' (Alle DNS-Zonen eines bestimmten Benutzer definiert über ''user_id'')
+
+Um die Antworten von der Größe handhabbahr zu behalten, wird die Liste standardmäßig in der Anzahl der zurückgelieferten Elemente beschränkt. Die Gesamte Anzahl der in der Liste enthaltenen Elemente kann aus dem Attribut ''total_count'' des Elements ''routerlist'' entnommen werden. Dieses kann außerdem genutzt werden um sich über die folgenden optionalen GET-Parameter die gesamte Liste stückweise ausgeben zu lassen:
+*''Int'' '''offset''': Start der Liste
+*''Int'' '''limit''': Anzahl maximal enthaltener Elemente
+
+Beispiel:
+*'''api/rest/dns_zone_list?offset=50&limit=10''' (holen der DNS-Zonen 50-60)
+
+Das Ergebnis kann durch weitere Optionale GET-Parameter sortiert werden:
+*''String'' '''sort_by''': Attribut nach dem sortiert werden soll (mögliche Werte: ''dns_zone_id'', ''user_id'')
+*''String'' '''order''': Reihenfolge der Sortierung (mögliche Werte: ''asc'', ''desc'')
+
+Beispiel:
+*'''api/rest/dns_zone_list?sort_by=dns_zone_id&order=asc''' (Aufsteigend nach DNS-Zone-ID sortierte DNS-Zone-Liste)
+
+Das Ergebnis kann durch folgende Optionale Parameter weiter eingegrenzt werden:
+*''String'' '''user_id'''
+
+Beispiel:
+*'''api/rest/dns_zone_list/?user_id=1''' (Alle DNS-Zonen des Benutzers mit der User-ID 1)
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgeliefert.
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <dns_zone_list total_count="int" offset="int" limit="int">
+    Array mit DNS-Zone objekten. Siehe DNS-Zone Objekt
+  </routerlist>
+<netmon_response>
+</pre>
+
+== DNS-Ressource-Record ==
+Der DNS-Ressource-Record ist ein Objekt in dem DNS-Ressource-Records hinterlegt werden. Das Feld ''destination_id'' speichert abhängig vom Feld ''type'' die ID eines Netmon Onjekts. Ist der Type AA, wird bspw. die ID einer IPv4 Adresse hinterlegt. Eindeutig identifizierbar ist das Objekt über das Feld ''dns_ressource_record_id''.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+
+Um sich einen DNS-Ressource-Record der Datenbank zu holen, wird folgende URL aufgerufen: api/rest/dns_ressource_record/dns_ressource_record_id.
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau ([https://netmon.freifunk-ol.de/api/rest/dns_ressource_record/2 Beispiel]). Bei Misserfolg wird der HTTP Statuscode 404 sowie eine entsprechende Fehlermeldung zurückgeliefert:
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <dns_ressource_record>
+    <dns_ressource_record_id>int</dns_ressource_record_id>
+    <dns_zone_id>int</dns_zone_id>
+    <user_id>int</user_id>
+    <host>string</host>
+    <type>string</type>
+    <pri>int</pri>
+    <destination_id>int</destination_id>
+    <create_date>unixtimestamp</create_date>
+    <update_date>unixtimestamp</update_date>
+  </dns_ressource_record>
+</netmon_response>
+</pre>
+
+=== anlegen ===
+=== updaten ===
+
+== DNS-Ressource-Record-List ==
+Die DNS-Ressource-Record-List ist ein Objekt in dem eine Liste von DNS-Ressource-Records hinterlegt wird.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+*Anzahl standardmäßig zurückgelieferter Elemente: maximal 50
+
+Um sich die Liste der Ressource-Records aus der Datenbank zu holen, kann man folgende URLs anfragen:
+*'''api/rest/dns_ressource_record_list/''' (alle DNS-Ressource-Records die Netmon bekannt sind, [http://netmon.freifunk-ol.de/api/rest/dns_ressource_record_list/ Beispiel])
+*'''api/rest/dns_zone/dns_zone_id/dns_ressource_record_list/''' (Alle DNS-Ressource-Records einer bestimmten Zone definiert über ''zone_id'')
+*'''api/rest/user/user_id/dns_ressource_record_list/''' (Alle DNS-Ressource-Records eines bestimmten Benutzers definiert über ''user_id'')
+
+Um die Antworten von der Größe handhabbahr zu behalten, wird die Liste standardmäßig in der Anzahl der zurückgelieferten Elemente beschränkt. Die Gesamte Anzahl der in der Liste enthaltenen Elemente kann aus dem Attribut ''total_count'' des Elements ''dns_ressource_record_list'' entnommen werden. Dieses kann außerdem genutzt werden um sich über die folgenden optionalen GET-Parameter die gesamte Liste stückweise ausgeben zu lassen:
+*''Int'' '''offset''': Start der Liste
+*''Int'' '''limit''': Anzahl maximal enthaltener Elemente
+
+Beispiel:
+*'''api/rest/dns_ressource_record_list?offset=50&limit=10''' (holen der DNS-Ressource-Records 50-60)
+
+Das Ergebnis kann durch weitere Optionale GET-Parameter sortiert werden:
+*''String'' '''sort_by''': Attribut nach dem sortiert werden soll (mögliche Werte: ''dns_ressource_record_id'', ''dns_zone_id'', ''user_id'')
+*''String'' '''order''': Reihenfolge der Sortierung (mögliche Werte: ''asc'', ''desc'')
+
+Beispiel:
+*'''api/rest/dns_ressource_records_list?sort_by=dns_ressource_record_id&order=asc''' (Aufsteigend nach DNS-Ressource-Record-ID sortierte DNS-Ressource-Record-Liste)
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgeliefert.
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <dns_ressource_record_list total_count="int" offset="int" limit="int">
+    Array mit DNS-Ressource-Record objekten. Siehe DNS-Ressource-Record Objekt
+  </dns_ressource_record_list>
+<netmon_response>
+</pre>
+
+== Originator-Status-List ==
+Die Originator-Status-List ist ein Objekt in dem eine Liste von Originator-Status-Eintrgen hinterlegt wird. Das sind die B.A.T.M.A.N. advanced originators.
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+*Anzahl standardmäßig zurückgelieferter Elemente: maximal 50
+
+Um sich die Liste aus der Datenbank zu holen, kann man folgende URLs anfragen:
+*'''api/rest/originator_status_list/''' (alle Einträge die Netmon bekannt sind, [http://netmon.freifunk-ol.de/api/rest/originator_status_list/ Beispiel])
+*'''api/rest/router/router_id/originator_status_list/''' (Alle Einträge zu einem bestimmten Router definiert über ''router_id'')
+
+Um die Antworten von der Größe handhabbahr zu behalten, wird die Liste standardmäßig in der Anzahl der zurückgelieferten Elemente beschränkt. Die Gesamte Anzahl der in der Liste enthaltenen Elemente kann aus dem Attribut ''total_count'' des Elements ''originator_status_list'' entnommen werden. Dieses kann außerdem genutzt werden um sich über die folgenden optionalen GET-Parameter die gesamte Liste stückweise ausgeben zu lassen:
+*''Int'' '''offset''': Start der Liste
+*''Int'' '''limit''': Anzahl maximal enthaltener Elemente
+
+Beispiel:
+*'''api/rest/originator_status_list?offset=50&limit=10''' (holen der Einträge 50-60)
+
+Das Ergebnis kann durch weitere Optionale GET-Parameter sortiert werden:
+*''String'' '''sort_by''': Attribut nach dem sortiert werden soll (mögliche Werte: ''status_id'', ''router_id'', ''crawl_cycle_id'')
+*''String'' '''order''': Reihenfolge der Sortierung (mögliche Werte: ''asc'', ''desc'')
+
+Beispiel:
+*'''api/rest/originator_status_list?sort_by=status_id&order=asc''' (Aufsteigend nach Status-ID sortierte Liste)
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgeliefert.
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <originator_status_list total_count="int" offset="int" limit="int">
+    <originator_status>
+      <status_id>int</status_id>
+      <crawl_cycle_id>int</crawl_cycle_id>
+      <router_id>int</router_id>
+      <originator>string</originator>
+      <link_quality>int</link_quality>
+      <nexthop>string</nexthop
+      <outgoing_interface>string</outgoing_interface>
+      <last_seen>string</last_seen>
+      <create_date>unixtimestamp</create_date>
+    </originator_status>
+    [...]
+  </originator_status_list>
+<netmon_response>
+</pre>
+
+== Event ==
+Das Event ist ein generelles Objekt für Ereignisse eines bestimmten anderen Objekts. Es Speichert zu einem bestimmten Objekt, z.B. zu einem Router (definiert durch die Parameter ''object'' und ''object_id''), das Datum des Auftretens, den Crawl-Zyklus, einen allgemeinen Bezeichner für die Art des Ereignisses (''action'') sowie beliebige weitere Daten (''data''), die serialisiert in Netmon abgelegt werden. Jedes Event bekommt von Netmon eine ''event_id'' durch das es eindeutig identifizierbar ist.
+
+Wenn ein Router bspw. seinen Status von ''online'' zu ''offline'' ändert, sieht das passende Event dazu so aus:
+<pre><event>
+  <event_id>94220</event_id>
+  <crawl_cycle_id>155758</crawl_cycle_id>
+  <object>router</object>
+  <object_id>29</object_id>
+  <action>status</action>
+  <create_date>1367091001</create_date>
+  <data>
+    <from>online</from>
+    <to>offline</to>
+  </data>
+</event></pre>
+
+=== holen ===
+*API Format: stable
+*API implementation: beta
+*Benötigt Authentifizierung per API Key: nein
+
+Um sich ein Event aus der Datenbank zu holen, wird folgende URL aufgerufen: api/rest/event/event_id ([http://netmon.freifunk-ol.de/api/rest/event/92064 Beispiel]).
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 404 sowie eine entsprechende Fehlermeldung zurückgeliefert:
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <event>
+    <event_id>int</event_id>
+    <object>string</object>
+    <object_id>int</object_id>
+    <action>string</action>
+    <create_date>unixtimestamp<create_date>
+    <data>
+      differs from what is stored. In most ases here comes an xml represenation of a stored array
+    <data>
+  </event>
+<netmon_response>
+</pre>
+
+=== anlegen ===
+*API Format: stable
+*API implementation: beta
+*Benötigt Authentifizierung per API Key: ja
+
+Um ein neues Event in der der Datenbank anzulegen wird folgende URL aufgerufen: api/event.
+
+Als POST Parameter werden mitgegeben:
+*api_key=string
+*crawl_cycle_id=int (optional, wird der Wert nicht angegeben, wird das Objekt mit dem Wert des aktuellen Crawl-Zyklus angelegt)
+*object=string
+*object_id=int
+*action=string
+*data=array in das beliebige daten gespeichert werden können (wird serialisiert in der DB abgelegt)
+
+Das Anlegen eines Events kann aufgrund von Beschränkungen der Firmware vieler Router ausnahmsweise abweichend von der REST Spezifikation auch per GET geschehen. Es sind die gleichen Parameter wie bei POST mitzuliefern.
+
+Zurückgliefert wird bei Erfolg der HTTP Statuscode 201 sowie das neue Event. Bei Misserfolg wird der HTTP Statuscode 401 zurückgeliefert sofern der api_key nicht korrekt ist. Bei anderen Fehlern wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgelifert.
+
+Beispiel um ein Event mit wget anzulegen:
+<pre>wget --post-data='api_key=myapikey&object=router&object_id=78&action=some_event&data['log']=mylog' http://netmon.freifunk-ol.de/api/rest/event</pre>
+
+=== update ===
+Eine Updatefunktion ist nicht geplant, da aktuell nicht notwendig.
+
+== Eventlist ==
+In der Eventlist werden Objekte vom Typ Event hinterlegt. Diese werden absteigend nach ID sortiert (neueste Objekte zuerst)
+
+=== holen ===
+*API Format: Beta
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: nein
+*Anzahl standardmäßig zurückgelieferter Elemente: maximal 50
+
+Um sich die Liste der Events aus der Datenbank zu holen können folgende URLs angefragt werden:
+*'''api/rest/eventlist/''' (Alle Events die Netmon bekannt sind, [http://netmon.freifunk-ol.de/api/rest/eventlist/ Beispiel])
+*'''api/rest/router/router_id/eventlist''' (Alle Events eines bestimmten Routers definiert über den Parameter ''router_id'', [http://netmon.freifunk-ol.de/api/rest/router/108/eventlist Beispiel])
+
+Um die Antworten von der Größe handhabbahr zu behalten, wird die Liste standardmäßig in der Anzahl der zurückgelieferten Elemente beschränkt. Die Gesamte Anzahl der in der Liste enthaltenen Elemente kann aus dem Attribut ''total_count'' des Elements ''eventlist'' entnommen werden. Dieses kann außerdem genutzt werden um sich über die folgenden optionalen GET-Parameter die gesamte Liste stückweise ausgeben zu lassen:
+*''Int'' '''offset''': Start der Liste
+*''Int'' '''limit''': Anzahl maximal enthaltener Elemente
+
+Beispiel:
+*'''api/rest/eventlist?offset=50&limit=10''' (holen der Events 50-60)
+
+Das Ergebnis kann durch weitere Optionale GET-Parameter sortiert werden:
+*''String'' '''sort_by''': Attribut nachdem sortiert werden soll (mögliche Werte: ''event_id'')
+*''String'' '''order''': Reihenfolge der Sortierung (mögliche Werte: ''asc'', ''desc'')
+
+Beispiel:
+*'''api/rest/eventlist?sort_by=event_id&order=asc''' (Aufsteigend nach event_id sortierte Eventlist)
+
+Das Ergebnis kann durch folgende Optionale Parameter weiter eingegrenzt werden:
+*''String'' '''object'''
+*''String'' '''object_id'''
+*''String'' '''action'''
+
+Beispiel:
+*'''api/rest/dns_zone_list/?user_id=1''' (Alle DNS-Zonen des Benutzers mit der User-ID 1)
+
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgeliefert.
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <eventlist>
+    Array mit Event objekten. Siehe Event Objekt
+  </eventlist>
+<netmon_response>
+</pre>
+
+== Config ==
+Das Config Objekt speichert einen Konfigurationseintrag von Netmon. Einem Identifier (name) wird ein bestimmter Wert (value) zugewiesen. Jedes Config Objekt wird durch seine ID eindeutig identifiziert. Um Config Objekte abrufen zu können wird ein API Key eines Benutzers mit Root-Rechten (permission=120) benötigt.
+
+=== holen ===
+*API Format: stable
+*API implementation: beta
+*Benötigt Authentifizierung per API Key: ja
+
+Um sich ein Config Objekt aus der Datenbank zu holen, können folgende URLs aufgerufen werden:
+*'''api/rest/config/config_id?api_key=deinapikey''' ([https://netmon.freifunk-ol.de/api/rest/config/2?api_key=deinapikey Beispiel]).
+*'''api/rest/config/name?api_key=deinapikey''' ([https://netmon.freifunk-ol.de/api/rest/config/community_name?api_key=deinapikey Beispiel]).
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 404 sowie eine entsprechende Fehlermeldung zurückgeliefert. Schlägt die Authentifizierung fehlt, wird der HTTP Statuscode 401 sowie eine entsprechende Fehlermeldung zurückgeliefert.:
+<pre>
+<netmon_response>
+  <request>
+    <authentication>1</authentication>
+    <api_key>string</api_key>
+    <method>config</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <config>
+    <config_id>int</config_id>
+    <name>string</name>
+    <value>string</value>
+    <create_date>timestamp</create_date>
+    <update_date>timestamp</update_date>
+  </config>
+</netmon_response>
+</pre>
+
+=== anlegen ===
+*API Format: not implemented
+*API implementation: not implemented
+*Benötigt Authentifizierung per API Key: ja
+
+=== update ===
+*API Format: not implemented
+*API implementation: not implemented
+*Benötigt Authentifizierung per API Key: ja
+
+== Configlist ==
+In der Configlist werden Objekte vom Typ Config hinterlegt. Diese werden absteigend nach ID sortiert. Zur Abfrage der Liste wird der API-Key eines Benutzers mit Root-Rechten (permission=120 benötigt).
+
+=== holen ===
+*API Format: Stable
+*API implementation: Beta
+*Benötigt Authentifizierung per API Key: ja
+*Standardsortierung: config_id, asc
+*Anzahl standardmäßig zurückgelieferter Elemente: maximal 50
+
+Um sich die Liste der Config Objekte aus der Datenbank zu holen können folgende URLs angefragt werden:
+*'''api/rest/configlist/''' (Alle Config-Objekte die Netmon bekannt sind, [http://netmon.freifunk-ol.de/api/rest/configlist/?api_key=deinapikey Beispiel])
+
+Um die Antworten von der Größe handhabbahr zu behalten, wird die Liste standardmäßig in der Anzahl der zurückgelieferten Elemente beschränkt. Die Gesamte Anzahl der in der Liste enthaltenen Elemente kann aus dem Attribut ''total_count'' des Elements ''configlist'' entnommen werden. Dieses kann außerdem genutzt werden um sich über die folgenden optionalen GET-Parameter die gesamte Liste stückweise ausgeben zu lassen:
+*''Int'' '''offset''': Start der Liste
+*''Int'' '''limit''': Anzahl maximal enthaltener Elemente
+
+Beispiel:
+*'''api/rest/configlist?api_key=deinapikey&offset=50&limit=10''' (holen der Config Objekte 50-60)
+
+Das Ergebnis kann durch weitere Optionale GET-Parameter sortiert werden:
+*''String'' '''sort_by''': Attribut nachdem sortiert werden soll (mögliche Werte: ''config_id'')
+*''String'' '''order''': Reihenfolge der Sortierung (mögliche Werte: ''asc'', ''desc'')
+
+Beispiel:
+*'''api/rest/configlist?api_key=deinapikey&sort_by=create_date&order=asc''' (Aufsteigend nach Create Date sortierte Configlist)
+
+Zurückgeliefert wird bei Erfolg der HTTP Statuscode 200 sowie eine Antwort im XML Format mit dem folgenden Aufbau. Bei Misserfolg wird der HTTP Statuscode 400 sowie eine entsprechende Fehlermeldung zurückgeliefert. Schlägt die Authentifizierung fehlt, wird der HTTP Statuscode 401 sowie eine entsprechende Fehlermeldung zurückgeliefert:
+<pre>
+<netmon_response>
+  <request>
+    <authentication>boolean</authentication>
+    <api_key>string</api_key>
+    <method>string</method>
+    <error_code>int</error_code>
+    <error_message>string</error_message>
+  </request>
+  <eventlist>
+    Array mit Config Objekten. Siehe Config Objekt
+  </eventlist>
+<netmon_response>
+</pre>
