@@ -390,7 +390,7 @@
 			<h2>Letzter Crawl</h2>
 			<p>
 				<p>Die aktuell in Netmon gezeigten Daten wurden während dieses Crawls gesammelt.</p>
-				<b>Beginn:</b> {$last_ended_crawl_cycle.crawl_date} Uhr<br>
+				<b>Beginn:</b> {$last_ended_crawl_cycle.crawl_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
 				<b>Ende:</b> {$last_ended_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr
 			</p>
 		</div>
