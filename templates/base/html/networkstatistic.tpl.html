@@ -2,17 +2,18 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
 
 <!-- Javascript for the graphs -->
-<script type="text/javascript" src="lib/extern/javascriptrrd/binaryXHR.js"></script>
-<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFile.js"></script>
+<script src="lib/extern/javascriptrrd/binaryXHR.js"></script>
+<script src="lib/extern/javascriptrrd/rrdFile.js"></script>
 <!-- rrdFlot class needs the following four include files !-->
-<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFlotSupport.js"></script>
-<script type="text/javascript" src="lib/extern/javascriptrrd/rrdFlot.js"></script>
+<script src="lib/extern/javascriptrrd/rrdFlotSupport.js"></script>
+<script src="lib/extern/javascriptrrd/rrdFlot.js"></script>
 
-<script language="javascript" type="text/javascript" src="lib/extern/flot/jquery.flot.js"></script>
-<script language="javascript" type="text/javascript" src="lib/extern/flot/jquery.flot.pie.js"></script>
-<script language="javascript" type="text/javascript" src="lib/extern/flot/jquery.flot.selection.js"></script>
+<script src="lib/extern/flot/jquery.flot.js"></script>
+<script src="lib/extern/flot/jquery.flot.pie.js"></script>
+<script src="lib/extern/flot/jquery.flot.selection.js"></script>
+<script src="lib/extern/flot/jquery.flot.time.min.js"></script>
 {literal}
-<script type="text/javascript">
+<script>
 	// This function updates the Web Page with the data from the RRD archive header
 	// when a new file is selected
 	function update_fname(html_graph_id) {
@@ -49,7 +50,7 @@
 		}
 	}
 </script>
-<script type="text/javascript">
+<script>
 		$(function() {
 			var placeholder = $("#chipset_chart");
 			
@@ -108,7 +109,7 @@
 		}
 	</script>
 
-	<script type="text/javascript">
+	<script>
 		$(function() {
 			var placeholder = $("#firmwareversions_chart");
 			
@@ -174,7 +175,7 @@
 		}
 	</script>
 
-	<script type="text/javascript">
+	<script>
 		$(function() {
 			var placeholder = $("#batmanadv_div");
 			
@@ -238,7 +239,7 @@
 		}
 	</script>
 
-	<script type="text/javascript">
+	<script>
 		$(function() {
 			var placeholder = $("#kernelversions_chart");
 			
@@ -338,7 +339,7 @@
 				<p>Die Daten die Netmon derzeit sammelt, werden nach Beendigung dieses Crawls angezeigt.</p>
 				<b>Beginn:</b> {$actual_crawl_cycle.crawl_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
 				<b>Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr 
-				<script type="text/javascript">
+				<script>
 					var Time = "{$actual_crawl_cycle.crawl_date_end_minutes}";
 
 					var Splittime = Time.split(':');
@@ -455,7 +456,7 @@
 	<div style="width: 100%; overflow: hidden;">
 		<div style="float:left; width: 47%;">
 			<h2>Router</h2>
-			<script type="text/javascript">
+			<script>
 				fname='./rrdtool/databases/netmon_history_router_status.rrd';
 				html_graph_id="routers_status_graph"
 				try {
@@ -469,7 +470,7 @@
 		</div>
 		<div style="float:left; width: 53%;">
 			<h2>Clients</h2>
-			<script type="text/javascript">
+			<script>
 				fname='./rrdtool/databases/netmon_history_client_count.rrd';
 				html_graph_id="client_count_graph"
 				try {
