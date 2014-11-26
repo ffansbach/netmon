@@ -3,6 +3,18 @@
 	<h2>Lokales</h2>
 	<p><b>Name der Community:</b><br><input name="community_name" type="text" size="30" value="{$community_name}"></p>
 	<p><b>Slogan der Community:</b><br><input name="community_slogan" type="text" size="60" value="{$community_slogan}"></p>
+
+	<p>
+		<b>Homepage der Community:</b>
+		<br>
+		<input name="community_homepage" type="text" size="60" value="{$community_homepage}" placeholder="http://www.freifunk.meinestadt.de">
+		<span style="font-size:0.8em">Wird in Navigation gezeigt</span>
+	</p>
+	<p>
+		<b>Linktitel für Homepage:</b><br>
+		<input name="community_homepage_name" type="text" size="60" value="{if empty($community_homepage_name)}Homepage{else}{$community_homepage_name}{/if}">
+	</p>
+
 	<p><b>ESSID der Community:</b><br><input name="community_essid" type="text" size="60" value="{$community_essid}"></p>
 	<p><b>Ort der Community:</b><br>
 		<div id="section_location">
