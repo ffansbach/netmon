@@ -218,6 +218,8 @@
 		$smarty->assign('object_menu', Menus::objectMenu());
 		$smarty->assign('admin_menu', Menus::adminMenu());
 		$smarty->assign('root_menu', Menus::rootMenu());
+		$smarty->assign('menu_community_homepage', ConfigLine::configByName('community_homepage'));
+		$smarty->assign('menu_community_homepage_name', ConfigLine::configByName('community_homepage_name'));
 
 	} else {
 		$smarty->assign('installation_menu', Menus::installationMenu());

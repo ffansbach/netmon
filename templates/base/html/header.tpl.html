@@ -40,6 +40,9 @@
 		<!-- skiplink anchor: navigation -->
 		<div id="nav_main">
 			<ul>
+				{if !empty($menu_community_homepage) && !empty($menu_community_homepage_name)}
+					<li><a href="{$menu_community_homepage}">{$menu_community_homepage_name}</a></li>
+				{/if}
 				<li id="current"><a href="#">Netzwerk</a></li>
 			</ul>
 

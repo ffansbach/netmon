@@ -92,7 +92,9 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		$smarty->assign('enable_network_policy', ConfigLine::configByName('enable_network_policy'));
 		$smarty->assign('network_policy_url', ConfigLine::configByName('network_policy_url'));
 		$smarty->assign('community_essid', ConfigLine::configByName('community_essid'));
-		
+		$smarty->assign('community_homepage', ConfigLine::configByName('community_homepage'));
+		$smarty->assign('community_homepage_name', ConfigLine::configByName('community_homepage_name'));
+
 		$smarty->assign('message', Message::getMessage());
 		$smarty->display("header.tpl.html");
 		$smarty->display("config_community.tpl.html");
@@ -104,7 +106,13 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		Config::writeConfigLine('community_location_latitude', $_POST['community_location_latitude']);
 		Config::writeConfigLine('community_location_zoom', $_POST['community_location_zoom']);
 		Config::writeConfigLine('community_essid', $_POST['community_essid']);
-		
+
+		if(!empty($_POST['community_homepage']) && filter_var($_POST['community_homepage'], FILTER_VALIDATE_URL))
+		{
+			Config::writeConfigLine('community_homepage', $_POST['community_homepage']);
+			Config::writeConfigLine('community_homepage_name', $_POST['community_homepage_name']);
+		}
+
 		if(empty($_POST['enable_network_policy']))
 			$_POST['enable_network_policy'] = 'false';
 		Config::writeConfigLine('enable_network_policy', $_POST['enable_network_policy']);
