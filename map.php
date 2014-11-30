@@ -2,6 +2,11 @@
 	require_once('runtime.php');
 	
 	if(isset($_GET['embed']) AND $_GET['embed']) {
+		if(isset($_GET['key']))
+			$smarty->assign('key', $_GET['key']);
+		else
+			$smarty->assign('key', false);
+				
 		if(!isset($_GET['longitude'])
 		   OR !isset($_GET['latitude'])
 		   OR !isset($_GET['zoom'])) {

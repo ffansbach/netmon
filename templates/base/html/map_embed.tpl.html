@@ -11,3 +11,16 @@
 		</script>
 	</div>
 </div>
+<br>
+{if $key}
+	<h3>Legende</h3>
+	<div style="float: left; margin-right: 20px;">
+	<img src="templates/{$template}/img/ffmap/green_button.png"> Router ist online<br>
+	<img src="templates/{$template}/img/ffmap/ip_offline.png"> Router ist offline<br>
+	<img src="templates/{$template}/img/ffmap/traffic_6.png" width="20"> Router hat Traffic<br>
+	</div>
+	<div>
+	<img src="templates/{$template}/img/ffmap/clients_2_4.png" width="20"> Router hat Clients<br>
+	<img src="templates/{$template}/img/ffmap/mesh_line.png" width="20"> Mesh Verbindung (Grün: gute Qualität, Gelb: mittlere Qualität, Rot: schlechte Qualität, Blau: VPN Verbindung)<br>
+	</div>
+{/if}
