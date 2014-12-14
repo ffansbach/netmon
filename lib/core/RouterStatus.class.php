@@ -33,6 +33,7 @@
 		private $nodewatcher_version = "";
 		private $fastd_version = "";
 		private $batman_advanced_version = "";
+		private $last_seen = "";
 		public $available_statusses = array("online", "offline", "unknown");
 		
 		public function __construct($status_id=false, $crawl_cycle_id=false, $router_id=false,
@@ -42,7 +43,8 @@
 									$idletime = false, $localtime=false, $distname = false, $distversion = false, $openwrt_core_revision = false, 
 									$openwrt_feeds_packages_revision = false, $firmware_version = false,
 									$firmware_revision = false, $kernel_version = false, $configurator_version = false, 
-									$nodewatcher_version = false, $fastd_version = false, $batman_advanced_version=false) {
+									$nodewatcher_version = false, $fastd_version = false, $batman_advanced_version=false,
+									$last_seen = false) {
 			$this->setStatusId($status_id);
 			$this->setCrawlCycleId($crawl_cycle_id);
 			$this->setRouterId($router_id);
@@ -72,6 +74,7 @@
 			$this->setNodewatcherVersion($nodewatcher_version);
 			$this->setFastdVersion($fastd_version);
 			$this->setBatmanAdvancedVersion($batman_advanced_version);
+			$this->setLastSeen($last_seen);
 		}
 		
 		public function fetch() {
@@ -248,7 +251,12 @@
 			}
 			return false;
 		}
-		
+
+		public function setLastSeen($last_seen) {
+			if(!empty($last_seen))
+				$this->last_seen = trim($last_seen);
+		}
+
 		public function setRouterId($router_id) {
 			if(is_int($router_id))
 				$this->router_id = $router_id;
@@ -483,6 +491,10 @@
 			return $this->batman_advanced_version;
 		}
 		
+		public function getLastSeen() {
+			return $this->last_seen;
+		}
+		
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('statusdata');
 			$domxmlelement->appendChild($domdocument->createElement("status_id", $this->getStatusId()));
@@ -514,6 +526,7 @@
 			$domxmlelement->appendChild($domdocument->createElement("nodewatcher_version", $this->getNodewatcherVersion()));
 			$domxmlelement->appendChild($domdocument->createElement("fastd_version", $this->getFastdVersion()));
 			$domxmlelement->appendChild($domdocument->createElement("batman_advanced_version", $this->getBatmanAdvancedVersion()));
+			$domxmlelement->appendChild($domdocument->createElement("last_seen", $this->getLastSeen()));
 			return $domxmlelement;
 		}
 	

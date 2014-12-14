@@ -77,8 +77,14 @@
 				$stmt = DB::getInstance()->prepare("SELECT r.id as r_id, r.user_id as r_user_id, r.create_date as r_create_date, r.update_date as r_update_date, r.crawl_method as r_crawl_method, r.hostname as r_hostname, r.allow_router_auto_assign as r_allow_router_auto_assign, r.router_auto_assign_login_string as r_router_auto_assign_login_string, r.router_auto_assign_hash as r_router_auto_assign_hash, r.description as r_description, r.location as r_location, r.latitude as r_latitude, r.longitude as r_longitude, r.chipset_id as r_chipset_id,
 														   u.id as u_id, u.session_id as u_session_id, u.nickname as u_nickname, u.password as u_password, u.openid as u_openid, u.api_key as u_api_key, u.vorname as u_vorname, u.nachname as u_nachname, u.strasse as u_strasse, u.plz as u_plz, u.ort as u_ort, u.telefon as u_telefon, u.email as u_email, u.jabber as u_jabber, u.icq as u_icq, u.website as u_website, u.about as u_about, u.allow_node_delegation as u_allow_node_delegation, u.notification_method as u_notification_method, u.permission as u_permission, u.create_date as u_create_date, u.update_date as u_update_date, u.activated as u_activated,
 														   c.id as c_id, c.create_date as c_create_date, c.update_date as c_update_date, c.name as c_name, c.hardware_name as c_hardware_name,
-														   s.id as s_id, s.router_id as s_router_id, s.crawl_cycle_id as s_crawl_cycle_id, s.crawl_date as s_crawl_date, s.status as s_status, s.hostname as s_hostname, s.description as s_description, s.location as s_location, s.latitude as s_latitude, s.longitude as s_longitude, s.luciname as s_luciname, s.luciversion as s_luciversion, s.distname as s_distname, s.distversion as s_distversion, s.chipset as s_chipset, s.cpu as s_cpu, s.memory_total as s_memory_total, s.memory_caching as s_memory_caching, s.memory_buffering as s_memory_buffering, s.memory_free as s_memory_free, s.loadavg as s_loadavg, s.processes as s_processes, s.uptime as s_uptime, s.idletime as s_idletime, s.local_time as s_local_time, s.community_essid as s_community_essid, s.community_nickname as s_community_nickname, s.community_email as s_community_email, s.community_prefix as s_community_prefix, s.batman_advanced_version as s_batman_advanced_version, s.fastd_version as s_fastd_version, s.kernel_version as s_kernel_version, s.configurator_version as s_configurator_version, s.nodewatcher_version as s_nodewatches_version, s.firmware_version as s_firmware_version, s.firmware_revision as s_firmware_revision, s.openwrt_core_revision as s_openwrt_core_revision, s.openwrt_feeds_packages_revision as s_openwrt_feeds_packages_revision, s.client_count as s_client_count
-													FROM routers r, users u, chipsets c, crawl_routers s
+														   s.id as s_id, s.router_id as s_router_id, s.crawl_cycle_id as s_crawl_cycle_id, s.crawl_date as s_crawl_date, s.status as s_status, s.hostname as s_hostname, s.description as s_description, s.location as s_location, s.latitude as s_latitude, s.longitude as s_longitude, s.luciname as s_luciname, s.luciversion as s_luciversion, s.distname as s_distname, s.distversion as s_distversion, s.chipset as s_chipset, s.cpu as s_cpu, s.memory_total as s_memory_total, s.memory_caching as s_memory_caching, s.memory_buffering as s_memory_buffering, s.memory_free as s_memory_free, s.loadavg as s_loadavg, s.processes as s_processes, s.uptime as s_uptime, s.idletime as s_idletime, s.local_time as s_local_time, s.community_essid as s_community_essid, s.community_nickname as s_community_nickname, s.community_email as s_community_email, s.community_prefix as s_community_prefix, s.batman_advanced_version as s_batman_advanced_version, s.fastd_version as s_fastd_version, s.kernel_version as s_kernel_version, s.configurator_version as s_configurator_version, s.nodewatcher_version as s_nodewatches_version, s.firmware_version as s_firmware_version, s.firmware_revision as s_firmware_revision, s.openwrt_core_revision as s_openwrt_core_revision, s.openwrt_feeds_packages_revision as s_openwrt_feeds_packages_revision, s.client_count as s_client_count,
+														   max(cr.crawl_date) as last_seen
+													FROM
+														users u,
+														chipsets c,
+														crawl_routers s
+														JOIN routers AS r ON r.id = s.router_id
+														LEFT JOIN crawl_routers AS cr ON cr.router_id = r.id AND cr.status = 'online'
 													WHERE
 														(r.user_id = :user_id OR :user_id=0) AND
 														(r.crawl_method = :crawl_method OR :crawl_method='') AND
@@ -91,6 +97,7 @@
 														r.chipset_id= c.id AND
 														r.id = s.router_id AND
 														s.crawl_cycle_id = :crawl_cycle_id
+													GROUP BY r.id
 													ORDER BY 
 														case :sort_by
 															when 'router_id' then r.id
@@ -149,7 +156,8 @@
 															$router['s_firmware_version'], $router['s_firmware_revision'],
 															$router['s_kernel_version'], $router['s_configurator_version'],
 															$router['s_nodewatches_version'], $router['s_fastd_version'],
-															$router['s_batman_advanced_version']));
+															$router['s_batman_advanced_version'],
+															$router['last_seen']));
 				$this->routerlist[] = $new_router;
 			}
 		}
