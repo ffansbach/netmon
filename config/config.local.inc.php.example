@@ -6,4 +6,6 @@ $GLOBALS['mysql_db'] = "freifunksql5";
 $GLOBALS['mysql_user'] = "freifunksql5";
 $GLOBALS['mysql_password'] = "bla";
 
+$GLOBALS['crawllog'] = true;
+
 ?>

@@ -129,7 +129,11 @@
 	
 	//Crawl routers
 	echo "Crawl routers\n";
-	if (!is_dir(ROOT_DIR."/logs/")) {
+
+	if (!isset($GLOBALS['crawllog']))
+		$GLOBALS['crawllog'] = false;
+
+	if ($GLOBALS['crawllog'] && !is_dir(ROOT_DIR."/logs/")) {
 		mkdir(ROOT_DIR."/logs/");         
 	}
 	
@@ -138,9 +142,11 @@
 	for ($i=0; $i<=$routers_count; $i+=$range) {
 		//start an independet crawl process for each $range routers to crawl routers simultaniously
 		$return = array();
-		$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range." > ".ROOT_DIR."/logs/crawler_".$i."-".($i+$range).".txt &";
-//                $cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range." >/dev/null  &";
-
+		if ($GLOBALS['crawllog'])
+			$logcmd = "> ".ROOT_DIR."/logs/crawler_".$i."-".($i+$range).".txt";
+		else
+			$logcmd = "> /dev/null";
+		$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range." ".$logcmd." & echo $!";
 		echo "Initializing crawl process to crawl routers ".$i." to ".($i+$range)."\n";
 		echo "Running command: $cmd\n";
 		exec($cmd, $return);
