@@ -72,7 +72,6 @@ class Menus extends Permission {
 		$submenu = array();
 		$subsubmenu = array();
 		$submenu[] = array('name'=>'Karte', 'href'=>'map.php');
-		$subsubmenu[] = array('name'=>'FF-Map 3D', 'href'=>'https://netmon.freifunk-ol.de/ffmap-d3/nodes.html');
 		$submenu[] = $subsubmenu;
 		$menu[] = $submenu;
 		
