@@ -74,42 +74,6 @@ class Crawl {
 			}
 		}
 		
-		/**Insert Batman advanced Interfaces*/
-		foreach($data['batman_adv_interfaces'] as $bat_adv_int) {
-			try {
-				DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_interfaces (router_id, crawl_cycle_id, name, status, crawl_date)
-										 VALUES ('$data[router_id]', '$actual_crawl_cycle[id]', '$bat_adv_int[name]', '$bat_adv_int[status]', NOW());");
-			} catch(PDOException $e) {
-				echo $e->getMessage();
-			}
-		}
-		
-		/**Insert Batman Advanced Originators*/
-		if(!empty($data['batman_adv_originators'])) {
-			foreach($data['batman_adv_originators'] as $bat_adv_orig) {
-				try {
-					DB::getInstance()->exec("INSERT INTO crawl_batman_advanced_originators (router_id, crawl_cycle_id, originator, link_quality, nexthop, outgoing_interface, last_seen, crawl_date)
-								 VALUES ('$data[router_id]', '$actual_crawl_cycle[id]', '$bat_adv_orig[originator]', '$bat_adv_orig[link_quality]', '$bat_adv_orig[nexthop]', '$bat_adv_orig[outgoing_interface]', '$bat_adv_orig[last_seen]', NOW());");
-				}
-				catch(PDOException $e) {
-					echo $e->getMessage();
-				}
-				
-				RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($data['router_id'], $bat_adv_orig['originator'], $bat_adv_orig['link_quality'], time());
-			}
-		}
-		
-		$originator_count=count($data['batman_adv_originators']);
-		RrdTool::updateRouterBatmanAdvOriginatorsCountHistory($data['router_id'], $originator_count);
-		
-		$average_link_quality = 0;
-		foreach($data['batman_adv_originators'] as $originator) {
-			$average_link_quality=$average_link_quality+$originator['link_quality'];
-		}
-		
-		$average_link_quality=($average_link_quality/$originator_count);
-		RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($data['router_id'], "average", $average_link_quality, time());
-		
 		RrdTool::updateRouterClientCountHistory($data['router_id'], $data['client_count']);
 	}
 }
