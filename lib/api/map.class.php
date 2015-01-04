@@ -221,7 +221,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/green_button.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/green_button.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -231,7 +231,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_1.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_1.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -240,7 +240,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_2.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_2.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -249,7 +249,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_3.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_3.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -258,7 +258,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_4.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_4.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -267,7 +267,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_5.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_5.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -276,7 +276,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_6.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_0_traffic_6.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -285,7 +285,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_highlighted.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/ip_highlighted.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -296,7 +296,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_online_highlighted_1.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/ip_online_highlighted_1.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -307,7 +307,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-								$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_offline.png</href>');
+								$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/ip_offline.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -318,7 +318,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-								$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_unknown.png</href>');
+								$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/ip_unknown.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -363,13 +363,13 @@ class ApiMap {
 							//Make B.A.T.M.A.N advanced informaions
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
-									$xw->writeRaw("<![CDATA[Router <a href='./router.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
+									$xw->writeRaw("<![CDATA[Router <a href='".$GLOBALS['url_to_netmon']."/router.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 										$box_inhalt = "<b>Status:</b> $crawl_router[status]<br>";
 										$box_inhalt .= "<b>Position:</b> <span style=\"color: green;\">lat: $latitude, lon: $longitude</span><br>";
 										$box_inhalt .= "<b>Clients:</b> ".$crawl_router['client_count']."<br>";
-										$box_inhalt .= "<b>Benutzer:</b> <a href='./user.php?user_id=$router_data[user_id]'>$router_data[nickname]</a><br>";
+										$box_inhalt .= "<b>Benutzer:</b> <a href='".$GLOBALS['url_to_netmon']."/user.php?user_id=$router_data[user_id]'>$router_data[nickname]</a><br>";
 										if(!empty($location)) {
 											   $box_inhalt .= "<b>Standortbeschreibung:</b> $location<br>";
 										}
@@ -459,7 +459,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/traffic_1.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/traffic_1.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -468,7 +468,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/traffic_2.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/traffic_2.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -477,7 +477,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/traffic_3.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/traffic_3.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -486,7 +486,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/traffic_4.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/traffic_4.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -495,7 +495,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/traffic_5.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/traffic_5.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -504,7 +504,7 @@ class ApiMap {
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>2.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/traffic_6.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/traffic_6.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -547,7 +547,7 @@ class ApiMap {
 							if($crawl_router['status']=='online') {
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
-									$xw->writeRaw("<![CDATA[Router <a href='./router.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
+									$xw->writeRaw("<![CDATA[Router <a href='".$GLOBALS['url_to_netmon']."/router.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 										$box_inhalt = "Traffic";
@@ -602,7 +602,7 @@ else
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>1.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_1.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_1.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -611,7 +611,7 @@ else
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>1.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_2.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_2.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -620,7 +620,7 @@ else
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>1.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_3.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_3.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -629,7 +629,7 @@ else
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>1.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_4.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_4.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -638,7 +638,7 @@ else
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>1.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_5.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_5.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -647,7 +647,7 @@ else
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>1.0</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_6.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/clients_2_6.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -656,7 +656,7 @@ else
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_highlighted.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/ip_highlighted.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -667,7 +667,7 @@ else
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-							$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_online_highlighted_1.png</href>');
+							$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/ip_online_highlighted_1.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -678,7 +678,7 @@ else
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-								$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_offline.png</href>');
+								$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/ip_offline.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -689,7 +689,7 @@ else
 					$xw->startElement('IconStyle');
 						$xw->writeRaw('<scale>0.5</scale>');
 						$xw->startElement('Icon');
-								$xw->writeRaw('<href>./templates/'.$GLOBALS['template'].'/img/ffmap/ip_unknown.png</href>');
+								$xw->writeRaw('<href>'.$GLOBALS['url_to_netmon'].'/templates/'.$GLOBALS['template'].'/img/ffmap/ip_unknown.png</href>');
 						$xw->endElement();
 					$xw->endElement();
 				$xw->endElement();
@@ -731,7 +731,7 @@ else
 						if($do) {
 							$xw->startElement('Placemark');
 								$xw->startElement('name');
-									$xw->writeRaw("<![CDATA[Router <a href='./router.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
+									$xw->writeRaw("<![CDATA[Router <a href='".$GLOBALS['url_to_netmon']."/router.php?router_id=".$router_data['router_id']."'>".$router_data['hostname']."</a>]]>");
 								$xw->endElement();
 								$xw->startElement('description');
 										$box_inhalt = "Clients";
