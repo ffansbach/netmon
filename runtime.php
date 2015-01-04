@@ -92,6 +92,7 @@
 	//start php session and set content type and timezone
 	session_start();
 	header("Content-Type: text/html; charset=UTF-8");
+	header("access-control-allow-origin: *");
 	date_default_timezone_set('Europe/Berlin');
 	
 	//include important configuration files
