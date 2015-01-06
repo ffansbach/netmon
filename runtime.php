@@ -45,54 +45,56 @@
 	$GLOBALS['community_name'] = "Freifunk Deinestadt";
 	$GLOBALS['community_slogan'] = "Die freie WLAN-Community aus deiner Stadt • Freie Netze für alle!";
 		
-	//check if netmons root path and the config path is writable to created temp dirs and config file
-	$check_writable[] = '/';
-	$check_writable[] = '/config/';
-	foreach($check_writable as $path) {
-		if (!is_writable(ROOT_DIR.$path)) {
-			echo ROOT_DIR.$path."<br>";
-			$not_writable[] = $path;
+	if (!$crawler) {
+		//check if netmons root path and the config path is writable to created temp dirs and config file
+		$check_writable[] = '/';
+		$check_writable[] = '/config/';
+		foreach($check_writable as $path) {
+			if (!is_writable(ROOT_DIR.$path)) {
+				echo ROOT_DIR.$path."<br>";
+				$not_writable[] = $path;
+			}
 		}
-	}
-	if(!empty($not_writable)) {
-		echo "Please set writable permissions to the above files and directories and reload the site.";
-		die();
-	}
-	unset($check_writable);
-	
-	//copy exemple config files and create needed directories on fresh installation
-	if(!file_exists(ROOT_DIR.'/config/config.local.inc.php')) copy(ROOT_DIR.'/config/config.local.inc.php.example', ROOT_DIR.'/config/config.local.inc.php');	
-	
-	//create temp directories
-	$create_dirs[] = '/templates_c/';
-	$create_dirs[] = '/tmp/';
-	$create_dirs[] = '/rrdtool/';
-	$create_dirs[] = '/rrdtool/databases/';
-	foreach($create_dirs as $dir) {
-		if(!file_exists(ROOT_DIR.$dir))
-			@mkdir(ROOT_DIR.$dir);
-	}
-
-	//check if directories and files are writable
-	$check_writable = $create_dirs;
-	$check_writable[] = '/';
-	$check_writable[] = '/config/config.local.inc.php';
-	foreach($check_writable as $path) {
-		if (!is_writable(ROOT_DIR.$path)) {
-			echo ROOT_DIR.$path."<br>";
-			$not_writable[] = $path;
+		if(!empty($not_writable)) {
+			echo "Please set writable permissions to the above files and directories and reload the site.";
+			die();
 		}
-	}
+		unset($check_writable);
+		
+		//copy exemple config files and create needed directories on fresh installation
+		if(!file_exists(ROOT_DIR.'/config/config.local.inc.php')) copy(ROOT_DIR.'/config/config.local.inc.php.example', ROOT_DIR.'/config/config.local.inc.php');	
+		
+		//create temp directories
+		$create_dirs[] = '/templates_c/';
+		$create_dirs[] = '/tmp/';
+		$create_dirs[] = '/rrdtool/';
+		$create_dirs[] = '/rrdtool/databases/';
+		foreach($create_dirs as $dir) {
+			if(!file_exists(ROOT_DIR.$dir))
+				@mkdir(ROOT_DIR.$dir);
+		}
 
-	if(!empty($not_writable)) {
-		echo "Please set writable permissions to the above files and directories and reload the site.";
-		die();
-	}
+		//check if directories and files are writable
+		$check_writable = $create_dirs;
+		$check_writable[] = '/';
+		$check_writable[] = '/config/config.local.inc.php';
+		foreach($check_writable as $path) {
+			if (!is_writable(ROOT_DIR.$path)) {
+				echo ROOT_DIR.$path."<br>";
+				$not_writable[] = $path;
+			}
+		}
 
-	//start php session and set content type and timezone
-	session_start();
-	header("Content-Type: text/html; charset=UTF-8");
-	header("access-control-allow-origin: *");
+		if(!empty($not_writable)) {
+			echo "Please set writable permissions to the above files and directories and reload the site.";
+			die();
+		}
+
+		//start php session and set content type and timezone
+		session_start();
+		header("Content-Type: text/html; charset=UTF-8");
+		header("access-control-allow-origin: *");
+	}
 	date_default_timezone_set('Europe/Berlin');
 	
 	//include important configuration files
