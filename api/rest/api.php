@@ -81,6 +81,9 @@
 				$this->_request['router_id'] = (isset($this->_request['router_id'])) ? $this->_request['router_id'] : false;
 				$this->_request['hostname'] = (isset($this->_request['hostname'])) ? $this->_request['hostname'] : false;
 				$router = new Router((int)$this->_request['router_id'], false, $this->_request['hostname']);
+			} else if (isset($this->_request['mac'])) {
+				$router = new Router();
+				$router->setMac($this->_request['mac']);
 			}
 			
 			if (!$router) {
