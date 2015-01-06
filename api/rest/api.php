@@ -70,19 +70,36 @@
 		}
 		
 		private function router() {
-			if($this->get_request_method() == "GET" && (isset($this->_request['router_id']) || isset($this->_request['hostname']))) {
+			if ($this->get_request_method() != "GET") {
+				$this->error_code = 3;
+				$this->error_message = "Wrong method";
+				$this->response($this->finishxml(), 405);
+				return false;
+			}
+			
+			if (isset($this->_request['router_id']) || isset($this->_request['hostname']))) {
 				$this->_request['router_id'] = (isset($this->_request['router_id'])) ? $this->_request['router_id'] : false;
 				$this->_request['hostname'] = (isset($this->_request['hostname'])) ? $this->_request['hostname'] : false;
 				$router = new Router((int)$this->_request['router_id'], false, $this->_request['hostname']);
-				if(!$router->fetch()) {
-					$this->error_code = 1;
-					$this->error_message = "Router not found";
-					$this->response($this->finishxml(), 404);
-				} else {
-					$domxmldata = $router->getDomXMLElement($this->domxml);
-					$this->response($this->finishxml($domxmldata), 200);
-				}
 			}
+			
+			if (!$router) {
+				$this->error_code = 2;
+				$this->error_message = "Wrong request";
+				$this->response($this->finishxml(), 400);
+				return false;
+			}
+			
+			if (!$router->fetch()) {
+				$this->error_code = 1;
+				$this->error_message = "Router not found";
+				$this->response($this->finishxml(), 404);
+				return false;
+			}
+
+			$domxmldata = $router->getDomXMLElement($this->domxml);
+			$this->response($this->finishxml($domxmldata), 200);
+			return true;
 		}
 		
 		private function routerlist() {
