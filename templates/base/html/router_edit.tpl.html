@@ -96,15 +96,19 @@
 
 	<h2>Statusdaten</h2>
 	<p>
-		Statusaktualisierung:
+		Statusaktualisierung: (ändere diese Option nur, wenn du weißt was du tust)
 		<select name="crawl_method" onChange="getProjectInfo(this.options[this.selectedIndex].value)">
 			<option value="crawler" {if $router_data.crawl_method=='crawler'}selected='selected'{/if}>Netmon Crawlt den Router</option>
 			<option value="router" {if $router_data.crawl_method=='router'}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>
 		</select>
 	</p>
 
-<!--	<h2>Offline Benachrichtigung</h2>
-	<p><input name="notify" type="checkbox" value="1" {if $router_data.notify==1}checked{/if}> Ich möchte benachrichtigt werden, wenn dieser Router <input name="notification_wait" type="text" size="1" maxlength="5" value="{$router_data.notification_wait}"> Crawlzyklen offline ist.</p>-->
+	<!--
+	<h2>Offline Benachrichtigung</h2>
+	<p>
+		<input name="notify" type="checkbox" value="1" {if $router_data.notify==1}checked{/if}> Ich möchte benachrichtigt werden, wenn dieser Router <input name="notification_wait" type="text" size="1" maxlength="5" value="{$router_data.notification_wait}"> Crawlzyklen offline ist.
+	</p>
+	-->
 
 	<h2>Netmon Autozuweisung</h2>
 	<p>
