@@ -12,6 +12,7 @@
 	}
 	
 	//get depencies
+	$crawler = true;
 	require_once('runtime.php');
 	require_once(ROOT_DIR.'/lib/core/Routerlist.class.php');
 	require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
@@ -20,15 +21,17 @@
 	require_once(ROOT_DIR.'/lib/api/crawl.class.php');
 	require_once(ROOT_DIR.'/lib/core/ConfigLine.class.php');
 	require_once(ROOT_DIR.'/lib/core/OriginatorStatus.class.php');
+	require_once(ROOT_DIR.'/lib/extern/pstools.inc');
 	
 	//get offset and limit options (script parameters)
 	$router_offset = getopt("o:l:")['o'];
 	$router_limit = getopt("o:l:")['l'];
 	
 	// get configuration values
-	$ping_count = 4; // ping a node X times before fetching data
-	$ping_timeout = 1500; // set the timout for each ping to X ms
-	$crawl_timeout = 20; // timeout after X seconds on fetching crawldata
+	$ping_count = 3; // ping a node X times before fetching data
+	$ping_timeout = 500; // set the timout for each ping to X ms
+	$ping_hard_timeout = 2; // set the timout for each ping command to X s
+	$crawl_timeout = 18; // timeout after X seconds on fetching crawldata
 	$network_connection_ipv6_interface = ConfigLine::configByName("network_connection_ipv6_interface"); //use this interface to connect to ipv6 linc local hosts
 	$interfaces_used_for_crawling = array("br-mesh", "br-client", "floh_fix", "tata_fix"); //use the ip adresses of these interfaces for crawling
 	
@@ -59,23 +62,12 @@
 					$return = array();
 					
 					if($ip->getNetwork()->getIpv()==6)
-						$command = "ping6 -c $ping_count -w ".$ping_timeout*($ping_count+1)." -W $ping_timeout -I $network_connection_ipv6_interface ".$ip->getIp();
+						$command = "ping6 -c $ping_count -w ".($ping_count+1)*$ping_timeout." -W $ping_timeout -I $network_connection_ipv6_interface ".$ip->getIp();
 					elseif($ip->getNetwork()->getIpv()==4)
-						$command = "ping -c $ping_count -w ".$ping_timeout*($ping_count+1)." -W $ping_timeout ".$ip->getIp();
+						$command = "ping -c $ping_count -w ".($ping_count+1)*$ping_timeout." -W $ping_timeout ".$ip->getIp();
 					echo "			".$command."\n";
-					exec($command, $return);
-					
-					foreach($return as $key=>$line) {
-						if(strpos($line, "packet loss")!==false) {
-							$ping_result_index=$key;
-							break;
-						}
-					}
-					$ping = (trim(explode(",", $return[$ping_result_index])[1])!="0 received") ? true : false;
-					if($ping)
-						echo "			Ping was successfull trying to crawl\n";
-					else
-						echo "			Ping was not successfull trying to crawl\n";
+
+					PsExecute($command, $ping_hard_timeout, 1);
 					
 					//fetch crawl data from router
 					$return = array();
@@ -91,23 +83,16 @@
 					}
 					
 					//store the crawl data into the database if the router is not offline
-					if(!empty($return_string) OR $ping) {
-						if(!empty($return_string)) {
-							echo "			Craw was successfull, online\n";
-							try {
-								$xml = new SimpleXMLElement($return_string);
-								$data = simplexml2array($xml);
-								$data['router_id'] = $router->getRouterId();
-								$data['system_data']['status'] = "online";
-							} catch (Exception $e) {
-								echo nl2br($e->getMessage());
-								echo "			There was an error parsing the crawled XML\n";
-								$data = array();
-								$data['router_id'] = $router->getRouterId();
-								$data['system_data']['status'] = "unknown";
-							}
-						} elseif($ping) {
-							echo "			Craw was not successfull, ping only\n";
+					if(!empty($return_string)) {
+						echo "			Craw was successfull, online\n";
+						try {
+							$xml = new SimpleXMLElement($return_string);
+							$data = simplexml2array($xml);
+							$data['router_id'] = $router->getRouterId();
+							$data['system_data']['status'] = "online";
+						} catch (Exception $e) {
+							echo nl2br($e->getMessage());
+							echo "			There was an error parsing the crawled XML\n";
 							$data = array();
 							$data['router_id'] = $router->getRouterId();
 							$data['system_data']['status'] = "unknown";
@@ -147,7 +132,7 @@
 										$originator['originator'] == $originator['nexthop']) {
 										$originator_status = new OriginatorStatus(false, (int)$actual_crawl_cycle, (int)$data['router_id'], $originator['originator'],
 																				  (int)$originator['link_quality'], $originator['nexthop'], $originator['outgoing_interface'],
-																				   $originator['last_seen']);
+																					$originator['last_seen']);
 										$originator_status->store();
 										RrdTool::updateRouterBatmanAdvOriginatorLinkQuality($data['router_id'], $originator['originator'], $originator['link_quality'], time());
 										$average_link_quality=$average_link_quality+$originator['link_quality'];
@@ -165,7 +150,7 @@
 						}
 						break 2;
 					} else {
-						echo "			Ping and fetching Crawl-Data was not successfull trying to ping and crawl  next address\n";
+						echo "			Crawl was not successfull trying to ping next address\n";
 					}
 				}
 			}
