@@ -49,14 +49,6 @@
     background: transparent url(../../images/frankenfreifunk.png) no-repeat scroll left top;
     height: 140px;
   }
-  
-  #headerbg {
-    position:absolute;
-    right:10px;
-    top:10px;
-    color: #000;
-    padding: 25px 2em 3em 20px;
-  }
 
   #topnav { color: #aaa; background: transparent;}
 
