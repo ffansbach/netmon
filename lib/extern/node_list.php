@@ -133,11 +133,11 @@ class nodeList
 			$list['community']['href'] = $this->_communityFile;
 		}
 
-		$list['nodes '] = $this->_nodeList;
+		$list['nodes'] = $this->_nodeList;
 
 		foreach($this->_peopleList as $person)
 		{
-			$list['linked '][] = $person;
+			$list['linked'][] = $person;
 		}
 
 		return $list;
