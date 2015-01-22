@@ -199,7 +199,7 @@ class node
 
 		if(!empty($this->_geo))
 		{
-			$node['location'] = $this->_geo;
+			$node['position'] = $this->_geo;
 		}
 
 		return $node;
