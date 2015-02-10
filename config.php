@@ -102,6 +102,7 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		$smarty->assign('community_essid', ConfigLine::configByName('community_essid'));
 		$smarty->assign('community_homepage', ConfigLine::configByName('community_homepage'));
 		$smarty->assign('community_homepage_name', ConfigLine::configByName('community_homepage_name'));
+		$smarty->assign('community_json', ConfigLine::configByName('community_json'));
 
 		$smarty->assign('message', Message::getMessage());
 		$smarty->display("header.tpl.html");
@@ -119,6 +120,19 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		{
 			Config::writeConfigLine('community_homepage', $_POST['community_homepage']);
 			Config::writeConfigLine('community_homepage_name', $_POST['community_homepage_name']);
+		}
+
+		if(!empty($_POST['community_json']))
+		{
+			if(!empty(json_decode($_POST['community_json'])))
+			{
+				// community-json posted and valid json
+				Config::writeConfigLine('community_json', $_POST['community_json']);
+			}
+			else
+			{
+				$message[] = array('Community-JSON konnte nicht gespeichert werden. Kein valides JSON.', 2);
+			}
 		}
 
 		if(empty($_POST['enable_network_policy']))

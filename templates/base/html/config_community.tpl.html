@@ -43,7 +43,20 @@
 	<p>Ist die Netzwerkpolicy eingeschaltet, dann wird neuen Benutzern bei der Registration ein Link auf eine Netzwerkpolicy gezeigt. Damit ein Benutzer sich erfolgreich registrieren kann, muss er diese bestätigen.</p>
 	<p><b>Netzwerkpolicy einschalten:</b> <input name="enable_network_policy" type="checkbox" value="true" {if $enable_network_policy=='true'}checked{/if}>
 	<p><b>Link zur Netzwerkpolicy:</b><br><input name="network_policy_url" type="text" size="70" value="{$network_policy_url}"></p>
+
+
 	<br>
+	<h2>Community-File</h2>
+	<p>
+		Das Community-JSON kann in der Freifunk-API verwendet werden. Netmon wird die aktuelle Node-Zahl automatisch aktualisieren.<br />
+		Füge hier das fertig vorbereitete JSON ein. Die Knoten für state - nodes und state - lastchange müssen bereits vorhanden sein.
+	</p>
+	<p>
+		<b>Community-JSON:</b><br>
+		<textarea name="community_json" style="font-size:0.8em; width: 530px; height: 100px">{if !empty($community_json)}{$community_json}{/if}</textarea>
+	</p>
+
+	<br />
 
 	<p><input type="submit" value="Absenden"></p>
 </form>
