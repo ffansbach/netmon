@@ -124,7 +124,9 @@ if(Permission::checkPermission(PERM_ROOT)) {
 
 		if(!empty($_POST['community_json']))
 		{
-			if(!empty(json_decode($_POST['community_json'])))
+			$communityJson = json_decode($_POST['community_json']);
+
+			if(!empty($communityJson))
 			{
 				// community-json posted and valid json
 				Config::writeConfigLine('community_json', $_POST['community_json']);

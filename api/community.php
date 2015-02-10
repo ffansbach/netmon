@@ -13,9 +13,19 @@ try {
 
 	$configSavedCommunityJson = ConfigLine::configByName('community_json');
 
-	if(empty($configSavedCommunityJson) || empty(json_decode($configSavedCommunityJson)))
+
+
+	if(empty($configSavedCommunityJson))
 	{
 		// no json in config - exit
+		return;
+	}
+
+	$communityJson = json_decode($configSavedCommunityJson);
+
+	if(empty($communityJson))
+	{
+		// no valid json or empty
 		return;
 	}
 
