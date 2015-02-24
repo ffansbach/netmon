@@ -18,7 +18,7 @@ try {
 				u.nickname,
 				s.status,
 				s.client_count,
-				UNIX_TIMESTAMP(max(cr.crawl_date)) as last_seen
+				UNIX_TIMESTAMP(r.update_date) as last_seen
 				FROM
 					routers AS r
 					JOIN crawl_routers AS s ON r.id = s.router_id
