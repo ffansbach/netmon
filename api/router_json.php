@@ -18,7 +18,8 @@ try {
 				u.nickname,
 				s.status,
 				s.client_count,
-				UNIX_TIMESTAMP(r.update_date) as last_seen
+				UNIX_TIMESTAMP(r.update_date) as last_update,
+				UNIX_TIMESTAMP(max(cr.crawl_date)) as last_seen
 				FROM
 					routers AS r
 					JOIN crawl_routers AS s ON r.id = s.router_id
@@ -53,13 +54,20 @@ try {
 	{
 		$node = new node($resultNode['id'], $resultNode['hostname']);
 
+		$last_seen = $resultNode['last_update'];
+
+		if(!empty($resultNode['last_seen']) && ($resultNode['last_seen'] > $resultNode['last_update']))
+		{
+			$last_seen = $resultNode['last_seen'];
+		}
+
 		$node->setType('AccessPoint');
 		$node->setHref('https://netmon.freifunk-emskirchen.de/router.php?router_id='.$resultNode['id']);
 
 		$node->setStatus(
 			($resultNode['status'] == 'online'),
 			$resultNode['client_count'],
-			$resultNode['last_seen']
+			$last_seen
 		);
 
 		$node->setGeo(
