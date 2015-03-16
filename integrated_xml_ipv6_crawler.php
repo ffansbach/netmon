@@ -72,9 +72,9 @@
 					//fetch crawl data from router
 					$return = array();
 					if($ip->getNetwork()->getIpv()==6)
-						$command = "curl -s --max-time $crawl_timeout -g http://[".$ip->getIp()."%25\$(cat /sys/class/net/$network_connection_ipv6_interface/ifindex)]/node.data";
+						$command = "curl -s --max-time $crawl_timeout -g http://[".$ip->getIp()."%25\$(cat /sys/class/net/$network_connection_ipv6_interface/ifindex)]/node.data | zcat -f";
 					elseif($ip->getNetwork()->getIpv()==4)
-						$command = "curl -s --max-time $crawl_timeout -g http://".$ip->getIp()."/node.data";
+						$command = "curl -s --max-time $crawl_timeout -g http://".$ip->getIp()."/node.data | zcat -f";
 					echo "			".$command."\n";
 					exec($command, $return);
 					$return_string = "";
