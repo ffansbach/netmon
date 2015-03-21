@@ -99,7 +99,7 @@
 		Statusaktualisierung: (ändere diese Option nur, wenn du weißt was du tust)
 		<select name="crawl_method" onChange="getProjectInfo(this.options[this.selectedIndex].value)">
 			<option value="crawler" {if $router_data.crawl_method=='crawler'}selected='selected'{/if}>Netmon Crawlt den Router</option>
-			<option value="router" {if $router_data.crawl_method=='router'}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>
+			<!--<option value="router" {if $router_data.crawl_method=='router'}selected='selected'{/if}>Der Router sendet die Daten selbstständig</option>-->
 		</select>
 	</p>
 
