@@ -6,4 +6,9 @@ class Validation {
 		$regex = "/^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/";
 		return (is_string($hostname) AND strlen($hostname)<=255 AND preg_match($regex, $hostname));
 	}
+
+	public static function isValidInterfaceName($interfacename) {
+		$regex = "/^[a-zA-Z0-9\-]*$/";
+		return is_string($interfacename) AND strlen($interfacename)<=20 AND preg_match($regex, $interfacename);
+	}
 }
