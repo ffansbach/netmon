@@ -39,19 +39,24 @@ if($_GET['section']=="router_auto_assign") {
 		if (empty($router)) {
 			//Make DB Insert
 			try {
-				DB::getInstance()->exec("INSERT INTO routers_not_assigned (create_date, update_date, hostname, router_auto_assign_login_string, interface)
-							 VALUES (NOW(), NOW(), '$_GET[hostname]', '$_GET[router_auto_assign_login_string]', '$_GET[interface]');");
+				$stmt = DB::getInstance()->prepare("INSERT INTO routers_not_assigned (create_date, update_date, hostname, router_auto_assign_login_string, interface)
+							 VALUES (NOW(), NOW(), :hostname, :router_auto_assign_login_string, :interface);");
+				$stmt->execute(array(
+					':hostname' => $_GET['hostname'],
+					':router_auto_assign_login_string' => $_GET['router_auto_assign_login_string'],
+					':interface' => $_GET['interface']
+				));
 			}
 			catch(PDOException $e) {
 				echo $e->getMessage();
 			}
 			$not_assigned_id = DB::getInstance()->lastInsertId();
-			
+
 			//Make history
 			$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 			$event = new Event(false, (int)$actual_crawl_cycle['id'], 'not_assigned_router', (int)$not_assigned_id, 'new', array('router_auto_assign_login_string'=>$_GET['router_auto_assign_login_string']));
 			$event->store();
-			
+
 			echo "error;new_not_assigned;;$_GET[router_auto_assign_login_string]";
 		} else {
 			try {
@@ -112,7 +117,7 @@ if($_GET['section']=="autoadd_ipv6_address") {
 		} else {
 			$networkinterface_id = $networkinterface->getNetworkinterfaceId();
 		}
-		
+
 		//then we can create the ip
 		$ip = new Ip(false, (int)$networkinterface_id, (int)$network->getNetworkId(), $_GET['ip']);
 		if($ip->store()) {
