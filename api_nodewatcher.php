@@ -11,6 +11,7 @@ require_once(ROOT_DIR.'/lib/extern/phpass/PasswordHash.php');
 require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
 require_once(ROOT_DIR.'/lib/core/Networkinterface.class.php');
 require_once(ROOT_DIR.'/lib/core/NetworkinterfaceStatus.class.php');
+require_once(ROOT_DIR.'/lib/core/Validation.class.php');
 
 if($_GET['section']=="get_standart_data") {
 	if ($_GET['authentificationmethod']=='hash') {
@@ -130,6 +131,8 @@ if($_GET['section']=="get_hostnames_and_mac") {
 /** Nodewatcher Version >18 */
 
 if($_GET['section']=="insert_crawl_data") {
+	is_int($_POST['router_id']) or die('Invalid router id');
+
 	$router_data = Router_old::getRouterInfo($_POST['router_id']);
 
 	//If is owning user or if root
@@ -155,6 +158,12 @@ if($_GET['section']=="insert_crawl_data") {
 
 			/**Insert Router Interfaces*/
 			foreach($_POST['int'] as $sendet_interface) {
+				if (!Validation::isValidInterfaceName($sendet_interface['name'])) {
+					echo 'Invalid interface name!';
+					continue;
+				}
+
+
 				/**
 				 * Interface
 				 */
