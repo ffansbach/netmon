@@ -101,13 +101,32 @@
 						/**Insert Router System Data*/
 						echo "			Inserting RouterStatus into DB\n";
 						$router_status = New RouterStatus(false, (int)$actual_crawl_cycle, $router->getRouterId(),
-															$data['system_data']['status'], false, $data['system_data']['hostname'], (int)$data['client_count'], $data['system_data']['chipset'],
-															$data['system_data']['cpu'], (int)$data['system_data']['memory_total'], (int)$data['system_data']['memory_caching'], (int)$data['system_data']['memory_buffering'],
-															(int)$data['system_data']['memory_free'], $data['system_data']['loadavg'], $data['system_data']['processes'], $data['system_data']['uptime'],
-															$data['system_data']['idletime'], $data['system_data']['local_time'], $data['system_data']['distname'], $data['system_data']['distversion'], $data['system_data']['openwrt_core_revision'],
-															$data['system_data']['openwrt_feeds_packages_revision'], $data['system_data']['firmware_version'],
-															$data['system_data']['firmware_revision'], $data['system_data']['kernel_version'], $data['system_data']['configurator_version'],
-															$data['system_data']['nodewatcher_version'], $data['system_data']['fastd_version'], $data['system_data']['batman_advanced_version']);
+                            $data['system_data']['status'],
+                            false,
+                            isset($data['system_data']['hostname']) ? $data['system_data']['hostname'] : "",
+                            isset($data['client_count']) ? (int)$data['client_count'] : 0,
+                            isset($data['system_data']['chipset']) ? $data['system_data']['chipset'] : "",
+                            isset($data['system_data']['cpu']) ? $data['system_data']['cpu'] : "",
+                            isset($data['system_data']['memory_total']) ? (int)$data['system_data']['memory_total'] : 0,
+                            isset($data['system_data']['memory_caching']) ? (int)$data['system_data']['memory_caching'] : 0,
+                            isset($data['system_data']['memory_buffering']) ? (int)$data['system_data']['memory_buffering'] : 0,
+                            isset($data['system_data']['memory_free']) ? (int)$data['system_data']['memory_free'] : 0,
+                            isset($data['system_data']['loadavg']) ? $data['system_data']['loadavg'] : "",
+                            isset($data['system_data']['processes']) ? $data['system_data']['processes'] : "",
+                            isset($data['system_data']['uptime']) ? $data['system_data']['uptime'] : "",
+                            isset($data['system_data']['idletime']) ? $data['system_data']['idletime'] : "",
+                            isset($data['system_data']['local_time']) ? $data['system_data']['local_time'] : "",
+                            isset($data['system_data']['distname']) ? $data['system_data']['distname'] : "",
+                            isset($data['system_data']['distversion']) ? $data['system_data']['distversion'] : "",
+                            isset($data['system_data']['openwrt_core_revision']) ? $data['system_data']['openwrt_core_revision'] : "",
+                            isset($data['system_data']['openwrt_feeds_packages_revision']) ? $data['system_data']['openwrt_feeds_packages_revision'] : "",
+                            isset($data['system_data']['firmware_version']) ? $data['system_data']['firmware_version'] : "",
+                            isset($data['system_data']['firmware_revision']) ? $data['system_data']['firmware_revision'] : "",
+                            isset($data['system_data']['kernel_version']) ? $data['system_data']['kernel_version'] : "",
+                            isset($data['system_data']['configurator_version']) ? $data['system_data']['configurator_version'] : "",
+                            isset($data['system_data']['nodewatcher_version']) ? $data['system_data']['nodewatcher_version'] : "",
+                            isset($data['system_data']['fastd_version']) ? $data['system_data']['fastd_version'] : "",
+                            isset($data['system_data']['batman_advanced_version']) ? $data['system_data']['batman_advanced_version'] : "");
 						if($router_status->store()) {
 							echo "			Inserting Batman advanced interfaces into DB\n";
 							/**Insert Batman advanced Interfaces*/
@@ -118,8 +137,8 @@
 									$stmt->execute(array(
 										':router_id' => $data['router_id'],
 										':actual_crawl_cycle' => $actual_crawl_cycle,
-										':name' => $bat_adv_int['name'],
-										':status' => $bat_adv_int['status']
+										':name' => isset($bat_adv_int['name']) ? $bat_adv_int['name'] : "",
+										':status' => isset($bat_adv_int['status']) ? $bat_adv_int['status'] : ""
 									));
 								} catch(PDOException $e) {
 									echo $e->getMessage();
@@ -166,7 +185,7 @@
 	echo "The process took ".(time()-$starttime)." seconds\n";
 
 	function simplexml2array($xml) {
-		if (!is_string($xml) AND (get_class($xml) == 'SimpleXMLElement')) {
+		if (!is_string($xml) AND !is_array($xml) AND (get_class($xml) == 'SimpleXMLElement')) {
 			$attributes = $xml->attributes();
 			foreach($attributes as $k=>$v) {
 				if ($v) $a[$k] = (string) $v;

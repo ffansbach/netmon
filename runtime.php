@@ -45,7 +45,7 @@
 	$GLOBALS['community_name'] = "Freifunk Deinestadt";
 	$GLOBALS['community_slogan'] = "Die freie WLAN-Community aus deiner Stadt • Freie Netze für alle!";
 		
-	if (!$crawler) {
+	if (!isset($crawler) || !$crawler) {
 		//check if netmons root path and the config path is writable to created temp dirs and config file
 		$check_writable[] = '/';
 		$check_writable[] = '/config/';

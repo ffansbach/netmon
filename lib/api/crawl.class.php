@@ -67,7 +67,10 @@ class Crawl {
 
 			//add unknown ipv6 link local addresses to netmon
 			//prepare data
-			$ipv6_link_local_addr = explode("/", $sendet_interface['ipv6_link_local_addr']);
+            if (isset($sendet_interface['ipv6_link_local_addr']))
+    			$ipv6_link_local_addr = explode("/", $sendet_interface['ipv6_link_local_addr']);
+            else
+    			$ipv6_link_local_addr[0] = "";
 			$ipv6_link_local_netmask = (isset($ipv6_link_local_addr[1])) ? (int)$ipv6_link_local_addr[1] : 64;
 			$ipv6_link_local_addr = Ip::ipv6Expand($ipv6_link_local_addr[0]);
 

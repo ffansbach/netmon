@@ -102,12 +102,16 @@ if($_GET['section']=="router_auto_assign") {
 if($_GET['section']=="autoadd_ipv6_address") {
 	//first try to determine network of given address
 	$ipv6_network = Ip::ipv6NetworkFromAddr($_GET['ip'], (int)$_GET['netmask']);
-	$network = new Network(false, false, $ipv6_network, (int)$_GET['netmask'], (int)$_GET['ipv']);
+	$network = new Network(false, false, $ipv6_network, (int)$_GET['netmask'], 6);
 	if($network->fetch()) {
 		//if network found, then try to add ip address.
 		//first we need to check if the interface we want to add th ip to already exists
 		//and if not we need to create it.
-		$networkinterface = new Networkinterface(false, (int)$_GET['router_id'], $_GET['networkinterface_name']);
+        if (!isset($_GET['networkinterface_name']))
+            $networkinterface_name = "";
+        else
+            $networkinterface_name = $_GET['networkinterface_name'];
+		$networkinterface = new Networkinterface(false, (int)$_GET['router_id'], $networkinterface_name);
 		if(!$networkinterface->fetch()) {
 			$networkinterface_id = $networkinterface->store();
 			if(!$networkinterface_id) {
