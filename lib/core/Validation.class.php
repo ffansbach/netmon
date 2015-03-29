@@ -8,7 +8,7 @@ class Validation {
 	}
 
 	public static function isValidInterfaceName($interfacename) {
-		$regex = "/^[a-zA-Z0-9\-]*$/";
+		$regex = "/^[a-zA-Z0-9\-\.]*$/";
 		return is_string($interfacename) AND strlen($interfacename)<=20 AND preg_match($regex, $interfacename);
 	}
 }
