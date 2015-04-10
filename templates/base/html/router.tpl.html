@@ -352,7 +352,7 @@
 			<tbody>
 				{foreach $originator_status_list->getOriginatorStatusList() as $originator}
 					<tr style="{if $originator->getOriginator()== $originator->getNexthop()}font-weight: bold;{/if} background-color: {if $originator->getLinkQuality() >= 0 AND $originator->getLinkQuality() < 105}#ff1e1e{else if $originator->getLinkQuality() >= 105 AND $originator->getLinkQuality() < 130}#ff4949{else if $originator->getLinkQuality() >= 130 AND $originator->getLinkQuality() < 155}#ff6a6a{else if $originator->getLinkQuality() >= 155 AND $originator->getLinkQuality() < 180}#ffac53{else if $originator->getLinkQuality() >= 180 AND $originator->getLinkQuality() < 205}#ffeb79{else if $originator->getLinkQuality() >= 205 AND $originator->getLinkQuality() < 230}#79ff7c{else if $originator->getLinkQuality() >= 230}#04ff0a{/if};">
-						<td><a href="search.php?search_range=mac_addr&search_string={$originators.originator}">{$originator->getOriginator()}</a></td>
+                        <td><a href="search.php?search_range=mac_addr&search_string={$originator->getOriginator()}">{$originator->getOriginator()}</a></td>
 						<td>{$originator->getLastSeen()}</td>
 						<td>{$originator->getLinkQuality()}</td>
 						<td>{$originator->getNexthop()}</td>

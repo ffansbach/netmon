@@ -405,7 +405,7 @@ CREATE TABLE IF NOT EXISTS `routers_not_assigned` (
   `update_date` datetime NOT NULL,
   `hostname` varchar(50) NOT NULL,
   `router_auto_assign_login_string` varchar(50) NOT NULL,
-  `interface` varchar(20) NOT NULL,
+  `interface` varchar(20) NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 

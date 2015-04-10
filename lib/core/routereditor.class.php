@@ -7,6 +7,7 @@ require_once(ROOT_DIR.'/lib/core/routersnotassigned.class.php');
 require_once(ROOT_DIR.'/lib/core/config.class.php');
 require_once(ROOT_DIR.'/lib/core/RouterStatus.class.php');
 require_once(ROOT_DIR.'/lib/core/ApiKey.class.php');
+require_once(ROOT_DIR.'/lib/core/Validation.class.php');
 
 class RouterEditor {
 	public function insertNewRouter() {
@@ -15,11 +16,11 @@ class RouterEditor {
 			$_POST['allow_router_auto_assign'] = 0;
 			$_POST['router_auto_assign_login_string'] = '';
 		}
-		
+
 		if($_POST['allow_router_auto_assign'] == '1' AND !empty($_POST['router_auto_assign_login_string'])) {
 			$check_router_auto_assign_login_string = Router_old::getRouterByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
 		}
-		
+
 		if(empty($_POST['hostname'])) {
 			$message[] = array("Bitte geben Sie einen Hostname an.", 2);
 			Message::setMessage($message);
@@ -28,7 +29,7 @@ class RouterEditor {
 			$message[] = array("Ein Router mit dem Hostnamen $_POST[hostname] existiert bereits, bitte wählen Sie einen anderen Hostnamen.", 2);
 			Message::setMessage($message);
 			return array("result"=>false, "router_id"=>$router_id);
-		} elseif (!(is_string($_POST['hostname']) AND strlen($_POST['hostname'])<=255 AND preg_match("/^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/", $_POST['hostname']))) {
+		} elseif (!Validation::isValidHostname($_POST['hostname'])) {
 			//check for valid hostname as specified in rfc 1123
 			//see http://stackoverflow.com/a/3824105
 			$message[] = array("Der Hostname ist ungültig. Erlaubt sind Hostnames nach RFC 1123.", 2);
@@ -58,27 +59,27 @@ class RouterEditor {
 				echo $e->getMessage();
 				echo $e->getTraceAsString();
 			}
-			
+
 			$crawl_cycle_id = Crawling::getLastEndedCrawlCycle();
 			$router_status = New RouterStatus(false, (int)$crawl_cycle_id['id'], (int)$router_id, "offline");
 			$router_status->store();
-			
+
 			//add new api key
 			do {
 				$api_key = new ApiKey(false, ApiKey::generateApiKey(), (int)$router_id, "router", "Initial key");
 				$api_key_id = $api_key->store();
 			} while(!$api_key_id);
-			
+
 			if($_POST['allow_router_auto_assign']=='1' AND !empty($_POST['router_auto_assign_login_string'])) {
 				RoutersNotAssigned::deleteByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
 			}
 			$message[] = array("Der Router $_POST[hostname] wurde angelegt.", 1);
-			
+
 			//Add event for new router
 			//TODO: add Router Object to data array
 			$event = new Event(false, 'router', (int)$router_id, 'new', array());
 			$event->store();
-			
+
 			//Send Message to twitter
 			if($_POST['twitter_notification']=='1') {
 				Message::postTwitterMessage(Config::getConfigValueByName('community_name')." hat einen neuen #Freifunk Knoten! Wo? Schau nach: ".Config::getConfigValueByName('url_to_netmon')."/router.php?router_id=$router_id");
@@ -124,7 +125,7 @@ class RouterEditor {
 			$message[] = array("Ein Router mit dem Hostnamen $_POST[hostname] existiert bereits, bitte wählen Sie einen anderen Hostnamen.", 2);
 			Message::setMessage($message);
 			return false;
-		} elseif (!(is_string($_POST['hostname']) AND strlen($_POST['hostname'])<=255 AND preg_match("/^([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])(\.([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]{0,61}[a-zA-Z0-9]))*$/", $_POST['hostname']))) {
+		} elseif (!Validation::isValidHostname($_POST['hostname'])) {
 			//check for valid hostname as specified in rfc 1123
 			//see http://stackoverflow.com/a/3824105
 			$message[] = array("Der Hostname ist ungültig. Erlaubt sind Hostnames nach RFC 1123.", 2);
@@ -139,7 +140,7 @@ class RouterEditor {
 				$_POST['latitude'] = 0;
 				$_POST['longitude'] = 0;
 			}
-			
+
 			try {
 				$stmt = DB::getInstance()->prepare("UPDATE routers SET
 										update_date=NOW(),
@@ -159,11 +160,11 @@ class RouterEditor {
 				echo $e->getMessage();
 				echo $e->getTraceAsString();
 			}
-			
+
 			if($_POST['allow_router_auto_assign']=='1' AND !empty($_POST['router_auto_assign_login_string'])) {
 				RoutersNotAssigned::deleteByAutoAssignLoginString($_POST['router_auto_assign_login_string']);
 			}
-			
+
 			if ($result>0) {
 				$message[] = array("Die Änderungen am Router $_POST[hostname] wurden gespeichert.", 1);
 				Message::setMessage($message);

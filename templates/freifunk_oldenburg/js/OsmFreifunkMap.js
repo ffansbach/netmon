@@ -12,7 +12,7 @@ function onPopupClose(evt) {
 
 function onFeatureSelect(feature) {
 	selectedFeature = feature;
-	popup = new OpenLayers.Popup.FramedCloud("chicken", 
+	popup = new OpenLayers.Popup.FramedCloud("chicken",
 		feature.geometry.getBounds().getCenterLonLat(),
 		new OpenLayers.Size(150,150),
 		"<h2>"+feature.attributes.name + "</h2><div>" + feature.attributes.description + "</div>",
@@ -76,7 +76,7 @@ function setPolygonLocation(obj){
             var in_options = {
                 'internalProjection': map.baseLayer.projection,
                 'externalProjection': new OpenLayers.Projection("EPSG:4326")
-            };   
+            };
             var out_options = {
                 'internalProjection': map.baseLayer.projection,
                 'externalProjection': new OpenLayers.Projection("EPSG:4326")
@@ -107,7 +107,7 @@ function setPolygonLocation(obj){
                 gml2: new OpenLayers.Format.GML.v2(gmlOptionsIn),
                 gml3: new OpenLayers.Format.GML.v3(gmlOptionsIn),
                 kml: new OpenLayers.Format.KML(kmlOptionsIn)
-              }, 
+              },
               'out': {
                 wkt: new OpenLayers.Format.WKT(out_options),
                 geojson: new OpenLayers.Format.GeoJSON(out_options),
@@ -115,7 +115,7 @@ function setPolygonLocation(obj){
                 gml2: new OpenLayers.Format.GML.v2(gmlOptionsOut),
                 gml3: new OpenLayers.Format.GML.v3(gmlOptionsOut),
                 kml: new OpenLayers.Format.KML(out_options)
-              } 
+              }
             };
 
 
@@ -156,7 +156,7 @@ function fullmap(community_location_longitude, community_location_latitude, comm
 	// Initialize the map
 	map = new OpenLayers.Map ("map", {
 		controls:[
-				new OpenLayers.Control.ScaleLine(), 
+				new OpenLayers.Control.ScaleLine(),
 				new OpenLayers.Control.TouchNavigation({
 					dragPanOptions: {
 						enableKinetic: true
@@ -176,12 +176,12 @@ function fullmap(community_location_longitude, community_location_latitude, comm
 	var ghybrid = new OpenLayers.Layer.Google("Google Hybrid",{type: google.maps.MapTypeId.HYBRID, numZoomLevels: 20});
 	var gsat = new OpenLayers.Layer.Google("Google Satellite",{type: google.maps.MapTypeId.SATELLITE, numZoomLevels: 22});
 	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid]);
-	
+
 	//Define data layers shown on top of the map and add them to the map
-	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters');
-	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');
-	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
-	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
+	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=ApiMap&section=getRouters');
+	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=ApiMap&section=getRoutersTraffic');
+	var layer_clients = loadKmlLayer('Clients ', './api.php?class=ApiMap&section=getRoutersClients');
+	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=ApiMap&section=batman_advanced_conn_nexthop');
 	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop]);
 
 	// Set map center
@@ -192,14 +192,14 @@ function fullmap(community_location_longitude, community_location_latitude, comm
 
 	//get and apply params from permalink (overwrites values set before)
 	map.addControl(new OpenLayers.Control.ArgParser());
-	
+
 	//Add control panels
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 	map.addControl(new OpenLayers.Control.PanZoomBar());
 	map.addControl(new OpenLayers.Control.MousePosition());
 	map.addControl(new OpenLayers.Control.Permalink());
 	map.addControl(new OpenLayers.Control.Attribution());
-	
+
 	// Define bubbles
 	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
@@ -214,7 +214,7 @@ function router_map(highlight_router_id) {
 
 	// Initialize the map
 	map = new OpenLayers.Map ("map", {
-		controls:[new OpenLayers.Control.ScaleLine(), 
+		controls:[new OpenLayers.Control.ScaleLine(),
 				new OpenLayers.Control.TouchNavigation({
 					dragPanOptions: {
 						enableKinetic: true
@@ -236,12 +236,12 @@ function router_map(highlight_router_id) {
   	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid]);
 
 	//Define data layers shown on top of the map and add them to the map
-	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters&highlight_router_id='+highlight_router_id);
-	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');
-	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
-	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
+	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=ApiMap&section=getRouters&highlight_router_id='+highlight_router_id);
+	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=ApiMap&section=getRoutersTraffic');
+	var layer_clients = loadKmlLayer('Clients ', './api.php?class=ApiMap&section=getRoutersClients');
+	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=ApiMap&section=batman_advanced_conn_nexthop');
 	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop]);
-	
+
 	//Add control panels
 	map.addControl(new OpenLayers.Control.LayerSwitcher());
 	map.addControl(new OpenLayers.Control.PanZoom());
@@ -251,7 +251,7 @@ function router_map(highlight_router_id) {
 	point = new OpenLayers.LonLat(lon, lat);
 	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
 	map.setCenter(point, zoom);
-	
+
 	// Define bubbles
 	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
@@ -282,12 +282,12 @@ function router_map_embed(highlight_router_id) {
   	map.addLayers([layerMapnik]);
 
 	//Define data layers shown on top of the map and add them to the map
-	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters&highlight_router_id='+highlight_router_id);
-	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');
-	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
-	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
+	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=ApiMap&section=getRouters&highlight_router_id='+highlight_router_id);
+	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=ApiMap&section=getRoutersTraffic');
+	var layer_clients = loadKmlLayer('Clients ', './api.php?class=ApiMap&section=getRoutersClients');
+	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=ApiMap&section=batman_advanced_conn_nexthop');
 	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop]);
-	
+
 	//Add control panels
 	map.addControl(new OpenLayers.Control.Attribution());
 
@@ -295,7 +295,7 @@ function router_map_embed(highlight_router_id) {
 	point = new OpenLayers.LonLat(lon, lat);
 	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
 	map.setCenter(point, 15);
-	
+
 	// Define bubbles
 	selectControl = new OpenLayers.Control.SelectFeature([layer_nodes], {onSelect: onFeatureSelect, onUnselect: onFeatureUnselect});
 	map.addControl(selectControl);
@@ -309,7 +309,7 @@ function community_location_map(community_location_longitude, community_location
 
 	// Initialize the map
 	map = new OpenLayers.Map ("map", {
-		controls:[new OpenLayers.Control.ScaleLine(), 
+		controls:[new OpenLayers.Control.ScaleLine(),
 				new OpenLayers.Control.TouchNavigation({
 					dragPanOptions: {
 						enableKinetic: true
@@ -340,7 +340,7 @@ function community_location_map(community_location_longitude, community_location
 	point = new OpenLayers.LonLat(community_location_longitude, community_location_latitude);
 	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
 	map.setCenter(point, community_location_zoom);
-	
+
 	//Register Events
 	map.events.register('move', map, function (e) {
 		var zoom = map.getZoom();
@@ -348,7 +348,7 @@ function community_location_map(community_location_longitude, community_location
 			new OpenLayers.Projection("EPSG:900913"),
 			new OpenLayers.Projection("EPSG:4326")
 		);
-	
+
 		document.getElementById('community_location_longitude').value = lonlat.lon;
 		document.getElementById('community_location_latitude').value = lonlat.lat;
 		document.getElementById('community_location_zoom').value = zoom;
@@ -362,7 +362,7 @@ function new_router_map(community_location_longitude, community_location_latitud
 
 	// Initialize the map
 	map = new OpenLayers.Map ("map", {
-		controls:[new OpenLayers.Control.ScaleLine(), 
+		controls:[new OpenLayers.Control.ScaleLine(),
 				new OpenLayers.Control.TouchNavigation({
 					dragPanOptions: {
 						enableKinetic: true
@@ -395,7 +395,7 @@ function new_router_map(community_location_longitude, community_location_latitud
 	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
 	community_location_zoom = parseFloat(community_location_zoom)+1;
 	map.setCenter(point, community_location_zoom);
-	
+
 	//Register Events
 	map.events.register('click', map, function (e) {
 		var purelonlat = map.getLonLatFromPixel(e.xy);
@@ -403,14 +403,14 @@ function new_router_map(community_location_longitude, community_location_latitud
 			new OpenLayers.Projection("EPSG:900913"),
 			new OpenLayers.Projection("EPSG:4326")
 		);
-		
+
 		document.getElementById('longitude').value = lonlat.lon;
 		document.getElementById('latitude').value = lonlat.lat;
 
 		markerslayer.clearMarkers();
                 var icon = new OpenLayers.Icon('./templates/'+template+'/img/ffmap/clients_0_traffic_1.png', new OpenLayers.Size(60,60));
                 markerslayer.addMarker(new OpenLayers.Marker(purelonlat, icon));
-		
+
 	});
 }
 
@@ -421,7 +421,7 @@ function edit_router_map(community_location_longitude, community_location_latitu
 
 	// Initialize the map
 	map = new OpenLayers.Map ("map", {
-		controls:[new OpenLayers.Control.ScaleLine(), 
+		controls:[new OpenLayers.Control.ScaleLine(),
 				new OpenLayers.Control.TouchNavigation({
 					dragPanOptions: {
 						enableKinetic: true
@@ -457,12 +457,12 @@ function edit_router_map(community_location_longitude, community_location_latitu
 		var longitude = router_longitude
 		var latitude = router_latitude
 	}
-	
+
 	point = new OpenLayers.LonLat(longitude, latitude);
 	point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
 	community_location_zoom = parseFloat(community_location_zoom)+1;
 	map.setCenter(point, community_location_zoom);
-	
+
 	//Register Events
 	map.events.register('click', map, function (e) {
 		var purelonlat = map.getLonLatFromPixel(e.xy);
@@ -470,7 +470,7 @@ function edit_router_map(community_location_longitude, community_location_latitu
 			new OpenLayers.Projection("EPSG:900913"),
 			new OpenLayers.Projection("EPSG:4326")
 		);
-		
+
 		document.getElementById('longitude').value = lonlat.lon;
 		document.getElementById('latitude').value = lonlat.lat;
 
@@ -478,12 +478,12 @@ function edit_router_map(community_location_longitude, community_location_latitu
 		var icon = new OpenLayers.Icon('./templates/'+template+'/img/ffmap/clients_0_traffic_1.png', new OpenLayers.Size(60,60));
 		markerslayer.addMarker(new OpenLayers.Marker(purelonlat, icon));
 	});
-	
+
 	if(router_longitude != 0 & router_latitude != 0) {
 		var icon = new OpenLayers.Icon('./templates/'+template+'/img/ffmap/clients_0_traffic_1.png', new OpenLayers.Size(60,60));
 		point = new OpenLayers.LonLat(router_longitude, router_latitude);
 		point.transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-	
+
 		markerslayer.addMarker(new OpenLayers.Marker(point, icon));
 	}
 
