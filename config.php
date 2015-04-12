@@ -56,6 +56,7 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		$smarty->assign('hours_to_keep_history_table', ConfigLine::configByName('hours_to_keep_history_table'));
 		$smarty->assign('crawl_cycle_length_in_minutes', ConfigLine::configByName('crawl_cycle_length_in_minutes'));
 		$smarty->assign('crawl_interfaces', ConfigLine::configByName('crawl_interfaces'));
+		$smarty->assign('crawl_range', ConfigLine::configByName('crawl_range'));
 		$smarty->assign('router_status_interface_whitelist', ConfigLine::configByName('router_status_interface_whitelist'));
 	
 		
@@ -81,6 +82,7 @@ if(Permission::checkPermission(PERM_ROOT)) {
 		Config::writeConfigLine('hours_to_keep_history_table', $_POST['hours_to_keep_history_table']);
 		Config::writeConfigLine('crawl_cycle_length_in_minutes', $_POST['crawl_cycle_length_in_minutes']);
 		Config::writeConfigLine('crawl_interfaces', $_POST['crawl_interfaces']);
+		Config::writeConfigLine('crawl_range', $_POST['crawl_range']);
 		Config::writeConfigLine('router_status_interface_whitelist', $_POST['router_status_interface_whitelist']);
 		
 		$message[] = array('Die Daten wurden gespeichert.', 1);

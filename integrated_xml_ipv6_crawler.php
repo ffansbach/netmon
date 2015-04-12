@@ -43,7 +43,7 @@
 	echo "	ping_timeout: $ping_timeout\n";
 	echo "	crawl_timeout: $crawl_timeout\n";
 	echo "	network_connection_ipv6_interface: $network_connection_ipv6_interface\n";
-	echo "	interfaces_used_for_crawling: "; foreach($crawl_interfaces as $iface) echo $iface." "; echo "\n";
+	echo "	crawl_interfaces: "; foreach($crawl_interfaces as $iface) echo $iface." "; echo "\n";
 	echo "	actual_crawl_cycle: ".$actual_crawl_cycle."\n";
 
 	//fetch all routers that need to be crawled by a crawler. Respect offset and limit!
