@@ -20,7 +20,7 @@ class Crawl {
 
 		/**Insert Router Interfaces*/
 		foreach($data['interface_data'] as $sendet_interface) {
-			if (!Validation::isValidInterfaceName($sendet_interface['name']))
+			if (!in_array($sendet_interface['name'], explode(",", ConfigLine::configByName('router_status_interface_whitelist'))))
 				continue;
 
 			//Update RRD Graph DB

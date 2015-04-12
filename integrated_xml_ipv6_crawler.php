@@ -33,7 +33,8 @@
 	$ping_hard_timeout = 2; // set the timout for each ping command to X s
 	$crawl_timeout = 18; // timeout after X seconds on fetching crawldata
 	$network_connection_ipv6_interface = ConfigLine::configByName("network_connection_ipv6_interface"); //use this interface to connect to ipv6 linc local hosts
-	$interfaces_used_for_crawling = array("br-mesh", "br-client", "floh_fix", "tata_fix"); //use the ip adresses of these interfaces for crawling
+	$crawl_interfaces = explode(",", ConfigLine::configByName("crawl_interfaces"));
+	//array("br-mesh", "br-client", "floh_fix", "tata_fix"); //use the ip adresses of these interfaces for crawling
 
 	$actual_crawl_cycle = Crawling::getActualCrawlCycle()['id'];
 
@@ -42,7 +43,7 @@
 	echo "	ping_timeout: $ping_timeout\n";
 	echo "	crawl_timeout: $crawl_timeout\n";
 	echo "	network_connection_ipv6_interface: $network_connection_ipv6_interface\n";
-	echo "	interfaces_used_for_crawling: "; foreach($interfaces_used_for_crawling as $iface) echo $iface; echo "\n";
+	echo "	interfaces_used_for_crawling: "; foreach($crawl_interfaces as $iface) echo $iface." "; echo "\n";
 	echo "	actual_crawl_cycle: ".$actual_crawl_cycle."\n";
 
 	//fetch all routers that need to be crawled by a crawler. Respect offset and limit!
@@ -50,7 +51,7 @@
 								 (int)$router_offset, (int)$router_limit, "router_id", "asc");
 	foreach($routerlist->getRouterlist() as $key=>$router) {
 		echo ($key+1).". crawling Router ".$router->getHostname()." (".$router->getRouterId().")\n";
-		foreach($interfaces_used_for_crawling as $name) {
+		foreach($crawl_interfaces as $name) {
 			echo "	Fetching IP-Addresses of interface ".$name."\n";
 			$networkinterface = new Networkinterface(false, $router->getRouterId(), $name);
 			if($networkinterface->fetch()) {
