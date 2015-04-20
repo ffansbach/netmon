@@ -23,8 +23,8 @@
 	echo "Organizing crawl cycles\n";
 	//Get crawl cycle data
 	$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-	$crawl_cycle_start_buffer = ConfigLine::configByName("crawl_cycle_start_buffer");
-	if(empty($actual_crawl_cycle) OR strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-$crawl_cycle_start_buffer)*60)<=time()) {
+	$crawl_cycle_start_buffer_in_minutes = ConfigLine::configByName("crawl_cycle_start_buffer_in_minutes");
+	if(empty($actual_crawl_cycle) OR (strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-$crawl_cycle_start_buffer_in_minutes)*60))<=time()) {
 		echo "Create crawl data for offline routers\n";
 		//Set all routers in old crawl cycle that have not been crawled yet to status offline
 		try {
@@ -84,72 +84,72 @@
 		
 		$client_count = Router_old::countRoutersByCrawlCycleId($actual_crawl_cycle['id']);
 		RrdTool::updateNetmonClientCount($client_count);
-	} else {
-		echo "There is an crawl cycle running actually. Doing nothing.\n";
-	}
+		
+		/**
+		 * Clean database
+		 */
+		echo "Clean database\n";
+		
+		//Delete old Crawls
+		echo "Remove old crawl data\n";
+		Crawling::deleteOldCrawlDataExceptLastOnlineCrawl(($GLOBALS['hours_to_keep_mysql_crawl_data']*60*60));
+		
+		//Remove old events
+		echo "Remove old events\n";
+		$secondsToKeepHistoryTable = 60*60*$GLOBALS['hours_to_keep_history_table'];
+		try {
+			$stmt = DB::getInstance()->prepare("DELETE FROM events WHERE UNIX_TIMESTAMP(create_date) < UNIX_TIMESTAMP(NOW())-?");
+			$stmt->execute(array($secondsToKeepHistoryTable));
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
+		
+		//Remove old not assigned routers
+		echo "Remove not assigned routers that haven´t been updated for a while\n";
+		DB::getInstance()->exec("DELETE FROM routers_not_assigned WHERE TO_DAYS(update_date) < TO_DAYS(NOW())-2");
+		
+		/**
+		* Crawl
+		**/
+		echo "Do crawling\n";
+		
+		//Crawl routers
+		echo "Crawl routers\n";
 	
-	/**
-	 * Clean database
-	 */
-	echo "Clean database\n";
+		if (!isset($GLOBALS['crawllog']))
+			$GLOBALS['crawllog'] = false;
 	
-	//Delete old Crawls
-	echo "Remove old crawl data\n";
-	Crawling::deleteOldCrawlDataExceptLastOnlineCrawl(($GLOBALS['hours_to_keep_mysql_crawl_data']*60*60));
-	
-	//Remove old events
-	echo "Remove old events\n";
-	$secondsToKeepHistoryTable = 60*60*$GLOBALS['hours_to_keep_history_table'];
-	try {
-		$stmt = DB::getInstance()->prepare("DELETE FROM events WHERE UNIX_TIMESTAMP(create_date) < UNIX_TIMESTAMP(NOW())-?");
-		$stmt->execute(array($secondsToKeepHistoryTable));
-	} catch(PDOException $e) {
-		echo $e->getMessage();
-		echo $e->getTraceAsString();
-	}
-	
-	//Remove old not assigned routers
-	echo "Remove not assigned routers that haven´t been updated for a while\n";
-	DB::getInstance()->exec("DELETE FROM routers_not_assigned WHERE TO_DAYS(update_date) < TO_DAYS(NOW())-2");
-	
-	/**
-	* Crawl
-	**/
-	echo "Do crawling\n";
-	
-	//Crawl routers
-	echo "Crawl routers\n";
-
-	if (!isset($GLOBALS['crawllog']))
-		$GLOBALS['crawllog'] = false;
-
-	if ($GLOBALS['crawllog'] && !is_dir(ROOT_DIR."/logs/")) {
-		mkdir(ROOT_DIR."/logs/");         
-	}
-	
-	$range = ConfigLine::configByName("crawl_range");
-	$routers_count = Router_old::countRouters();
-	for ($i=0; $i<=$routers_count; $i+=$range) {
-		//start an independet crawl process for each $range routers to crawl routers simultaniously
-		$return = array();
-		if ($GLOBALS['crawllog'])
-			$logcmd = "> ".ROOT_DIR."/logs/crawler_".$i."-".($i+$range).".txt";
-		else
-			$logcmd = "> /dev/null";
-		$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range." ".$logcmd." & echo $!";
-		echo "Initializing crawl process to crawl routers ".$i." to ".($i+$range)."\n";
-		echo "Running command: $cmd\n";
-		exec($cmd, $return);
-		echo "The initialized crawl process has the pid $return[0]\n";
-	}
-	
-	/**
-	 * Notifications
-	 */
-	
-	echo "Sending notifications\n";
-	$event_notification_list = new EventNotificationList();
-	$event_notification_list->notify();
+		if ($GLOBALS['crawllog'] && !is_dir(ROOT_DIR."/logs/")) {
+			mkdir(ROOT_DIR."/logs/");         
+		}
+		
+		$range = ConfigLine::configByName("crawl_range");
+		$routers_count = Router_old::countRouters();
+		for ($i=0; $i<=$routers_count; $i+=$range) {
+			//start an independet crawl process for each $range routers to crawl routers simultaniously
+			$return = array();
+			if ($GLOBALS['crawllog'])
+				$logcmd = "> ".ROOT_DIR."/logs/crawler_".$i."-".($i+$range).".txt";
+			else
+				$logcmd = "> /dev/null";
+			$cmd = "php ".ROOT_DIR."/integrated_xml_ipv6_crawler.php -o".$i." -l".$range." ".$logcmd." & echo $!";
+			echo "Initializing crawl process to crawl routers ".$i." to ".($i+$range)."\n";
+			echo "Running command: $cmd\n";
+			exec($cmd, $return);
+			echo "The initialized crawl process has the pid $return[0]\n";
+		}
+		
+		/**
+		 * Notifications
+		 */
+		
+		echo "Sending notifications\n";
+		$event_notification_list = new EventNotificationList();
+		$event_notification_list->notify();
+        } else {
+                echo "There is an crawl cycle running actually. Doing nothing.\n";
+        }
 	
 	echo "Done\n";
 ?>
