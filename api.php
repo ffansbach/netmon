@@ -5,7 +5,8 @@
 class Api {
 	function __construct() {
 		if (isset($_REQUEST['class']) AND isset($_REQUEST['section'])) {
-			if($_REQUEST['class'] == 'apiMap' && method_exists($_REQUEST['class'], $_REQUEST['section'])) {
+			if(($_REQUEST['class'] == 'apiMap' || $_REQUEST['class'] == 'ApiMap') &&
+				method_exists($_REQUEST['class'], $_REQUEST['section'])) {
 				eval($_REQUEST['class']."::".$_REQUEST['section']."();");
 			} else {
 				echo "Class or section does not exist.";
