@@ -99,24 +99,13 @@
 	
 	//Remove old events
 	echo "Remove old events\n";
-	//Get number of total events in db
-	$total_count = new Eventlist();
-	$total_count->init(false, false, false, 0, 0);
-	$total_count = $total_count->getTotalCount();
-	//Fetch the 50 oldest events from db and check if they need to be deleted.
-	//Then fetch the next 50 oldest events until you get to an event that is not old enough to delete it
-	//or if you looped through all events.
-	for($offset=0; $offset<$total_count; $offset+=50) {
-		$eventlist = new Eventlist();
-		$eventlist->init(false, false, false, $offset, 50, 'create_date', 'asc');
-		foreach($eventlist->getEventlist() as $event) {
-			if($event->getCreateDate() < time()-60*60*$GLOBALS['hours_to_keep_history_table']) {
-				$event->delete();
-			} else {
-				$offset=$total_count;
-				break;
-			}
-		}
+	$secondsToKeepHistoryTable = 60*60*$GLOBALS['hours_to_keep_history_table'];
+	try {
+		$stmt = DB::getInstance()->prepare("DELETE FROM events WHERE UNIX_TIMESTAMP(create_date) < UNIX_TIMESTAMP(NOW())-?");
+		$stmt->execute(array($secondsToKeepHistoryTable));
+	} catch(PDOException $e) {
+		echo $e->getMessage();
+		echo $e->getTraceAsString();
 	}
 	
 	//Remove old not assigned routers
