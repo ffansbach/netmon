@@ -403,7 +403,6 @@
 			$domxmlelement->appendChild($domdocument->createElement("allow_router_auto_assign", $this->getAllowRouterAutoAssign()));
 			$domxmlelement->appendChild($domdocument->createElement("router_auto_assign_login_string", $this->getRouterAutoAssignLoginString()));
 			$domxmlelement->appendChild($domdocument->createElement("description", $this->getDescription()));
-			$domxmlelement->appendChild($domdocument->createElement("mac", $this->getMac()));
 			$domxmlelement->appendChild($domdocument->createElement("location", $this->getLocation()));
 			$domxmlelement->appendChild($domdocument->createElement("latitude", $this->getLatitude()));
 			$domxmlelement->appendChild($domdocument->createElement("longitude", $this->getLongitude()));
