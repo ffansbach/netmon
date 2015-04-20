@@ -23,7 +23,8 @@
 	echo "Organizing crawl cycles\n";
 	//Get crawl cycle data
 	$actual_crawl_cycle = Crawling::getActualCrawlCycle();
-	if(empty($actual_crawl_cycle) OR strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-1)*60)<=time()) {
+	$crawl_cycle_start_buffer = ConfigLine::configByName("crawl_cycle_start_buffer");
+	if(empty($actual_crawl_cycle) OR strtotime($actual_crawl_cycle['crawl_date'])+(($GLOBALS['crawl_cycle']-$crawl_cycle_start_buffer)*60)<=time()) {
 		echo "Create crawl data for offline routers\n";
 		//Set all routers in old crawl cycle that have not been crawled yet to status offline
 		try {

@@ -7,9 +7,13 @@
 	<p>Stunden nach denen Crawl Daten gelöscht werden sollen:<br><input name="hours_to_keep_mysql_crawl_data" type="text" size="30" value="{$hours_to_keep_mysql_crawl_data}"></p>
 	<p>Stunden nach denen die History gelöscht werden soll:<br><input name="hours_to_keep_history_table" type="text" size="30" value="{$hours_to_keep_history_table}"></p>
 	<p>Länge eines Crawl Zyklus in Minuten:<br><input name="crawl_cycle_length_in_minutes" type="text" size="30" value="{$crawl_cycle_length_in_minutes}"></p>
+	<p>Puffer in Minuten in denen vom Crawl Zyklus abgewichen werden darf:<br><input name="crawl_cycle_start_buffer_in_minutes" type="text" size="30" value="{$crawl_cycle_start_buffer_in_minutes}"></p>
 	<p>Interfaces die gecrawled werden:<br><input name="crawl_interfaces" type="text" size="30" value="{$crawl_interfaces}"></p>
 	<p>Anzahl Router je Crawl-Prozess:<br><input name="crawl_range" type="text" size="30" value="{$crawl_range}"></p>
 	<p>Routerstatus Interface Whitelist:<br><input name="router_status_interface_whitelist" type="text" size="30" value="{$router_status_interface_whitelist}"></p>
+	
+	
+	
 	
 	<p><input type="submit" value="Absenden"></p>
 </form>
