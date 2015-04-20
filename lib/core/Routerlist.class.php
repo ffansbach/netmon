@@ -122,7 +122,7 @@
 				$new_router = new Router((int)$router['r_id'], (int)$router['r_user_id'], $router['r_hostname'],
 										 $router['r_description'], $router['r_location'], $router['r_latitude'],
 										 $router['r_longitude'], (int)$router['r_chipset_id'], $router['r_crawl_method'],
-										 $router['r_create_date'], $router['r_update_date']);
+										 $router['r_create_date'], $router['r_update_date'], $router['r_router_auto_assign_login_string']);
 				$new_router->setUser(new User((int)$router['u_id'], $router['u_session_id'], $router['u_nickname'],
 											  $router['u_password'], $router['u_openid'], $router['u_api_key'],
 											  $router['u_vorname'], $router['u_nachname'], $router['u_strasse'],
