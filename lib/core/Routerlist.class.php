@@ -120,6 +120,7 @@
 			
 			foreach($result as $router) {
 				$new_router = new Router((int)$router['r_id'], (int)$router['r_user_id'], $router['r_hostname'],
+										 $router['r_allow_router_auto_assign'], $router['r_router_auto_assign_hash'],
 										 $router['r_description'], $router['r_location'], $router['r_latitude'],
 										 $router['r_longitude'], (int)$router['r_chipset_id'], $router['r_crawl_method'],
 										 $router['r_create_date'], $router['r_update_date'], $router['r_allow_router_auto_assign']);

@@ -15,24 +15,28 @@
  		private $router_id = 0;
 		private $user_id = 0;
 		private $hostname = "";
+		private $allow_router_auto_assign = 0;
+		private $router_auto_assign_login_string = "";
 		private $description = "";
 		private $location = "";
 		private $latitude = "";
 		private $longitude = "";
 		private $chipset_id = 0;
 		private $crawl_method = "";
-		private $mac = "";
 
 		private $user = null;
 		private $statusdata = null;
 		private $chipset = null;
 
-		public function __construct($router_id=false, $user_id=false, $hostname=false, $description=false,
+		public function __construct($router_id=false, $user_id=false, $hostname=false, $allow_router_auto_assign=false, 
+									$router_auto_assign_login_string=false, $description=false,
 									$location=false, $latitude=false, $longitude=false, $chipset_id=false,
-									$crawl_method=false, $create_date=false, $update_date=false, $mac=false) {
+									$crawl_method=false, $create_date=false, $update_date=false) {
 			$this->setRouterId($router_id);
 			$this->setUserId($user_id);
 			$this->setHostname($hostname);
+			$this->setAllowRouterAutoAssign($allow_router_auto_assign);
+			$this->setRouterAutoAssignLoginString($router_auto_assign_login_string);
 			$this->setDescription($description);
 			$this->setLocation($location);
 			$this->setLatitude($latitude);
@@ -41,7 +45,6 @@
 			$this->setCrawlMethod($crawl_method);
 			$this->setCreateDate($create_date);
 			$this->setUpdateDate($update_date);
-			$this->setMac($mac);
 		}
 
 		public function fetch() {
@@ -53,6 +56,8 @@
 														(id = :router_id OR :router_id=0) AND
 														(user_id = :user_id OR :user_id=0) AND
 														(hostname = :hostname OR :hostname='') AND
+														(allow_router_auto_assign = :allow_router_auto_assign OR :allow_router_auto_assign='') AND
+														(router_auto_assign_login_string = :router_auto_assign_login_string OR :router_auto_assign_login_string='') AND
 														(description = :description OR :description='') AND
 														(location = :location OR :location='') AND
 														(latitude = :latitude OR :latitude='') AND
@@ -60,11 +65,12 @@
 														(chipset_id = :chipset_id OR :chipset_id=0) AND
 														(crawl_method = :crawl_method OR :crawl_method='') AND
 														(create_date = :create_date OR :create_date=0) AND
-														(update_date = :update_date OR :update_date=0) AND
-														(router_auto_assign_login_string = :mac OR :mac='')");
+														(update_date = :update_date OR :update_date=0)");
 				$stmt->bindParam(':router_id', $this->getRouterId(), PDO::PARAM_INT);
 				$stmt->bindParam(':user_id', $this->getUserId(), PDO::PARAM_STR);
 				$stmt->bindParam(':hostname', $this->getHostname(), PDO::PARAM_STR);
+				$stmt->bindParam(':allow_router_auto_assign', $this->getAllowRouterAutoAssign(), PDO::PARAM_STR);
+				$stmt->bindParam(':router_auto_assign_login_string', $this->getRouterAutoAssignLoginString(), PDO::PARAM_STR);
 				$stmt->bindParam(':description', $this->getDescription(), PDO::PARAM_STR);
 				$stmt->bindParam(':location', $this->getLocation(), PDO::PARAM_STR);
 				$stmt->bindParam(':latitude', $this->getLatitude(), PDO::PARAM_STR);
@@ -73,7 +79,6 @@
 				$stmt->bindParam(':crawl_method', $this->getCrawlMethod(), PDO::PARAM_STR);
 				$stmt->bindParam(':create_date', $this->getCreateDate(), PDO::PARAM_INT);
 				$stmt->bindParam(':update_date', $this->getUpdateDate(), PDO::PARAM_INT);
-				$stmt->bindParam(':mac', $this->getMac(), PDO::PARAM_STR);
 				$stmt->execute();
 				$result = $stmt->fetch(PDO::FETCH_ASSOC);
 			} catch(PDOException $e) {
@@ -85,6 +90,8 @@
 				$this->setRouterId((int)$result['router_id']);
 				$this->setUserId((int)$result['user_id']);
 				$this->setHostname($result['hostname']);
+				$this->setAllowRouterAutoAssign($result['allow_router_auto_assign']);
+				$this->setRouterAutoAssignLoginString($result['router_auto_assign_login_string']);
 				$this->setDescription($result['description']);
 				$this->setLocation($result['location']);
 				$this->setLatitude($result['latitude']);
@@ -93,7 +100,6 @@
 				$this->setCrawlMethod($result['crawl_method']);
 				$this->setCreateDate($result['create_date']);
 				$this->setUpdateDate($result['update_date']);
-				$this->setMac($result['router_auto_assign_login_string']);
 				$this->setUser($this->getUserId());
 				$this->setChipset($this->getChipsetId());
 				$this->setStatusdata($this->getRouterId());
@@ -112,6 +118,8 @@
 						$stmt = DB::getInstance()->prepare("UPDATE routers SET
 																	user_id = ?,
 																	hostname = ?,
+																	allow_router_auto_assign = ?,
+																	router_auto_assign_login_string = ?,
 																	description = ?,
 																	location = ?,
 																	latitude = ?,
@@ -120,7 +128,8 @@
 																	crawl_method = ?,
 																	update_date = NOW()
 															WHERE id=?");
-						$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getDescription(), $this->getLocation(),
+						$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getAllowRouterAutoAssign(),
+											$this->getRouterAutoAssignLoginString(), $this->getDescription(), $this->getLocation(),
 											$this->getLatitude(), $this->getLongitude(), $this->getChipsetId(), $this->getCrawlMethod(),
 											$this->getRouterId()));
 						return $stmt->rowCount();
@@ -130,12 +139,15 @@
 					}
 				} elseif($router_test->getRouterId()==0) {
 					try {
-						$stmt = DB::getInstance()->prepare("INSERT INTO routers (user_id, hostname, description, location,
+						$stmt = DB::getInstance()->prepare("INSERT INTO routers (user_id, hostname, allow_router_auto_assign,
+																				router_auto_assign_login_string, description, location,
 																				latitude, longitude, chipset_id, crawl_method,
 																				create_date, update_date)
-															VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
-						$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getDescription(), $this->getLocation(),
-											$this->getLatitude(), $this->getLongitude(), $this->getChipsetId(), $this->getCrawlMethod()));
+															VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+						$stmt->execute(array($this->getUserId(), $this->getHostname(), $this->getDescription(),
+											$this->getAllowRouterAutoAssign(), $this->getRouterAutoAssignLoginString(),
+											$this->getLocation(), $this->getLatitude(), $this->getLongitude(),
+											$this->getChipsetId(), $this->getCrawlMethod()));
 						$this->setRouterId((int)DB::getInstance()->lastInsertId());
 
 						//create event for new router
@@ -220,7 +232,23 @@
 			}
 			return false;
 		}
-
+		
+		public function setAllowRouterAutoAssign($value) {
+			if(is_bool($value) || $value == 1 || $value == 0) {
+				$this->allow_router_auto_assign = $value;
+				return true;
+			}
+			return false;
+		}
+		
+		public function setRouterAutoAssignLoginString($value) {
+			if(is_string($value)) {
+				$this->router_auto_assign_login_string = $value;
+				return true;
+			}
+			return false;
+		}
+		
 		public function setDescription($description) {
 			if(is_string($description)) {
 				$this->description = $description;
@@ -311,14 +339,6 @@
 			return false;
 		}
 
-		public function setMac($mac) {
-			if(is_string($mac)) {
-				$this->mac = $mac;
-				return true;
-			}
-			return false;
-		}
-
 		public function getRouterId() {
 			return $this->router_id;
 		}
@@ -329,6 +349,14 @@
 
 		public function getHostname() {
 			return $this->hostname;
+		}
+		
+		public function getAllowRouterAutoAssign() {
+			return $this->allow_router_auto_assign;
+		}
+		
+		public function getRouterAutoAssignLoginString() {
+			return $this->router_auto_assign_login_string;
 		}
 
 		public function getDescription() {
@@ -367,15 +395,13 @@
 			return  $this->statusdata;
 		}
 
-		public function getMac() {
-			return  $this->mac;
-		}
-
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('router');
 			$domxmlelement->appendChild($domdocument->createElement("router_id", $this->getRouterId()));
 			$domxmlelement->appendChild($domdocument->createElement("user_id", $this->getUserId()));
 			$domxmlelement->appendChild($domdocument->createElement("hostname", $this->gethostname()));
+			$domxmlelement->appendChild($domdocument->createElement("allow_router_auto_assign", $this->getAllowRouterAutoAssign()));
+			$domxmlelement->appendChild($domdocument->createElement("router_auto_assign_login_string", $this->getRouterAutoAssignLoginString()));
 			$domxmlelement->appendChild($domdocument->createElement("description", $this->getDescription()));
 			$domxmlelement->appendChild($domdocument->createElement("mac", $this->getMac()));
 			$domxmlelement->appendChild($domdocument->createElement("location", $this->getLocation()));
