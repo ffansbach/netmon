@@ -1,16 +1,11 @@
-README
------------------
-Netmon ist ein Verwaltungsportal für Freifunknetzwerke, entwickelt von der
-Freifunk Community Oldenburg. Netmon ist freie Software und wird unter der
+Netmon ist ein Verwaltungsportal für Freifunknetzwerke. Netmon ist freie Software und wird unter der
 GPLv3 entwickelt. Dies ist Version 0.3. Diese Version hat Beta-Status.
 
-Alle Notwendigen Informationen, insbesondere auch zur Installation, befinden
-sich auf den folgenden Seiten:
+# Dokumentation
+Die Dokumentation aus dem alten Freifunk Oldenburg Wiki kann im Ordner doc/ eingesehen werden.
 
-Allgemeines zu Netmon: http://wiki.freifunk-ol.de/w/Netmon
-Handbuch: http://wiki.freifunk-ol.de/w/Netmon/Handbuch
-Installation: http://wiki.freifunk-ol.de/w/Netmon/Handbuch#Installation
-Development-Howto: http://wiki.freifunk-ol.de/w/Netmon/Development-HowTo
+# Mailingliste
+https://lists.ffnw.de/mailman/listinfo/netmon-dev
 
-Bugs bitte melden unter:
-http://ticket.freifunk-ol.de/projects/netmon/issues/new
+# Patches einreichen
+Patches können über die Merge-Request Funktion von Gitlab eingereicht werden.
