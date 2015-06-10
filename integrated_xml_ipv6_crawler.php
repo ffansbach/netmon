@@ -29,9 +29,9 @@
 
 	// get configuration values
 	$ping_count = 3; // ping a node X times before fetching data
-	$ping_timeout = 500; // set the timout for each ping to X ms
-	$ping_hard_timeout = 2; // set the timout for each ping command to X s
-	$crawl_timeout = 18; // timeout after X seconds on fetching crawldata
+	$ping_timeout = 1; // set the timout for each ping to X s
+	$ping_hard_timeout = 3; // set the timout for each ping command to X s
+	$crawl_timeout = 10; // timeout after X seconds on fetching crawldata
 	$network_connection_ipv6_interface = ConfigLine::configByName("network_connection_ipv6_interface"); //use this interface to connect to ipv6 linc local hosts
 	$crawl_interfaces = explode(",", ConfigLine::configByName("crawl_interfaces"));
 	//array("br-mesh", "br-client", "floh_fix", "tata_fix"); //use the ip adresses of these interfaces for crawling
