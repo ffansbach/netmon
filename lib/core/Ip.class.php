@@ -318,8 +318,8 @@
 		// converts inet_pton output to string with bits
 		//http://stackoverflow.com/questions/7951061/matching-ipv6-address-to-a-cidr-subnet
 		public static function inet_to_bits($inet, $ipv) {
-			if($ipv==4) $unpacked = unpack('A4', $inet);
-			elseif($ipv==6) $unpacked = unpack('A16', $inet);
+			if($ipv==4) $unpacked = unpack('a4', $inet);
+			elseif($ipv==6) $unpacked = unpack('a16', $inet);
 			
 			$unpacked = str_split($unpacked[1]);
 			$binaryip = '';
