@@ -60,12 +60,23 @@
 			echo $e->getMessage();
 			echo $e->getTraceAsString();
 		}
+		$placeholders = array();
+		$values = array();
 		foreach($result as $interface) {
-			echo "	Inserting offline data for interface ".$interface['name']."\n";
-			$networkinterface_status = new NetworkinterfaceStatus(false, (int)$actual_crawl_cycle['id'],
-																  (int)$interface['id'], (int)$interface['router_id']);
-			$networkinterface_status->store();
+			echo "	Prepare insertion of offline data for interface ".$interface['name']."\n";
+			
+			$placeholders[] = "(?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			array_push($values, (int)$interface['router_id'], (int)$actual_crawl_cycle['id'], (int)$interface['id'], "", "", 0, 0, 0, 0, "", "", "", "", 0, 0);
 		}
+		echo "	Insert offline Data for interfaces in one big statement\n";
+		$stmt = DB::getInstance()->prepare("INSERT INTO crawl_interfaces (router_id, crawl_cycle_id, interface_id, crawl_date,
+																		  name, mac_addr, traffic_rx, traffic_rx_avg,
+																		  traffic_tx, traffic_tx_avg,
+																		  wlan_mode, wlan_frequency, wlan_essid, wlan_bssid,
+																		  wlan_tx_power, mtu)
+											VALUES ".implode(", ", $placeholders));
+		$stmt->execute($values);
+		
 		
 		echo "Close old crawl cycle and create new one\n";
 		//Create new crawl cycle and close old crawl cycle
