@@ -275,7 +275,7 @@ class Register {
 		$text .= "Passwort: $newpassword\n\n";
 		$text .= "Bitte bestaetige die Aenderungen mit einem Klick auf diesen Link:\n";
 		$text .= ConfigLine::configByName('url_to_netmon')."/set_new_password.php?user_id=$user_id&new_passwordhash=".urlencode($new_password_hash)."&oldpassword_hash=".urlencode($old_password_hash)."\n\n";
-		$text .= "Hinweis: sollte das Anklicken des Links nicht funktionieren musst du den link vollstaendig in die Adressleiste deines Webbrowsers kopieren.\n\n";
+		$text .= "Hinweis: sollte das Anklicken des Links nicht funktionieren musst du den link vollstaendig in die Adressleiste deines Webbrowsers kopieren. Insbesondere, wenn sich ein Punkt am Ende des Links befindet, da dieser mit zum Link gehoert!\n\n";
 		$text .= "Liebe Gruesse\n";
 		$text .= ConfigLine::configByName('community_name');
 		
