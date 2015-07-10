@@ -318,8 +318,20 @@
 		// converts inet_pton output to string with bits
 		//http://stackoverflow.com/questions/7951061/matching-ipv6-address-to-a-cidr-subnet
 		public static function inet_to_bits($inet, $ipv) {
-			if($ipv==4) $unpacked = unpack('A4', $inet);
-			elseif($ipv==6) $unpacked = unpack('A16', $inet);
+			//ATTENTION: the inet_pton() function seems to handle adresses
+			//different between PHP version 5.4 and 5.6. Use the following:
+			//PHP 5.4: unpack('A4', $inet) //capitalized A16
+			//PHP 5.6: unpack('a4', $inet) //lowercased a16
+			//The PHP 5.6 change has only been tested with IPv6 (IPv4 is TODO!)
+			if(version_compare(phpversion(), '5.6', '<')) {
+				$ipv4Format = "A4";
+				$ipv6Format = "A16";
+			} else {
+				$ipv4Format = "A4";
+				$ipv6Format = "A16";
+			}
+			if($ipv==4) $unpacked = unpack($ipv4Format, $inet);
+			elseif($ipv==6) $unpacked = unpack($ipv6Format, $inet);
 			
 			$unpacked = str_split($unpacked[1]);
 			$binaryip = '';
