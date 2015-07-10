@@ -327,8 +327,8 @@
 				$ipv4Format = "A4";
 				$ipv6Format = "A16";
 			} else {
-				$ipv4Format = "A4";
-				$ipv6Format = "A16";
+				$ipv4Format = "a4";
+				$ipv6Format = "a16";
 			}
 			if($ipv==4) $unpacked = unpack($ipv4Format, $inet);
 			elseif($ipv==6) $unpacked = unpack($ipv6Format, $inet);
