@@ -46,9 +46,13 @@ try {
 	// no that we have something - compule the data
 	$nodeList = new nodeList();
 
-	$nodeList->setCommunityName('FreifunkEmskirchen');
-	$nodeList->setWebsite('http://www.freifunk-emskirchen.de');
-	$nodeList->setCommunityFile('https://raw.githubusercontent.com/ffansbach/community-files/master/emskirchen.json');
+	$communityName = str_replace(' ', '', $GLOBALS['community_name']);
+	# use domain part of mail_sender_address
+	$communityWebsite  = 'http://www.'.substr(strrchr($GLOBALS['mail_sender_address'], "@"), 1);
+	$communityFilename = strtolower(substr(strrchr($GLOBALS['community_name'], " "), 1));
+	$nodeList->setCommunityName($communityName);
+	$nodeList->setWebsite($communityWebsite);
+	$nodeList->setCommunityFile('https://raw.githubusercontent.com/ffansbach/community-files/master/'.$communityFilename.'.json');
 
 	foreach($result as $resultNode)
 	{
@@ -62,7 +66,7 @@ try {
 		}
 
 		$node->setType('AccessPoint');
-		$node->setHref('https://netmon.freifunk-emskirchen.de/router.php?router_id='.$resultNode['id']);
+		$node->setHref($GLOBALS['url_to_netmon'].'router.php?router_id='.$resultNode['id']);
 
 		$node->setStatus(
 			($resultNode['status'] == 'online'),
@@ -79,7 +83,7 @@ try {
 		$nodeList->addPerson(
 			$resultNode['u_id'],
 			$resultNode['nickname'],
-			'https://netmon.freifunk-emskirchen.de/user.php?user_id='.$resultNode['u_id']
+			$GLOBALS['url_to_netmon'].'user.php?user_id='.$resultNode['u_id']
 		);
 
 		$nodeList->addNode($node->getNode());
