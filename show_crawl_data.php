@@ -7,9 +7,9 @@
 	if($ip->fetch()) {
 		$return = array();
 		if($ip->getNetwork()->getIpv()==6)
-			$command = "curl -s --max-time 10 -g http://[".$ip->getIp()."%25\$(cat /sys/class/net/".ConfigLine::configByName("network_connection_ipv6_interface")."/ifindex)]/node.data";
+			$command = "curl -s --max-time 10 -g http://[".$ip->getIp()."%25\$(cat /sys/class/net/".ConfigLine::configByName("network_connection_ipv6_interface")."/ifindex)]/node.data | zcat -f";
 		elseif($ip->getNetwork()->getIpv()==4)
-			$command = "curl -s --max-time 10 -g http://".$ip->getIp()."/node.data";
+			$command = "curl -s --max-time 10 -g http://".$ip->getIp()."/node.data | zcat -f";
 		exec($command, $return);
 		$return_string = "";
 		foreach($return as $string) {

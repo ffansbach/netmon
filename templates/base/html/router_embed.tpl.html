@@ -37,7 +37,7 @@
 
 			<h2 style="font-size: 9.5pt;">Aktuelle Statusdaten</h2>
 			<p style="font-size: 8pt;">
-				<b>Status:</b> {if $router->getStatusdata()->getStatus()=="online"}
+            <b>Status:</b> {if $router->getStatusdata() AND $router->getStatusdata()->getStatus()=="online"}
 										<img width="13" src="./templates/{$template}/img/ffmap/status_up_small.png" alt="online">
 									{elseif $router->getStatusdata()->getStatus()=="offline"}
 										<img src="./templates/{$template}/img/ffmap/status_down_small.png" alt="offline">

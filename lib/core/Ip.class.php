@@ -1,7 +1,7 @@
 <?php
 	require_once(ROOT_DIR.'/lib/core/Object.class.php');
 	require_once(ROOT_DIR.'/lib/core/Network.class.php');
-	
+
 	class Ip extends Object {
 		private $ip_id = 0;
 		private $interface_id = 0;
@@ -10,7 +10,7 @@
 		private $statusdata = array();
 		private $statusdata_history = array();
 		private $network = null;
-		
+
 		public function __construct($ip_id=false, $interface_id=false, $network_id=false, $ip=false,
 									$create_date=false, $update_date=false) {
 				$this->setIpId($ip_id);
@@ -20,7 +20,7 @@
 				$this->setCreateDate($create_date);
 				$this->setUpdateDate($update_date);
 		}
-		
+
 		public function fetch() {
 			$result = array();
 			try {
@@ -45,7 +45,7 @@
 				echo $e->getMessage();
 				echo $e->getTraceAsString();
 			}
-			
+
 			if(!empty($result)) {
 				$this->setIpId((int)$result['id']);
 				$this->setInterfaceId((int)$result['interface_id']);
@@ -55,10 +55,10 @@
 				$this->setUpdateDate($result['update_date']);
 				return true;
 			}
-			
+
 			return false;
 		}
-		
+
 		public function store() {
 			//if address is ipv6 link local, then it is possible to store more than one of these adresses
 			//on different interfaces in different networks. So we need to check if the address already exists
@@ -72,7 +72,7 @@
 				} else {
 					$ip = new Ip(false, false, $this->getNetworkId(), $this->getIp());
 					$result = $ip->fetch();
-					
+
 					if($this->getIpId() != 0 AND (($result AND $ip->getIpId()==$this->getIpId()) OR !$result)) {
 						return $this->update();
 					} elseif($this->getInterfaceId()!=0 AND $this->getIp()!="" AND $this->getNetworkId()!=0 AND $ip->getIpId()==0) {
@@ -80,10 +80,10 @@
 					}
 				}
 			}
-			
+
 			return false;
 		}
-		
+
 		private function update() {
 			try {
 				$stmt = DB::getInstance()->prepare("UPDATE ips SET
@@ -99,7 +99,7 @@
 				echo $e->getTraceAsString();
 			}
 		}
-		
+
 		private function insert() {
 			try {
 				$stmt = DB::getInstance()->prepare("INSERT INTO ips (interface_id, network_id, ip, create_date, update_date)
@@ -111,7 +111,7 @@
 				echo $e->getTraceAsString();
 			}
 		}
-		
+
 		public function delete() {
 			if($this->getIpId() != 0) {
 				try {
@@ -125,17 +125,17 @@
 			}
 			return false;
 		}
-		
+
 		public function setIpId($ip_id) {
 			if(is_int($ip_id))
 				$this->ip_id = $ip_id;
 		}
-		
+
 		public function setInterfaceId($interface_id) {
 			if(is_int($interface_id))
 				$this->interface_id = $interface_id;
 		}
-		
+
 		public function setNetworkId($network_id) {
 			if(is_int($network_id)) {
 				$network = new Network($network_id);
@@ -147,7 +147,7 @@
 			}
 			return false;
 		}
-		
+
 		public function setIp($ip) {
 			$ip = trim($ip);
 			if(is_string($ip) AND $this->getNetwork()!=null AND Ip::isValidIp($ip, $this->getNetwork()->getIpv())) {
@@ -159,44 +159,44 @@
 					return true;
 				}
 			}
-			
+
 			return false;
 		}
-		
+
 		public function getIpId() {
 			return $this->ip_id;
 		}
-		
+
 		public function getInterfaceId() {
 			return $this->interface_id;
 		}
-		
+
 		public function getNetworkId() {
 			return $this->network_id;
 		}
-		
+
 		public function getIp() {
 			return $this->ip;
 		}
-		
+
 		/**
 		* Usefull for ipv6 addresses
 		*/
 		public function getIpCompressed() {
 			return inet_ntop(inet_pton($this->getIp()));
 		}
-		
+
 		public function getNetwork() {
 			return $this->network;
 		}
-		
+
 		public function getNetworkinterface() {
 			$networkinterface = new Networkinterface($this->getInterfaceId());
 			if($networkinterface->fetch())
 				return $networkinterface;
 			return false;
 		}
-		
+
 		public function getDomXMLElement($domdocument) {
 			$domxmlelement = $domdocument->createElement('ip');
 			$domxmlelement->appendChild($domdocument->createElement("ip_id", $this->getIpId()));
@@ -208,7 +208,7 @@
 			$domxmlelement->appendChild($this->getNetwork()->getDomXMLElement($domdocument));
 			return $domxmlelement;
 		}
-		
+
 		public static function isValidIp($ip, $ipv) {
 			if($ipv==4) {
 				return (bool)ip2long($ip);
@@ -217,14 +217,14 @@
 				$regex = '/^(((?=(?>.*?(::))(?!.+\3)))\3?|([\dA-F]{1,4}(\3|:(?!$)|$)|\2))(?4){5}((?4){2}|(25[0-5]|(2[0-4]|1\d|[1-9])?\d)(\.(?7)){3})\z/i';
 				return (bool)preg_match($regex, $ip);
 			}
-			
+
 			return false;
 		}
-		
+
 		/**
 		* Expand an IPv6 Address
 		*
-		* This will take an IPv6 address written in short form and expand it to include all zeros. 
+		* This will take an IPv6 address written in short form and expand it to include all zeros.
 		* GPL Source: http://www.soucy.org/project/inet6/
 		*
 		* @param  string  $addr A valid IPv6 address
@@ -244,7 +244,7 @@
 			} else {
 				$part = explode(":", $addr);
 			} // if .. else
-			
+
 			/* Pad each segment until it has 4 digits */
 			foreach ($part as &$p) {
 				while (strlen($p) < 4) $p = '0' . $p;
@@ -252,18 +252,18 @@
 			unset($p);
 			/* Join segments */
 			$result = implode(':', $part);
-			/* Quick check to make sure the length is as expected */ 
+			/* Quick check to make sure the length is as expected */
 			if (strlen($result) == 39) {
 				return $result;
 			} else {
 				return false;
 			} // if .. else
 		}
-		
+
 		/**
 		* Generate an IPv6 mask from prefix notation
 		*
-		* This will convert a prefix to an IPv6 address mask (used for IPv6 math) 
+		* This will convert a prefix to an IPv6 address mask (used for IPv6 math)
 		*
 		* @param  integer $prefix The prefix size, an integer between 1 and 127 (inclusive)
 		* @return string  The IPv6 mask address for the prefix size
@@ -283,7 +283,7 @@
 			} // for
 			return $result;
 		}
-		
+
 		public static function ipv6NetworkFromAddr($addr, $prefix) {
 			$size = 128 - $prefix;
 			$addr = gmp_init('0x' . str_replace(':', '', $addr));
@@ -291,36 +291,48 @@
 			$prefix = gmp_and($addr, $mask);
 			return gmp_strval($prefix, 16);
 		}
-		
+
 		//http://stackoverflow.com/questions/7951061/matching-ipv6-address-to-a-cidr-subnet
 		public function ipIsInNetwork($network=false) {
 			$network = ($network) ? $network : $this->getNetwork();
-			
+
 			if($network instanceof Network) {
 				$ip = inet_pton($this->getIp());
 				$binaryip=Ip::inet_to_bits($ip, $network->getIpv());
-				
+
 				$net = $network->getIp();
 				$maskbits = $network->getNetmask();
 				//list($net,$maskbits)=explode('/',$cidrnet);
 				$net=inet_pton($net);
 				$binarynet=Ip::inet_to_bits($net, $network->getIpv());
-				
+
 				$ip_net_bits=substr($binaryip, 0, $maskbits);
 				$net_bits   =substr($binarynet, 0, $maskbits);
-				
+
 				if($ip_net_bits!==$net_bits) return false;
 				else return true;
 			}
 			return false;
 		}
-		
+
 		// converts inet_pton output to string with bits
 		//http://stackoverflow.com/questions/7951061/matching-ipv6-address-to-a-cidr-subnet
 		public static function inet_to_bits($inet, $ipv) {
-			if($ipv==4) $unpacked = unpack('a4', $inet);
-			elseif($ipv==6) $unpacked = unpack('a16', $inet);
-			
+			//ATTENTION: the inet_pton() function seems to handle adresses
+			//different between PHP version 5.4 and 5.6. Use the following:
+			//PHP 5.4: unpack('A4', $inet) //capitalized A16
+			//PHP 5.6: unpack('a4', $inet) //lowercased a16
+			//The PHP 5.6 change has only been tested with IPv6 (IPv4 is TODO!)
+			if(version_compare(phpversion(), '5.6', '<')) {
+				$ipv4Format = "A4";
+				$ipv6Format = "A16";
+			} else {
+				$ipv4Format = "a4";
+				$ipv6Format = "a16";
+			}
+			if($ipv==4) $unpacked = unpack($ipv4Format, $inet);
+			elseif($ipv==6) $unpacked = unpack($ipv6Format, $inet);
+
 			$unpacked = str_split($unpacked[1]);
 			$binaryip = '';
 			foreach ($unpacked as $char) {

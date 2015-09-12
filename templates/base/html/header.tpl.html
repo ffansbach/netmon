@@ -22,7 +22,7 @@
 				<span>
 					{if $installed}
 						{foreach $top_menu as $topmenu key=count}
-							<a href="{$topmenu.href}">{$topmenu.name}</a> | 
+							<a href="{$topmenu.href}">{$topmenu.name}</a> |
 						{/foreach}
 						{foreach $loginOutMenu as $menu key=count}
 							{if $count != 0}| {/if}<a href="{$menu.href}">{$menu.name}</a>

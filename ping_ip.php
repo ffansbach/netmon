@@ -14,11 +14,12 @@
 		echo "Could not fetch Info.";
 	}
 	
-	$return = array();
-	echo "Command: ".$command."<br><br>";
-	exec($command, $return);
-	echo "Result:<pre>";
-		print_r($return);
-	echo "</pre>";
-
+    if (isset($command)) {
+        $return = array();
+        echo "Command: ".$command."<br><br>";
+        exec($command, $return);
+        echo "Result:<pre>";
+            print_r($return);
+        echo "</pre>";
+    }
 ?>
