@@ -319,11 +319,11 @@
 		//http://stackoverflow.com/questions/7951061/matching-ipv6-address-to-a-cidr-subnet
 		public static function inet_to_bits($inet, $ipv) {
 			//ATTENTION: the inet_pton() function seems to handle adresses
-			//different between PHP version 5.4 and 5.6. Use the following:
+			//different between PHP version 5.4 and 5.5. Use the following:
 			//PHP 5.4: unpack('A4', $inet) //capitalized A16
-			//PHP 5.6: unpack('a4', $inet) //lowercased a16
-			//The PHP 5.6 change has only been tested with IPv6 (IPv4 is TODO!)
-			if(version_compare(phpversion(), '5.6', '<')) {
+			//PHP 5.5: unpack('a4', $inet) //lowercased a16
+			//The PHP 5.5 change has only been tested with IPv6 (IPv4 is TODO!)
+			if(version_compare(phpversion(), '5.5', '<')) {
 				$ipv4Format = "A4";
 				$ipv6Format = "A16";
 			} else {
