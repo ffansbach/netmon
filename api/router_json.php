@@ -48,11 +48,10 @@ try {
 
 	$communityName = str_replace(' ', '', $GLOBALS['community_name']);
 	# use domain part of mail_sender_address
-	$communityWebsite  = 'http://www.'.substr(strrchr($GLOBALS['mail_sender_address'], "@"), 1);
-	$communityFilename = strtolower(substr(strrchr($GLOBALS['community_name'], " "), 1));
+	$communityWebsite  = 'http://www.'.substr(strrchr($GLOBALS['mail_sender_adress'], "@"), 1);
 	$nodeList->setCommunityName($communityName);
 	$nodeList->setWebsite($communityWebsite);
-	$nodeList->setCommunityFile('https://raw.githubusercontent.com/ffansbach/community-files/master/'.$communityFilename.'.json');
+	$nodeList->setCommunityFile($GLOBALS['url_to_netmon'].'/api/community.php');
 
 	foreach($result as $resultNode)
 	{
