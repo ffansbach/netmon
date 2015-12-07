@@ -99,7 +99,7 @@
 		}
 		
 		public function setName($name) {
-			if(is_string($name) AND strlen($name)<=30) {
+			if(is_string($name) AND strlen($name)<=100) {
 				$this->name = $name;
 				return true;
 			}
