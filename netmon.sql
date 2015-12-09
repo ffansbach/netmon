@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `chipsets` (
   `create_date` datetime NOT NULL,
   `update_date` datetime NOT NULL,
   `name` varchar(100) NOT NULL,
-  `hardware_name` varchar(30) NOT NULL,
+  `hardware_name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `hardware_name` (`hardware_name`)

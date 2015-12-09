@@ -8,10 +8,10 @@
 <h2>Chipset ändern</h2>
 <form action="./config.php?section=insert_edit_chipset_name&chipset_id={$smarty.get.chipset_id}" method="POST">
 	<p>
-		<b>Chipset:</b><br><input name="name" size="30" maxlength="30" value="{$chipset->getName()}">
+		<b>Chipset:</b><br><input name="name" size="40" maxlength="100" value="{$chipset->getName()}">
 	</p>
 	<p>
-		<b>Name:</b><br><input name="hardware_name" size="30" maxlength="30" value="{$chipset->getHardwareName()}">
+		<b>Name:</b><br><input name="hardware_name" size="40" maxlength="100" value="{$chipset->getHardwareName()}">
 	</p>
 	
 	<p><input type="submit" value="Absenden"></p>
