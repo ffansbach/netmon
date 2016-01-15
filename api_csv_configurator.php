@@ -39,19 +39,24 @@ if($_GET['section']=="router_auto_assign") {
 		if (empty($router)) {
 			//Make DB Insert
 			try {
-				DB::getInstance()->exec("INSERT INTO routers_not_assigned (create_date, update_date, hostname, router_auto_assign_login_string, interface)
-							 VALUES (NOW(), NOW(), '$_GET[hostname]', '$_GET[router_auto_assign_login_string]', '$_GET[interface]');");
+				$stmt = DB::getInstance()->prepare("INSERT INTO routers_not_assigned (create_date, update_date, hostname, router_auto_assign_login_string, interface)
+							 VALUES (NOW(), NOW(), :hostname, :router_auto_assign_login_string, :interface);");
+				$stmt->execute(array(
+					':hostname' => $_GET['hostname'],
+					':router_auto_assign_login_string' => $_GET['router_auto_assign_login_string'],
+					':interface' => $_GET['interface']
+				));
 			}
 			catch(PDOException $e) {
 				echo $e->getMessage();
 			}
 			$not_assigned_id = DB::getInstance()->lastInsertId();
-			
+
 			//Make history
 			$actual_crawl_cycle = Crawling::getActualCrawlCycle();
 			$event = new Event(false, (int)$actual_crawl_cycle['id'], 'not_assigned_router', (int)$not_assigned_id, 'new', array('router_auto_assign_login_string'=>$_GET['router_auto_assign_login_string']));
 			$event->store();
-			
+
 			echo "error;new_not_assigned;;$_GET[router_auto_assign_login_string]";
 		} else {
 			try {
@@ -97,12 +102,16 @@ if($_GET['section']=="router_auto_assign") {
 if($_GET['section']=="autoadd_ipv6_address") {
 	//first try to determine network of given address
 	$ipv6_network = Ip::ipv6NetworkFromAddr($_GET['ip'], (int)$_GET['netmask']);
-	$network = new Network(false, false, $ipv6_network, (int)$_GET['netmask'], (int)$_GET['ipv']);
+	$network = new Network(false, false, $ipv6_network, (int)$_GET['netmask'], 6);
 	if($network->fetch()) {
 		//if network found, then try to add ip address.
 		//first we need to check if the interface we want to add th ip to already exists
 		//and if not we need to create it.
-		$networkinterface = new Networkinterface(false, (int)$_GET['router_id'], $_GET['networkinterface_name']);
+        if (!isset($_GET['networkinterface_name']))
+            $networkinterface_name = "";
+        else
+            $networkinterface_name = $_GET['networkinterface_name'];
+		$networkinterface = new Networkinterface(false, (int)$_GET['router_id'], $networkinterface_name);
 		if(!$networkinterface->fetch()) {
 			$networkinterface_id = $networkinterface->store();
 			if(!$networkinterface_id) {
@@ -112,7 +121,7 @@ if($_GET['section']=="autoadd_ipv6_address") {
 		} else {
 			$networkinterface_id = $networkinterface->getNetworkinterfaceId();
 		}
-		
+
 		//then we can create the ip
 		$ip = new Ip(false, (int)$networkinterface_id, (int)$network->getNetworkId(), $_GET['ip']);
 		if($ip->store()) {

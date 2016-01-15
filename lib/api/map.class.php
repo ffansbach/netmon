@@ -523,6 +523,7 @@ class ApiMap {
 
 						$crawl_interfaces = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $crawl_router['router_id']);
 						$row['traffic'] = 0;
+						$traffic = 0;
 						foreach($crawl_interfaces as $interface) {
 							$traffic = $traffic + $interface['traffic_rx_avg'] + $interface['traffic_tx_avg'];
 						}
@@ -708,6 +709,7 @@ else
 
 						$crawl_interfaces = Interfaces::getInterfacesCrawlByCrawlCycle($last_endet_crawl_cycle['id'], $crawl_router['router_id']);
 						$row['traffic'] = 0;
+						$traffic = 0;
 						foreach($crawl_interfaces as $interface) {
 							$traffic = $traffic + $interface['traffic_rx_avg'] + $interface['traffic_tx_avg'];
 						}

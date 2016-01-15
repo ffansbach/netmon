@@ -65,7 +65,7 @@ try {
 		}
 
 		$node->setType('AccessPoint');
-		$node->setHref($GLOBALS['url_to_netmon'].'router.php?router_id='.$resultNode['id']);
+		$node->setHref($GLOBALS['url_to_netmon'].'/router.php?router_id='.$resultNode['id']);
 
 		$node->setStatus(
 			($resultNode['status'] == 'online'),
@@ -82,7 +82,7 @@ try {
 		$nodeList->addPerson(
 			$resultNode['u_id'],
 			$resultNode['nickname'],
-			$GLOBALS['url_to_netmon'].'user.php?user_id='.$resultNode['u_id']
+			$GLOBALS['url_to_netmon'].'/user.php?user_id='.$resultNode['u_id']
 		);
 
 		$nodeList->addNode($node->getNode());

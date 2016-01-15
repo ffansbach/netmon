@@ -178,10 +178,10 @@ function fullmap(community_location_longitude, community_location_latitude, comm
 	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid]);
 	
 	//Define data layers shown on top of the map and add them to the map
-	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters');
-	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');
-	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
-	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
+	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=ApiMap&section=getRouters');
+	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=ApiMap&section=getRoutersTraffic');
+	var layer_clients = loadKmlLayer('Clients ', './api.php?class=ApiMap&section=getRoutersClients');
+	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=ApiMap&section=batman_advanced_conn_nexthop');
 	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop]);
 
 	// Set map center
@@ -236,10 +236,10 @@ function router_map(highlight_router_id) {
   	map.addLayers([layerMapnik, gstreet, gphy, gsat, ghybrid]);
 
 	//Define data layers shown on top of the map and add them to the map
-	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters&highlight_router_id='+highlight_router_id);
-	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');
-	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
-	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
+	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=ApiMap&section=getRouters&highlight_router_id='+highlight_router_id);
+	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=ApiMap&section=getRoutersTraffic');
+	var layer_clients = loadKmlLayer('Clients ', './api.php?class=ApiMap&section=getRoutersClients');
+	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=ApiMap&section=batman_advanced_conn_nexthop');
 	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop]);
 	
 	//Add control panels
@@ -282,10 +282,10 @@ function router_map_embed(highlight_router_id) {
   	map.addLayers([layerMapnik]);
 
 	//Define data layers shown on top of the map and add them to the map
-	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=apiMap&section=getRouters&highlight_router_id='+highlight_router_id);
-	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=apiMap&section=getRoutersTraffic');
-	var layer_clients = loadKmlLayer('Clients ', './api.php?class=apiMap&section=getRoutersClients');
-	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=apiMap&section=batman_advanced_conn_nexthop');
+	var layer_nodes = loadKmlLayer('Knoten ', './api.php?class=ApiMap&section=getRouters&highlight_router_id='+highlight_router_id);
+	var layer_traffic = loadKmlLayer('Traffic ', './api.php?class=ApiMap&section=getRoutersTraffic');
+	var layer_clients = loadKmlLayer('Clients ', './api.php?class=ApiMap&section=getRoutersClients');
+	var batman_adv_conn_nexthop = loadKmlLayer('Bat. Adv. Nexthop', './api.php?class=ApiMap&section=batman_advanced_conn_nexthop');
 	map.addLayers([layer_clients, layer_traffic, layer_nodes, batman_adv_conn_nexthop]);
 	
 	//Add control panels

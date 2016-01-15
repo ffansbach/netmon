@@ -183,7 +183,7 @@ class Register {
 		}
 		
 		$text .= "Bitte klicke auf den nachfolgenden Link um deinen Account freizuschalten.\n";
-		$text .= ConfigLine::configByName('url_to_netmon')."/account_activate.php?activation_hash=$activation\n\n";
+		$text .= ConfigLine::configByName('url_to_netmon')."/account_activate.php?activation_hash=".urlencode($activation)."\n\n";
 		$text .= "Liebe Gruesse\n";
 		$text .= ConfigLine::configByName('community_name');
 		
@@ -231,6 +231,8 @@ class Register {
 	* @return boolean true if the password was changed successfull
 	*/
 	public function setNewPassword($new_password_hash, $old_password_hash, $user_id) {
+		$new_password_hash = urldecode($new_password_hash);
+		$old_password_hash = urldecode($old_password_hash);
 		$user_data = User_old::getUserByID($user_id);
 		if($old_password_hash==$user_data['password']) {
 			$stmt = DB::getInstance()->prepare("UPDATE users SET password = ? WHERE id = ?");
@@ -272,8 +274,8 @@ class Register {
 		$text .= "Nickname: $nickname\n";
 		$text .= "Passwort: $newpassword\n\n";
 		$text .= "Bitte bestaetige die Aenderungen mit einem Klick auf diesen Link:\n";
-		$text .= ConfigLine::configByName('url_to_netmon')."/set_new_password.php?user_id=$user_id&new_passwordhash=$new_password_hash&oldpassword_hash=$old_password_hash\n\n";
-		$text .= "Hinweis: sollte das Anklicken des Links nicht funktionieren musst du den link vollstaendig in die Adressleiste deines Webbrowsers kopieren.\n\n";
+		$text .= ConfigLine::configByName('url_to_netmon')."/set_new_password.php?user_id=$user_id&new_passwordhash=".urlencode($new_password_hash)."&oldpassword_hash=".urlencode($old_password_hash)."\n\n";
+		$text .= "Hinweis: sollte das Anklicken des Links nicht funktionieren musst du den link vollstaendig in die Adressleiste deines Webbrowsers kopieren. Insbesondere, wenn sich ein Punkt am Ende des Links befindet, da dieser mit zum Link gehoert!\n\n";
 		$text .= "Liebe Gruesse\n";
 		$text .= ConfigLine::configByName('community_name');
 		
