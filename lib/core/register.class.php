@@ -43,7 +43,7 @@ class Register {
 	* @param $email emailaddress of the user
 	* @param $agb has the user accepted the agb (is only beeing checked if the agb is enabled)?
 	* @param $openid openid if the user wants to register by openid
-	* @return boolean true if the was created successfull
+	* @return boolean true if the account was created successfully
 	*/
 	public function insertNewUser($nickname, $password, $passwordchk, $email, $agb, $openid) {
 		$message = array();
@@ -138,7 +138,7 @@ class Register {
 	* Activates a new registered user
 	* @author  Clemens John <clemens-john@gmx.de>
 	* @param $activation the activation hash the user got by mail
-	* @return boolean true if the user has been activated successfull
+	* @return boolean true if the user has been activated successfully
 	*/
 	public function userActivate($activation) {
 		if (isset($activation)) {
@@ -150,7 +150,7 @@ class Register {
 			//activate the user
 			$stmt = DB::getInstance()->prepare("UPDATE users SET activated=0 WHERE activated=?");
 			$stmt->execute(array($activation));
-			if ($stmt->rowCount()) {			
+			if ($stmt->rowCount()) {
 				$message[] = array("Der Benutzer ".$user_data['nickname']." wurde erfolgreich aktiviert.", 1);
 				$message[] = array("Sie können sich jetzt mit Ihrem Benutzernamen und Ihrem Passwort einloggen", 1);
 				Message::setMessage($message);
@@ -171,7 +171,7 @@ class Register {
 	* Activates a new registered user
 	* @author  Clemens John <clemens-john@gmx.de>
 	* @param $activation the activation hash the user got by mail
-	* @return boolean true if the user has been activated successfull
+	* @return boolean true if the user has been activated successfully
 	*/
 	public function sendRegistrationEmail($email, $nickname, $password, $activation, $datum, $openid) {
 		$text = "Hallo $nickname,\n\n";
@@ -228,7 +228,7 @@ class Register {
 	*			    by mail previously and is used to check if the user is permitted to
 	*			    set this user a new password
 	* @param $user_id id of the user that wants to set a new password
-	* @return boolean true if the password was changed successfull
+	* @return boolean true if the password was changed successfully
 	*/
 	public function setNewPassword($new_password_hash, $old_password_hash, $user_id) {
 		$new_password_hash = urldecode($new_password_hash);
@@ -266,7 +266,7 @@ class Register {
 	*			    the user able to set this hash for his new password
 	* @param $old_password_hash the hash of the old password. This hash is used to generate a link wich makes
 	*			    the user able to set this hash for his new password
-	* @return boolean true if the mail was sent successfull
+	* @return boolean true if the mail was sent successfully
 	*/
 	public function sendPassword($user_id, $email, $nickname, $newpassword, $new_password_hash, $old_password_hash) {
 		$text = "Hallo $nickname,\n\n";

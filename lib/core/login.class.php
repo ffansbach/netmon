@@ -33,7 +33,7 @@ class Login {
 	/**
 	* Logs out a user and resets the complete session
 	* @author  Clemens John <clemens-john@gmx.de>
-	* @return boolean true if the logout was successfull
+	* @return boolean true if the logout was successful
 	*/
 	public function user_logout() {
 		if (!isset($_SESSION['user_id'])) {
@@ -45,25 +45,25 @@ class Login {
 			//to correctly destroy a session look at http://php.net/manual/de/function.session-destroy.php
 			$stmt = DB::getInstance()->prepare("UPDATE users SET session_id = ? WHERE id = ?");
 			$stmt->execute(array('', $_SESSION['user_id']));
-			
+
 			//delete all Remember-Mes from the database (TODO: this could be improved by storing
 			//the current session id along with the remember me and then delete only the remember me
 			//coresponding to the current session.
 			$user_remember_me_list = new UserRememberMeList($_SESSION['user_id']);
 			$user_remember_me_list->delete();
-			
+
 			unset($_SESSION);
 			unset($_COOKIE);
 			setcookie("remember_me", "", time() - 60*60*24*14);
 			setcookie(session_name(), '', time()-3600,'/');
-			
+
 			if (ini_get("session.use_cookies")) {
 				$params = session_get_cookie_params();
 				setcookie(session_name(), '', time() - 42000, $params["path"],
 					  $params["domain"], $params["secure"], $params["httponly"]);
 			}
 			session_destroy();
-			
+
 			session_start();
 			$messages[] = array("Sie wurden ausgeloggt und ihre Benutzersession wurde gelöscht!", 1);
 			Message::setMessage($messages);

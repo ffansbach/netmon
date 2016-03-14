@@ -15,7 +15,7 @@ if ($_GET['section']=="login") {
 	$smarty->display("login.tpl.html");
 	$smarty->display("footer.tpl.html");
 } elseif ($_GET['section']=="login_send") {
-	//check if login is successfull and if not, go back to loginpage with errormessage
+	//check if login is successful and if not, go back to loginpage with errormessage
 	if(isset($_POST['nickname']) AND isset($_POST['password'])) {
 		$user_data = User_old::getUserByNickname($_POST['nickname']);
 		$phpass = new PasswordHash(8, false);

@@ -54,7 +54,7 @@ class User_old {
 	* @param $website
 	* @param $about
 	* @param $notification_method
-	* @return boolean if the user was edited successfull
+	* @return boolean if the user was edited successfully
 	*/
 	public function userInsertEdit($user_id, $changepassword, $permission, $oldpassword, $newpassword, $newpasswordchk,
 				       $openid, $vorname, $nachname, $strasse, $plz, $ort, $telefon, $email, $jabber,
