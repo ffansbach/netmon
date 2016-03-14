@@ -40,38 +40,12 @@
 			echo $e->getTraceAsString();
 		}
 
-		//Use custom multiinsert statement instead of RouterStatus class
-		echo "	Prepare insertion of offline data for router\n";
-		$placeholders = array();
-		$values = array();
 		foreach($result as $router) {
-			$placeholders[] = "(?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-			array_push($values, (int)$router['id'], (int)$actual_crawl_cycle['id'], "offline",
-								"", "", "", "",
-								"", 0, 0, 0,
-								0, "", "", "", "",
-								"", "", "",
-								"", "",
-								"", "",
-								"", "",
-								"", 0);
-		}
-		echo "	Insert offline Data for interfaces in one big statement\n";
-		try {
-			$stmt = DB::getInstance()->prepare("INSERT INTO crawl_routers (router_id, crawl_cycle_id, crawl_date, status,
-																		   hostname, distname, distversion, chipset,
-																		   cpu, memory_total, memory_caching, memory_buffering,
-																		   memory_free, loadavg, processes, uptime, idletime,
-																		   local_time, batman_advanced_version, fastd_version,
-																		   kernel_version, configurator_version,
-																		   nodewatcher_version, firmware_version,
-																		   firmware_revision, openwrt_core_revision,
-																		   openwrt_feeds_packages_revision, client_count)
-												VALUES ".implode(", ", $placeholders));
-			$stmt->execute($values);
-		} catch(PDOException $e) {
-			echo $e->getMessage();
-			echo $e->getTraceAsString();
+			echo "	Inserting offline data for router ".$router['hostname']."\n";
+
+			//store offline crawl for offline router
+			$router_status = New RouterStatus(false, (int)$actual_crawl_cycle['id'], (int)$router['id'], "offline");
+			$router_status->store();
 		}
 
 		echo "Create crawl data for offline interfaces\n";
@@ -144,7 +118,7 @@
 			echo $e->getMessage();
 			echo $e->getTraceAsString();
 		}
-		
+
 		//Remove old not assigned routers
 		echo "Remove not assigned routers that haven´t been updated for a while\n";
 		DB::getInstance()->exec("DELETE FROM routers_not_assigned WHERE TO_DAYS(update_date) < TO_DAYS(NOW())-2");
