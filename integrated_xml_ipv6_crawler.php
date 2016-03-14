@@ -85,7 +85,7 @@
 
 					//store the crawl data into the database if the router is not offline
 					if(!empty($return_string)) {
-						echo "			Craw was successfull, online\n";
+						echo "			Crawl was successful, online\n";
 						try {
 							$xml = new SimpleXMLElement($return_string);
 							$data = simplexml2array($xml);
@@ -176,7 +176,7 @@
 						}
 						break 2;
 					} else {
-						echo "			Crawl was not successfull trying to ping next address\n";
+						echo "			Crawl was not successful trying to ping next address\n";
 					}
 				}
 			}
