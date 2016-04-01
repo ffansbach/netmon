@@ -18,21 +18,21 @@
 	// when a new file is selected
 	function update_fname(html_graph_id) {
 		var graph_opts={legend: {position:"ne", noColumns:2} };
-		var ds_graph_opts={'online':{checked:true, color: "#007B0F", 
+		var ds_graph_opts={'online':{checked:true, color: "#007B0F",
 					lines: { show: true, fill: false, fillColor:""} },
-				'offline':{checked:true, color: "#CB0000", 
+				'offline':{checked:true, color: "#CB0000",
 					lines: { show: true, fill: false, fillColor:""} },
-				'unknown':{checked:true, color: "#F8C901", 
+				'unknown':{checked:true, color: "#F8C901",
 					lines: { show: true, fill: false, fillColor:""} },
-				'total':{checked:true, color: "#696969", 
+				'total':{checked:true, color: "#696969",
 					lines: { show: true, fill: false, fillColor:""} },
-				'clients':{checked:true, color: "#006c7b", 
+				'clients':{checked:true, color: "#006c7b",
 					lines: { show: true, fill: false} } };
-		
+
 		// the rrdFlot object creates and handles the graph
 		var f=new rrdFlot(html_graph_id,rrd_data,graph_opts,ds_graph_opts);
 	}
-	
+
 	// This is the callback function that,
 	// given a binary file object,
 	// verifies that it is a valid RRD archive
@@ -40,7 +40,7 @@
 	function update_fname_handler(bf, html_graph_id) {
 		var i_rrd_data=undefined;
 		try {
-			var i_rrd_data=new RRDFile(bf);            
+			var i_rrd_data=new RRDFile(bf);
 		} catch(err) {
 			//alert("File "+fname+" is not a valid RRD archive!");
 		}
@@ -53,17 +53,17 @@
 <script>
 		$(function() {
 			var placeholder = $("#chipset_chart");
-			
+
 			var data = [
 				{/literal}{foreach item=router_chipset from=$router_chipsets key=i}{literal}
 					{ label: "{/literal}{if !empty($router_chipset.hardware_name)}{$router_chipset.hardware_name}{else}{$router_chipset.chipset_name}{/if}{literal}",
 					data: {/literal}{$router_chipset.count}{literal}},
 				{/literal}{/foreach}{literal}
 			];
-			
+
 			$.plot(placeholder, data, {
 				series: {
-					pie: { 
+					pie: {
 						show: true,
 						radius: 0.6,
 						label: {
@@ -84,7 +84,7 @@
 					noColumns: 1
 				}
 			});
-			
+
 			placeholder.bind("plothover", function(event, pos, obj) {
 				if (!obj) {
 					return;
@@ -98,12 +98,12 @@
 				if (!obj) {
 					return;
 				}
-				
+
 				var win=window.open('./routerlist.php?hardware_name='+obj.series.label, '_blank');
 				win.focus();
 			});
 		});
-		
+
 		function labelFormatter(label, series) {
 			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
 		}
@@ -112,7 +112,7 @@
 	<script>
 		$(function() {
 			var placeholder = $("#firmwareversions_chart");
-			
+
 			var data = [
 				{/literal}{foreach item=firmware_version_count from=$firmware_versions_count key=i}{literal}
 					{ label: "{/literal}{$firmware_version_count.firmware_version}{literal}",
@@ -120,10 +120,10 @@
 					color: '{/literal}#{dechex(hexdec(16e211)+$i*10)}{literal}'},
 				{/literal}{/foreach}{literal}
 			];
-			
+
 			$.plot(placeholder, data, {
 				series: {
-					pie: { 
+					pie: {
 						show: true,
 						radius: 0.6,
 						label: {
@@ -146,7 +146,7 @@
 					noColumns: 1
 				}
 			});
-			
+
 			placeholder.bind("plothover", function(event, pos, obj) {
 				if (!obj) {
 					return;
@@ -160,16 +160,16 @@
 				if (!obj) {
 					return;
 				}
-				
-				var win=window.open('./routerlist.php?firmware_version='+obj.series.label, '_blank');
+
+				var win=window.open('./routerlist.php?firmware_version='+encodeURIComponent(obj.series.label), '_blank');
 				win.focus();
 			});
 		});
-		
+
 		function labelFormatter(label, series) {
 			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
 		}
-		
+
 		function legendFormatter(label, series) {
 			return label.substr(0,10) ;
 		}
@@ -178,7 +178,7 @@
 	<script>
 		$(function() {
 			var placeholder = $("#batmanadv_div");
-			
+
 			var data = [
 				{/literal}{foreach item=batman_advanced_version_count from=$batman_advanced_versions_count key=i}{literal}
 					{ label: "{/literal}{$batman_advanced_version_count.batman_advanced_version}{literal}",
@@ -186,10 +186,10 @@
 					color: '{/literal}#{dechex(hexdec(320000)+$i*30)}{literal}'},
 				{/literal}{/foreach}{literal}
 			];
-			
+
 			$.plot(placeholder, data, {
 				series: {
-					pie: { 
+					pie: {
 						show: true,
 						radius: 0.6,
 						label: {
@@ -219,12 +219,12 @@
 				var percent = parseFloat(obj.series.percent).toFixed(2);
 				$("#hover_batmanadv").html("<span>" + obj.series.label + " (" + percent + "%)</span>");
 			});
-			 
+
 			placeholder.bind("plotclick", function(event, pos, obj) {
 				if (!obj) {
 					return;
 				}
-				
+
 				var win=window.open('./routerlist.php?batman_advanced_version='+obj.series.label, '_blank');
 				win.focus();
 			});
@@ -233,7 +233,7 @@
 		function labelFormatter(label, series) {
 			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
 		}
-		
+
 		function legendFormatter(label, series) {
 			return label.substr(0,25) ;
 		}
@@ -242,7 +242,7 @@
 	<script>
 		$(function() {
 			var placeholder = $("#kernelversions_chart");
-			
+
 			var data = [
 				{/literal}{foreach item=kernel_version_count from=$kernel_versions_count key=i}{literal}
 					{ label: "{/literal}{$kernel_version_count.kernel_version}{literal}",
@@ -250,10 +250,10 @@
 					color: '{/literal}#{dechex(hexdec(ff9600)+$i*30)}{literal}'},
 				{/literal}{/foreach}{literal}
 			];
-			
+
 			$.plot(placeholder, data, {
 				series: {
-					pie: { 
+					pie: {
 						show: true,
 						radius: 0.6,
 						label: {
@@ -274,7 +274,7 @@
 					noColumns: 1
 				}
 			});
-			
+
 			placeholder.bind("plothover", function(event, pos, obj) {
 				if (!obj) {
 					return;
@@ -288,7 +288,7 @@
 				if (!obj) {
 					return;
 				}
-				
+
 				var win=window.open('./routerlist.php?kernel_version='+obj.series.label, '_blank');
 				win.focus();
 			});
@@ -297,7 +297,7 @@
 		function labelFormatter(label, series) {
 			return "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" + label + "<br/>" + series.data[0][1] /*Math.round(series.percent) + "%*/ +"</div>";
 		}
-		
+
 		function legendFormatter(label, series) {
 			return label.substr(0,25) ;
 		}
@@ -338,7 +338,7 @@
 			<p>
 				<p>Die Daten die Netmon derzeit sammelt, werden nach Beendigung dieses Crawls angezeigt.</p>
 				<b>Beginn:</b> {$actual_crawl_cycle.crawl_date|date_format:"%e.%m.%Y %H:%M"} Uhr<br>
-				<b>Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr 
+				<b>Ende:</b> {$actual_crawl_cycle.crawl_date_end|date_format:"%e.%m.%Y %H:%M"} Uhr
 				<script>
 					var Time = "{$actual_crawl_cycle.crawl_date_end_minutes}";
 
@@ -368,7 +368,7 @@
 								}
 							cSekunden--;
 							if (cSekunden >= 0) {
-									setTimeout('Decrement()',1000); 
+									setTimeout('Decrement()',1000);
 							}
 						}
 					}
@@ -465,7 +465,7 @@
 					alert("Failed loading "+fname+"\n"+err);
 				}
 			</script>
-			
+
 			<div id="routers_status_graph" style="width: 100%;"></div>
 		</div>
 		<div style="float:left; width: 53%;">
