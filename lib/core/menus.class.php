@@ -77,7 +77,9 @@ class Menus extends Permission {
 		
 		$submenu = array();
 		$subsubmenu = array();
-		$submenu[] = array('name'=>'Router', 'href'=>'routerlist.php');			
+		$submenu[] = array('name'=>'Router', 'href'=>'routerlist.php?status=online');
+		$subsubmenu[] = array('name'=>'Alle Router', 'href'=>'routerlist.php');
+		$subsubmenu[] = array('name'=>'Offline Router', 'href'=>'routerlist.php?status=offline');
 		$subsubmenu[] = array('name'=>'Neue Router', 'href'=>'routers_trying_to_assign.php');
 		if (Permission::checkPermission(PERM_USER)) //if user is logged in and has permission "user"
 			$subsubmenu[] = array('name'=>'Router anlegen', 'href'=>'routereditor.php?section=new');

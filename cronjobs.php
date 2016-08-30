@@ -78,7 +78,12 @@
 																		  wlan_mode, wlan_frequency, wlan_essid, wlan_bssid,
 																		  wlan_tx_power, mtu)
 											VALUES ".implode(", ", $placeholders));
-		$stmt->execute($values);
+		try {
+			$stmt->execute($values);
+		} catch(PDOException $e) {
+			echo $e->getMessage();
+			echo $e->getTraceAsString();
+		}
 
 
 		echo "Close old crawl cycle and create new one\n";
