@@ -141,4 +141,13 @@ if($_GET['section']=="get_hostname") {
 	echo "success,".$router_data['hostname'].",";
 }
 
+if($_GET['section']=="get_coords") {
+	$router_data = Router_old::getRouterInfo($_GET['router_id']);
+	if (!empty($router_data)) {
+		echo "success,".$router_data['latitude'].",".$router_data['longitude'].",";
+	} else {
+		echo "err,router_not_found";
+	}
+}
+
 ?>
